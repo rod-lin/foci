@@ -39,3 +39,6 @@ jspm_packages
 # Update scripts
 upload.sh
 update.log
+
+# Scratch file
+*.nt
