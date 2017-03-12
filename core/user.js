@@ -2,6 +2,7 @@
 
 var db = require("./db");
 var err = require("./err");
+var uid = require("./uid");
 var config = require("./config");
 
 var User = function (uuid, dname, lname, passwd) {
@@ -10,8 +11,8 @@ var User = function (uuid, dname, lname, passwd) {
 			   "illegal display name");
 	err.assert(typeof lname === "string" && lname.length <= config.lim.user.lname,
 			   "illegal login name");
-	err.assert(typeof passwd === "string" && passwd.length == config.lim.user.passwd,
-			   "illegal password checksum");
+	// err.assert(typeof passwd === "string" && passwd.length == config.lim.user.passwd,
+	//		   "illegal password checksum");
 
 	this.uuid = uuid;
 	this.dname = dname;
@@ -31,13 +32,14 @@ var User = function (uuid, dname, lname, passwd) {
 	};
 };
 
-User.prototype = {}
+User.prototype = {};
+
 User.prototype.query = {
-	uuid: function (uuid) { return { "uuid": uuid } },
-	lname: function (lname) { return { "lname": lname } },
+	uuid: uuid => ({ "uuid": uuid }),
+	lname: lname => ({ "lname": lname }),
 	
 	// fuzzy search(all)
-	fuzzy: function (kw) {
+	fuzzy: kw => {
 		var reg = new RegExp(kw, "i");
 		return {
 			$or: [
@@ -50,9 +52,26 @@ User.prototype.query = {
 	},
 
 	// search tag(fuzzy)
-	ftag: function (tag) {
+	ftag: tag => {
 		var reg = new RegExp(tag, "i");
-
 		return { "favtag": { $regex: reg } };
-	}
+	},
+
+	tag: tag => ({ "favtag": tag })
+};
+
+User.prototype.getUUID = function () { return this.uuid; };
+
+exports.User = User;
+
+exports.insertNewUser = async (dname, lname, passwd) => {
+	var uuid = await uid.genUID("uuid");
+	var user = new User(uuid, dname, lname, passwd);
+
+	err.assert(user instanceof User, "not user type");
+
+	var col = await db.col("user");
+	await col.insertOne(user);
+
+	return user;
 };

@@ -1,6 +1,8 @@
 "use strict";
 
 module.exports = {
+	port: 3138,
+
 	lim: {
 		user: {
 			dname: 64,
@@ -10,13 +12,19 @@ module.exports = {
 	},
 
 	db: {
-		url: "localhost",
+		url: "127.0.0.1",
 		port: 3137,
 		name: "foci-main",
 		opt: { auto_reconnect: true },
 		col: {
 			user: "user",
-			activ: "activ"
+			activ: "activ",
+			uid: "uid"
 		}
+	},
+
+	auth: {
+		rsalen: 256,
+		cache: 64 // number of cached keys
 	}
 };
