@@ -3,9 +3,15 @@
 var db = require("./db");
 var err = require("./err");
 var uid = require("./uid");
+var util = require("./util");
 var config = require("./config");
 
 var User = function (uuid, dname, lname, passwd) {
+	if (dname === undefined) {
+		this.extend(uuid); // extend the first argument
+		return;
+	}
+
 	err.assert(typeof uuid === "number" && uuid > 0, "illegal uuid");
 	err.assert(typeof dname === "string" && dname.length <= config.lim.user.dname,
 			   "illegal display name");
@@ -26,17 +32,19 @@ var User = function (uuid, dname, lname, passwd) {
 		school: ""
 	};
 
-	this.rating =  {
+	this.rating = {
 		tot: [ 0, 0 ],
 		log: []
 	};
 };
 
 User.prototype = {};
+User.prototype.getUUID = function () { return this.uuid; };
 
-User.prototype.query = {
+User.query = {
 	uuid: uuid => ({ "uuid": uuid }),
 	lname: lname => ({ "lname": lname }),
+	pass: (lname, passwd) => ({ "lname": lname, "passwd": util.md5(passwd) }),
 	
 	// fuzzy search(all)
 	fuzzy: kw => {
@@ -60,18 +68,36 @@ User.prototype.query = {
 	tag: tag => ({ "favtag": tag })
 };
 
-User.prototype.getUUID = function () { return this.uuid; };
-
 exports.User = User;
 
 exports.insertNewUser = async (dname, lname, passwd) => {
+	var col = await db.col("user");
+
+	var found = await col.findOne(User.query.lname(lname));
+	
+	if (found) {
+		throw new err.Exc("duplicated user login name");
+	}
+
 	var uuid = await uid.genUID("uuid");
+	var passwd = util.md5(passwd);
 	var user = new User(uuid, dname, lname, passwd);
 
 	err.assert(user instanceof User, "not user type");
 
-	var col = await db.col("user");
 	await col.insertOne(user);
 
 	return user;
+};
+
+exports.checkPass = async (lname, passwd) => {
+	var col = await db.col("user");
+
+	var found = await col.findOne(User.query.pass(lname, passwd));
+
+	if (!found) {
+		throw new err.Exc("wrong username or password");
+	}
+
+	return new User(found).getUUID();
 };

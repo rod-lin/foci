@@ -3,9 +3,12 @@
 var util = require("./util");
 
 var Env = function (req, res) {
+	var qjson = obj => res.send(JSON.stringify(obj));
+
 	this.header = obj => res.set(obj);
-	this.qsuc = obj => this.qjson({ suc: true, res: obj });
-	this.qjson = obj => res.send(JSON.stringify(obj));
+	this.qjson = qjson;
+	this.qsuc = obj => qjson({ suc: true, res: obj });
+	this.qerr = msg => qjson({ suc: false, msg: msg });
 };
 
 exports.Env = Env;

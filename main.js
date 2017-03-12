@@ -12,7 +12,7 @@ var Env = require("./core/env").Env;
 var app = express();
 
 app.get("/test", util.route(async env => {
-	var res = await user.insertNewUser("Rod", "rodlin", util.md5("123456"));
+	var res = await user.checkPass("rodlin", "123456"); // await user.insertNewUser("Rod", "rodlin", "123456");
 	env.qjson({ suc: true });
 }));
 
