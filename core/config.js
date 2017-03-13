@@ -27,6 +27,7 @@ module.exports = {
 
 	auth: {
 		rsalen: 512,
-		cache: 16 // number of cached keys
+		cache: 16, // number of cached keys
+		head_timeout: 1000 * 60 // 1 min, header timeout
 	}
 };

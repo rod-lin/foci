@@ -3,6 +3,7 @@
 var NodeRSA = require("node-rsa");
 
 var err = require("./err");
+var util = require("./util");
 var config = require("./config");
 
 // len in bits
@@ -51,7 +52,21 @@ exports.decrypt = (enc, pub) => {
 	if (!key)
 		throw new err.Exc("key does not exist");
 
-	return key.decrypt(enc);
+	var dat = key.decrypt(enc, "binary");
+
+	console.log(dat);
+
+	var sep = dat.split("|", 2);
+	var time = parseInt(sep[0]);
+	var now = util.stamp();
+
+	if (isNaN(time) || sep.length < 2)
+		throw new err.Exc("wrong header");
+
+	if (now - time > config.auth.head_timeout)
+		throw new err.Exc("header timeout");
+
+	return sep[1];
 };
 
 exports.encrypt = (msg, encoding) => {
@@ -62,6 +77,6 @@ exports.encrypt = (msg, encoding) => {
 
 	return {
 		key: encoding(pub),
-		enc: encoding(key.encrypt(msg, "base64"))
+		enc: encoding(key.encrypt(util.stamp() + "|" + msg, "base64"))
 	};
 };

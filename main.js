@@ -54,6 +54,13 @@ app.get("/user/login", util.route(async env => {
 	env.qsuc(sid);
 }));
 
+// check sid
+app.get("/user/csid", util.route(async env => {
+	var args = util.checkArg(env.query, { "sid": "string" });
+	await user.checkSession(args.sid);
+	env.qsuc();
+}));
+
 var server = app.listen(config.port, function () {
 	var host = server.address().address;
 	var port = server.address().port;

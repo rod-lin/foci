@@ -71,12 +71,12 @@ User.query = {
 };
 
 User.set = {
-	session: (sid, stamp) => ({ $set: { "sid": sid, "stamp", stamp } })
+	session: (sid, stamp) => ({ $set: { "sid": sid, "stamp": stamp } })
 };
 
 exports.User = User;
 
-var genSessionID = (lname) => util.md5(Math.random());
+var genSessionID = (lname) => util.md5(Math.random().toString(), "hex");
 
 // passwd is clear text
 exports.insertNewUser = async (dname, lname, passwd) => {
@@ -102,7 +102,6 @@ exports.insertNewUser = async (dname, lname, passwd) => {
 // passwd is clear text
 exports.checkPass = async (lname, passwd) => {
 	var col = await db.col("user");
-
 	var found = await col.findOne(User.query.pass(lname, passwd));
 
 	if (!found) {
@@ -117,12 +116,14 @@ exports.login = async (lname, passwd) => {
 	var stamp = util.stamp();
 	var sid = genSessionID(lname);
 
+	var col = await db.col("user");
 	await col.updateOne(User.query.uuid(uuid), User.set.session(sid, stamp));
 
 	return sid;
 };
 
 exports.checkSession = async (sid) => {
+	var col = await db.col("user");
 	var res = await col.findOne(User.query.sid(sid));
 	var now = util.stamp();
 
