@@ -43,3 +43,46 @@ exports.md5 = (cont, format) => {
 	sum.update(cont);
 	return sum.digest(format);
 };
+
+var checkArg = (args, req) => {
+	var ret = {};
+
+	for (var k in req) {
+		if (!req.hasOwnProperty(k))
+			continue;
+
+		if (!args.hasOwnProperty(k))
+			throw new err.Exc("wrong argument(expecting " + k + " field)");
+
+		var entry = req[k];
+		var tmp = args[k];
+
+		// if (typeof entry === "string") {
+		switch (entry) {
+			case "string": break;
+
+			case "int":
+				tmp = parseInt(args[k]);
+				if (isNaN(tmp))
+					throw new err.Exc("wrong argument type(expecting int)");
+				break;
+
+			case "number":
+				tmp = parseFloat(args[k]);
+				if (isNaN(tmp))
+					throw new err.Exc("wrong argument type(expecting int)");
+				break;
+		}
+		// } /* else if (typeof entry === "object") {
+			// tmp = checkArg(tmp, entry);
+		// } */
+
+		ret[k] = tmp;
+	}
+
+	return ret;
+};
+
+exports.checkArg = checkArg;
+
+exports.stamp = () => (new Date()).getTime();

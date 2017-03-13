@@ -7,7 +7,9 @@ module.exports = {
 		user: {
 			dname: 64,
 			lname: 128,
-			passwd: 16
+			passwd: 16,
+
+			session_timeout: 1000 * 60 * 12 // 12 min
 		}
 	},
 
@@ -24,7 +26,7 @@ module.exports = {
 	},
 
 	auth: {
-		rsalen: 256,
-		cache: 64 // number of cached keys
+		rsalen: 512,
+		cache: 16 // number of cached keys
 	}
 };

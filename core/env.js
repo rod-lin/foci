@@ -9,6 +9,8 @@ var Env = function (req, res) {
 	this.qjson = qjson;
 	this.qsuc = obj => qjson({ suc: true, res: obj });
 	this.qerr = msg => qjson({ suc: false, msg: msg });
+
+	this.query = req.query;
 };
 
 exports.Env = Env;

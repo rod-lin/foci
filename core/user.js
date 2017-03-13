@@ -44,6 +44,8 @@ User.prototype.getUUID = function () { return this.uuid; };
 User.query = {
 	uuid: uuid => ({ "uuid": uuid }),
 	lname: lname => ({ "lname": lname }),
+	sid: sid => ({ "sid": sid }),
+
 	pass: (lname, passwd) => ({ "lname": lname, "passwd": util.md5(passwd) }),
 	
 	// fuzzy search(all)
@@ -68,8 +70,15 @@ User.query = {
 	tag: tag => ({ "favtag": tag })
 };
 
+User.set = {
+	session: (sid, stamp) => ({ $set: { "sid": sid, "stamp", stamp } })
+};
+
 exports.User = User;
 
+var genSessionID = (lname) => util.md5(Math.random());
+
+// passwd is clear text
 exports.insertNewUser = async (dname, lname, passwd) => {
 	var col = await db.col("user");
 
@@ -90,6 +99,7 @@ exports.insertNewUser = async (dname, lname, passwd) => {
 	return user;
 };
 
+// passwd is clear text
 exports.checkPass = async (lname, passwd) => {
 	var col = await db.col("user");
 
@@ -100,4 +110,25 @@ exports.checkPass = async (lname, passwd) => {
 	}
 
 	return new User(found).getUUID();
+};
+
+exports.login = async (lname, passwd) => {
+	var uuid = await exports.checkPass(lname, passwd);
+	var stamp = util.stamp();
+	var sid = genSessionID(lname);
+
+	await col.updateOne(User.query.uuid(uuid), User.set.session(sid, stamp));
+
+	return sid;
+};
+
+exports.checkSession = async (sid) => {
+	var res = await col.findOne(User.query.sid(sid));
+	var now = util.stamp();
+
+	if (!res)
+		throw new err.Exc("invalid session id");
+
+	if (now - res.stamp > config.lim.user.session_timeout)
+		throw new err.Exc("session timeout");
 };
