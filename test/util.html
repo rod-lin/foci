@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	</head>
+
+	<body>
+		RSA<br>
+		public: <input id="rsa-pub"><br>
+		message: <input id="rsa-msg"><br>
+		<button id="rsa-enc">enc</button><br>
+		<textarea id="rsa-res"></textarea>
+		
+		<br><br>
+		AES Enc<br>
+		key: <input id="aes-key"><br>
+		message: <input id="aes-msg"><br>
+		<button id="aes-enc">enc</button><br>
+		<textarea id="aes-res"></textarea>
+
+		<br><br>
+		AES Dec<br>
+		enc: <input id="aes-dec-enc"><br>
+		key: <input id="aes-dec-key"><br>
+		<button id="aes-dec">dec</button><br>
+		<textarea id="aes-dec-res"></textarea>
+
+		<script src="fcauth.js"></script>
+		<script>
+			"use strict";
+
+			// var enc = FCAuth.aesenc("hello", "123");
+			// console.log(FCAuth.aesdec(enc, "123"));
+
+			document.getElementById("rsa-enc").onclick = function () {
+				var pub = decodeURIComponent(document.getElementById("rsa-pub").value);
+				var msg = document.getElementById("rsa-msg").value;
+
+				document.getElementById("rsa-pub").value = encodeURIComponent(pub);
+				document.getElementById("rsa-res").innerHTML = encodeURIComponent(FCAuth.rsaenc(msg, pub));
+			};
+
+			document.getElementById("aes-enc").onclick = function () {
+				var key = document.getElementById("aes-key").value;
+				var msg = document.getElementById("aes-msg").value;
+
+				document.getElementById("aes-res").innerHTML = encodeURIComponent(FCAuth.aesenc(msg, key));
+			};
+
+			document.getElementById("aes-dec").onclick = function () {
+				var key = document.getElementById("aes-dec-key").value;
+				var enc = document.getElementById("aes-dec-enc").value;
+
+				// console.log(key);
+				// console.log(FCAuth.aesdec(enc, key));
+
+				document.getElementById("aes-dec-res").innerHTML = FCAuth.aesdec(enc, key);
+			};
+		</script>
+	</body>
+</html>

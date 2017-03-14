@@ -71,7 +71,8 @@ User.query = {
 };
 
 User.set = {
-	session: (sid, stamp) => ({ $set: { "sid": sid, "stamp": stamp } })
+	session: (sid, stamp) => ({ $set: { "sid": sid, "stamp": stamp } }),
+	rmsession: () => ({ $unset: { "sid": "", "stamp": "" } })
 };
 
 exports.User = User;
@@ -122,6 +123,16 @@ exports.login = async (lname, passwd) => {
 	return sid;
 };
 
+exports.getSession = async (lname) => {
+	var col = await db.col("user");
+	var res = await col.findOne(User.query.lname(lname));
+
+	if (!res)
+		throw new err.Exc("no such user");
+
+	return res.sid;
+};
+
 exports.checkSession = async (sid) => {
 	var col = await db.col("user");
 	var res = await col.findOne(User.query.sid(sid));
@@ -130,6 +141,8 @@ exports.checkSession = async (sid) => {
 	if (!res)
 		throw new err.Exc("invalid session id");
 
-	if (now - res.stamp > config.lim.user.session_timeout)
+	if (now - res.stamp > config.lim.user.session_timeout) {
+		await col.updateOne(User.query.sid(sid), User.set.rmsession());
 		throw new err.Exc("session timeout");
+	}
 };

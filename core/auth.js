@@ -1,6 +1,7 @@
 "use strict";
 
 var NodeRSA = require("node-rsa");
+var CryptoJS = require("crypto-js");
 
 var err = require("./err");
 var util = require("./util");
@@ -44,39 +45,40 @@ for (var i = 0; i < config.auth.cache; i++) {
 
  */
 
-exports.getAuthKey = i => keys[i === undefined ? Math.trunc(Math.random() * config.auth.cache) : i];
+exports.rsa = {
+	getAuthKey: i => keys[i === undefined ? Math.trunc(Math.random() * config.auth.cache) : i],
 
-exports.decrypt = (enc, pub) => {
-	var key = cached[pub];
+	enc: (msg, encoding) => {
+		var pub = exports.getAuthKey();
+		var key = cached[pub];
 
-	if (!key)
-		throw new err.Exc("key does not exist");
+		encoding = encoding || encodeURIComponent;
 
-	var dat = key.decrypt(enc, "binary");
+		return {
+			key: encoding(pub),
+			enc: encoding(key.encrypt(msg, "base64"))
+		};
+	},
 
-	console.log(dat);
+	dec: (enc, pub) => {
+		var key = cached[pub];
 
-	var sep = dat.split("|", 2);
-	var time = parseInt(sep[0]);
-	var now = util.stamp();
+		if (!key)
+			throw new err.Exc("key does not exist");
 
-	if (isNaN(time) || sep.length < 2)
-		throw new err.Exc("wrong header");
+		var dat = key.decrypt(enc, "binary");
 
-	if (now - time > config.auth.head_timeout)
-		throw new err.Exc("header timeout");
+		console.log(dat);
 
-	return sep[1];
+		return dat;
+	}
 };
 
-exports.encrypt = (msg, encoding) => {
-	var pub = exports.getAuthKey();
-	var key = cached[pub];
-
-	encoding = encoding || encodeURIComponent;
-
-	return {
-		key: encoding(pub),
-		enc: encoding(key.encrypt(util.stamp() + "|" + msg, "base64"))
-	};
+exports.aes = {
+	enc: (msg, key) => CryptoJS.AES.encrypt(msg, key).toString(),
+	dec: (enc, key) => {
+		var res = CryptoJS.AES.decrypt(enc, key).toString(CryptoJS.enc.Utf8);
+		if (res === "") throw new err.Exc("wrong aes key");
+		return res;
+	}
 };

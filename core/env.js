@@ -3,7 +3,10 @@
 var util = require("./util");
 
 var Env = function (req, res) {
-	var qjson = obj => res.send(JSON.stringify(obj));
+	var qjson = obj => {
+		res.set("Content-Type", "application/json");
+		res.send(JSON.stringify(obj));
+	};
 
 	this.header = obj => res.set(obj);
 	this.qjson = qjson;
