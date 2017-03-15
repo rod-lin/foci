@@ -9,7 +9,7 @@ var user = require("./core/user");
 var util = require("./core/util");
 var config = require("./core/config");
 
-var Env = require("./core/env").Env;
+var int = require("./core/int");
 
 var app = express();
 
@@ -23,50 +23,15 @@ app.get("/test", util.route(async env => {
 
 */
 
+app.get("/auth", int.auth);
+
+app.get("/user/new", int.user.new);
+app.get("/user/login", int.user.login);
+app.get("/user/encop", int.user.encop);
+
 app.get("/test/enc", util.route(async env => {
 	var args = util.checkArg(env.query, { "dat": "string" });
 	env.qsuc(auth.rsa.enc(args.dat));
-}));
-
-app.get("/auth", util.route(async env => {
-	env.qsuc(auth.rsa.getAuthKey());
-}));
-
-app.get("/user/new", util.route(async env => {
-	var args = util.checkArg(env.query, {
-		"dname": "string",
-		"lname": "string",
-		"pkey": "string",
-		"penc": "string"
-	});
-
-	var passwd = auth.rsa.dec(args.penc, args.pkey);
-	var res = await user.insertNewUser(args.dname, args.lname, passwd);
-
-	env.qsuc();
-}));
-
-app.get("/user/login", util.route(async env => {
-	var args = util.checkArg(env.query, {
-		"lname": "string",
-		"pkey": "string",
-		"penc": "string"
-	});
-
-	var dat = auth.rsa.dec(args.penc, args.pkey);
-
-	var sep = dat.split(":", 2);
-
-	if (!sep[0].length || sep.length < 2)
-		throw new err.Exc("wrong format");
-
-	var tmpkey = sep[0];
-	var sid = await user.login(args.lname, sep[1]);
-	var res = auth.aes.enc(sid, tmpkey);
-
-	console.log(res);
-
-	env.qsuc(res);
 }));
 
 // check sid

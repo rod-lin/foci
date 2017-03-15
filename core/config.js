@@ -9,6 +9,9 @@ module.exports = {
 			lname: 128,
 			passwd: 16,
 
+			intro: 2048,
+			school: 128,
+
 			session_timeout: 1000 * 60 * 12 // 12 min
 		}
 	},

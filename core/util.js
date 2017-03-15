@@ -20,10 +20,13 @@ exports.style = require("cli-color");
 
 exports.log = (msg, dir) => {
 	console.log("%s: %s%s", new Date(), dir ? dir + ": " : "", msg);
-}
+};
 
 exports.route = (handler) => async (req, res) => {
-	var env = new Env(req, res);	
+	// console.log("hi: " + req);
+	// console.log(res);
+
+	var env = new Env(req, res);
 
 	try {
 		return await handler(env);
@@ -44,35 +47,48 @@ exports.md5 = (cont, format) => {
 	return sum.digest(format);
 };
 
-var checkArg = (args, req) => {
+var checkArg = (args, req, opt) => {
 	var ret = {};
 
 	for (var k in req) {
 		if (!req.hasOwnProperty(k))
 			continue;
 
-		if (!args.hasOwnProperty(k))
+		if (!args.hasOwnProperty(k)) {
+			if (opt) continue;
 			throw new err.Exc("wrong argument(expecting " + k + " field)");
+		}
 
 		var entry = req[k];
 		var tmp = args[k];
+		var clim = null;
 
 		// if (typeof entry === "string") {
+		
+		if (typeof entry === "object") {
+			clim = entry.lim;
+			entry = entry.type;
+		}
+
 		switch (entry) {
 			case "string": break;
 
 			case "int":
-				tmp = parseInt(args[k]);
+				tmp = parseInt(tmp);
 				if (isNaN(tmp))
 					throw new err.Exc("wrong argument type(expecting int)");
 				break;
 
 			case "number":
-				tmp = parseFloat(args[k]);
+				tmp = parseFloat(tmp);
 				if (isNaN(tmp))
 					throw new err.Exc("wrong argument type(expecting int)");
 				break;
 		}
+
+		if (clim)
+			tmp = clim(tmp);
+
 		// } /* else if (typeof entry === "object") {
 			// tmp = checkArg(tmp, entry);
 		// } */
@@ -81,6 +97,18 @@ var checkArg = (args, req) => {
 	}
 
 	return ret;
+};
+
+// length limit
+checkArg.lenlim = (len, sth) => {
+	return {
+		type: "string",
+		lim: (val) => {
+			if (val.length > len)
+				throw new err.Exc(sth || "string too long");
+			return val;
+		}
+	};
 };
 
 exports.checkArg = checkArg;

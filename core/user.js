@@ -38,6 +38,19 @@ var User = function (uuid, dname, lname, passwd) {
 	};
 };
 
+User.infokey = {
+	age: {
+		type: "int", lim: age => {
+			if (age < 0 || age > 120)
+				throw new err.Exc("illegal age");
+			return age;
+		}
+	},
+
+	intro: util.checkArg.lenlim(config.lim.user.intro, "introduction too long"),
+	school: util.checkArg.lenlim(config.lim.user.school, "school name too long")
+};
+
 User.prototype = {};
 User.prototype.getUUID = function () { return this.uuid; };
 
@@ -72,7 +85,19 @@ User.query = {
 
 User.set = {
 	session: (sid, stamp) => ({ $set: { "sid": sid, "stamp": stamp } }),
-	rmsession: () => ({ $unset: { "sid": "", "stamp": "" } })
+	rmsession: () => ({ $unset: { "sid": "", "stamp": "" } }),
+
+	info: info => {
+		var tmp = {};
+
+		for (var k in info) {
+			if (info.hasOwnProperty(k)) {
+				tmp["info." + k] = info[k];
+			}
+		}
+
+		return ({ $set: tmp })
+	}
 };
 
 exports.User = User;
@@ -101,7 +126,7 @@ exports.insertNewUser = async (dname, lname, passwd) => {
 };
 
 // passwd is clear text
-exports.checkPass = async (lname, passwd) => {
+var checkPass = async (lname, passwd) => {
 	var col = await db.col("user");
 	var found = await col.findOne(User.query.pass(lname, passwd));
 
@@ -112,12 +137,15 @@ exports.checkPass = async (lname, passwd) => {
 	return new User(found).getUUID();
 };
 
+exports.checkPass = checkPass;
+
 exports.login = async (lname, passwd) => {
-	var uuid = await exports.checkPass(lname, passwd);
+	var uuid = await checkPass(lname, passwd);
 	var stamp = util.stamp();
 	var sid = genSessionID(lname);
 
 	var col = await db.col("user");
+
 	await col.updateOne(User.query.uuid(uuid), User.set.session(sid, stamp));
 
 	return sid;
@@ -133,6 +161,8 @@ exports.getSession = async (lname) => {
 	return res.sid;
 };
 
+
+// return lname
 exports.checkSession = async (sid) => {
 	var col = await db.col("user");
 	var res = await col.findOne(User.query.sid(sid));
@@ -145,4 +175,17 @@ exports.checkSession = async (sid) => {
 		await col.updateOne(User.query.sid(sid), User.set.rmsession());
 		throw new err.Exc("session timeout");
 	}
+
+	return res.uuid;
+};
+
+exports.getInfo = async (uuid) => {
+	var col = await db.col("user");
+	var res = await col.findOne(User.query.uuid(uuid));
+	return res.info;
+};
+
+exports.setInfo = async (uuid, info) => {
+	var col = await db.col("user");
+	await col.updateOne(User.query.uuid(uuid), User.set.info(info));
 };

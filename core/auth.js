@@ -68,7 +68,7 @@ exports.rsa = {
 
 		var dat = key.decrypt(enc, "binary");
 
-		console.log(dat);
+		// console.log(dat);
 
 		return dat;
 	}
