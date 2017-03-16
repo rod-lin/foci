@@ -16,9 +16,15 @@ window.FCAuth = {};
 		}).responseText);
 	};
 
-	FCAuth.salt = function () {
-		var tmp = Math.random().toString();
-		return CryptoJS.AES.encrypt(tmp, tmp).toString();
+	FCAuth.salt = function (len) {
+		var static_buf = new Array(len || 16);
+		var tab = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+		for (var i = 0; i < static_buf.length; i++) {
+			static_buf[i] = tab[Math.trunc(Math.random() * tab.length)];
+		}
+
+		return static_buf.join("");
 	};
 
 	FCAuth.rsaenc = function (msg, pub) {

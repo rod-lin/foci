@@ -102,7 +102,7 @@ User.set = {
 
 exports.User = User;
 
-var genSessionID = (lname) => util.md5(Math.random().toString(), "hex");
+var genSessionID = (lname) => util.md5(util.salt(), "hex");
 
 // passwd is clear text
 exports.insertNewUser = async (dname, lname, passwd) => {
@@ -126,7 +126,7 @@ exports.insertNewUser = async (dname, lname, passwd) => {
 };
 
 // passwd is clear text
-var checkPass = async (lname, passwd) => {
+exports.checkPass = async (lname, passwd) => {
 	var col = await db.col("user");
 	var found = await col.findOne(User.query.pass(lname, passwd));
 
@@ -137,10 +137,8 @@ var checkPass = async (lname, passwd) => {
 	return new User(found).getUUID();
 };
 
-exports.checkPass = checkPass;
-
 exports.login = async (lname, passwd) => {
-	var uuid = await checkPass(lname, passwd);
+	var uuid = await exports.checkPass(lname, passwd);
 	var stamp = util.stamp();
 	var sid = genSessionID(lname);
 

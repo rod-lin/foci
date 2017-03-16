@@ -77,8 +77,14 @@ exports.rsa = {
 exports.aes = {
 	enc: (msg, key) => CryptoJS.AES.encrypt(msg, key).toString(),
 	dec: (enc, key) => {
-		var res = CryptoJS.AES.decrypt(enc, key).toString(CryptoJS.enc.Utf8);
-		if (res === "") throw new err.Exc("wrong aes key");
+		var res = "";		
+
+		try {
+			var res = CryptoJS.AES.decrypt(enc, key).toString(CryptoJS.enc.Utf8);
+		} catch (e) {}
+
+		if (res === "") return null; // throw new err.Exc("wrong aes key");
+		
 		return res;
 	}
 };

@@ -16,6 +16,17 @@ Object.prototype.extend = function (obj) {
 	return this;
 };
 
+exports.salt = (len) => {
+	var static_buf = new Buffer(len || 16);
+	var tab = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+	for (var i = 0; i < static_buf.length; i++) {
+		static_buf[i] = tab[Math.trunc(Math.random() * tab.length)].charCodeAt(0);
+	}
+
+	return static_buf.toString();
+};
+
 exports.style = require("cli-color");
 
 exports.log = (msg, dir) => {
