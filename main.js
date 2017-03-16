@@ -27,6 +27,7 @@ app.get("/auth", int.auth);
 
 app.get("/user/new", int.user.new);
 app.get("/user/login", int.user.login);
+app.get("/user/csid", int.user.csid);
 app.get("/user/encop", int.user.encop);
 
 app.get("/test/enc", util.route(async env => {

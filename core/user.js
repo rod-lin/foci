@@ -3,6 +3,7 @@
 var db = require("./db");
 var err = require("./err");
 var uid = require("./uid");
+var auth = require("./auth");
 var util = require("./util");
 var config = require("./config");
 
@@ -160,21 +161,29 @@ exports.getSession = async (lname) => {
 };
 
 
-// return lname
-exports.checkSession = async (sid) => {
+// enc: encrypted msg(using session id), return { msg, uuid }
+exports.checkSession = async (lname, enc) => {
 	var col = await db.col("user");
-	var res = await col.findOne(User.query.sid(sid));
+	var res = await col.findOne(User.query.lname(lname));
 	var now = util.stamp();
 
-	if (!res)
+	if (!res || !res.sid)
 		throw new err.Exc("invalid session id");
 
 	if (now - res.stamp > config.lim.user.session_timeout) {
-		await col.updateOne(User.query.sid(sid), User.set.rmsession());
+		await col.updateOne(User.query.lname(lname), User.set.rmsession());
 		throw new err.Exc("session timeout");
 	}
 
-	return res.uuid;
+	var msg = auth.aes.dec(enc, res.sid);
+
+	if (!msg)
+		throw new err.Exc("invalid session id");
+
+	return {
+		msg: msg,
+		uuid: res.uuid
+	};
 };
 
 exports.getInfo = async (uuid) => {

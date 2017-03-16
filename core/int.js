@@ -56,6 +56,17 @@ _user.login = util.route(async env => {
 	env.qsuc(res);
 });
 
+// enc "hello, foci" with the session id
+_user.csid = util.route(async env => {
+	var args = util.checkArg(env.query, { "lname": "string", "enc": "string" });
+	var res = await user.checkSession(args.lname, args.enc);
+
+	if (res.msg !== "hello")
+		throw new err.Exc("wrong message");
+
+	env.qsuc();
+});
+
 /*
 	{
 		int: interface name,
@@ -64,19 +75,9 @@ _user.login = util.route(async env => {
  */
 _user.encop = util.route(async env => {
 	var args = util.checkArg(env.query, { "lname": "string", "enc": "string" });
-	var sid = await user.getSession(args.lname);
 
-	if (!sid)
-		throw new err.Exc("invalid session id");
-
-	var uuid = await user.checkSession(sid);
-
-	var query = auth.aes.dec(args.enc, sid);
-
-	if (!query)
-		throw new err.Exc("invalid session id");
-
-	query = JSON.parse(query);
+	var res = await user.checkSession(args.lname, args.enc);
+	var query = JSON.parse(res.msg);
 
 	if (!query.int)
 		throw new err.Exc("wrong format");
@@ -86,7 +87,7 @@ _user.encop = util.route(async env => {
 
 	var proc = encop[query.int];
 
-	return await proc(env, uuid, query);
+	return await proc(env, res.uuid, query);
 });
 
 exports.user = _user;
