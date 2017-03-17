@@ -7,6 +7,7 @@ var err = require("./err");
 var auth = require("./auth");
 var user = require("./user");
 var util = require("./util");
+var event = require("./event");
 var config = require("./config");
 
 var Env = require("./env").Env;
@@ -26,7 +27,7 @@ _user.new = util.route(async env => {
 	});
 
 	var passwd = auth.rsa.dec(args.penc, args.pkey);
-	var res = await user.insertNewUser(args.dname, args.lname, passwd);
+	var res = await user.newUser(args.dname, args.lname, passwd);
 
 	env.qsuc();
 });
@@ -77,7 +78,14 @@ _user.encop = util.route(async env => {
 	var args = util.checkArg(env.query, { "lname": "string", "enc": "string" });
 
 	var res = await user.checkSession(args.lname, args.enc);
-	var query = JSON.parse(res.msg);
+	
+	var query;
+
+	try {
+		query = JSON.parse(res.msg);
+	} catch (e) {
+		throw new err.Exc("wrong encop format");
+	}
 
 	if (!query.int)
 		throw new err.Exc("wrong format");
@@ -87,7 +95,7 @@ _user.encop = util.route(async env => {
 
 	var proc = encop[query.int];
 
-	return await proc(env, res.uuid, query);
+	return await proc(env, res.usr, query);
 });
 
 exports.user = _user;
@@ -96,26 +104,69 @@ exports.user = _user;
 
 var encop = {};
 
-encop.info = async (env, uuid, query) => {
+// personal info
+encop.info = async (env, usr, query) => {
 	switch (query.action) {
 		case "get":
-			env.qsuc(await user.getInfo(uuid));
+			env.qsuc(usr.getInfo());
 			break;
 
 		case "set":
-			var setq = {};
-
-			for (var k in user.User.infokey) {
-				if (user.User.infokey.hasOwnProperty(k) &&
-					query.hasOwnProperty(k))
-					setq[k] = query[k];
-			}
-
 			// format and check limit
-			setq = util.checkArg(setq, user.User.infokey, true);
+			var setq = util.checkArg(query, user.User.infokey, true);
+			await user.setInfo(usr.getUUID(), setq);
+			env.qsuc();
+			break;
 
-			await user.setInfo(uuid, setq);
+		default:
+			throw new err.Exc("no such action");
+	}
+};
 
+// favtags
+encop.tag = async (env, usr, query) => {
+	switch (query.action) {
+		case "get":
+			env.qsuc(usr.getTag());
+			break;
+
+		case "set":
+			var args = util.checkArg(query, { "tag": "origin" });
+			await user.setTag(usr.getUUID(), args.tag);
+			env.qsuc();
+			break;
+
+		default:
+			throw new err.Exc("no such action");
+	}
+};
+
+// event
+encop.event = async (env, usr, query) => {
+	switch (query.action) {
+		case "new":
+			var lv = usr.getLevel();
+			var after = new Date(new Date - config.lim.user.level[lv].event_interval);
+			var uuid = usr.getUUID();
+			var count = await event.countSponsor(uuid, after);
+
+			if (count)
+				throw new err.Exc("max event count reached");
+
+			console.log(count);
+
+			var ev = await event.newEvent(uuid);
+
+			env.qsuc(ev.getEUID());
+
+			break;
+
+		case "setinfo":
+			// format and check limit
+			var args = util.checkArg(query, { euid: "int" });
+			var setq = util.checkArg(query, event.Event.infokey, true);
+			
+			await event.setInfo(args.euid, setq);
 			env.qsuc();
 
 			break;

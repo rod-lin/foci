@@ -45,6 +45,9 @@ exports.route = (handler) => async (req, res) => {
 		if (e instanceof err.Exc) {
 			env.qerr(e.toString());
 			util.log(e, exports.style.yellow("EXCEPTION"));
+			if (e.exc) {
+				util.log(e.exc.stack, exports.style.yellow("ERROR"));
+			}
 		} else {
 			env.qerr("internal error");
 			util.log(e.stack, exports.style.red("ERROR"));
@@ -82,18 +85,40 @@ var checkArg = (args, req, opt) => {
 		}
 
 		switch (entry) {
-			case "string": break;
+			case "string":
+				if (typeof tmp !== "string")
+					throw new err.Exc("wrong argument type(expecting int)");
+				break;
 
 			case "int":
+				if (typeof tmp === "number")
+					break;
+
 				tmp = parseInt(tmp);
 				if (isNaN(tmp))
 					throw new err.Exc("wrong argument type(expecting int)");
 				break;
 
 			case "number":
+				if (typeof tmp === "number")
+					break;
+
 				tmp = parseFloat(tmp);
 				if (isNaN(tmp))
 					throw new err.Exc("wrong argument type(expecting int)");
+				break;
+
+			case "json":
+				if (typeof tmp !== "string")
+					break;
+
+				try {
+					console.log(tmp);
+					tmp = JSON.parse(tmp);
+				} catch (e) {
+					throw new err.Exc("wrong json format", e);
+				}
+
 				break;
 		}
 

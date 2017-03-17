@@ -7,8 +7,9 @@ var Env = require("./env").Env;
 exports.assert = assert.ok;
 
 // exception
-exports.Exc = function (msg) {
+exports.Exc = function (msg, exc) {
 	this.toString = () => msg;
+	this.exc = exc;
 };
 
 exports.Exc.prototype = {};

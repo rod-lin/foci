@@ -4,6 +4,8 @@ module.exports = {
 	port: 3138,
 
 	lim: {
+		favtag: [ "tech", "music", "travel" ],
+
 		user: {
 			dname: 64,
 			lname: 128,
@@ -12,7 +14,19 @@ module.exports = {
 			intro: 2048,
 			school: 128,
 
+			level: [
+				// level 0 - basic user
+				{
+					// event lock interval
+					event_interval: 1000 * 60 * 60 * 24 * 7, // 7 days
+				}
+			],
+
 			session_timeout: 1000 * 60 * 12 // 12 min
+		},
+
+		event: {
+
 		}
 	},
 
@@ -23,7 +37,7 @@ module.exports = {
 		opt: { auto_reconnect: true },
 		col: {
 			user: "user",
-			activ: "activ",
+			event: "event",
 			uid: "uid"
 		}
 	},
@@ -32,5 +46,13 @@ module.exports = {
 		rsalen: 512,
 		cache: 16, // number of cached keys
 		head_timeout: 1000 * 60 // 1 min, header timeout
+	},
+
+	// default
+	def: {
+		event: {
+			title: "(untitled)",
+			location: "(unsettled)"
+		}
 	}
 };

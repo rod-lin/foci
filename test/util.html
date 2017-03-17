@@ -52,7 +52,7 @@
 
 			document.getElementById("aes-dec").onclick = function () {
 				var key = document.getElementById("aes-dec-key").value;
-				var enc = document.getElementById("aes-dec-enc").value;
+				var enc = decodeURIComponent(document.getElementById("aes-dec-enc").value);
 
 				// console.log(key);
 				// console.log(FCAuth.aesdec(enc, key));

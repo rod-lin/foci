@@ -42,3 +42,5 @@ update.log
 
 # Scratch file
 *.nt
+
+test/fcauth.js

@@ -7,11 +7,14 @@ window.FCAuth = {};
 	var NodeRSA = require("node-rsa");
 	var CryptoJS = require("crypto-js");
 
+	var server = "";
+
 	var getSync = function (url, data) {
 		var res = $.ajax({
 			type: "GET",
 			async: false,
 			url: url,
+			dataType: "json",
 			data: data
 		}).responseText;
 
@@ -25,6 +28,7 @@ window.FCAuth = {};
 		$.ajax({
 			type: "GET",
 			url: url,
+			dataType: "json",
 			data: data,
 			success: function (dat) {
 				return cb(true, dat);
@@ -64,7 +68,7 @@ window.FCAuth = {};
 	};
 
 	FCAuth.getAuth = function () {
-		var val = getSync("/auth");
+		var val = getSync(server + "/auth");
 		return val ? val.res : null;
 	};
 
@@ -87,7 +91,7 @@ window.FCAuth = {};
 
 		if (!pub) return cb(false, "network error");
 
-		getAsync("/user/login", {
+		getAsync(server + "/user/login", {
 			lname: lname,
 			pkey: pub,
 			penc: FCAuth.rsaenc(salt + ":" + passwd, pub)
@@ -116,7 +120,7 @@ window.FCAuth = {};
 			return cb(false, "no session stored");
 		}
 
-		getAsync("/user/csid", {
+		getAsync(server + "/user/csid", {
 			lname: session[0],
 			enc: FCAuth.aesenc("hello", session[1])
 		}, function (suc, dat) {
@@ -138,7 +142,7 @@ window.FCAuth = {};
 		var lname = session[0];
 		var sid = session[1];
 
-		getAsync("/user/encop", {
+		getAsync(server + "/user/encop", {
 			lname: lname,
 			enc: FCAuth.aesenc(JSON.stringify(query), sid)
 		}, function (suc, dat) {

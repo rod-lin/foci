@@ -22,6 +22,8 @@ var User = function (uuid, dname, lname, passwd) {
 	//		   "illegal password checksum");
 
 	this.uuid = uuid;
+	this.level = 0;
+
 	this.dname = dname;
 	this.lname = lname;
 	this.passwd = passwd;
@@ -39,6 +41,13 @@ var User = function (uuid, dname, lname, passwd) {
 	};
 };
 
+exports.User = User;
+User.prototype = {};
+User.prototype.getUUID = function () { return this.uuid; };
+User.prototype.getInfo = function () { return this.info; };
+User.prototype.getTag = function () { return this.favtag; };
+User.prototype.getLevel = function () { return this.level; };
+
 User.infokey = {
 	age: {
 		type: "int", lim: age => {
@@ -51,9 +60,6 @@ User.infokey = {
 	intro: util.checkArg.lenlim(config.lim.user.intro, "introduction too long"),
 	school: util.checkArg.lenlim(config.lim.user.school, "school name too long")
 };
-
-User.prototype = {};
-User.prototype.getUUID = function () { return this.uuid; };
 
 User.query = {
 	uuid: uuid => ({ "uuid": uuid }),
@@ -97,16 +103,16 @@ User.set = {
 			}
 		}
 
-		return ({ $set: tmp })
-	}
-};
+		return ({ $set: tmp });
+	},
 
-exports.User = User;
+	tag: tag => ({ $set: { "favtag": tag } })
+};
 
 var genSessionID = (lname) => util.md5(util.salt(), "hex");
 
 // passwd is clear text
-exports.insertNewUser = async (dname, lname, passwd) => {
+exports.newUser = async (dname, lname, passwd) => {
 	var col = await db.col("user");
 
 	var found = await col.findOne(User.query.lname(lname));
@@ -119,7 +125,7 @@ exports.insertNewUser = async (dname, lname, passwd) => {
 	var passwd = util.md5(passwd);
 	var user = new User(uuid, dname, lname, passwd);
 
-	err.assert(user instanceof User, "not user type");
+	// err.assert(user instanceof User, "not user type");
 
 	await col.insertOne(user);
 
@@ -161,7 +167,7 @@ exports.getSession = async (lname) => {
 };
 
 
-// enc: encrypted msg(using session id), return { msg, uuid }
+// enc: encrypted msg(using session id), return { msg, user }
 exports.checkSession = async (lname, enc) => {
 	var col = await db.col("user");
 	var res = await col.findOne(User.query.lname(lname));
@@ -182,17 +188,43 @@ exports.checkSession = async (lname, enc) => {
 
 	return {
 		msg: msg,
-		uuid: res.uuid
+		usr: new User(res)
 	};
 };
 
-exports.getInfo = async (uuid) => {
+var getByUUID = async (uuid, field) => {
 	var col = await db.col("user");
 	var res = await col.findOne(User.query.uuid(uuid));
-	return res.info;
+	return res[field];
 };
 
+exports.getInfo = async (uuid) => await getByUUID(uuid, "info");
 exports.setInfo = async (uuid, info) => {
 	var col = await db.col("user");
 	await col.updateOne(User.query.uuid(uuid), User.set.info(info));
+};
+
+exports.checkTag = (tags) => {
+	var ntags = [];
+	tags = new Set(tags);
+
+	if (tags.size > config.lim.favtag.length)
+		throw new err.Exc("too many tags");
+
+	tags.forEach((tag) => {
+		if (config.lim.favtag.indexOf(tag) === -1) {
+			throw new err.Exc("no such tag");
+		}
+
+		ntags.push(tag);
+	});
+
+	return ntags;
+};
+
+exports.getTag = async (uuid) => await getByUUID(uuid, "favtag");
+exports.setTag = async (uuid, tags) => {
+	tags = exports.checkTag(tags);
+	var col = await db.col("user");
+	await col.updateOne(User.query.uuid(uuid), User.set.tag(tags));
 };

@@ -21,6 +21,13 @@
 		<button id="login-get-info">get info</button><br>
 		<span id="login-info-res"></span>
 
+		<br><br>
+
+		tag <input id="login-tag"><br>
+		<button id="login-set-tag">set tag</button>
+		<button id="login-get-tag">get tag</button><br>
+		<span id="login-tag-res"></span>
+
 		<script src="fcauth.js"></script>
 		<script>
 			"use strict";
@@ -82,6 +89,40 @@
 						$("#login-info-res").html("success");
 					} else {
 						$("#login-info-res").html(dat);
+					}
+				});
+			});
+
+			$("#login-get-tag").click(function () {
+				if (!gsession) {
+					$("#login-tag-res").html("login first");
+					return;
+				}
+
+				FCAuth.encop(gsession, { int: "tag", action: "get" }, function (suc, dat) {
+					if (suc) {
+						$("#login-tag-res").html(JSON.stringify(dat));
+					} else {
+						$("#login-tag-res").html(dat);
+					}
+				});
+			});
+
+			$("#login-set-tag").click(function () {
+				if (!gsession) {
+					$("#login-tag-res").html("login first");
+					return;
+				}
+
+				FCAuth.encop(gsession, {
+					int: "tag",
+					action: "set",
+					tag: $("#login-tag").val()
+				}, function (suc, dat) {
+					if (suc) {
+						$("#login-tag-res").html("success");
+					} else {
+						$("#login-tag-res").html(dat);
 					}
 				});
 			});
