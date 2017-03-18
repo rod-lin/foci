@@ -99,9 +99,9 @@ _user.encop = util.route(async env => {
 	return await proc(env, res.usr, query);
 });
 
-_pub.event = {};
+_event = {};
 
-_pub.event.info = util.route(async env => {
+_event.info = util.route(async env => {
 	var args = util.checkArg(env.query, { "euid": "number" });
 
 	await event.exist(args.euid);
@@ -109,7 +109,7 @@ _pub.event.info = util.route(async env => {
 });
 
 exports.user = _user;
-exports.pub = _pub;
+exports.event = _event;
 
 /* encrypted operations */
 
