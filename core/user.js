@@ -29,11 +29,9 @@ var User = function (uuid, dname, lname, passwd) {
 	this.passwd = passwd;
 	this.favtag = [];
 
-	this.info = {
-		age: NaN,
-		intro: "",
-		school: ""
-	};
+	this.age = NaN;
+	this.intro = "";
+	this.school = "";
 
 	this.rating = {
 		tot: [ 0, 0 ],
@@ -44,11 +42,28 @@ var User = function (uuid, dname, lname, passwd) {
 exports.User = User;
 User.prototype = {};
 User.prototype.getUUID = function () { return this.uuid; };
-User.prototype.getInfo = function () { return this.info; };
+// User.prototype.getInfo = function () { return this.info; };
 User.prototype.getTag = function () { return this.favtag; };
 User.prototype.getLevel = function () { return this.level; };
 
+// this will be sent to the client
+User.prototype.getInfo = function () {
+	return {
+		dname: this.dname,
+		level: this.level,
+		favtag: this.favtag,
+		rating: this.rating.tot,
+
+		age: this.age,
+		intro: this.intro,
+		school: this.school
+	};
+};
+
 User.infokey = {
+	dname: util.checkArg.lenlim(config.lim.user.dname, "display name too long"),
+	favtag: { type: "json", lim: tags => exports.checkTag(tags) },
+
 	age: {
 		type: "int", lim: age => {
 			if (age < 0 || age > 120)
@@ -94,22 +109,22 @@ User.set = {
 	session: (sid, stamp) => ({ $set: { "sid": sid, "stamp": stamp } }),
 	rmsession: () => ({ $unset: { "sid": "", "stamp": "" } }),
 
-	info: info => {
-		var tmp = {};
-
-		for (var k in info) {
-			if (info.hasOwnProperty(k)) {
-				tmp["info." + k] = info[k];
-			}
-		}
-
-		return ({ $set: tmp });
-	},
+	info: info => ({ $set: info }),
 
 	tag: tag => ({ $set: { "favtag": tag } })
 };
 
 var genSessionID = (lname) => util.md5(util.salt(), "hex");
+
+exports.uuid = async (uuid) => {
+	var col = await db.col("user");
+	var found = await col.findOne(User.query.uuid(uuid));
+
+	if (!found)
+		throw new err.Exc("no such user");
+
+	return new User(found);
+};
 
 // passwd is clear text
 exports.newUser = async (dname, lname, passwd) => {
@@ -192,13 +207,6 @@ exports.checkSession = async (lname, enc) => {
 	};
 };
 
-var getByUUID = async (uuid, field) => {
-	var col = await db.col("user");
-	var res = await col.findOne(User.query.uuid(uuid));
-	return res[field];
-};
-
-exports.getInfo = async (uuid) => await getByUUID(uuid, "info");
 exports.setInfo = async (uuid, info) => {
 	var col = await db.col("user");
 	await col.updateOne(User.query.uuid(uuid), User.set.info(info));
@@ -220,11 +228,4 @@ exports.checkTag = (tags) => {
 	});
 
 	return ntags;
-};
-
-exports.getTag = async (uuid) => await getByUUID(uuid, "favtag");
-exports.setTag = async (uuid, tags) => {
-	tags = exports.checkTag(tags);
-	var col = await db.col("user");
-	await col.updateOne(User.query.uuid(uuid), User.set.tag(tags));
 };

@@ -1,0 +1,127 @@
+<!-- user portal -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+		<link rel="stylesheet" href="font/fontawesome/import.css">
+		<link rel="stylesheet" href="font/ubuntu/import.css">
+
+		<link rel="stylesheet" href="css/com.css">
+		<link rel="stylesheet" href="css/port.css">
+	</head>
+	
+	<body>
+		<div id="port-main">
+			<div id="port-login" style="opacity: 0;">
+				<div id="port-login-board" class="vcenter">
+					<div id="port-tbar">
+						<span id="port-title" class="vcenter" style="font-size: 1.2em;">Login</span>
+					</div>
+
+					<div id="port-cont" style="text-align: center;">
+						<div class="vcenter">
+							<input id="port-uname" class="com-input" style="text-align: center; width: 60%; margin-top: 3em;" placeholder="user name" />
+							<input id="port-passwd" class="com-input" style="text-align: center; width: 60%; margin-top: 0.5em;" placeholder="password" type="password" /><br>
+							<span id="port-create" class="com-button com-button-green" style="width: 5em; margin-top: 1em;">go</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="fcauth.js"></script>
+		<script src="vcent.js"></script>
+		<script>
+			Array.prototype.choose = function () {
+				return this[Math.floor(Math.random() * this.length)];
+			};
+
+			(function () {
+				var color_boxa = [ "#1ABC9C", "#2ECC71", "#3498DB", "#9B59B6", "#E67E22", "#E74C3C" ];
+				var color_boxb = [ "#16A085", "#27AE60", "#2980B9", "#8E44AD", "#D35400", "#C0392B" ];
+
+				// $("#port-tbar").css("background", color_boxa.choose());
+			})()
+		</script>
+		<script>
+			"use strict";
+
+			window.onload = function () {
+				var title = function (msg) {
+					$("#port-title").html(msg);
+				};
+
+				var setred = function (e) {
+					e.addClass("com-input-red");
+				};
+
+				var nored = function (e) {
+					e.removeClass("com-input-red");
+				};
+
+				var hideLogin = function () {
+					$("#port-login").css("opacity", "0");
+					setTimeout(function () {
+						$("#port-login").css("display", "none");
+					}, 500);
+				};
+
+				$("#port-uname").keydown(function () { console.log("hi"); nored($(this)); });
+				$("#port-passwd").keydown(function () { nored($(this)); });
+
+				var gsession = null;
+
+				FCAuth.qlogin(function (suc, dat) {
+					if (suc) {
+						gsession = dat;
+					} else {
+						$("#port-login").css("opacity", "1");
+					}
+				});
+
+				$("#port-create").click(function () {
+					// var orig = $("#port-create").html();
+
+					var uname = $("#port-uname").val();
+					var passwd = $("#port-passwd").val();
+					var err = false;
+
+					if (!uname) {
+						setred($("#port-uname"));
+						err = true;
+					}
+
+					if (!passwd) {
+						setred($("#port-passwd"));
+						err = true;
+					}
+
+					if (err) return;
+
+					$("#port-create").html("<span class='fa fa-cog fa-spin'></span>");
+
+					FCAuth.login(uname, passwd, function (suc, dat) {
+						setTimeout(function () {
+							if (suc) {
+								gsession = dat;
+								$("#port-create").html("<span class='fa fa-check'></span>");
+								setTimeout(function () {
+									hideLogin();
+								}, 500);
+							} else {
+								$("#port-create").html("go");
+								title(dat);
+								setTimeout(function () {
+									title("Login");
+								}, 3000);
+							}
+						}, 500);
+					});
+				});
+			};
+		</script>
+	</body>
+</html>

@@ -22,21 +22,19 @@ var Event = function (euid, sponsor /* uuid */) {
 	// time created
 	this.created = new Date();
 
-	this.info = {
-		title: config.def.event.title,
-		descr: "",
+	this.title = config.def.event.title;
+	this.descr = "";
 
-		location: config.def.event.unsettled,
+	this.location = config.def.event.unsettled;
 		
-		// start date and end date
-		start: null,
-		end: null,
+	// start date and end date
+	this.start = null;
+	this.end = null;
 
-		// null for unlimited
-		expect: [ null, null ],
+	// null for unlimited
+	this.expect = [ null, null ];
 
-		tag: []
-	};
+	this.favtag = [];
 
 	this.staff = [];
 	this.partic = []; // participants
@@ -46,6 +44,25 @@ exports.Event = Event;
 Event.prototype = {};
 Event.prototype.getEUID = function () { return this.euid };
 
+Event.prototype.getInfo = function () {
+	return {
+		title: this.title,
+		descr: this.descr,
+		location: this.location,
+
+		org: this.org,
+		
+		start: this.start,
+		end: this.end,
+
+		favtag: this.favtag,
+		expect: this.expect,
+
+		staff: this.staff,
+		partic: this.partic
+	};
+};
+
 Event.infokey = {
 	title: util.checkArg.lenlim(config.lim.event.title, "title too long"),
 	descr: util.checkArg.lenlim(config.lim.event.descr, "description too long"),
@@ -53,10 +70,10 @@ Event.infokey = {
 
 	start: { type: "int", lim: time => new Date(time) },
 	end: { type: "int", lim: time => new Date(time) },
-	tag: { type: "origin", lim: tags => user.checkTag(tags) },
+	favtag: { type: "json", lim: tags => user.checkTag(tags) },
 
 	expect: {
-		type: "origin", lim: expect => {
+		type: "json", lim: expect => {
 			if (expect[0] < 0 || expect[1] < 0)
 				throw new err.Exc("illegal expectations");
 		
@@ -95,6 +112,16 @@ Event.set = {
 	}
 };
 
+exports.euid = async (euid) => {
+	var col = await db.col("event");
+	var found = await col.findOne(Event.query.euid(euid));
+
+	if (!found)
+		throw new err.Exc("no such event");
+
+	return new Event(found);
+};
+
 exports.newEvent = async (uuid) => {
 	var euid = await uid.genUID("euid");
 	var nev = new Event(euid, uuid);
@@ -123,13 +150,6 @@ exports.exist = async (euid) => {
 		throw new err.Exc("event not exist");
 };
 
-var getByEUID = async (euid, field) => {
-	var col = await db.col("event");
-	var res = await col.findOne(Event.query.euid(euid));
-	return res[field];
-};
-
-exports.getInfo = async (euid) => await getByEUID(euid, "info");
 exports.setInfo = async (euid, info) => {
 	var col = await db.col("event");
 	await col.updateOne(Event.query.euid(euid), Event.set.info(info));

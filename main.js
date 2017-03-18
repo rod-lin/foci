@@ -30,10 +30,10 @@ app.get("/user/new", int.user.new);
 app.get("/user/login", int.user.login);
 app.get("/user/csid", int.user.csid);
 app.get("/user/encop", int.user.encop);
+app.get("/user/info", int.user.info);
 
 app.get("/event/info", int.event.info);
 /* official api */
-
 
 app.get("/test/enc", util.route(async env => {
 	var args = util.checkArg(env.query, { "dat": "string" });

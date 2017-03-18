@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	</head>
+	
+	<body>
+		user name <input id="raw-lname"><br>
+		password <input id="raw-passwd"><br>
+		<button id="raw-submit">login</button><br>
+		<span id="raw-sid"></span>
+		
+		<br><br>
+
+		display name <input id="raw-info-dname"><br>
+		age <input id="raw-info-age"><br>
+		intro <input id="raw-info-intro"><br>
+		school <input id="raw-info-school"><br>
+		favtag <input id="raw-info-favtag"><br>
+		<button id="raw-set-info">set info</button>
+		<button id="raw-get-info">get info</button><br>
+		<span id="raw-info-res"></span>
+
+		<br><br>
+		<button id="raw-new-event">new event</button>
+		<span id="raw-event-res"></span>
+
+		<!-- <br><br>
+
+		tag <input id="raw-tag"><br>
+		<button id="raw-set-tag">set tag</button>
+		<button id="raw-get-tag">get tag</button><br>
+		<span id="raw-tag-res"></span> -->
+
+		<script src="fcauth.js"></script>
+		<script>
+			"use strict";
+
+			var gsession = null;
+
+			$("#raw-submit").click(function () {
+				var lname = $("#raw-lname").val();
+				var passwd = $("#raw-passwd").val();
+
+				FCAuth.login(lname, passwd, function (suc, session) {
+					if (suc) {
+						gsession = session;
+						$("#raw-sid").html(session[0] + ": " + session[1]);
+					} else {
+						$("#raw-sid").html("error: " + session);
+					}
+				});
+			});
+
+			FCAuth.qlogin(function (suc, session) {
+				if (suc) {
+					gsession = session;
+					$("#raw-sid").html(session[0] + ": " + session[1]);
+				} else {
+					$("#raw-sid").html("error: " + session);
+				}
+			});
+
+			$("#raw-get-info").click(function () {
+				if (!gsession) {
+					$("#raw-info-res").html("login first");
+					return;
+				}
+
+				FCAuth.encop(gsession, { int: "info", action: "get" }, function (suc, dat) {
+					if (suc) {
+						$("#raw-info-res").html(JSON.stringify(dat));
+					} else {
+						$("#raw-info-res").html(dat);
+					}
+				});
+			});
+
+			$("#raw-set-info").click(function () {
+				if (!gsession) {
+					$("#raw-info-res").html("login first");
+					return;
+				}
+
+				var query = {
+					int: "info",
+					action: "set",
+				};
+
+				var check = function (name) {
+					if ($("#raw-info-" + name).val())
+						query[name] = $("#raw-info-" + name).val();
+				};
+
+				check("dname");
+				check("favtag");
+				check("age");
+				check("intro");
+				check("school");
+
+				FCAuth.encop(gsession, query, function (suc, dat) {
+					if (suc) {
+						$("#raw-info-res").html("success");
+					} else {
+						$("#raw-info-res").html(dat);
+					}
+				});
+			});
+
+			$("#raw-new-event").click(function () {
+				if (!gsession) {
+					$("#raw-event-res").html("login first");
+					return;
+				}
+
+				FCAuth.encop(gsession, {
+					int: "event",
+					action: "new"
+				}, function (suc, dat) {
+					if (suc) {
+						$("#raw-event-res").html("success: " + dat);
+					} else {
+						$("#raw-event-res").html(dat);
+					}
+				});
+			});
+
+			// $("#raw-get-tag").click(function () {
+			// 	if (!gsession) {
+			// 		$("#raw-tag-res").html("login first");
+			// 		return;
+			// 	}
+
+			// 	FCAuth.encop(gsession, { int: "tag", action: "get" }, function (suc, dat) {
+			// 		if (suc) {
+			// 			$("#raw-tag-res").html(JSON.stringify(dat));
+			// 		} else {
+			// 			$("#raw-tag-res").html(dat);
+			// 		}
+			// 	});
+			// });
+
+			// $("#raw-set-tag").click(function () {
+			// 	if (!gsession) {
+			// 		$("#raw-tag-res").html("login first");
+			// 		return;
+			// 	}
+
+			// 	FCAuth.encop(gsession, {
+			// 		int: "tag",
+			// 		action: "set",
+			// 		tag: $("#raw-tag").val()
+			// 	}, function (suc, dat) {
+			// 		if (suc) {
+			// 			$("#raw-tag-res").html("success");
+			// 		} else {
+			// 			$("#raw-tag-res").html(dat);
+			// 		}
+			// 	});
+			// });
+		</script>
+	</body>
+</html>

@@ -44,3 +44,4 @@ update.log
 *.nt
 
 test/fcauth.js
+test/vcent.js

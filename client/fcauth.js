@@ -40,6 +40,15 @@ window.FCAuth = {};
 		});
 	};
 
+	FCAuth.sget = getSync;
+	FCAuth.get = function (url, data, cb) {
+		getAsync(url, data, function (suc, dat) {
+			if (!suc) return cb(false, "network error");
+			if (!dat.suc) return cb(false, dat.msg);
+			return cb(true, dat.res);
+		});
+	};
+
 	FCAuth.salt = function (len) {
 		var static_buf = new Array(len || 16);
 		var tab = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -77,7 +86,9 @@ window.FCAuth = {};
 	};
 
 	FCAuth.getLocal = function (key) {
-		return JSON.parse(localStorage[key]);
+		var val = localStorage[key];
+		if (!val) return undefined;
+		return JSON.parse(val);
 	};
 
 	FCAuth.removeLocal = function (key) {
