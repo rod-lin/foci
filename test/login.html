@@ -41,7 +41,7 @@
 				FCAuth.login(lname, passwd, function (suc, session) {
 					if (suc) {
 						gsession = session;
-						$("#login-sid").html(session[0]);
+						$("#login-sid").html(session[0] + ": " + session[1]);
 					} else {
 						$("#login-sid").html("error: " + session);
 					}

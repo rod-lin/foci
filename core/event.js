@@ -117,6 +117,12 @@ exports.isSponsor = async (euid, uuid) => {
 	return (await col.count(Event.query.check_sponsor(euid, uuid))) != 0;
 };
 
+exports.exist = async (euid) => {
+	var col = await db.col("event");
+	if (!await col.count(Event.query.euid(euid)))
+		throw new err.Exc("event not exist");
+};
+
 var getByEUID = async (euid, field) => {
 	var col = await db.col("event");
 	var res = await col.findOne(Event.query.euid(euid));

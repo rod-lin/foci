@@ -87,7 +87,7 @@ var checkArg = (args, req, opt) => {
 		switch (entry) {
 			case "string":
 				if (typeof tmp !== "string")
-					throw new err.Exc("wrong argument type(expecting int)");
+					throw new err.Exc("wrong argument type(expecting string)");
 				break;
 
 			case "int":
@@ -113,7 +113,7 @@ var checkArg = (args, req, opt) => {
 					break;
 
 				try {
-					console.log(tmp);
+					// console.log(tmp);
 					tmp = JSON.parse(tmp);
 				} catch (e) {
 					throw new err.Exc("wrong json format", e);

@@ -17,6 +17,7 @@ exports.auth = util.route(async env => {
 });
 
 var _user = {};
+var _pub = {};
 
 _user.new = util.route(async env => {
 	var args = util.checkArg(env.query, {
@@ -98,7 +99,17 @@ _user.encop = util.route(async env => {
 	return await proc(env, res.usr, query);
 });
 
+_pub.event = {};
+
+_pub.event.info = util.route(async env => {
+	var args = util.checkArg(env.query, { "euid": "number" });
+
+	await event.exist(args.euid);
+	env.qsuc(await event.getInfo(args.euid));
+});
+
 exports.user = _user;
+exports.pub = _pub;
 
 /* encrypted operations */
 
@@ -131,7 +142,7 @@ encop.tag = async (env, usr, query) => {
 			break;
 
 		case "set":
-			var args = util.checkArg(query, { "tag": "origin" });
+			var args = util.checkArg(query, { "tag": "json" });
 			await user.setTag(usr.getUUID(), args.tag);
 			env.qsuc();
 			break;
@@ -153,7 +164,7 @@ encop.event = async (env, usr, query) => {
 			if (count)
 				throw new err.Exc("max event count reached");
 
-			console.log(count);
+			// console.log(count);
 
 			var ev = await event.newEvent(uuid);
 
@@ -165,10 +176,10 @@ encop.event = async (env, usr, query) => {
 			// format and check limit
 			var args = util.checkArg(query, { euid: "int" });
 			var setq = util.checkArg(query, event.Event.infokey, true);
-			
+
+			await event.exist(args.euid);
 			await event.setInfo(args.euid, setq);
 			env.qsuc();
-
 			break;
 
 		default:
