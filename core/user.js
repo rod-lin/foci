@@ -168,7 +168,10 @@ exports.login = async (lname, passwd) => {
 
 	await col.updateOne(User.query.uuid(uuid), User.set.session(sid, stamp));
 
-	return sid;
+	return {
+		uuid: uuid,
+		sid: sid
+	};
 };
 
 exports.getSession = async (lname) => {
@@ -183,16 +186,16 @@ exports.getSession = async (lname) => {
 
 
 // enc: encrypted msg(using session id), return { msg, user }
-exports.checkSession = async (lname, enc) => {
+exports.checkSession = async (uuid, enc) => {
 	var col = await db.col("user");
-	var res = await col.findOne(User.query.lname(lname));
+	var res = await col.findOne(User.query.uuid(uuid));
 	var now = util.stamp();
 
 	if (!res || !res.sid)
 		throw new err.Exc("invalid session id");
 
 	if (now - res.stamp > config.lim.user.session_timeout) {
-		await col.updateOne(User.query.lname(lname), User.set.rmsession());
+		await col.updateOne(User.query.uuid(uuid), User.set.rmsession());
 		throw new err.Exc("session timeout");
 	}
 

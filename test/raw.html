@@ -47,7 +47,7 @@
 				FCAuth.login(lname, passwd, function (suc, session) {
 					if (suc) {
 						gsession = session;
-						$("#raw-sid").html(session[0] + ": " + session[1]);
+						$("#raw-sid").html(session.getUUID() + ": " + session.getSID());
 					} else {
 						$("#raw-sid").html("error: " + session);
 					}
@@ -57,7 +57,7 @@
 			FCAuth.qlogin(function (suc, session) {
 				if (suc) {
 					gsession = session;
-					$("#raw-sid").html(session[0] + ": " + session[1]);
+					$("#raw-sid").html(session.getUUID() + ": " + session.getSID());
 				} else {
 					$("#raw-sid").html("error: " + session);
 				}

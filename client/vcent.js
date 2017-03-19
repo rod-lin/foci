@@ -13,6 +13,15 @@ vcent.update = function () {
 		cent($(e[i]).parent(), $(e[i]));
 	}
 
+	cent = function (pr, e) { e.css("top", ((pr.innerHeight() - e.height()) / 2) + "px"); };
+
+	e = $(".avcenter");
+	e.css("position", "absolute");
+
+	for (i = 0; i < e.length; i++) {
+		cent($(e[i]).parent(), $(e[i]));
+	}
+
 	return;
 };
 

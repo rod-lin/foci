@@ -9,6 +9,21 @@ window.FCAuth = {};
 
 	var server = "";
 
+	var Session = function (lname, uuid, sid) {
+		if (uuid === undefined) {
+			$.extend(this, lname);
+			return;
+		}
+
+		this.lname = lname;
+		this.uuid = uuid;
+		this.sid = sid;
+	};
+
+	Session.prototype = {};
+	Session.prototype.getUUID = function () { return this.uuid; };
+	Session.prototype.getSID = function () { return this.sid; };
+
 	var getSync = function (url, data) {
 		var res = $.ajax({
 			type: "GET",
@@ -110,16 +125,18 @@ window.FCAuth = {};
 			if (!suc) return cb(false, "network error");
 			if (!dat.suc) return cb(false, dat.msg);
 
-			var sid = FCAuth.aesdec(dat.res, salt);
+			var sid = FCAuth.aesdec(dat.res.sid, salt);
 			if (!sid) return cb(false, "server error");
 
-			FCAuth.setLocal("session", [ lname, sid ]);
-			return cb(true, [ lname, sid ]);
+			var ses = new Session(lname, dat.res.uuid, sid);
+
+			FCAuth.setLocal("session", ses);
+			return cb(true, ses);
 		});
 	};
 
 	// quick login
-	// cb([ lname, sid ])
+	// cb(Session)
 	FCAuth.qlogin = function (cb) {
 		var session = FCAuth.getLocal("session");
 		var clear = function () {
@@ -131,9 +148,11 @@ window.FCAuth = {};
 			return cb(false, "no session stored");
 		}
 
+		session = new Session(session);
+
 		getAsync(server + "/user/csid", {
-			lname: session[0],
-			enc: FCAuth.aesenc("hello", session[1])
+			uuid: session.getUUID(),
+			enc: FCAuth.aesenc("hello", session.getSID())
 		}, function (suc, dat) {
 			if (!suc) {
 				clear();
@@ -150,11 +169,11 @@ window.FCAuth = {};
 	};
 
 	FCAuth.encop = function (session, query, cb) {
-		var lname = session[0];
-		var sid = session[1];
+		var uuid = session.getUUID();
+		var sid = session.getSID();
 
 		getAsync(server + "/user/encop", {
-			lname: lname,
+			uuid: uuid,
 			enc: FCAuth.aesenc(JSON.stringify(query), sid)
 		}, function (suc, dat) {
 			if (!suc) return cb(false, "network error");

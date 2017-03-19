@@ -49,19 +49,22 @@ _user.login = util.route(async env => {
 
 	var tmpkey = sep[0];
 
-	var sid = await user.login(args.lname, sep[1]);
+	var res = await user.login(args.lname, sep[1]);
 
-	var res = auth.aes.enc(sid, tmpkey);
+	var sid = auth.aes.enc(res.sid, tmpkey);
 
 	// console.log(res);
 
-	env.qsuc(res);
+	env.qsuc({
+		uuid: res.uuid,
+		sid: sid
+	});
 });
 
 // enc "hello, foci" with the session id
 _user.csid = util.route(async env => {
-	var args = util.checkArg(env.query, { "lname": "string", "enc": "string" });
-	var res = await user.checkSession(args.lname, args.enc);
+	var args = util.checkArg(env.query, { "uuid": "int", "enc": "string" });
+	var res = await user.checkSession(args.uuid, args.enc);
 
 	if (res.msg !== "hello")
 		throw new err.Exc("wrong message");
@@ -76,9 +79,9 @@ _user.csid = util.route(async env => {
 	}
  */
 _user.encop = util.route(async env => {
-	var args = util.checkArg(env.query, { "lname": "string", "enc": "string" });
+	var args = util.checkArg(env.query, { "uuid": "int", "enc": "string" });
 
-	var res = await user.checkSession(args.lname, args.enc);
+	var res = await user.checkSession(args.uuid, args.enc);
 	
 	var query;
 
@@ -115,6 +118,12 @@ _user.info = util.route(async env => {
 	var args = util.checkArg(env.query, { "uuid": "int" });
 	var usr = await user.uuid(args.uuid);
 	env.qsuc(usr.getInfo());
+});
+
+_user.org = util.route(async env => {
+	var args = util.checkArg(env.query, { "uuid": "int" });
+	var ret = await event.getOrganized(args.uuid);
+	env.qsuc(ret);
 });
 
 var _event = {};

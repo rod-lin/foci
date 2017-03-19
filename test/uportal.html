@@ -15,6 +15,41 @@
 	
 	<body>
 		<div id="port-main">
+			<div id="port-header" class="port-header">
+				<div id="port-icon" style="background-image: url('img/deficon.jpg');"></div>
+				<div id="port-dname"></div>
+				<div id="port-school-box">
+					<span class="fa fa-map-marker"></span>
+					<span id="port-school" style="margin-left: 0.3em;">
+					</span>
+				</div>
+				<div id="port-intro"></div>
+				<div id="port-button-set" class="avcenter">
+					<span class="com-button com-button-green fa fa-plus-circle"></span>
+				</div>
+			</div>
+			<div id="port-event-board">
+				<div id="port-event-msg">no event</div>
+				<!--div class="port-event">
+					<div class="port-event-tbar">
+						<div class="vcenter">
+							<span class="port-event-title">Go to Hell</span>
+							<br>
+							<span class="fa fa-map-pin" style="margin-right: 0.5em; font-size: 80%;"></span>
+							<span style="font-size: 80%;">Hangzhou Foreign Languages School</span>
+							<br>
+							<span class="fa fa-clock-o" style="margin-right: 0.5em; font-size: 80%;"></span>
+							<span style="font-size: 80%;">10-9 ~ 10-10</span>
+						</div>
+					</div>
+					<div class="port-event-cont">
+						Hello, darkness my old friend. I've come to talk with you again.
+						Because the vision softly creeping, left it's seed while I was sleeping.
+						And the vision that was plated in my brain, still remains,
+						Within the sound of silence.
+					</div>
+				</div-->
+			</div>
 			<div id="port-login" style="opacity: 0;">
 				<div id="port-login-board" class="vcenter">
 					<div id="port-tbar">
@@ -38,18 +73,14 @@
 			Array.prototype.choose = function () {
 				return this[Math.floor(Math.random() * this.length)];
 			};
-
-			(function () {
-				var color_boxa = [ "#1ABC9C", "#2ECC71", "#3498DB", "#9B59B6", "#E67E22", "#E74C3C" ];
-				var color_boxb = [ "#16A085", "#27AE60", "#2980B9", "#8E44AD", "#D35400", "#C0392B" ];
-
-				// $("#port-tbar").css("background", color_boxa.choose());
-			})()
 		</script>
 		<script>
 			"use strict";
 
 			window.onload = function () {
+				var color_boxa = [ "#1ABC9C", "#2ECC71", "#3498DB", "#9B59B6", "#E67E22", "#E74C3C" ];
+				var color_boxb = [ "#16A085", "#27AE60", "#2980B9", "#8E44AD", "#D35400", "#C0392B" ];
+
 				var title = function (msg) {
 					$("#port-title").html(msg);
 				};
@@ -69,6 +100,86 @@
 					}, 500);
 				};
 
+				var def = function (str, def) {
+					return str.length ? str : def;
+				};
+
+				var loadInfo = function () {
+					FCAuth.encop(gsession, {
+						int: "info",
+						action: "get"
+					}, function (suc, dat) {
+						if (suc) {
+							$("#port-dname").html(dat.dname);
+							$("#port-intro").html(def(dat.intro, "no intro"));
+							$("#port-school").html(def(dat.school, "no school"));
+						} else {
+							$("#port-dname").html("loading failed: " + dat);
+						}
+					});
+
+					FCAuth.get("/user/org", { uuid: gsession.getUUID() }, function (suc, dat) {
+						if (suc) {
+							if (!dat.length) {
+								showEventMsg("no event");
+							} else {
+								dat.forEach(function (ev) {
+									$("#port-event-board").append(formatEvent(ev));
+								});
+							}
+						} else {
+							showEventMsg("loading failed: " + dat);
+						}
+					});
+				};
+
+				var formatTime = function (start, end) {
+					var ret = "";
+					var form = function (date) {
+						return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+					};
+
+					if (start) {
+						ret += form(new Date(start));
+					} else {
+						ret += "TBD"
+					}
+
+					ret += " ~ ";
+
+					if (end) {
+						ret += form(new Date(end));
+					} else {
+						ret += "TBD"
+					}
+
+					return ret;
+				};
+
+				var formatEvent = function (info) {
+					return '<div class="port-event"> \
+						<div class="port-event-tbar" style="background: ' + color_boxb.choose() + ';"> \
+							<div class="vcenter"> \
+								<span class="port-event-title">' + (info.title || "no title") + '</span><br><br> \
+								<span class="fa fa-map-pin" style="margin-right: 0.5em; font-size: 80%;"></span> \
+								<span style="font-size: 80%;">' + (info.location || "TBD") + '</span><br> \
+								<span class="fa fa-clock-o" style="margin-right: 0.5em; font-size: 80%;"></span> \
+								<span style="font-size: 80%;">' + formatTime(info.start, info.end) + '</span> \
+							</div> \
+						</div> \
+						<div class="port-event-cont">' + (info.descr || "no description") + '</div> \
+					</div><br>';
+				};
+
+				var showEventMsg = function (msg) {
+					$("#port-event-msg").html(msg);
+					$("#port-event-msg").css("display", "");
+				};
+
+				var hideEventMsg = function () {
+					$("#port-event-msg").css("display", "nonde");
+				};
+
 				$("#port-uname").keydown(function () { console.log("hi"); nored($(this)); });
 				$("#port-passwd").keydown(function () { nored($(this)); });
 
@@ -77,6 +188,8 @@
 				FCAuth.qlogin(function (suc, dat) {
 					if (suc) {
 						gsession = dat;
+						hideLogin();
+						loadInfo();
 					} else {
 						$("#port-login").css("opacity", "1");
 					}
@@ -110,6 +223,7 @@
 								$("#port-create").html("<span class='fa fa-check'></span>");
 								setTimeout(function () {
 									hideLogin();
+									loadInfo();
 								}, 500);
 							} else {
 								$("#port-create").html("go");

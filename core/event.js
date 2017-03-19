@@ -52,8 +52,8 @@ Event.prototype.getInfo = function () {
 
 		org: this.org,
 		
-		start: this.start,
-		end: this.end,
+		start: this.start ? this.start.getTime() : null,
+		end: this.end ? this.end.getTime() : null,
 
 		favtag: this.favtag,
 		expect: this.expect,
@@ -95,21 +95,13 @@ Event.query = {
 		return res;
 	},
 
-	check_sponsor: (euid, uuid) => ({ "euid": euid, "org.0": uuid })
+	check_sponsor: (euid, uuid) => ({ "euid": euid, "org.0": uuid }),
+
+	org: uuid => ({ "org": uuid })
 };
 
 Event.set = {
-	info: (info) => {
-		var tmp = {};
-
-		for (var k in info) {
-			if (info.hasOwnProperty(k)) {
-				tmp["info." + k] = info[k];
-			}
-		}
-
-		return ({ $set: tmp });
-	}
+	info: info => ({ $set: info })
 };
 
 exports.euid = async (euid) => {
@@ -153,4 +145,17 @@ exports.exist = async (euid) => {
 exports.setInfo = async (euid, info) => {
 	var col = await db.col("event");
 	await col.updateOne(Event.query.euid(euid), Event.set.info(info));
+};
+
+// events organized by a certain user(in event info)
+exports.getOrganized = async (uuid) => {
+	var col = await db.col("event");
+	var arr = await col.find(Event.query.org(uuid)).toArray();
+	var ret = [];
+
+	arr.forEach(function (ev) {
+		ret.push(new Event(ev).getInfo());
+	});
+
+	return ret;
 };
