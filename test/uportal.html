@@ -136,7 +136,7 @@
 				var formatTime = function (start, end) {
 					var ret = "";
 					var form = function (date) {
-						return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+						return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 					};
 
 					if (start) {

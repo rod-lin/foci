@@ -65,6 +65,8 @@ var checkArg = (args, req, opt) => {
 	var ret = {};
 
 	for (var k in req) {
+		if (k[0] == "$") continue;
+
 		if (!req.hasOwnProperty(k))
 			continue;
 
@@ -130,6 +132,10 @@ var checkArg = (args, req, opt) => {
 		// } */
 
 		ret[k] = tmp;
+	}
+
+	if (req.$overall) {
+		req.$overall(ret);
 	}
 
 	return ret;

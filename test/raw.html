@@ -27,6 +27,17 @@
 		<button id="raw-new-event">new event</button>
 		<span id="raw-event-res"></span>
 
+		<br><br>
+		euid <input id="raw-event-euid"><br>
+		title <input id="raw-event-title"><br>
+		descr <input id="raw-event-descr"><br>
+		location <input id="raw-event-location"><br>
+		start <input id="raw-event-start"><br>
+		end <input id="raw-event-end"><br>
+		favtag <input id="raw-event-favtag"><br>
+		<button id="raw-event-setinfo">set info</button><br>
+		<span id="raw-event-setinfo-res"></span>
+
 		<!-- <br><br>
 
 		tag <input id="raw-tag"><br>
@@ -123,6 +134,38 @@
 						$("#raw-event-res").html("success: " + dat);
 					} else {
 						$("#raw-event-res").html(dat);
+					}
+				});
+			});
+
+			$("#raw-event-setinfo").click(function () {
+				var query = {
+					int: "event",
+					action: "setinfo",
+				};
+
+				var check = function (name) {
+					if ($("#raw-event-" + name).val())
+						query[name] = $("#raw-event-" + name).val();
+				};
+
+				check("euid");
+				check("title");
+				check("descr");
+				check("location");
+				check("favtag");
+
+				if ($("#raw-event-start").val())
+					query["start"] = new Date($("#raw-event-start").val()).getTime();
+
+				if ($("#raw-event-end").val())
+					query["end"] = new Date($("#raw-event-end").val()).getTime();
+
+				FCAuth.encop(gsession, query, function (suc, dat) {
+					if (suc) {
+						$("#raw-event-setinfo-res").html("success");
+					} else {
+						$("#raw-event-setinfo-res").html(dat);
 					}
 				});
 			});

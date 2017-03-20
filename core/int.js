@@ -82,7 +82,7 @@ _user.encop = util.route(async env => {
 	var args = util.checkArg(env.query, { "uuid": "int", "enc": "string" });
 
 	var res = await user.checkSession(args.uuid, args.enc);
-	
+	var sid = res.sid;
 	var query;
 
 	try {
@@ -98,8 +98,12 @@ _user.encop = util.route(async env => {
 		throw new err.Exc("no such interface");
 
 	var proc = encop[query.int];
+	var res = await proc(env, res.usr, query);
 
-	return await proc(env, res.usr, query);
+	res = JSON.stringify(res);
+	res = auth.aes.enc(res, sid);
+
+	env.qsuc(res);
 });
 
 /*
@@ -145,15 +149,13 @@ var encop = {};
 encop.info = async (env, usr, query) => {
 	switch (query.action) {
 		case "get":
-			env.qsuc(usr.getInfo());
-			break;
+			return usr.getInfo();
 
 		case "set":
 			// format and check limit
-			var setq = util.checkArg(query, user.User.infokey, true);
+			var setq = util.checkArg(query, user.User.format.info, true);
 			await user.setInfo(usr.getUUID(), setq);
-			env.qsuc();
-			break;
+			return;
 
 		default:
 			throw new err.Exc("no such action");
@@ -187,26 +189,28 @@ encop.event = async (env, usr, query) => {
 			var uuid = usr.getUUID();
 			var count = await event.countSponsor(uuid, after);
 
-			if (count)
+			if (count && !config.debug)
 				throw new err.Exc("max event count reached");
 
 			// console.log(count);
 
 			var ev = await event.newEvent(uuid);
 
-			env.qsuc(ev.getEUID());
-
-			break;
+			return ev.getEUID();
 
 		case "setinfo":
 			// format and check limit
 			var args = util.checkArg(query, { euid: "int" });
-			var setq = util.checkArg(query, event.Event.infokey, true);
+			var setq = util.checkArg(query, event.Event.format.info, true);
 
 			await event.exist(args.euid);
 			await event.setInfo(args.euid, setq);
-			env.qsuc();
-			break;
+			
+			return;
+
+		case "search":
+			var args = util.checkArg(query, event.Event.format.search, true);
+			return await event.search(args);
 
 		default:
 			throw new err.Exc("no such action");

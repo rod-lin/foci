@@ -91,11 +91,6 @@ window.FCAuth = {};
 		return res;
 	};
 
-	FCAuth.getAuth = function () {
-		var val = getSync(server + "/auth");
-		return val ? val.res : null;
-	};
-
 	FCAuth.setLocal = function (key, value) {
 		return localStorage[key] = JSON.stringify(value);
 	};
@@ -112,26 +107,30 @@ window.FCAuth = {};
 
 	// cb(suc, dat/err)
 	FCAuth.login = function (lname, passwd, cb) {
-		var pub = FCAuth.getAuth();
 		var salt = FCAuth.salt();
 
-		if (!pub) return cb(false, "network error");
-
-		getAsync(server + "/user/login", {
-			lname: lname,
-			pkey: pub,
-			penc: FCAuth.rsaenc(salt + ":" + passwd, pub)
-		}, function (suc, dat) {
+		getAsync(server + "/auth", {}, function (suc, dat) {
 			if (!suc) return cb(false, "network error");
 			if (!dat.suc) return cb(false, dat.msg);
 
-			var sid = FCAuth.aesdec(dat.res.sid, salt);
-			if (!sid) return cb(false, "server error");
+			var pub = dat.res;
 
-			var ses = new Session(lname, dat.res.uuid, sid);
+			getAsync(server + "/user/login", {
+				lname: lname,
+				pkey: pub,
+				penc: FCAuth.rsaenc(salt + ":" + passwd, pub)
+			}, function (suc, dat) {
+				if (!suc) return cb(false, "network error");
+				if (!dat.suc) return cb(false, dat.msg);
 
-			FCAuth.setLocal("session", ses);
-			return cb(true, ses);
+				var sid = FCAuth.aesdec(dat.res.sid, salt);
+				if (!sid) return cb(false, "server error");
+
+				var ses = new Session(lname, dat.res.uuid, sid);
+
+				FCAuth.setLocal("session", ses);
+				return cb(true, ses);
+			});
 		});
 	};
 
@@ -178,7 +177,7 @@ window.FCAuth = {};
 		}, function (suc, dat) {
 			if (!suc) return cb(false, "network error");
 			if (!dat.suc) return cb(false, dat.msg);
-			return cb(true, dat.res);
+			return cb(true, JSON.parse(FCAuth.aesdec(dat.res, sid)));
 		});
 	};
 })();

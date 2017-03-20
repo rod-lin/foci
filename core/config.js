@@ -3,6 +3,8 @@
 module.exports = {
 	port: 3138,
 
+	debug: true,
+
 	lim: {
 		favtag: [ "tech", "music", "travel" ],
 
@@ -26,7 +28,11 @@ module.exports = {
 		},
 
 		event: {
+			title: 256,
+			descr: 40960,
+			location: 1024,
 
+			keyword: 128
 		}
 	},
 

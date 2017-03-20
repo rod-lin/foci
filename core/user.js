@@ -60,7 +60,9 @@ User.prototype.getInfo = function () {
 	};
 };
 
-User.infokey = {
+User.format = {};
+
+User.format.info = {
 	dname: util.checkArg.lenlim(config.lim.user.dname, "display name too long"),
 	favtag: { type: "json", lim: tags => exports.checkTag(tags) },
 
@@ -90,8 +92,8 @@ User.query = {
 			$or: [
 				{ "dname": { $regex: reg } },
 				{ "lname": { $regex: reg } },
-				{ "info.intro": { $regex: reg } },
-				{ "info.school": { $regex: reg } }
+				{ "intro": { $regex: reg } },
+				{ "school": { $regex: reg } }
 			]
 		};
 	},
@@ -206,7 +208,8 @@ exports.checkSession = async (uuid, enc) => {
 
 	return {
 		msg: msg,
-		usr: new User(res)
+		usr: new User(res),
+		sid: res.sid
 	};
 };
 

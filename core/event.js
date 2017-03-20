@@ -63,7 +63,9 @@ Event.prototype.getInfo = function () {
 	};
 };
 
-Event.infokey = {
+Event.format = {};
+
+Event.format.info = {
 	title: util.checkArg.lenlim(config.lim.event.title, "title too long"),
 	descr: util.checkArg.lenlim(config.lim.event.descr, "description too long"),
 	location: util.checkArg.lenlim(config.lim.event.location, "location too long"),
@@ -79,7 +81,20 @@ Event.infokey = {
 		
 			return [ expect[0], expect[1] ];
 		}
+	},
+
+	$overall: obj => {
+		if (obj.start && obj.end && obj.end <= obj.start)
+			throw new err.Exc("illegal start or end date");
 	}
+};
+
+Event.format.search = {
+	favtag: { type: "json", lim: tags => user.checkTag(tags) },
+	kw: util.checkArg.lenlim(config.lim.event.keyword, "keyword too long"),
+
+	after: { type: "int", lim: time => new Date(time) },
+	before: { type: "int", lim: time => new Date(time) }
 };
 
 Event.query = {
@@ -97,7 +112,23 @@ Event.query = {
 
 	check_sponsor: (euid, uuid) => ({ "euid": euid, "org.0": uuid }),
 
-	org: uuid => ({ "org": uuid })
+	org: uuid => ({ "org": uuid }),
+
+	has_favtag: tags => ({ "favtag": { $in: tags } }),
+
+	keyword: kw => {
+		var reg = new RegExp(kw, "i");
+		return {
+			$or: [
+				{ "title": { $regex: reg } },
+				{ "descr": { $regex: reg } },
+				{ "location": { $regex: reg } }
+			]
+		};
+	},
+
+	after: date => ({ start: { $ge: date } }),
+	before: date => ({ end: { $le: date } })
 };
 
 Event.set = {
@@ -156,6 +187,23 @@ exports.getOrganized = async (uuid) => {
 	arr.forEach(function (ev) {
 		ret.push(new Event(ev).getInfo());
 	});
+
+	return ret;
+};
+
+exports.search = async (conf) => {
+	var query = {};
+
+	if (conf.favtag) query.extend(Event.query.has_favtag(conf.favtag));
+	if (conf.kw) query.extend(Event.query.keyword(conf.kw));
+	if (conf.after) query.extend(Event.query.after(conf.after));
+	if (conf.before) query.extend(Event.query.after(conf.before));
+
+	var col = await db.col("event");
+	var res = await col.find(query).toArray();
+	var ret = [];
+
+	res.forEach(ev => ret.push(new Event(ev).getInfo()));
 
 	return ret;
 };
