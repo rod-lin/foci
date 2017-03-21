@@ -83,11 +83,7 @@
 
 					$("#reg-create").html("<span class='fa fa-cog fa-spin'></span>");
 
-					var pub = FCAuth.getAuth();
-
-					var enc = FCAuth.rsaenc(passwd, pub);
-
-					FCAuth.get("/user/new", { lname: uname, pkey: pub, penc: enc }, function (suc, dat) {
+					FCAuth.newUser(uname, passwd, function (suc, dat) {
 						setTimeout(function () {
 							if (suc) {
 								$("#reg-create").html("<span class='fa fa-check'></span>");

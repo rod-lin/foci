@@ -29,9 +29,9 @@ app.get("/auth", int.auth);
 app.get("/user/new", int.user.new);
 app.get("/user/login", int.user.login);
 app.get("/user/csid", int.user.csid);
-app.get("/user/encop", int.user.encop);
 app.get("/user/info", int.user.info);
 app.get("/user/org", int.user.org);
+app.get("/user/encop", int.user.encop);
 
 app.get("/event/info", int.event.info);
 /* official api */

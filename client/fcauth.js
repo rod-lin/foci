@@ -105,6 +105,25 @@ window.FCAuth = {};
 		localStorage.removeItem(key);
 	};
 
+	FCAuth.newUser = function (lname, passwd, cb) {
+		getAsync(server + "/auth", {}, function (suc, dat) {
+			if (!suc) return cb(false, "network error");
+			if (!dat.suc) return cb(false, dat.msg);
+
+			var pub = dat.res;
+
+			getAsync(server + "/user/new", {
+				lname: lname,
+				pkey: pub,
+				penc: FCAuth.rsaenc(passwd, pub)
+			}, function (suc, dat) {
+				if (!suc) return cb(false, "network error");
+				if (!dat.suc) return cb(false, dat.msg);
+				return cb(true, dat.res);
+			});
+		});
+	};
+
 	// cb(suc, dat/err)
 	FCAuth.login = function (lname, passwd, cb) {
 		var salt = FCAuth.salt();
