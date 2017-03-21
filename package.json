@@ -29,8 +29,11 @@
   "devDependencies": {
     "browserify": "^14.1.0",
     "gulp": "^3.9.1",
+    "gulp-streamify": "^1.0.2",
+    "gulp-uglify": "^2.1.2",
     "node-glob": "^1.2.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "vinyl-transform": "^1.0.0"
   },
   "engines": {
     "node": ">= 7.5.0"
