@@ -158,33 +158,70 @@ body {
 	display: inline-block;
 }
 
-#port-event-board {
+#port-cont {
+	display: inline-block;
 	text-align: center;
-	margin: 1em 0;
+}
+
+#port-event-board {
+	display: inline-block;
+	text-align: center;
+	margin: 1.5em 0;
+	padding: 0 0.5em 0 1em;
+}
+
+#port-toolbox-board {
+	display: inline-block;
+	vertical-align: top;
+	padding: 0 1em 0 0.5em;
+}
+
+.port-toolbox {
+	width: 20em;
+	
+	margin: 2em 0;
+	padding: 2em;
+	
+	background: white;
+
+	border-radius: 2px;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.port-add-event {
+	color: #4C4C4C;
+	font-size: 3em;
+	cursor: pointer;
+
+	transition: color 0.3s;
+}
+
+.port-add-event:hover {
+	color: #333333;
 }
 
 .port-event {
 	display: inline-block;
 
 	width: 40em;
-	max-width: 95%;
+	max-width: 100%;
 
 	padding: 0;
-	margin: 1em 0;
+	margin: 0.5em 0;
 
 	background: white;
-	border-radius: 3px;
+	border-radius: 2px;
 
 	text-align: left;
 	cursor: pointer;
 
-	box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
 
 	transition: box-shadow 0.3s;
 }
 
 .port-event:hover {
-	box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
 }
 
 #port-event-msg {
@@ -201,7 +238,7 @@ body {
 	background: #27AE60;
 	color: #E6E6E6;
 	
-	border-radius: 3px 3px 0 0;
+	border-radius: 2px 2px 0 0;
 	padding: 1em 2em;
 
 	transition: opacity 0.3s;

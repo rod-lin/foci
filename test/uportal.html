@@ -28,28 +28,50 @@
 					<span class="com-button com-button-green fa fa-plus-circle"></span>
 				</div>
 			</div>
-			<div id="port-event-board">
-				<div id="port-event-msg">no event</div>
-				<!--div class="port-event">
-					<div class="port-event-tbar">
-						<div class="vcenter">
-							<span class="port-event-title">Go to Hell</span>
-							<br>
-							<span class="fa fa-map-pin" style="margin-right: 0.5em; font-size: 80%;"></span>
-							<span style="font-size: 80%;">Hangzhou Foreign Languages School</span>
-							<br>
-							<span class="fa fa-clock-o" style="margin-right: 0.5em; font-size: 80%;"></span>
-							<span style="font-size: 80%;">10-9 ~ 10-10</span>
+
+			<div style="position: relative; text-align: center;">
+				<div style="display: inline-block;">
+					<div id="port-event-board">
+						<div id="port-event-msg">no event</div>
+					</div>
+					<div id="port-toolbox-board">
+						<div id="port-toolbox-1" class="port-toolbox">
+							<span id="port-toolbox-1-add" class="port-add-event fa fa-plus-circle"></span>
+							<div id="port-toolbox-1-form" style="display: none;">
+								<style>
+									.port-toolbox-1-input {
+										margin: 0;
+										border: 0;
+										background: none;
+
+										font-size: 1.4em;
+										padding: 0.7em;
+										margin-left: -0.7em;
+										width: 100%;
+
+										color: #191919;
+										resize: none;
+
+										font-family: Ubuntu;
+									}
+
+									.port-toolbox-1-split {
+										width: 100%;
+										height: 1px;
+										background: #808080;
+										box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+									}
+								</style>
+								<input id="port-toolbox-1-title" class="port-toolbox-1-input" placeholder="title">
+								<div class="port-toolbox-1-split"></div>
+								<textarea id="port-toolbox-1-descr" class="port-toolbox-1-input" placeholder="descr">
+								</textarea>
+							</div>
 						</div>
 					</div>
-					<div class="port-event-cont">
-						Hello, darkness my old friend. I've come to talk with you again.
-						Because the vision softly creeping, left it's seed while I was sleeping.
-						And the vision that was plated in my brain, still remains,
-						Within the sound of silence.
-					</div>
-				</div-->
+				</div>
 			</div>
+
 			<div id="port-login" style="opacity: 0;">
 				<div id="port-login-board" class="vcenter">
 					<div id="port-tbar">
@@ -167,7 +189,7 @@
 								<span style="font-size: 80%;">' + formatTime(info.start, info.end) + '</span> \
 							</div> \
 						</div> \
-						<div class="port-event-cont">' + (info.descr || "no description") + '</div> \
+						<div class="port-event-cont">' + (info.descr ? info.descr.replace("\n", "<br>") : "no description") + '</div> \
 					</div><br>';
 				};
 
@@ -234,6 +256,11 @@
 							}
 						}, 500);
 					});
+				});
+
+				$("#port-toolbox-1-add").click(function () {
+					$("#port-toolbox-1-add").css("display", "none");
+					$("#port-toolbox-1-form").css("display", "");
 				});
 			};
 		</script>
