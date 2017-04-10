@@ -46,6 +46,8 @@ Event.prototype.getEUID = function () { return this.euid };
 
 Event.prototype.getInfo = function () {
 	return {
+		euid: this.euid,
+
 		title: this.title,
 		descr: this.descr,
 		location: this.location,
@@ -61,6 +63,18 @@ Event.prototype.getInfo = function () {
 		staff: this.staff,
 		partic: this.partic
 	};
+};
+
+Event.prototype.countPeople = function (type) {
+	return this[type].length;
+};
+
+Event.prototype.getExpect = function (which) {
+	return this.expect[which];
+};
+
+Event.prototype.hasPeople = function (uuid) {
+	return this.partic.indexOf(uuid) != -1 || this.staff.indexOf(uuid) != -1;
 };
 
 Event.format = {};
@@ -128,11 +142,23 @@ Event.query = {
 	},
 
 	after: date => ({ start: { $ge: date } }),
-	before: date => ({ end: { $le: date } })
+	before: date => ({ end: { $le: date } }),
+
+	// register for participant, next = last_index + 1, use with set.reg
+	reg: (euid, next) => {
+		var q = { "euid": euid };
+		q["test." + next] = { $exists: 0 };
+		return q;
+	}
 };
 
 Event.set = {
-	info: info => ({ $set: info })
+	info: info => ({ $set: info }),
+	reg: (euid, uuid, type) => {
+		var q = {};
+		q[type] = uuid;
+		return { $push: q };
+	}
 };
 
 exports.euid = async (euid) => {
@@ -206,4 +232,28 @@ exports.search = async (conf) => {
 	res.forEach(ev => ret.push(new Event(ev).getInfo()));
 
 	return ret;
+};
+
+// register as pertipants
+exports.register = async (euid, uuid, type) => {
+	if (type != "partic" && type != "staff")
+		throw new err.Exc("illegal type");
+
+	var ev = await exports.euid(euid);
+	var next = ev.countPeople("partic");
+	var expect = ev.getExpect(1);
+
+	if (expect != null && next >= expect)
+		throw new err.Exc("full participant");
+
+	if (ev.hasPeople(uuid))
+		throw new err.Exc("duplicated participant");
+
+	var col = await db.col("event");
+	var ret = await col.findOneAndUpdate(Event.query.reg(euid, next), Event.set.reg(euid, uuid, "partic"));
+
+	if (!ret)
+		throw new err.Exc("operation conflict");
+
+	return;
 };

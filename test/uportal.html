@@ -65,6 +65,7 @@
 								<input id="port-toolbox-1-title" class="port-toolbox-1-input" placeholder="title">
 								<div class="port-toolbox-1-split"></div>
 								<textarea id="port-toolbox-1-descr" class="port-toolbox-1-input" placeholder="descr"></textarea>
+								<div id="port-toolbox-1-submit" class="com-button com-button-green">submit</div>
 							</div>
 						</div>
 					</div>
@@ -101,6 +102,10 @@
 			window.onload = function () {
 				var color_boxa = [ "#1ABC9C", "#2ECC71", "#3498DB", "#9B59B6", "#E67E22", "#E74C3C" ];
 				var color_boxb = [ "#16A085", "#27AE60", "#2980B9", "#8E44AD", "#D35400", "#C0392B" ];
+
+				var jump = function (url) {
+					window.location = url;
+				};
 
 				var title = function (msg) {
 					$("#port-title").html(msg);
@@ -147,6 +152,11 @@
 								dat.forEach(function (ev) {
 									$("#port-event-board").append(formatEvent(ev));
 								});
+
+								$(".port-event").click(function () {
+									var euid = $(this).attr("euid");
+									gotoEvent(euid);
+								});
 							}
 						} else {
 							showEventMsg("loading failed: " + dat);
@@ -177,8 +187,12 @@
 					return ret;
 				};
 
+				var gotoEvent = function (euid) {
+					jump("event.html#" + euid);
+				};
+
 				var formatEvent = function (info) {
-					return '<div class="port-event"> \
+					return '<div class="port-event" euid="' + info.euid + '"> \
 						<div class="port-event-tbar" style="background: ' + color_boxb.choose() + ';"> \
 							<div class="vcenter"> \
 								<span class="port-event-title">' + (info.title || "no title") + '</span><br><br> \
@@ -257,9 +271,43 @@
 					});
 				});
 
+				var newev_euid = null;
+
 				$("#port-toolbox-1-add").click(function () {
-					$("#port-toolbox-1-add").css("display", "none");
-					$("#port-toolbox-1-form").css("display", "");
+					FCAuth.encop(gsession, {
+						int: "event",
+						action: "new"
+					}, function (suc, dat) {
+						if (suc) {
+							$("#port-toolbox-1-add").css("display", "none");
+							$("#port-toolbox-1-form").css("display", "");
+							newev_euid = dat;
+						} else {
+							alert(dat);
+						}
+					});
+				});
+
+				$("#port-toolbox-1-submit").click(function () {
+					if (newev_euid == null) {
+						alert("no euid");
+						return;
+					}
+
+					FCAuth.encop(gsession, {
+						int: "event",
+						action: "setinfo",
+						euid: newev_euid,
+						title: $("#port-toolbox-1-title").val(),
+						descr: $("#port-toolbox-1-descr").val()
+					}, function (suc, dat) {
+						if (suc) {
+							alert("success!");
+							jump("");
+						} else {
+							alert(dat);
+						}
+					});
 				});
 			};
 		</script>

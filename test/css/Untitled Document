@@ -1,0 +1,85 @@
+body {
+	background: #F3F3F3;
+}
+
+#event-main {
+	width: 100%;
+	text-align: center;
+	font-family: Ubuntu;
+}
+
+#event-cont {
+	display: inline-block;
+	
+	max-width: 60%;
+	min-width: 50%;
+
+	text-align: left;
+
+	padding: 2em 0;
+}
+
+#event-topbar {}
+
+.event-logo {
+	display: inline-block;
+
+	width: 10em;
+	height: 10em;
+	border-radius: 50%;
+
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+
+	transition: all 0.5s;
+}
+
+.event-info {
+	display: inline-block;
+	margin-left: 1em;
+	vertical-align: top;
+}
+
+.event-info-block {
+	margin-top: 1em;
+	padding: 2em;
+
+	background: white;
+	border-radius: 3px;
+
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+
+	transition: box-shadow 0.3s
+}
+
+.event-info-block:hover {
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.event-info-pic {
+	height: 10em;
+	width: 12em;
+
+	background: black;
+
+	border-radius: 2px;
+
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.05);
+
+	overflow: hidden;
+}
+
+@media only screen and (max-width: 600px) {
+	#event-cont {
+		max-width: 80%;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	#event-cont {
+		max-width: 90%;
+	}
+}

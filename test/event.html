@@ -14,8 +14,62 @@
 	</head>
 	
 	<body>
-		<div id="port-main">
-			
+		<div id="event-main" class="event-not-owner">
+			<span id="event-cont">
+				<div id="event-topbar">
+					<span class="event-logo" style="background-image: url('img/tmp1.jpg');""></span>
+					<div class="event-info vcenter">
+						<div id="event-info-title" style="font-size: 2em; margin-bottom: 0.5em; font-weight: bold;"></div>
+						<span class="fa fa-map-pin" style="margin-right: 9px; font-size: 80%;"></span>
+						<span id="event-info-location"></span></br>
+						<span class="fa fa-clock-o" style="margin-right: 5px; font-size: 80%;"></span>
+						<span id="event-info-time"></span>
+					</div>
+					<div class="vcenter" style="font-size: 3em; font-weight: bold; margin-top: -0.5em; float: right;">
+						<span id="event-info-rating">8.5</span>/10
+					</div>
+				</div>
+				<div class="event-info-block">
+					<div id="event-info-descr"></div>
+					<textarea id="event-info-descr-edit" class="event-edit-box" style="display: none;"></textarea>
+					<div id="event-set-btn-descr" class="fa fa-cog event-set-btn"></div>
+				</div>
+				<div id="event-info-descr-pic" class="event-info-block event-info-block-restrict">
+					<div class="event-info-pic" style="background-image: url('img/tmp1.jpg');"></div>
+					<div class="event-info-pic" style="background-image: url('img/tmp2.jpg');"></div>
+					<div class="event-info-pic" style="background-image: url('img/tmp1.jpg');"></div>
+					<div class="event-info-pic" style="background-image: url('img/tmp2.jpg');"></div>
+					<div class="event-info-pic" style="background-image: url('img/tmp1.jpg');"></div>
+					<div class="event-info-block-shade"></div>
+				</div>
+
+				<div id="event-info-people" class="event-info-block event-info-block-restrict">
+					<div class="event-info-people-title">staffs</div>
+					<div id="event-info-staff">
+						<div class="event-info-people-box">
+							<div class="event-info-people-icon" style="background-image: url('img/deficon.jpg');"></div><br>
+							<span class="event-info-people-dname">Name</span>
+						</div>
+					</div><br>
+					<div class="event-info-people-title">participants</div>
+					<div id="event-info-partic">
+						<div class="event-info-people-box">
+							<div class="event-info-people-icon" style="background-image: url('img/tmp3.jpg');"></div><br>
+							<span class="event-info-people-dname">Name</span>
+						</div>
+
+						<div class="event-info-people-box">
+							<div class="event-info-people-icon" style="background-image: url('img/tmp2.jpg');"></div><br>
+							<span class="event-info-people-dname">Name</span>
+						</div>
+						<div class="event-info-people-box">
+							<div class="event-info-people-icon" style="background-image: url('img/tmp1.jpg');"></div><br>
+							<span class="event-info-people-dname">Name</span>
+						</div>
+					</div>
+					<div class="event-info-block-shade"></div>
+				</div>
+			</span>
 		</div>
 
 		<script src="fcauth.js"></script>
@@ -30,6 +84,120 @@
 			window.onload = function () {
 				var color_boxa = [ "#1ABC9C", "#2ECC71", "#3498DB", "#9B59B6", "#E67E22", "#E74C3C" ];
 				var color_boxb = [ "#16A085", "#27AE60", "#2980B9", "#8E44AD", "#D35400", "#C0392B" ];
+
+				function jump(url) {
+					window.location = url;
+				};
+
+				var setbtn_reg = {
+					"event-set-btn-descr": [
+						function () {
+							$("#event-info-descr").css("display", "none");
+							$("#event-info-descr-edit").css("display", "");
+							$("#event-info-descr-edit").val($("#event-info-descr").html().replace("<br>", "\n"));
+						},
+
+						function () {
+							$("#event-info-descr").css("display", "");
+							$("#event-info-descr-edit").css("display", "none");
+
+							FCAuth.encop(gsession, {
+								int: "event",
+								action: "setinfo",
+								euid: euid,
+								descr: $("#event-info-descr-edit").val()
+							}, function (suc, dat) {
+								if (suc) {
+									updateInfo();
+								} else {
+									alert(dat);
+								}
+							});
+						}
+					]
+				};
+
+				$(".event-set-btn").click(function () {
+					$(this).parent().toggleClass("event-info-block-edit");
+
+					$(this).toggleClass("fa-cog");
+					$(this).toggleClass("fa-check");
+					$(this).toggleClass("event-set-btn-check");
+
+					var reg = setbtn_reg[$(this).attr("id")];
+					var i = $(this).hasClass("fa-cog") + 0;
+
+					if (reg) {
+						reg[i]();
+					}
+				});
+
+				function formatTime(start, end) {
+					var ret = "";
+					var form = function (date) {
+						return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+					};
+
+					if (start) {
+						ret += form(new Date(start));
+					} else {
+						ret += "TBD"
+					}
+
+					ret += " ~ ";
+
+					if (end) {
+						ret += form(new Date(end));
+					} else {
+						ret += "TBD"
+					}
+
+					return ret;
+				};
+
+				function setInfo(dat) {
+					$("#event-info-title").html(dat.title);
+
+					$("#event-info-location").html(dat.location || "TBD");
+					$("#event-info-time").html(formatTime(dat.start, dat.end));
+
+					$("#event-info-descr").html(dat.descr.replace("\n", "<br>") || "no description");
+
+					vcent.update();
+				}
+
+				function updateInfo() {
+					FCAuth.get("/event/info", { euid: euid }, function (suc, dat) {
+						if (suc) {
+							setInfo(dat);
+						} else {
+							alert(dat);
+						}
+					});
+				}
+
+				var euid = parseInt(window.location.hash.substring(1));
+				var gsession = null;
+
+				if (isNaN(euid)) alert("no euid given");
+				else {
+					updateInfo();
+
+					FCAuth.qlogin(function (suc, dat) {
+						if (suc) {
+							gsession = dat;
+							FCAuth.encop(gsession, {
+								int: "event",
+								action: "own",
+								euid: euid
+							}, function (suc, dat) {
+								if (suc && dat) {
+									$("#event-main").removeClass("event-not-owner");
+								}
+							});
+						}
+					});
+				}
 			};
 		</script>
 	</body>
