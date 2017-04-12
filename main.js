@@ -34,6 +34,9 @@ app.get("/user/org", int.user.org);
 app.get("/user/encop", int.user.encop);
 
 app.get("/event/info", int.event.info);
+
+app.post("/file/upload", int.file.upload);
+app.get("/file/download", int.file.download);
 /* official api */
 
 app.get("/test/enc", util.route(async env => {

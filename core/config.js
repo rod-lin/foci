@@ -1,9 +1,15 @@
 "use strict";
 
-module.exports = {
+var conf = module.exports = {
 	port: 3138,
 
 	debug: true,
+
+	file: {
+		max_size: 1024 * 1024 * 1,
+		// with respect to the root dir of the app
+		save_dir: "upload"
+	},
 
 	lim: {
 		favtag: [ "tech", "music", "travel" ],
@@ -44,7 +50,8 @@ module.exports = {
 		col: {
 			user: "user",
 			event: "event",
-			uid: "uid"
+			uid: "uid",
+			file: "file"
 		}
 	},
 
@@ -62,3 +69,9 @@ module.exports = {
 		}
 	}
 };
+
+var fs = require("fs");
+
+if (!fs.existsSync(conf.file.save_dir)) {
+	fs.mkdirSync(conf.file.save_dir);
+}

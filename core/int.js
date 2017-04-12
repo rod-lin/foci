@@ -7,6 +7,7 @@ var err = require("./err");
 var auth = require("./auth");
 var user = require("./user");
 var util = require("./util");
+var file = require("./file");
 var event = require("./event");
 var config = require("./config");
 
@@ -138,8 +139,32 @@ _event.info = util.route(async env => {
 	env.qsuc(ev.getInfo());
 });
 
+var _file = {};
+
+_file.upload = util.route(async env => {
+	if (!env.file.file)
+		throw new err.Exc("no file");
+
+	var fp = env.file.file;
+	var path = fp.path;
+	var ct = fp.headers["content-type"];
+
+	var ret = await file.newFile(path, ct);
+
+	env.qsuc(ret);
+});
+
+_file.download = util.route(async env => {
+	var args = util.checkArg(env.query, { "chsum": "string" });
+	var ret = await file.getFile(args.chsum);
+
+	env.setCT(ret.ct);
+	env.raw(ret.cont);
+});
+
 exports.user = _user;
 exports.event = _event;
+exports.file = _file;
 
 /* encrypted operations */
 

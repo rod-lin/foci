@@ -39,20 +39,22 @@ exports.route = (handler) => async (req, res) => {
 
 	var env = new Env(req, res);
 
-	try {
-		return await handler(env);
-	} catch (e) {
-		if (e instanceof err.Exc) {
-			env.qerr(e.toString());
-			util.log(e, exports.style.yellow("EXCEPTION"));
-			if (e.exc) {
-				util.log(e.exc.stack, exports.style.yellow("ERROR"));
+	env.init(async () => {
+		try {
+			return await handler(env);
+		} catch (e) {
+			if (e instanceof err.Exc) {
+				env.qerr(e.toString());
+				util.log(e, exports.style.yellow("EXCEPTION"));
+				if (e.exc) {
+					util.log(e.exc.stack, exports.style.yellow("ERROR"));
+				}
+			} else {
+				env.qerr("internal error");
+				util.log(e.stack, exports.style.red("ERROR"));
 			}
-		} else {
-			env.qerr("internal error");
-			util.log(e.stack, exports.style.red("ERROR"));
 		}
-	}
+	});
 };
 
 exports.md5 = (cont, format) => {
