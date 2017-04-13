@@ -87,6 +87,7 @@ body {
 
 #port-icon {
 	display: inline-block;
+	position: relative;
 
 	width: 10em;
 	height: 10em;
@@ -99,6 +100,48 @@ body {
 	background-position: 50% 50%;
 
 	transition: all 0.5s;
+
+	text-align: center;
+	overflow: hidden;
+}
+
+#port-change-icon-btn {
+	width: 12em;
+	height: 12em;
+	border-radius: 50%;
+
+	position: absolute;
+	top: -1em;
+	left: -1em;
+
+	border: 0 solid #333333;
+	border-width: 0;
+
+	color: #FFFFFF;
+	background: transparent;
+
+	cursor: pointer;
+	text-align: center;
+
+	transition: all 0.5s ease-in;
+}
+
+.port-change-icon-load,
+#port-change-icon-btn:hover {
+	width: 0 !important;
+	height: 0 !important;
+	border-width: 6em !important;
+}
+
+#port-change-icon {
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s 0.1s;
+}
+
+.port-change-icon-load+#port-change-icon,
+#port-change-icon-btn:hover+#port-change-icon {
+	opacity: 1;
 }
 
 #port-dname {
@@ -178,9 +221,12 @@ body {
 
 .port-toolbox {
 	width: 20em;
+	max-width: 100%;
 	
-	margin: 2em 0;
+	margin: 2em 0 0 0;
 	padding: 2em;
+
+	box-sizing: border-box;
 	
 	background: white;
 
@@ -256,4 +302,23 @@ body {
 .port-event-cont {
 	padding: 2em;
 	color: #4C4C4C;
+}
+
+@media only screen and (max-width: 600px) {
+	#port-event-board, #port-main-board {
+		max-width: 95%;
+		padding: 0;
+		margin-top: 0.5em;
+		margin-bottom: 0;
+	}
+
+	#port-toolbox-board {
+		padding: 0;
+		max-width: 95%;
+		margin-bottom: 1.5em;
+	}
+
+	.port-toolbox {
+		margin-top: 0.5em;
+	}
 }

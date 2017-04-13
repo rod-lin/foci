@@ -16,7 +16,13 @@
 	<body>
 		<div id="port-main">
 			<div id="port-header" class="port-header">
-				<div id="port-icon" style="background-image: url('img/deficon.jpg');"></div>
+				<div id="port-icon">
+					<div id="port-change-icon-btn"></div>
+					<div id="port-change-icon" class="fa fa-cog vcenter" style="display: inline-block; font-size: 2em;"></div>
+					<form id="port-change-icon-form" style="display: none" enctype="multipart/form-data">
+						<input id="port-change-icon-input" type="file" name="file" />
+					</form>
+				</div>
 				<div id="port-dname"></div>
 				<div id="port-school-box">
 					<span class="fa fa-map-marker"></span>
@@ -30,7 +36,7 @@
 			</div>
 
 			<div style="position: relative; text-align: center;">
-				<div style="display: inline-block;">
+				<div id="port-main-board" style="display: inline-block;">
 					<div id="port-event-board">
 						<div id="port-event-msg">no event</div>
 					</div>
@@ -130,7 +136,7 @@
 					return str.length ? str : def;
 				};
 
-				var loadInfo = function () {
+				var loadInfo = function (cb) {
 					FCAuth.encop(gsession, {
 						int: "info",
 						action: "get"
@@ -139,9 +145,16 @@
 							$("#port-dname").html(dat.dname);
 							$("#port-intro").html(def(dat.intro, "no intro"));
 							$("#port-school").html(def(dat.school, "no school"));
+
+							if (dat.avatar)
+								$("#port-icon").css("background-image", "url('/file/download?chsum=" + dat.avatar + "')");
+							else
+								$("#port-icon").css("background-image", "url('img/deficon.jpg')");
 						} else {
 							$("#port-dname").html("loading failed: " + dat);
 						}
+
+						if (cb) cb();
 					});
 
 					FCAuth.get("/user/org", { uuid: gsession.getUUID() }, function (suc, dat) {
@@ -306,6 +319,43 @@
 							jump("");
 						} else {
 							alert(dat);
+						}
+					});
+				});
+
+				$("#port-change-icon-btn").click(function () {
+					$("#port-change-icon-input").click();
+				});
+
+				$("#port-change-icon-input").change(function () {
+					if (!$("#port-change-icon-input").val()) return;
+					// alert($("#port-change-icon-input").val());
+
+					$("#port-change-icon-btn").addClass("port-change-icon-load");
+					$("#port-change-icon").addClass("fa-spin");
+
+					var form = new FormData($("#port-change-icon-form")[0]);
+					var endproc = function () {
+						$("#port-change-icon-btn").removeClass("port-change-icon-load");
+						$("#port-change-icon").removeClass("fa-spin");
+					};
+
+					FCAuth.post("/file/upload", form, function (suc, dat) {
+						if (suc) {
+							FCAuth.encop(gsession, {
+								int: "info",
+								action: "set",
+								avatar: dat // check sum of the file
+							}, function (suc, dat) {
+								if (suc) {
+									loadInfo(endproc);
+								} else {
+									alert(dat);
+								}
+							});
+						} else {
+							alert(dat);
+							endproc();
 						}
 					});
 				});

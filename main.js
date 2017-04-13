@@ -7,6 +7,7 @@ var err = require("./core/err");
 var auth = require("./core/auth");
 var user = require("./core/user");
 var util = require("./core/util");
+var file = require("./core/file");
 var config = require("./core/config");
 
 var int = require("./core/int");
@@ -38,6 +39,10 @@ app.get("/event/info", int.event.info);
 app.post("/file/upload", int.file.upload);
 app.get("/file/download", int.file.download);
 /* official api */
+
+app.get("/test", util.route(async env => {
+	// await file.ref("e7d2dac5b3s4e141365cb56bc8123d194");
+}));
 
 app.get("/test/enc", util.route(async env => {
 	var args = util.checkArg(env.query, { "dat": "string" });

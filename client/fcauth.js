@@ -24,14 +24,14 @@ window.FCAuth = {};
 	Session.prototype.getUUID = function () { return this.uuid; };
 	Session.prototype.getSID = function () { return this.sid; };
 
-	var getSync = function (url, data) {
-		var res = $.ajax({
-			type: "GET",
+	var sendSync = function (url, data, method, ext) {
+		var res = $.ajax($.extend({
+			type: method || "GET",
 			async: false,
 			url: url,
 			dataType: "json",
 			data: data
-		}).responseText;
+		}, ext || {})).responseText;
 
 		if (!res) return null;
 
@@ -39,9 +39,9 @@ window.FCAuth = {};
 	};
 
 	// cb(suc, data)
-	var getAsync = function (url, data, cb) {
-		$.ajax({
-			type: "GET",
+	var sendAsync = function (url, data, cb, method, ext) {
+		$.ajax($.extend({
+			type: method || "GET",
 			url: url,
 			dataType: "json",
 			data: data,
@@ -52,16 +52,24 @@ window.FCAuth = {};
 			error: function (req, err, exc) {
 				return cb(false, err);
 			}
-		});
+		}, ext || {}));
 	};
 
-	FCAuth.sget = getSync;
+	FCAuth.sget = sendSync;
 	FCAuth.get = function (url, data, cb) {
-		getAsync(url, data, function (suc, dat) {
+		sendAsync(url, data, function (suc, dat) {
 			if (!suc) return cb(false, "network error");
 			if (!dat.suc) return cb(false, dat.msg);
 			return cb(true, dat.res);
 		});
+	};
+
+	FCAuth.post = function (url, data, cb) {
+		sendAsync(url, data, function (suc, dat) {
+			if (!suc) return cb(false, "network error");
+			if (!dat.suc) return cb(false, dat.msg);
+			return cb(true, dat.res);
+		}, "POST", { cache: false, contentType: false, processData: false });
 	};
 
 	FCAuth.salt = function (len) {
@@ -106,13 +114,13 @@ window.FCAuth = {};
 	};
 
 	FCAuth.newUser = function (lname, passwd, cb) {
-		getAsync(server + "/auth", {}, function (suc, dat) {
+		sendAsync(server + "/auth", {}, function (suc, dat) {
 			if (!suc) return cb(false, "network error");
 			if (!dat.suc) return cb(false, dat.msg);
 
 			var pub = dat.res;
 
-			getAsync(server + "/user/new", {
+			sendAsync(server + "/user/new", {
 				lname: lname,
 				pkey: pub,
 				penc: FCAuth.rsaenc(passwd, pub)
@@ -128,13 +136,13 @@ window.FCAuth = {};
 	FCAuth.login = function (lname, passwd, cb) {
 		var salt = FCAuth.salt();
 
-		getAsync(server + "/auth", {}, function (suc, dat) {
+		sendAsync(server + "/auth", {}, function (suc, dat) {
 			if (!suc) return cb(false, "network error");
 			if (!dat.suc) return cb(false, dat.msg);
 
 			var pub = dat.res;
 
-			getAsync(server + "/user/login", {
+			sendAsync(server + "/user/login", {
 				lname: lname,
 				pkey: pub,
 				penc: FCAuth.rsaenc(salt + ":" + passwd, pub)
@@ -168,7 +176,7 @@ window.FCAuth = {};
 
 		session = new Session(session);
 
-		getAsync(server + "/user/csid", {
+		sendAsync(server + "/user/csid", {
 			uuid: session.getUUID(),
 			enc: FCAuth.aesenc("hello", session.getSID())
 		}, function (suc, dat) {
@@ -190,7 +198,7 @@ window.FCAuth = {};
 		var uuid = session.getUUID();
 		var sid = session.getSID();
 
-		getAsync(server + "/user/encop", {
+		sendAsync(server + "/user/encop", {
 			uuid: uuid,
 			enc: FCAuth.aesenc(JSON.stringify(query), sid)
 		}, function (suc, dat) {

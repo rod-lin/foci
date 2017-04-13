@@ -67,7 +67,7 @@ exports.newFile = async (file, ct) => {
 	var md5 = info[0];
 	var len = info[1];
 
-	md5 = util.md5(md5 + len, "hex");
+	md5 = util.md5(ct + md5 + len, "hex");
 
 	var found = await col.findOne({ chsum: md5 });
 
@@ -77,24 +77,36 @@ exports.newFile = async (file, ct) => {
 	var ret = await col.findOneAndUpdate({
 		chsum: md5
 	}, {
-		$push: { ct: ct },
-		$set: { chsum: md5, len: len }
+		$set: { ct: ct, chsum: md5, len: len }
 	}, { returnOriginal: true, upsert: true });
 
 	return md5;
 };
 
-exports.getFile = async (chsum) => {
+var findFile = async (chsum) => {
 	var col = await db.col("file");
 	var found = await col.findOne({ chsum: chsum });
 
 	if (!found)
 		throw new err.Exc("no such file");
 
+	return found;
+}
+
+exports.getFile = async (chsum) => {
+	var file = await findFile(chsum);
 	var cont = await readFileAsync(dir(chsum));
 
 	return {
-		ct: found.ct[0],
+		ct: file.ct,
 		cont: cont
 	};
+};
+
+exports.ref = async (chsum) => {
+	var col = await db.col("file");
+	var ret = await col.findOneAndUpdate({ chsum: chsum }, { $inc: { ref: 1 } });
+
+	if (!ret.value)
+		throw new err.Exc("no such file");
 };

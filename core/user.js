@@ -24,6 +24,8 @@ var User = function (uuid, dname, lname, passwd) {
 	this.uuid = uuid;
 	this.level = 0;
 
+	this.avatar = null;
+
 	this.dname = dname;
 	this.lname = lname;
 	this.passwd = passwd;
@@ -54,6 +56,8 @@ User.prototype.getInfo = function () {
 		favtag: this.favtag,
 		rating: this.rating.tot,
 
+		avatar: this.avatar,
+
 		age: this.age,
 		intro: this.intro,
 		school: this.school
@@ -71,6 +75,14 @@ User.format.info = {
 			if (age < 0 || age > 120)
 				throw new err.Exc("illegal age");
 			return age;
+		}
+	},
+
+	avatar: {
+		type: "string", lim: chsum => {
+			if (!chsum.length > 32)
+				throw new err.Exc("illegal file id");
+			return chsum;
 		}
 	},
 

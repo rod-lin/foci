@@ -52,6 +52,8 @@ Event.prototype.getInfo = function () {
 		descr: this.descr,
 		location: this.location,
 
+		state: this.state,
+
 		org: this.org,
 		
 		start: this.start ? this.start.getTime() : null,
