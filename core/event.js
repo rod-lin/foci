@@ -22,6 +22,8 @@ var Event = function (euid, sponsor /* uuid */) {
 	// time created
 	this.created = new Date();
 
+	this.logo = null;
+
 	this.title = config.def.event.title;
 	this.descr = "";
 
@@ -51,6 +53,8 @@ Event.prototype.getInfo = function () {
 		title: this.title,
 		descr: this.descr,
 		location: this.location,
+
+		logo: this.logo,
 
 		state: this.state,
 
@@ -85,6 +89,14 @@ Event.format.info = {
 	title: util.checkArg.lenlim(config.lim.event.title, "title too long"),
 	descr: util.checkArg.lenlim(config.lim.event.descr, "description too long"),
 	location: util.checkArg.lenlim(config.lim.event.location, "location too long"),
+
+	logo: {
+		type: "string", lim: chsum => {
+			if (!chsum.length > 32)
+				throw new err.Exc("illegal file id");
+			return chsum;
+		}
+	},
 
 	start: { type: "int", lim: time => new Date(time) },
 	end: { type: "int", lim: time => new Date(time) },

@@ -41,7 +41,6 @@ app.get("/file/download", int.file.download);
 /* official api */
 
 app.get("/test", util.route(async env => {
-	// await file.ref("e7d2dac5b3s4e141365cb56bc8123d194");
 }));
 
 app.get("/test/enc", util.route(async env => {
