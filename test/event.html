@@ -17,16 +17,14 @@
 		<div id="event-main" class="event-not-owner">
 			<span id="event-cont">
 				<div id="event-topbar">
+					<div id="event-info-rating">8.5</div>
 					<span class="event-logo" style="background-image: url('img/tmp1.jpg');""></span>
-					<div class="event-info vcenter">
+					<div class="event-info">
 						<div id="event-info-title" style="font-size: 2em; margin-bottom: 0.5em; font-weight: bold;"></div>
 						<span class="fa fa-map-pin" style="margin-right: 9px; font-size: 80%;"></span>
 						<span id="event-info-location"></span></br>
 						<span class="fa fa-clock-o" style="margin-right: 5px; font-size: 80%;"></span>
 						<span id="event-info-time"></span>
-					</div>
-					<div class="vcenter" style="font-size: 3em; font-weight: bold; margin-top: -0.5em; float: right;">
-						<span id="event-info-rating">8.5</span>/10
 					</div>
 				</div>
 				<div class="event-info-block">
@@ -35,24 +33,38 @@
 					<div id="event-set-btn-descr" class="fa fa-cog event-set-btn"></div>
 				</div>
 				<div id="event-info-descr-pic" class="event-info-block event-info-block-restrict">
-					<div class="event-info-pic" style="background-image: url('img/tmp1.jpg');"></div>
-					<div class="event-info-pic" style="background-image: url('img/tmp2.jpg');"></div>
-					<div class="event-info-pic" style="background-image: url('img/tmp1.jpg');"></div>
-					<div class="event-info-pic" style="background-image: url('img/tmp2.jpg');"></div>
-					<div class="event-info-pic" style="background-image: url('img/tmp1.jpg');"></div>
+					<div style="position: block; height: 100%; width: 100%; overflow-x: scroll">
+						<div class="event-info-pic" style="background-image: url('img/tmp1.jpg');"></div>
+						<div class="event-info-pic" style="background-image: url('img/tmp2.jpg');"></div>
+						<div class="event-info-pic" style="background-image: url('img/tmp1.jpg');"></div>
+						<div class="event-info-pic" style="background-image: url('img/tmp2.jpg');"></div>
+						<div class="event-info-pic" style="background-image: url('img/tmp1.jpg');"></div>
+					</div>
 					<div class="event-info-block-shade"></div>
 				</div>
 
 				<div id="event-info-people" class="event-info-block event-info-block-restrict">
-					<div class="event-info-people-title">staffs</div>
-					<div id="event-info-staff">
+					<div id="event-info-people-org"></div>
+					<div id="event-info-people-staff" style="margin-top: 1.5em;"></div>
+					<div id="event-info-people-partic" style="margin-top: 1.5em;"></div>
+					<!-- <div class="event-info-people-title">organizers</div>
+					<div>
 						<div class="event-info-people-box">
 							<div class="event-info-people-icon" style="background-image: url('img/deficon.jpg');"></div><br>
 							<span class="event-info-people-dname">Name</span>
 						</div>
-					</div><br>
+					</div>
+
+					<div>
+						<div class="event-info-people-title">staffs</div>
+						<div class="event-info-people-box">
+							<div class="event-info-people-icon" style="background-image: url('img/deficon.jpg');"></div><br>
+							<span class="event-info-people-dname">Name</span>
+						</div>
+					</div>
+
 					<div class="event-info-people-title">participants</div>
-					<div id="event-info-partic">
+					<div>
 						<div class="event-info-people-box">
 							<div class="event-info-people-icon" style="background-image: url('img/tmp3.jpg');"></div><br>
 							<span class="event-info-people-dname">Name</span>
@@ -66,8 +78,14 @@
 							<div class="event-info-people-icon" style="background-image: url('img/tmp1.jpg');"></div><br>
 							<span class="event-info-people-dname">Name</span>
 						</div>
-					</div>
+					</div> -->
 					<div class="event-info-block-shade"></div>
+				</div>
+
+				<div class="event-info-block" style="text-align: center; font-size: 1.4em;">
+					<!-- <div style="font-size: 160%; font-weight: bold; margin-bottom: 0.5em;">I wanna be</div> -->
+					<div id="event-info-join-staff" class="com-button com-button-green" style="width: 3em;">staff</div>
+					<div id="event-info-join-partic" class="com-button com-button-blue" style="width: 5em;">participant</div>
 				</div>
 			</span>
 		</div>
@@ -81,13 +99,14 @@
 				return this[Math.floor(Math.random() * this.length)];
 			};
 
+			function jump(url) {
+				window.location = url;
+			};
+
+
 			window.onload = function () {
 				var color_boxa = [ "#1ABC9C", "#2ECC71", "#3498DB", "#9B59B6", "#E67E22", "#E74C3C" ];
 				var color_boxb = [ "#16A085", "#27AE60", "#2980B9", "#8E44AD", "#D35400", "#C0392B" ];
-
-				function jump(url) {
-					window.location = url;
-				};
 
 				var setbtn_reg = {
 					"event-set-btn-descr": [
@@ -132,6 +151,40 @@
 					}
 				});
 
+				$("#event-info-join-partic").click(function () {
+					if (!gsession) {
+						alert("log in first");
+						return;
+					}
+
+					var btn = $(this);
+					var cont = btn.html();
+					btn.html("<span class='fa fa-cog fa-spin'></span>");
+
+					FCAuth.encop(gsession, {
+						int: "event",
+						action: "reg",
+						euid: euid,
+						type: "partic"
+					}, function (suc, dat) {
+						if (suc) {
+							setTimeout(function () {
+								btn.html("<span class='fa fa-check'></span>");
+							}, 300);
+
+							setTimeout(function () {
+								btn.html(cont);
+								updateInfo();
+							}, 1000);
+						} else {
+							alert(dat);
+							setTimeout(function () {
+								btn.html(cont);
+							}, 700);
+						}
+					});
+				});
+
 				function formatTime(start, end) {
 					var ret = "";
 					var form = function (date) {
@@ -155,6 +208,70 @@
 					return ret;
 				};
 
+				// <div class="event-info-people-box">
+				// 			<div class="event-info-people-icon" style="background-image: url('img/tmp1.jpg');"></div><br>
+				// 			<span class="event-info-people-dname">Name</span>
+				// 		</div>
+				function genHeaderBox(user) {
+					return ' \
+					<div class="event-info-people-box"> \
+						<div class="event-info-people-icon" style="background-image: url(\'' +
+							(user.avatar ? FCAuth.download(user.avatar) : "img/deficon.jpg") +
+						'\');"></div><br> \
+						<span class="event-info-people-dname">' + user.dname + '</span> \
+					</div>';
+				}
+
+				function genPeopleBox(users, title /* staffs, participants, etc. */) {
+					var ret = "";
+
+					ret += '<span class="event-info-people-title">' + title + '</span><div class="event-split"></div>';
+
+					if (!users.length) {
+						ret += '<span class="event-info-people-title">none</span>';
+						return ret;
+					}
+
+					for (var i = 0; i < users.length; i++) {
+						ret += genHeaderBox(users[i]);
+					}
+
+					return ret;
+				}
+
+				function initPeopleBox(uuids, name, anchor) {
+					anchor.html("");
+
+					if (!uuids.length) {
+						anchor.append(genPeopleBox([], name));
+						return;
+					}
+
+					for (var i = 0, tmp = []; i < uuids.length; i++) {
+						FCAuth.get("/user/info", { uuid: uuids[i] },
+							(i == uuids.length - 1 ?
+							
+							(function (suc, dat) {
+								if (suc) {
+									tmp.push(dat);
+								} else {
+									console.log("failed to get user: " + dat);
+								}
+
+								anchor.append(genPeopleBox(tmp, name));
+							}) :
+
+							(function (suc, dat) {
+								if (suc) {
+									tmp.push(dat);
+								} else {
+									console.log("failed to get user: " + dat);
+								}
+							}))
+						);
+					}
+				}
+
 				function setInfo(dat) {
 					$("#event-info-title").html(dat.title);
 
@@ -164,6 +281,10 @@
 					$("#event-info-descr").html(dat.descr.replace("\n", "<br>") || "no description");
 
 					vcent.update();
+
+					initPeopleBox(dat.org, "organizers", $("#event-info-people-org"));
+					initPeopleBox(dat.staff, "staffs", $("#event-info-people-staff"));
+					initPeopleBox(dat.partic, "participants", $("#event-info-people-partic"));
 				}
 
 				function updateInfo() {

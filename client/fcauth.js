@@ -207,4 +207,8 @@ window.FCAuth = {};
 			return cb(true, JSON.parse(FCAuth.aesdec(dat.res, sid)));
 		});
 	};
+
+	FCAuth.download = function (chsum) {
+		return "/file/download?chsum=" + chsum;
+	};
 })();

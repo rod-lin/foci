@@ -69,3 +69,11 @@ body {
 .com-button-green:hover {
 	background: #2ECC71;
 }
+
+.com-button-blue {
+	background: #2980B9;
+}
+
+.com-button-blue:hover {
+	background: #3498DB;
+}
