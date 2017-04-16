@@ -17,6 +17,10 @@ exports.auth = util.route(async env => {
 	env.qsuc(auth.rsa.getAuthKey());
 });
 
+exports.favtag = util.route(async env => {
+	env.qsuc(config.lim.favtag);
+});
+
 var _user = {};
 var _pub = {};
 
@@ -137,6 +141,11 @@ _event.info = util.route(async env => {
 	var args = util.checkArg(env.query, { "euid": "number" });
 	var ev = await event.euid(args.euid);
 	env.qsuc(ev.getInfo());
+});
+
+_event.search = util.route(async env => {
+	var args = util.checkArg(env.query, event.Event.format.search, true);
+	env.qsuc(await event.search(args));
 });
 
 var _file = {};

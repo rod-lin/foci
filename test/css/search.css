@@ -1,0 +1,149 @@
+body {
+	background: #F3F3F3;
+	font-family: Ubuntu;
+}
+
+#search-main {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	background: #333B8D;
+}
+
+#search-main-box {
+	text-align: center;
+	transition: top 0.3s;
+}
+
+.search-foci {
+	font-family: Alegreya;
+	font-weight: bold;
+
+	color: #313131;
+	cursor: default;
+
+	user-select: none;
+	-moz-user-select: none;
+}
+
+.search-search-input {
+	display: inline-block;
+
+	padding: 0;
+	margin: 0;
+	border: 0;
+	background: none;
+	outline: none;
+
+	width: 100%;
+
+	font-size: 4em;
+
+	padding: 0.5em;
+
+	background: #242963;
+	color: white;
+
+	font-family: Alegreya;
+	font-weight: bold;
+
+	text-align: center;
+
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+.search-search-box {
+	display: inline-block;
+	
+	width: 40em;
+	max-width: 80%;
+
+	text-align: left;
+	border-radius: 4px;
+
+	overflow: hidden;
+}
+
+.search-favtag {
+	display: inline-block;
+	
+	padding: 0.7em;
+	font-size: 1.5em;
+	color: white;
+
+	cursor: pointer;
+
+	background: #2980B9;
+	color: #D8D8D8;
+
+	transition: background 0.3s;
+
+	vertical-align: top;
+
+	user-select: none;
+	-moz-user-select: none;
+}
+
+.search-favtag-odd {
+	background: #236FA1;
+}
+
+.search-favtag-add {
+	background: #2F93D4;
+	cursor: default;
+}
+
+#search-favtag-add-icon {
+	cursor: pointer;
+}
+
+.search-favtag:hover:not(.search-favtag-selected):not(.search-favtag-add) {
+	background: #3498DB;
+}
+
+.search-favtag-selected {
+	background: #242963;
+}
+
+#search-favtag-add-form {
+	display: none;
+	padding-top: 0.5em;
+}
+
+.search-favtag-add-open > #search-favtag-add-form {
+	display: block;
+}
+
+.search-input {
+	display: inline-block;
+
+	padding: 0;
+	margin: 0;
+	border: 0;
+	background: none;
+	outline: none;
+
+	background: #236D9E;
+	color: white;
+	
+	padding: 0.7em 0.8em;
+	margin: 0.2em 0;
+
+	font-size: 0.8em;
+	font-weight: bold;
+
+	border-radius: 3px;
+}
+
+@media only screen and (max-width: 600px) {
+	body {
+		font-size: 10px;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	body {
+		font-size: 7px;
+	}
+}

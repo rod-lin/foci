@@ -27,6 +27,8 @@ app.get("/test", util.route(async env => {
 /* official api */
 app.get("/auth", int.auth);
 
+app.get("/favtag", int.favtag);
+
 app.get("/user/new", int.user.new);
 app.get("/user/login", int.user.login);
 app.get("/user/csid", int.user.csid);
@@ -35,6 +37,7 @@ app.get("/user/org", int.user.org);
 app.get("/user/encop", int.user.encop);
 
 app.get("/event/info", int.event.info);
+app.get("/event/search", int.event.search);
 
 app.post("/file/upload", int.file.upload);
 app.get("/file/download", int.file.download);

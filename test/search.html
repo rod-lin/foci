@@ -1,0 +1,131 @@
+<!-- search -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+		<link rel="stylesheet" href="font/fontawesome/import.css">
+		<link rel="stylesheet" href="font/ubuntu/import.css">
+		<link rel="stylesheet" href="font/alegreya/import.css">
+
+		<link rel="stylesheet" href="css/com.css">
+		<link rel="stylesheet" href="css/search.css">
+	</head>
+	
+	<body>
+		<div id="search-main">
+			<div id="search-main-box" class="vcenter" style="margin-top: -3%;">
+				<!-- <div class="search-foci" style="font-size: 8em;">
+					F<span class="fa fa-cog" style="font-size: 70%;"></span>ci
+				</div> -->
+				<!-- idea from https://tympanus.net/Development/SearchUIEffects/index8.html -->
+				<div id="search-main-search-box" class="search-search-box">
+					<input id="search-main-search-input" class="search-search-input" placeholder="Type for surprise"></input><br>
+					<!-- <div class="search-favtag">Tech</div> -->
+				</div>
+			</div>
+		</div>
+
+		<form id="search-favtag-add-form">
+			<input class="search-input" placeholder="from"></input><br>
+			<input class="search-input" placeholder="to"></input>
+		</form>
+
+		<script src="fcauth.js"></script>
+		<script src="vcent.js"></script>
+		<script>
+			"use strict";
+
+			Array.prototype.choose = function () {
+				return this[Math.floor(Math.random() * this.length)];
+			};
+
+			function jump(url) {
+				window.location = url;
+			};
+
+			window.onload = function () {
+				function genTag(tag, odd, id) {
+					return '<div ' + (id ? "id = '" + id + "'" : "") + ' class="search-favtag ' + (odd ? "search-favtag-odd" : "") + '">' + tag + '</div>';
+				}
+
+				function pop(msg) {
+					alert(msg);
+				}
+
+				var search_query = { favtag: [] };
+
+				$("#search-main-search-input").keydown(function (e) {
+					if (e.keyCode == 13) {
+						search_query.kw = $(this).val();
+
+						FCAuth.get("/event/search", search_query, function (suc, dat) {
+							if (suc) {
+								pop(dat);
+							} else {
+								pop(dat);
+							}
+						});
+					}
+				});
+
+				$("#search-main-search-input").focus();
+
+				FCAuth.get("/favtag", {}, function (suc, dat) {
+					if (suc) {
+						var i;
+
+						for (i = 0; i < dat.length; i++) {
+							$("#search-main-search-box").append(genTag(dat[i], i % 2));
+						}
+
+						$(".search-favtag").click(function () {
+							if ($(this).hasClass("search-favtag-selected")) {
+								var index = search_query.favtag.indexOf($(this).html());
+								if (index != -1)
+									search_query.favtag.splice(index, 1);
+							} else {
+								search_query.favtag.push($(this).html());
+							}
+
+							console.log(search_query);
+
+							$(this).toggleClass("search-favtag-selected");
+						});
+
+						$("#search-main-search-box").append(genTag("<span id='search-favtag-add-icon' class='fa fa-plus'></span>", i % 2, "search-favtag-add"));
+
+						var add_state = false; // closed
+					
+						$("#search-favtag-add-icon")
+							.click(function () {
+								if (!add_state) return;
+								add_state = false;
+								vcent.update();
+							});
+
+						$("#search-favtag-add")
+							.click(function () {
+								if (add_state) return;
+								add_state = true;
+
+								$("#search-favtag-add-icon")
+									.toggleClass("fa-plus")
+									.toggleClass("fa-check");
+
+								$(this).toggleClass("search-favtag-add-open").toggleClass("search-favtag-add");
+								vcent.update();
+							})
+							.append($("#search-favtag-add-form")[0]);
+
+						vcent.update();
+					} else {
+						pop(dat);
+					}
+				});
+			};
+		</script>
+	</body>
+</html>
