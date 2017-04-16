@@ -87,32 +87,37 @@
 
 				function initResults(dat) {
 					// alert(dat.length);
+					$("#search-result-cont").html("");
 
 					for (var i = 0; i < dat.length; i++) {
 						$("#search-result-cont").append(genResult(dat[i]));
 					}
 
-					$("#search-main").toggleClass("search-main-hide");
+					$("#search-main").addClass("search-main-hide");
 				}
 
-				var search_query = { favtag: [] };
-
-				$("#search-main-search-input").keydown(function (e) {
+				function searchKeydown(e) {
 					if (e.keyCode == 13) {
 						search_query.kw = $(this).val();
 
 						FCAuth.get("/event/search", search_query, function (suc, dat) {
 							if (suc) {
 								$("#search-result-search-box-input").val(search_query.kw);
+								search_query = { favtag: [] };
 								initResults(dat);
 							} else {
 								pop(dat);
 							}
 						});
 					}
-				});
+				}
 
+				var search_query = { favtag: [] };
+
+				$("#search-main-search-input").keydown(searchKeydown);
 				$("#search-main-search-input").focus();
+
+				$("#search-result-search-box-input").keydown(searchKeydown);
 
 				FCAuth.get("/favtag", {}, function (suc, dat) {
 					if (suc) {
