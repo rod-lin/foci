@@ -15,6 +15,24 @@
 	</head>
 	
 	<body>
+		<div id="search-result">
+			<div id="search-result-search-box">
+				<input id="search-result-search-box-input" class="search-result-search-box-input" />
+			</div>
+			<div id="search-result-cont">
+				<!-- <div class="search-result-box">
+					<div class="search-result-box-pic" style="background-image: url('img/deficon.jpg');"></div>
+					<div class="search-result-box-cont">
+						<span id="search-result-box-title" class="vcenter">Hello</span>
+					</div>
+				</div>
+				<div class="search-result-box"></div>
+				<div class="search-result-box"></div>
+				<div class="search-result-box"></div>
+				<div class="search-result-box"></div> -->
+			</div>
+		</div>
+
 		<div id="search-main">
 			<div id="search-main-box" class="vcenter" style="margin-top: -3%;">
 				<!-- <div class="search-foci" style="font-size: 8em;">
@@ -22,15 +40,15 @@
 				</div> -->
 				<!-- idea from https://tympanus.net/Development/SearchUIEffects/index8.html -->
 				<div id="search-main-search-box" class="search-search-box">
-					<input id="search-main-search-input" class="search-search-input" placeholder="Type for surprise"></input><br>
+					<input id="search-main-search-input" class="search-search-input" placeholder="Type for surprise" /><br>
 					<!-- <div class="search-favtag">Tech</div> -->
 				</div>
 			</div>
 		</div>
 
 		<form id="search-favtag-add-form">
-			<input class="search-input" placeholder="from"></input><br>
-			<input class="search-input" placeholder="to"></input>
+			<input class="search-input" placeholder="from" /><br>
+			<input class="search-input" placeholder="to" />
 		</form>
 
 		<script src="fcauth.js"></script>
@@ -48,11 +66,33 @@
 
 			window.onload = function () {
 				function genTag(tag, odd, id) {
-					return '<div ' + (id ? "id = '" + id + "'" : "") + ' class="search-favtag ' + (odd ? "search-favtag-odd" : "") + '">' + tag + '</div>';
+					return '<div ' + (id ? "id='" + id + "'" : "") + ' class="search-favtag ' + (odd ? "search-favtag-odd" : "") + '">' + tag + '</div>';
+				}
+
+				function genResult(e) {
+					return ' \
+					<div class="search-result-box" onclick="jump(\'/test/event.html#' + e.euid + '\')"> \
+						<div class="search-result-box-pic" style="background-image: url(\'' +
+							(e.logo ? FCAuth.download(e.logo) : "img/deficon.jpg")
+							+ '\');"></div> \
+						<div class="search-result-box-cont"> \
+							<span id="search-result-box-title" class="vcenter">' + e.title + '</span> \
+						</div> \
+					</div>';
 				}
 
 				function pop(msg) {
 					alert(msg);
+				}
+
+				function initResults(dat) {
+					// alert(dat.length);
+
+					for (var i = 0; i < dat.length; i++) {
+						$("#search-result-cont").append(genResult(dat[i]));
+					}
+
+					$("#search-main").toggleClass("search-main-hide");
 				}
 
 				var search_query = { favtag: [] };
@@ -63,7 +103,8 @@
 
 						FCAuth.get("/event/search", search_query, function (suc, dat) {
 							if (suc) {
-								pop(dat);
+								$("#search-result-search-box-input").val(search_query.kw);
+								initResults(dat);
 							} else {
 								pop(dat);
 							}
@@ -98,26 +139,29 @@
 						$("#search-main-search-box").append(genTag("<span id='search-favtag-add-icon' class='fa fa-plus'></span>", i % 2, "search-favtag-add"));
 
 						var add_state = false; // closed
+						var toggle_form = function () {
+							$("#search-favtag-add-icon")
+								.toggleClass("fa-plus")
+								.toggleClass("fa-check");
+
+							$("#search-favtag-add")
+								.toggleClass("search-favtag-add-open");
+							
+							vcent.update();
+
+							// to avoid event bubbling
+							setTimeout(function () {
+								add_state = !add_state;
+								if (add_state) $("#search-favtag-add").unbind("click");
+								else $("#search-favtag-add").click(toggle_form);
+							}, 0);
+						};
 					
 						$("#search-favtag-add-icon")
-							.click(function () {
-								if (!add_state) return;
-								add_state = false;
-								vcent.update();
-							});
+							.click(toggle_form);
 
 						$("#search-favtag-add")
-							.click(function () {
-								if (add_state) return;
-								add_state = true;
-
-								$("#search-favtag-add-icon")
-									.toggleClass("fa-plus")
-									.toggleClass("fa-check");
-
-								$(this).toggleClass("search-favtag-add-open").toggleClass("search-favtag-add");
-								vcent.update();
-							})
+							.click(toggle_form)
 							.append($("#search-favtag-add-form")[0]);
 
 						vcent.update();

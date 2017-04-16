@@ -25,5 +25,14 @@ vcent.update = function () {
 	return;
 };
 
+vcent.reset = function (com) {
+	if (com.hasClass("vcenter") ||
+		com.hasClass("avcenter")) {
+		com.removeClass("vcenter");
+		com.removeClass("avcenter");
+		com.css("top", "0");
+	}
+};
+
 window.addEventListener("load", vcent.update);
 window.addEventListener("resize", vcent.update);
