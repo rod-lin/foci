@@ -34,5 +34,6 @@ vcent.reset = function (com) {
 	}
 };
 
+vcent.update();
 window.addEventListener("load", vcent.update);
 window.addEventListener("resize", vcent.update);

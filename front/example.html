@@ -1,0 +1,53 @@
+<!-- example -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+		<script src="fcauth.js"></script>
+		<script src="vcent.js"></script>
+
+		<link rel="stylesheet" href="font/fontawesome/import.css">
+		<link rel="stylesheet" href="font/ubuntu/import.css">
+		<link rel="stylesheet" href="font/alegreya/import.css">
+
+		<link rel="stylesheet" href="/semantic/semantic.min.css">
+		<script type="text/javascript" src="/semantic/semantic.min.js"></script>
+
+		<link rel="stylesheet" href="/semantic/components/rating.min.css">
+		<script type="text/javascript" src="/semantic/components/rating.min.js"></script>
+	</head>
+
+	<body>
+		<div class="ui card" style="margin: 2em;">
+			<div class="image">
+				<!-- <div class="ui active dimmer">
+					<div class="ui text loader">Loading</div>
+				</div> -->
+				<img src="img/deficon.jpg">
+			</div>
+			<div class="content">
+				<a class="header">Kristy</a>
+				<div class="meta">
+					<span class="date">Joined in 2013</span>
+				</div>
+				<div class="description">
+					Kristy is an art director living in New York.
+				</div>
+			</div>
+			<div class="extra content">
+				<a>
+					<i class="user icon"></i>
+					22 Friends
+				</a>
+				<div class="ui star rating" data-max-rating="5"></div>
+			</div>
+		</div>
+
+		<script>
+			$(".ui.rating").rating();
+		</script>
+	</body>
+</html>

@@ -1,6 +1,6 @@
 "use strict";
 
-window.JQuery = window.$ = require("jquery");
+window.jQuery = window.$ = require("jquery");
 window.FCAuth = {};
 
 (function () {

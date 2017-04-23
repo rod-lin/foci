@@ -75,7 +75,8 @@ app.get("/user/test/echo", util.route(async env => {
 	env.qsuc(query);
 }));
 
-app.use("/test", express.static("test"));
+app.use("/", express.static("front"));
+app.use("/semantic", express.static("semantic/dist"));
 
 var server = app.listen(config.port, function () {
 	var host = server.address().address;
