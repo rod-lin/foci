@@ -14,13 +14,17 @@
 		<link rel="stylesheet" href="font/alegreya/import.css">
 
 		<link rel="stylesheet" href="/semantic/semantic.min.css">
-		<script type="text/javascript" src="/semantic/semantic.min.js"></script>
+		<script src="/semantic/semantic.min.js"></script>
 
 		<link rel="stylesheet" href="/semantic/components/rating.min.css">
-		<script type="text/javascript" src="/semantic/components/rating.min.js"></script>
-	</head>
+		<script src="/semantic/components/rating.min.js"></script>
 
-	<body>
+		<link rel="stylesheet" href="com/ubar/import.css">
+		<script src="com/ubar/import.js"></script>
+
+		<link rel="stylesheet" href="com/tbar/import.css">
+		<script src="com/tbar/import.js"></script>
+
 		<style>
 			body {
 				font-family: Alegreya;
@@ -32,192 +36,119 @@
 				top: 0;
 				height: 100%;
 				width: 100%;
-
-				border-bottom: 5em solid white;
-
-				overflow: auto;
-				overflow-x: hidden;
 			}
 
-			.cont .shadow {
-				z-index: 10000;
-				position: fixed;
-
-				height: 100%;
-				width: 100%;
-				pointer-events: none;
-
-				border-bottom: 5em solid white;
-				box-shadow: 0 -1em 1em white inset;
+			.card {
 			}
 
-			.control-bar {
-				position: fixed;
-				
-				height: 4em;
-
-				bottom: 1em;
-				left: 1em;
-
-				cursor: pointer;
-
-				/*background: rgba(255, 255, 255, 0.46);
-				box-shadow: 0 0 3em rgba(255, 255, 255, 1);*/
-			}
-
-			.control-bar .avatar {
-				display: inline-block;
-
-				height: 4em;
-				width: 4em;
-
-				border-radius: 50%;
-
-				background-repeat: no-repeat;
-				background-size: cover;
-				background-position: 50% 50%;
-
-				box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
-			}
-
-			.control-bar .ratings {
-				display: inline-block;
-				margin-left: 0.5em;
-				vertical-align: top;
-			}
-
-			.control-bar .title {
-				font-size: 130%;
-			}
-
-			.control-bar .ui.search {
-				display: inline-block;
-				margin-left: 0.5em;
+			.card-set {
+				text-align: center;
+				padding: 0.5em 0;
 			}
 		</style>
+	</head>
 
-		<div class="cont">
-			<div class="shadow"></div>
-
-			<div class="ui card" style="margin: 2em;">
-				<div class="image">
-					<!-- <div class="ui active dimmer">
-						<div class="ui text loader">Loading</div>
-					</div> -->
-					<img src="img/deficon.jpg">
+	<body>
+		<!-- <div class="ui relaxed grid">
+			<div class="four column row">
+				<div class="column">
+					<span class="ui card">
+						<div class="image">
+							<img src="img/deficon.jpg">
+						</div>
+						<div class="content">
+							<a class="header">Kristy</a>
+							<div class="meta">
+								<span class="date">Joined in 2013</span>
+							</div>
+							<div class="description">
+								Kristy is an art director living in New York.
+							</div>
+						</div>
+						<div class="extra content">
+							<a>
+								<i class="user icon"></i>
+								22 Friends
+							</a>
+							<div class="ui star rating" data-max-rating="5"></div>
+						</div>
+					</span>
 				</div>
-				<div class="content">
-					<a class="header">Kristy</a>
-					<div class="meta">
-						<span class="date">Joined in 2013</span>
-					</div>
-					<div class="description">
-						Kristy is an art director living in New York.
-					</div>
+				<div class="column">
+					<span class="ui card">
+						<div class="image">
+							<img src="img/deficon.jpg">
+						</div>
+						<div class="content">
+							<a class="header">Kristy</a>
+							<div class="meta">
+								<span class="date">Joined in 2013</span>
+							</div>
+							<div class="description">
+								Kristy is an art director living in New York.
+							</div>
+						</div>
+						<div class="extra content">
+							<a>
+								<i class="user icon"></i>
+								22 Friends
+							</a>
+							<div class="ui star rating" data-max-rating="5"></div>
+						</div>
+					</span>
 				</div>
-				<div class="extra content">
-					<a>
-						<i class="user icon"></i>
-						22 Friends
-					</a>
-					<div class="ui star rating" data-max-rating="5"></div>
+				<div class="column">
+					<span class="ui card">
+						<div class="image">
+							<img src="img/deficon.jpg">
+						</div>
+						<div class="content">
+							<a class="header">Kristy</a>
+							<div class="meta">
+								<span class="date">Joined in 2013</span>
+							</div>
+							<div class="description">
+								Kristy is an art director living in New York.
+							</div>
+						</div>
+						<div class="extra content">
+							<a>
+								<i class="user icon"></i>
+								22 Friends
+							</a>
+							<div class="ui star rating" data-max-rating="5"></div>
+						</div>
+					</span>
 				</div>
-			</div>
-			<div class="ui card" style="margin: 2em;">
-				<div class="image">
-					<!-- <div class="ui active dimmer">
-						<div class="ui text loader">Loading</div>
-					</div> -->
-					<img src="img/deficon.jpg">
-				</div>
-				<div class="content">
-					<a class="header">Kristy</a>
-					<div class="meta">
-						<span class="date">Joined in 2013</span>
-					</div>
-					<div class="description">
-						Kristy is an art director living in New York.
-					</div>
-				</div>
-				<div class="extra content">
-					<a>
-						<i class="user icon"></i>
-						22 Friends
-					</a>
-					<div class="ui star rating" data-max-rating="5"></div>
-				</div>
-			</div>
-			<div class="ui card" style="margin: 2em;">
-				<div class="image">
-					<!-- <div class="ui active dimmer">
-						<div class="ui text loader">Loading</div>
-					</div> -->
-					<img src="img/deficon.jpg">
-				</div>
-				<div class="content">
-					<a class="header">Kristy</a>
-					<div class="meta">
-						<span class="date">Joined in 2013</span>
-					</div>
-					<div class="description">
-						Kristy is an art director living in New York.
-					</div>
-				</div>
-				<div class="extra content">
-					<a>
-						<i class="user icon"></i>
-						22 Friends
-					</a>
-					<div class="ui star rating" data-max-rating="5"></div>
-				</div>
-			</div>
-			<div class="ui card" style="margin: 2em;">
-				<div class="image">
-					<!-- <div class="ui active dimmer">
-						<div class="ui text loader">Loading</div>
-					</div> -->
-					<img src="img/deficon.jpg">
-				</div>
-				<div class="content">
-					<a class="header">Kristy</a>
-					<div class="meta">
-						<span class="date">Joined in 2013</span>
-					</div>
-					<div class="description">
-						Kristy is an art director living in New York.
-					</div>
-				</div>
-				<div class="extra content">
-					<a>
-						<i class="user icon"></i>
-						22 Friends
-					</a>
-					<div class="ui star rating" data-max-rating="5"></div>
+				<div class="column">
+					<span class="ui card">
+						<div class="image">
+							<img src="img/deficon.jpg">
+						</div>
+						<div class="content">
+							<a class="header">Kristy</a>
+							<div class="meta">
+								<span class="date">Joined in 2013</span>
+							</div>
+							<div class="description">
+								Kristy is an art director living in New York.
+							</div>
+						</div>
+						<div class="extra content">
+							<a>
+								<i class="user icon"></i>
+								22 Friends
+							</a>
+							<div class="ui star rating" data-max-rating="5"></div>
+						</div>
+					</span>
 				</div>
 			</div>
-		</div>
-
-
-		<!-- control bar -->
-		<div class="control-bar" data-html="Hello">
-			<div class="avatar" style="background-image: url('img/deficon.jpg');"></div>
-			<div class="ratings">
-				<div class="title">Rodlin</div>
-				<div class="ui star mini rating" data-rating="4" data-max-rating="5"></div>
-			</div>
-
-			<div class="ui search avcenter">
-				<div class="ui icon input">
-					<input class="prompt" placeholder="Common passwords..." type="text">
-					<i class="search icon"></i>
-				</div>
-				<div class="results"></div>
-			</div>
-		</div>
+		</div> -->
 
 		<script>
-			$(".control-bar .ui.rating").rating('disable');
-			$(".control-bar").popup();
+			fcom.ubar.init();
+			fcom.tbar.init();
 		</script>
 	</body>
 </html>

@@ -1,0 +1,35 @@
+/* com user bar */
+
+.com-ubar {
+	z-index: 10000;
+	position: fixed;
+
+	bottom: 1em;
+	right: 1em;
+}
+
+.com-ubar .avatar {
+	height: 4em;
+	width: 4em;
+
+	cursor: pointer;
+
+	border-radius: 50%;
+
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+
+	/* TODO */
+	transition: box-shadow 0.5s;
+}
+
+.com-ubar .avatar:hover {
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+}
+
+.com-ubar .title {
+	font-size: 130%;
+}
