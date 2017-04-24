@@ -4,9 +4,14 @@ var source = require("vinyl-source-stream");
 var uglify = require("gulp-uglify");
 var gulp = require("gulp");
 
-require("./semantic/gulpfile");
+var
+	sem_watch = require('./semantic/tasks/watch'),
+	sem_build = require('./semantic/tasks/build');
 
-gulp.task("all", [ "build" ], () => {
+gulp.task("watch ui", sem_watch);
+gulp.task("build ui", sem_build);
+
+gulp.task("build", [ "build ui" ], () => {
 	var comp = file =>
 		browserify("client/" + file)
 		.bundle()
@@ -19,4 +24,6 @@ gulp.task("all", [ "build" ], () => {
 	comp("vcent.js");
 });
 
-gulp.task("default", [ "watch" ]);
+gulp.task("watch", [ "watch ui" ]);
+
+gulp.task("default", [ "build" ]);
