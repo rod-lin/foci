@@ -13,142 +13,63 @@
 		<link rel="stylesheet" href="font/ubuntu/import.css">
 		<link rel="stylesheet" href="font/alegreya/import.css">
 
+		<link rel="stylesheet" href="css/com.css">
+
 		<link rel="stylesheet" href="/semantic/semantic.min.css">
 		<script src="/semantic/semantic.min.js"></script>
 
 		<link rel="stylesheet" href="/semantic/components/rating.min.css">
 		<script src="/semantic/components/rating.min.js"></script>
 
-		<link rel="stylesheet" href="com/ubar/import.css">
-		<script src="com/ubar/import.js"></script>
-
 		<link rel="stylesheet" href="com/tbar/import.css">
 		<script src="com/tbar/import.js"></script>
+
+		<link rel="stylesheet" href="com/waterfall/import.css">
+		<script src="com/waterfall/import.js"></script>
+
+		<link rel="stylesheet" href="com/xfilt/import.css">
+		<script src="com/xfilt/import.js"></script>
+
+		<link rel="stylesheet" href="com/event/import.css">
+		<script src="com/event/import.js"></script>
 
 		<style>
 			body {
 				font-family: Alegreya;
+				line-height: normal;
 			}
 
-			.cont {
-				position: fixed;
-				left: 0;
-				top: 0;
-				height: 100%;
+			.cards {
+				position: relative;
 				width: 100%;
 			}
 
-			.card {
-			}
-
-			.card-set {
-				text-align: center;
-				padding: 0.5em 0;
+			.cards .card {
+				transition: left 0.2s, top 0.2s;
 			}
 		</style>
 	</head>
 
 	<body>
-		<!-- <div class="ui relaxed grid">
-			<div class="four column row">
-				<div class="column">
-					<span class="ui card">
-						<div class="image">
-							<img src="img/deficon.jpg">
-						</div>
-						<div class="content">
-							<a class="header">Kristy</a>
-							<div class="meta">
-								<span class="date">Joined in 2013</span>
-							</div>
-							<div class="description">
-								Kristy is an art director living in New York.
-							</div>
-						</div>
-						<div class="extra content">
-							<a>
-								<i class="user icon"></i>
-								22 Friends
-							</a>
-							<div class="ui star rating" data-max-rating="5"></div>
-						</div>
-					</span>
-				</div>
-				<div class="column">
-					<span class="ui card">
-						<div class="image">
-							<img src="img/deficon.jpg">
-						</div>
-						<div class="content">
-							<a class="header">Kristy</a>
-							<div class="meta">
-								<span class="date">Joined in 2013</span>
-							</div>
-							<div class="description">
-								Kristy is an art director living in New York.
-							</div>
-						</div>
-						<div class="extra content">
-							<a>
-								<i class="user icon"></i>
-								22 Friends
-							</a>
-							<div class="ui star rating" data-max-rating="5"></div>
-						</div>
-					</span>
-				</div>
-				<div class="column">
-					<span class="ui card">
-						<div class="image">
-							<img src="img/deficon.jpg">
-						</div>
-						<div class="content">
-							<a class="header">Kristy</a>
-							<div class="meta">
-								<span class="date">Joined in 2013</span>
-							</div>
-							<div class="description">
-								Kristy is an art director living in New York.
-							</div>
-						</div>
-						<div class="extra content">
-							<a>
-								<i class="user icon"></i>
-								22 Friends
-							</a>
-							<div class="ui star rating" data-max-rating="5"></div>
-						</div>
-					</span>
-				</div>
-				<div class="column">
-					<span class="ui card">
-						<div class="image">
-							<img src="img/deficon.jpg">
-						</div>
-						<div class="content">
-							<a class="header">Kristy</a>
-							<div class="meta">
-								<span class="date">Joined in 2013</span>
-							</div>
-							<div class="description">
-								Kristy is an art director living in New York.
-							</div>
-						</div>
-						<div class="extra content">
-							<a>
-								<i class="user icon"></i>
-								22 Friends
-							</a>
-							<div class="ui star rating" data-max-rating="5"></div>
-						</div>
-					</span>
-				</div>
-			</div>
-		</div> -->
+		<div class="cont" style="width: 100%;">
+		</div>
 
 		<script>
-			fcom.ubar.init();
 			fcom.tbar.init();
+
+			var ev = fcom.event.init(".cont");
+
+			FCAuth.get("/event/search", {}, function (suc, dat) {
+				if (suc) {
+					ev.hide();
+					for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
+					ev.show();
+				} else {
+					alert(dat);
+				}
+			});
+
+			// wf1.add("<span>hi</span>");
 		</script>
 	</body>
 </html>

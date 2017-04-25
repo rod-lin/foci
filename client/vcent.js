@@ -5,7 +5,7 @@ window.vcent = {};
 vcent.update = function () {
 	var e = $(".vcenter");
 	var i;
-	var cent = function (pr, e) { e.css("top", ((pr.height() - e.height()) / 2) + "px"); };
+	var cent = function (pr, e) { e.css("top", ((pr.innerHeight() - e.height()) / 2) + "px"); };
 
 	e.css("position", "relative");
 

@@ -1,0 +1,21 @@
+/* com user bar */
+
+.com-events {
+	position: relative;
+	width: 100%;
+
+	margin-top: 1em;
+
+	transition: opacity 0.3s;
+}
+
+.com-events.hide {
+	opacity: 0;
+}
+
+.com-events .event {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transition: left 0.2s, top 0.2s;
+}

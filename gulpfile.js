@@ -8,22 +8,22 @@ var
 	sem_watch = require('./semantic/tasks/watch'),
 	sem_build = require('./semantic/tasks/build');
 
-gulp.task("watch ui", sem_watch);
-gulp.task("build ui", sem_build);
+gulp.task("watch-ui", sem_watch);
+gulp.task("build-ui", sem_build);
 
-gulp.task("build", [ "build ui" ], () => {
+gulp.task("build-client", () => {
 	var comp = file =>
 		browserify("client/" + file)
 		.bundle()
 		.pipe(source(file))
 		.pipe(streamify(uglify()))
-		.pipe(gulp.dest("test/"))
 		.pipe(gulp.dest("front/"));
 
 	comp("fcauth.js");
 	comp("vcent.js");
 });
 
-gulp.task("watch", [ "watch ui" ]);
+gulp.task("build", [ "build-client", "build-ui" ]);
 
+gulp.task("watch", [ "watch-ui" ]);
 gulp.task("default", [ "build" ]);
