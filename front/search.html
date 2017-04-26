@@ -54,7 +54,7 @@
 			<input class="search-input" placeholder="to" />
 		</form>
 
-		<script src="fcauth.js"></script>
+		<script src="foci.js"></script>
 		<script src="vcent.js"></script>
 		<script>
 			"use strict";
@@ -76,7 +76,7 @@
 					return ' \
 					<div class="search-result-box" onclick="jump(\'/test/event.html#' + e.euid + '\')"> \
 						<div class="search-result-box-pic" style="background-image: url(\'' +
-							(e.logo ? FCAuth.download(e.logo) : "img/deficon.jpg")
+							(e.logo ? foci.download(e.logo) : "img/deficon.jpg")
 							+ '\');"></div> \
 						<div class="search-result-box-cont"> \
 							<span id="search-result-box-title" class="vcenter">' + e.title + '</span> \
@@ -103,7 +103,7 @@
 					if (e.keyCode == 13) {
 						search_query.kw = $(this).val();
 
-						FCAuth.get("/event/search", search_query, function (suc, dat) {
+						foci.get("/event/search", search_query, function (suc, dat) {
 							if (suc) {
 								$("#search-result-search-box-input").val(search_query.kw);
 								search_query = { favtag: [] };
@@ -122,7 +122,7 @@
 
 				$("#search-result-search-box-input").keydown(searchKeydown);
 
-				FCAuth.get("/favtag", {}, function (suc, dat) {
+				foci.get("/favtag", {}, function (suc, dat) {
 					if (suc) {
 						var i;
 

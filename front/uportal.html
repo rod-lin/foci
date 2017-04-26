@@ -95,7 +95,7 @@
 			</div>
 		</div>
 
-		<script src="fcauth.js"></script>
+		<script src="foci.js"></script>
 		<script src="vcent.js"></script>
 		<script>
 			Array.prototype.choose = function () {
@@ -137,7 +137,7 @@
 				};
 
 				var loadInfo = function (cb) {
-					FCAuth.encop(gsession, {
+					foci.encop(gsession, {
 						int: "info",
 						action: "get"
 					}, function (suc, dat) {
@@ -157,7 +157,7 @@
 						if (cb) cb();
 					});
 
-					FCAuth.get("/user/org", { uuid: gsession.getUUID() }, function (suc, dat) {
+					foci.get("/user/org", { uuid: gsession.getUUID() }, function (suc, dat) {
 						if (suc) {
 							if (!dat.length) {
 								showEventMsg("no event");
@@ -233,7 +233,7 @@
 
 				var gsession = null;
 
-				FCAuth.qlogin(function (suc, dat) {
+				foci.qlogin(function (suc, dat) {
 					if (suc) {
 						gsession = dat;
 						hideLogin();
@@ -264,7 +264,7 @@
 
 					$("#port-create").html("<span class='fa fa-cog fa-spin'></span>");
 
-					FCAuth.login(uname, passwd, function (suc, dat) {
+					foci.login(uname, passwd, function (suc, dat) {
 						setTimeout(function () {
 							if (suc) {
 								gsession = dat;
@@ -287,7 +287,7 @@
 				var newev_euid = null;
 
 				$("#port-toolbox-1-add").click(function () {
-					FCAuth.encop(gsession, {
+					foci.encop(gsession, {
 						int: "event",
 						action: "new"
 					}, function (suc, dat) {
@@ -307,7 +307,7 @@
 						return;
 					}
 
-					FCAuth.encop(gsession, {
+					foci.encop(gsession, {
 						int: "event",
 						action: "setinfo",
 						euid: newev_euid,
@@ -340,9 +340,9 @@
 						$("#port-change-icon").removeClass("fa-spin");
 					};
 
-					FCAuth.post("/file/upload", form, function (suc, dat) {
+					foci.post("/file/upload", form, function (suc, dat) {
 						if (suc) {
-							FCAuth.encop(gsession, {
+							foci.encop(gsession, {
 								int: "info",
 								action: "set",
 								avatar: dat // check sum of the file

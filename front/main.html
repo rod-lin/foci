@@ -6,8 +6,9 @@
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-		<script src="fcauth.js"></script>
+		<script src="foci.js"></script>
 		<script src="vcent.js"></script>
+		<script src="require.js"></script>
 
 		<link rel="stylesheet" href="font/fontawesome/import.css">
 		<link rel="stylesheet" href="font/ubuntu/import.css">
@@ -22,16 +23,9 @@
 		<script src="/semantic/components/rating.min.js"></script>
 
 		<link rel="stylesheet" href="com/tbar/import.css">
-		<script src="com/tbar/import.js"></script>
-
 		<link rel="stylesheet" href="com/waterfall/import.css">
-		<script src="com/waterfall/import.js"></script>
-
 		<link rel="stylesheet" href="com/xfilt/import.css">
-		<script src="com/xfilt/import.js"></script>
-
 		<link rel="stylesheet" href="com/event/import.css">
-		<script src="com/event/import.js"></script>
 
 		<style>
 			body {
@@ -55,18 +49,21 @@
 		</div>
 
 		<script>
-			fcom.tbar.init();
+			require([ "com/tbar/import", "com/event/import" ], function (tbar, event) {
+				tbar.init();
+				vcent.update();
 
-			var ev = fcom.event.init(".cont");
+				var ev = event.init(".cont");
 
-			FCAuth.get("/event/search", {}, function (suc, dat) {
-				if (suc) {
-					ev.hide();
-					for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
-					ev.show();
-				} else {
-					alert(dat);
-				}
+				foci.get("/event/search", {}, function (suc, dat) {
+					if (suc) {
+						ev.hide();
+						for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
+						ev.show();
+					} else {
+						alert(dat);
+					}
+				});
 			});
 
 			// wf1.add("<span>hi</span>");

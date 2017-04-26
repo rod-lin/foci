@@ -1,19 +1,15 @@
 /* event */
 
-/* require jQuery, semantic, waterfall, FCAuth */
+define([ "com/xfilt/import", "com/waterfall/import" ], function (xfilt, waterfall) {
+	var $ = jQuery;
 
-if (!window.fcom) window.fcom = {};
-if (!window.fcom.waterfall) console.log("require waterfall com");
-if (!window.fcom.xfilt) console.log("require xfilt com");
-
-(function (com) {
-	com.init = function (cont) {
+	function init(cont) {
 		cont = $(cont);
 		var main = "<div class='com-events'></div>";
 		main = $(main);
 		cont.append(main);
 
-		var wf = fcom.waterfall.init(main);
+		var wf = waterfall.init(main);
 
 		function genDate(start, end) {
 			var ret = "";
@@ -35,10 +31,10 @@ if (!window.fcom.xfilt) console.log("require xfilt com");
 		function genEvent(info) {
 			return '<div class="ui card event"> \
 				<div class="image"> \
-					<img src="' + (info.logo ? FCAuth.download(info.logo) : "img/tmp1.jpg") + '"> \
+					<img src="' + (info.logo ? foci.download(info.logo) : "img/tmp1.jpg") + '"> \
 				</div> \
 				<div class="content"> \
-					<a class="header">' + fcom.xfilt(info.title) + '</a> \
+					<a class="header">' + xfilt(info.title) + '</a> \
 					<div class="meta"> \
 						<span class="date">' + genDate(info.start, info.end) + '</span> \
 					</div> \
@@ -82,4 +78,8 @@ if (!window.fcom.xfilt) console.log("require xfilt com");
 			}
 		};
 	};
-})(fcom.event = {});
+
+	return {
+		init: init
+	}
+});

@@ -19,7 +19,7 @@ gulp.task("build-client", () => {
 		.pipe(streamify(uglify()))
 		.pipe(gulp.dest("front/"));
 
-	comp("fcauth.js");
+	comp("foci.js");
 	comp("vcent.js");
 });
 

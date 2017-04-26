@@ -90,7 +90,7 @@
 			</span>
 		</div>
 
-		<script src="fcauth.js"></script>
+		<script src="foci.js"></script>
 		<script src="vcent.js"></script>
 		<script>
 			"use strict";
@@ -119,7 +119,7 @@
 							$("#event-info-descr").css("display", "");
 							$("#event-info-descr-edit").css("display", "none");
 
-							FCAuth.encop(gsession, {
+							foci.encop(gsession, {
 								int: "event",
 								action: "setinfo",
 								euid: euid,
@@ -160,7 +160,7 @@
 					var cont = btn.html();
 					btn.html("<span class='fa fa-cog fa-spin'></span>");
 
-					FCAuth.encop(gsession, {
+					foci.encop(gsession, {
 						int: "event",
 						action: "reg",
 						euid: euid,
@@ -215,7 +215,7 @@
 					return ' \
 					<div class="event-info-people-box"> \
 						<div class="event-info-people-icon" style="background-image: url(\'' +
-							(user.avatar ? FCAuth.download(user.avatar) : "img/deficon.jpg") +
+							(user.avatar ? foci.download(user.avatar) : "img/deficon.jpg") +
 						'\');"></div><br> \
 						<span class="event-info-people-dname">' + user.dname + '</span> \
 					</div>';
@@ -247,7 +247,7 @@
 					}
 
 					for (var i = 0, tmp = []; i < uuids.length; i++) {
-						FCAuth.get("/user/info", { uuid: uuids[i] },
+						foci.get("/user/info", { uuid: uuids[i] },
 							(i == uuids.length - 1 ?
 							
 							(function (suc, dat) {
@@ -287,7 +287,7 @@
 				}
 
 				function updateInfo() {
-					FCAuth.get("/event/info", { euid: euid }, function (suc, dat) {
+					foci.get("/event/info", { euid: euid }, function (suc, dat) {
 						if (suc) {
 							setInfo(dat);
 						} else {
@@ -303,10 +303,10 @@
 				else {
 					updateInfo();
 
-					FCAuth.qlogin(function (suc, dat) {
+					foci.qlogin(function (suc, dat) {
 						if (suc) {
 							gsession = dat;
-							FCAuth.encop(gsession, {
+							foci.encop(gsession, {
 								int: "event",
 								action: "own",
 								euid: euid

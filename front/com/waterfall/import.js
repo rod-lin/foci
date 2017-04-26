@@ -1,11 +1,7 @@
 /* water fall */
 
-/* require jQuery, semantic */
-
-if (!window.fcom) window.fcom = {};
-
-(function ($, com) {
-	com.init = function (cont /* parent container */, config) {
+define(function () {
+	function init(cont /* parent container */, config) {
 		config = $.extend({
 			gap: 10, /* px */
 			count: 5, /* max column count */
@@ -73,5 +69,9 @@ if (!window.fcom) window.fcom = {};
 			update: update,
 			add: add
 		};
-	};
-})(jQuery, fcom.waterfall = {});
+	}
+
+	return {
+		init: init
+	}
+});

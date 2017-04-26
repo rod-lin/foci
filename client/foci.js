@@ -1,7 +1,8 @@
 "use strict";
 
 window.jQuery = window.$ = require("jquery");
-window.FCAuth = {};
+window.foci = {};
+// window.com = {};
 
 (function () {
 	var NodeRSA = require("node-rsa");
@@ -55,8 +56,8 @@ window.FCAuth = {};
 		}, ext || {}));
 	};
 
-	FCAuth.sget = sendSync;
-	FCAuth.get = function (url, data, cb) {
+	foci.sget = sendSync;
+	foci.get = function (url, data, cb) {
 		sendAsync(url, data, function (suc, dat) {
 			if (!suc) return cb(false, "network error");
 			if (!dat.suc) return cb(false, dat.msg);
@@ -64,7 +65,7 @@ window.FCAuth = {};
 		});
 	};
 
-	FCAuth.post = function (url, data, cb) {
+	foci.post = function (url, data, cb) {
 		sendAsync(url, data, function (suc, dat) {
 			if (!suc) return cb(false, "network error");
 			if (!dat.suc) return cb(false, dat.msg);
@@ -72,7 +73,7 @@ window.FCAuth = {};
 		}, "POST", { cache: false, contentType: false, processData: false });
 	};
 
-	FCAuth.salt = function (len) {
+	foci.salt = function (len) {
 		var static_buf = new Array(len || 16);
 		var tab = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
@@ -83,37 +84,37 @@ window.FCAuth = {};
 		return static_buf.join("");
 	};
 
-	FCAuth.rsaenc = function (msg, pub) {
+	foci.rsaenc = function (msg, pub) {
 		var key = new NodeRSA();
 		key.importKey(new Buffer(pub, "base64"), "pkcs1-public-der");
 		return key.encrypt(msg, "base64");
 	};
 
-	FCAuth.aesenc = function (msg, key) {
+	foci.aesenc = function (msg, key) {
 		return CryptoJS.AES.encrypt(msg, key).toString();
 	};
 
-	FCAuth.aesdec = function (enc, key) {
+	foci.aesdec = function (enc, key) {
 		var res = CryptoJS.AES.decrypt(enc, key).toString(CryptoJS.enc.Utf8);
 		if (res === "") res = null;
 		return res;
 	};
 
-	FCAuth.setLocal = function (key, value) {
+	foci.setLocal = function (key, value) {
 		return localStorage[key] = JSON.stringify(value);
 	};
 
-	FCAuth.getLocal = function (key) {
+	foci.getLocal = function (key) {
 		var val = localStorage[key];
 		if (!val) return undefined;
 		return JSON.parse(val);
 	};
 
-	FCAuth.removeLocal = function (key) {
+	foci.removeLocal = function (key) {
 		localStorage.removeItem(key);
 	};
 
-	FCAuth.newUser = function (lname, passwd, cb) {
+	foci.newUser = function (lname, passwd, cb) {
 		sendAsync(server + "/auth", {}, function (suc, dat) {
 			if (!suc) return cb(false, "network error");
 			if (!dat.suc) return cb(false, dat.msg);
@@ -123,7 +124,7 @@ window.FCAuth = {};
 			sendAsync(server + "/user/new", {
 				lname: lname,
 				pkey: pub,
-				penc: FCAuth.rsaenc(passwd, pub)
+				penc: foci.rsaenc(passwd, pub)
 			}, function (suc, dat) {
 				if (!suc) return cb(false, "network error");
 				if (!dat.suc) return cb(false, dat.msg);
@@ -133,8 +134,8 @@ window.FCAuth = {};
 	};
 
 	// cb(suc, dat/err)
-	FCAuth.login = function (lname, passwd, cb) {
-		var salt = FCAuth.salt();
+	foci.login = function (lname, passwd, cb) {
+		var salt = foci.salt();
 
 		sendAsync(server + "/auth", {}, function (suc, dat) {
 			if (!suc) return cb(false, "network error");
@@ -145,17 +146,17 @@ window.FCAuth = {};
 			sendAsync(server + "/user/login", {
 				lname: lname,
 				pkey: pub,
-				penc: FCAuth.rsaenc(salt + ":" + passwd, pub)
+				penc: foci.rsaenc(salt + ":" + passwd, pub)
 			}, function (suc, dat) {
 				if (!suc) return cb(false, "network error");
 				if (!dat.suc) return cb(false, dat.msg);
 
-				var sid = FCAuth.aesdec(dat.res.sid, salt);
+				var sid = foci.aesdec(dat.res.sid, salt);
 				if (!sid) return cb(false, "server error");
 
 				var ses = new Session(lname, dat.res.uuid, sid);
 
-				FCAuth.setLocal("session", ses);
+				foci.setLocal("session", ses);
 				return cb(true, ses);
 			});
 		});
@@ -163,10 +164,10 @@ window.FCAuth = {};
 
 	// quick login
 	// cb(Session)
-	FCAuth.qlogin = function (cb) {
-		var session = FCAuth.getLocal("session");
+	foci.qlogin = function (cb) {
+		var session = foci.getLocal("session");
 		var clear = function () {
-			FCAuth.removeLocal("session");
+			foci.removeLocal("session");
 		};
 
 		if (!session) {
@@ -178,7 +179,7 @@ window.FCAuth = {};
 
 		sendAsync(server + "/user/csid", {
 			uuid: session.getUUID(),
-			enc: FCAuth.aesenc("hello", session.getSID())
+			enc: foci.aesenc("hello", session.getSID())
 		}, function (suc, dat) {
 			if (!suc) {
 				clear();
@@ -194,21 +195,90 @@ window.FCAuth = {};
 		});
 	};
 
-	FCAuth.encop = function (session, query, cb) {
+	foci.encop = function (session, query, cb) {
 		var uuid = session.getUUID();
 		var sid = session.getSID();
 
 		sendAsync(server + "/user/encop", {
 			uuid: uuid,
-			enc: FCAuth.aesenc(JSON.stringify(query), sid)
+			enc: foci.aesenc(JSON.stringify(query), sid)
 		}, function (suc, dat) {
 			if (!suc) return cb(false, "network error");
 			if (!dat.suc) return cb(false, dat.msg);
-			return cb(true, JSON.parse(FCAuth.aesdec(dat.res, sid)));
+			return cb(true, JSON.parse(foci.aesdec(dat.res, sid)));
 		});
 	};
 
-	FCAuth.download = function (chsum) {
+	foci.download = function (chsum) {
 		return "/file/download?chsum=" + chsum;
 	};
 })();
+
+// (function () {
+// 	var config = require("./config");
+// 	var loaded = {};
+// 	var pending = {};
+
+// 	var loadJS = function (path, cb) {
+// 		return $.getScript(path, cb);
+// 	}
+
+// 	function loadCSS(path) {
+// 		$("<link>")
+// 			.attr({
+// 				rel: "stylesheet",
+// 				href: path
+// 			})
+// 			.appendTo("head");
+// 	}
+
+// 	com.load = function (names, cb) {
+// 		var i = 0;
+// 		var coms = {};
+// 		var cb_back = window.callback;
+
+// 		window.callback = cb;
+
+// 		var iter = function () {
+// 			var name = names[i];
+// 			var backup;
+
+// 			if (window.exports) {
+// 				backup = window.exports;
+// 			}
+
+// 			var next = function (obj) {
+// 				loaded[name] = coms[name] = obj;
+// 				window.exports = backup;
+
+// 				i++;
+
+// 				if (i < names.length) {
+// 					iter();
+// 				} else {
+// 					var tmp = window.callback;
+// 					window.callback = cb_back;
+// 					tmp(coms);
+// 				}
+// 			};
+
+// 			if (loaded.hasOwnProperty(name)) {
+// 				if (loaded[name] === pending) {
+// 					console.log("error: circular dependency");
+// 				}
+
+// 				next(loaded[name]);
+// 			} else {
+// 				window.exports = {};
+// 				loaded[name] = pending;
+
+// 				loadCSS(config.com.base + "/" + name + "/import.css");
+// 				loadJS(config.com.base + "/" + name + "/import.js", function () {
+// 					next(window.exports);
+// 				});
+// 			}
+// 		}
+
+// 		iter();
+// 	};
+// })();

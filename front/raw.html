@@ -45,7 +45,7 @@
 		<button id="raw-get-tag">get tag</button><br>
 		<span id="raw-tag-res"></span> -->
 
-		<script src="fcauth.js"></script>
+		<script src="foci.js"></script>
 		<script>
 			"use strict";
 
@@ -55,7 +55,7 @@
 				var lname = $("#raw-lname").val();
 				var passwd = $("#raw-passwd").val();
 
-				FCAuth.login(lname, passwd, function (suc, session) {
+				foci.login(lname, passwd, function (suc, session) {
 					if (suc) {
 						gsession = session;
 						$("#raw-sid").html(session.getUUID() + ": " + session.getSID());
@@ -65,7 +65,7 @@
 				});
 			});
 
-			FCAuth.qlogin(function (suc, session) {
+			foci.qlogin(function (suc, session) {
 				if (suc) {
 					gsession = session;
 					$("#raw-sid").html(session.getUUID() + ": " + session.getSID());
@@ -80,7 +80,7 @@
 					return;
 				}
 
-				FCAuth.encop(gsession, { int: "info", action: "get" }, function (suc, dat) {
+				foci.encop(gsession, { int: "info", action: "get" }, function (suc, dat) {
 					if (suc) {
 						$("#raw-info-res").html(JSON.stringify(dat));
 					} else {
@@ -111,7 +111,7 @@
 				check("intro");
 				check("school");
 
-				FCAuth.encop(gsession, query, function (suc, dat) {
+				foci.encop(gsession, query, function (suc, dat) {
 					if (suc) {
 						$("#raw-info-res").html("success");
 					} else {
@@ -126,7 +126,7 @@
 					return;
 				}
 
-				FCAuth.encop(gsession, {
+				foci.encop(gsession, {
 					int: "event",
 					action: "new"
 				}, function (suc, dat) {
@@ -161,7 +161,7 @@
 				if ($("#raw-event-end").val())
 					query["end"] = new Date($("#raw-event-end").val()).getTime();
 
-				FCAuth.encop(gsession, query, function (suc, dat) {
+				foci.encop(gsession, query, function (suc, dat) {
 					if (suc) {
 						$("#raw-event-setinfo-res").html("success");
 					} else {
@@ -176,7 +176,7 @@
 			// 		return;
 			// 	}
 
-			// 	FCAuth.encop(gsession, { int: "tag", action: "get" }, function (suc, dat) {
+			// 	foci.encop(gsession, { int: "tag", action: "get" }, function (suc, dat) {
 			// 		if (suc) {
 			// 			$("#raw-tag-res").html(JSON.stringify(dat));
 			// 		} else {
@@ -191,7 +191,7 @@
 			// 		return;
 			// 	}
 
-			// 	FCAuth.encop(gsession, {
+			// 	foci.encop(gsession, {
 			// 		int: "tag",
 			// 		action: "set",
 			// 		tag: $("#raw-tag").val()

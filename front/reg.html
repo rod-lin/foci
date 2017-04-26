@@ -29,7 +29,7 @@
 			</div>
 		</div>
 
-		<script src="fcauth.js"></script>
+		<script src="foci.js"></script>
 		<script src="vcent.js"></script>
 		<script>
 			Array.prototype.choose = function () {
@@ -83,7 +83,7 @@
 
 					$("#reg-create").html("<span class='fa fa-cog fa-spin'></span>");
 
-					FCAuth.newUser(uname, passwd, function (suc, dat) {
+					foci.newUser(uname, passwd, function (suc, dat) {
 						setTimeout(function () {
 							if (suc) {
 								$("#reg-create").html("<span class='fa fa-check'></span>");

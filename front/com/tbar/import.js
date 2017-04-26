@@ -1,11 +1,9 @@
 /* top bar */
 
-/* require jQuery, semantic */
+define(function () {
+	$ = jQuery;
 
-if (!window.fcom) window.fcom = {};
-
-(function (com) {
-	com.init = function (config) {
+	function init(config) {
 		config = $.extend({
 			max_search_res: 7
 		}, config);
@@ -86,4 +84,8 @@ if (!window.fcom) window.fcom = {};
 			onSelect: function () { search(); }
 		});
 	};
-})(fcom.tbar = {});
+
+	return {
+		init: init
+	}
+});

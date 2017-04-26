@@ -28,26 +28,26 @@
 		<button id="aes-dec">dec</button><br>
 		<textarea id="aes-dec-res"></textarea>
 
-		<script src="fcauth.js"></script>
+		<script src="foci.js"></script>
 		<script>
 			"use strict";
 
-			// var enc = FCAuth.aesenc("hello", "123");
-			// console.log(FCAuth.aesdec(enc, "123"));
+			// var enc = foci.aesenc("hello", "123");
+			// console.log(foci.aesdec(enc, "123"));
 
 			document.getElementById("rsa-enc").onclick = function () {
 				var pub = decodeURIComponent(document.getElementById("rsa-pub").value);
 				var msg = document.getElementById("rsa-msg").value;
 
 				document.getElementById("rsa-pub").value = encodeURIComponent(pub);
-				document.getElementById("rsa-res").innerHTML = encodeURIComponent(FCAuth.rsaenc(msg, pub));
+				document.getElementById("rsa-res").innerHTML = encodeURIComponent(foci.rsaenc(msg, pub));
 			};
 
 			document.getElementById("aes-enc").onclick = function () {
 				var key = document.getElementById("aes-key").value;
 				var msg = document.getElementById("aes-msg").value;
 
-				document.getElementById("aes-res").innerHTML = encodeURIComponent(FCAuth.aesenc(msg, key));
+				document.getElementById("aes-res").innerHTML = encodeURIComponent(foci.aesenc(msg, key));
 			};
 
 			document.getElementById("aes-dec").onclick = function () {
@@ -55,9 +55,9 @@
 				var enc = decodeURIComponent(document.getElementById("aes-dec-enc").value);
 
 				// console.log(key);
-				// console.log(FCAuth.aesdec(enc, key));
+				// console.log(foci.aesdec(enc, key));
 
-				document.getElementById("aes-dec-res").innerHTML = FCAuth.aesdec(enc, key);
+				document.getElementById("aes-dec-res").innerHTML = foci.aesdec(enc, key);
 			};
 		</script>
 	</body>
