@@ -1,7 +1,9 @@
 /* top bar */
+"use strict";
 
 define(function () {
-	$ = jQuery;
+	var $ = jQuery;
+	foci.loadCSS("com/tbar.css");
 
 	function init(config) {
 		config = $.extend({
@@ -83,6 +85,8 @@ define(function () {
 
 			onSelect: function () { search(); }
 		});
+
+		vcent.update();
 	};
 
 	return {

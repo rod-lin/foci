@@ -1,6 +1,8 @@
 /* water fall */
+"use strict";
 
 define(function () {
+	var $ = jQuery;
 	function init(cont /* parent container */, config) {
 		config = $.extend({
 			gap: 10, /* px */
@@ -24,6 +26,7 @@ define(function () {
 			/* side margin */
 			var count = config.count + 1;
 			var gap = config.gap;
+			var left;
 
 			do {
 				count--;

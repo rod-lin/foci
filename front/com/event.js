@@ -1,7 +1,9 @@
 /* event */
+"use strict";
 
-define([ "com/xfilt/import", "com/waterfall/import" ], function (xfilt, waterfall) {
+define([ "com/xfilt", "com/waterfall" ], function (xfilt, waterfall) {
 	var $ = jQuery;
+	foci.loadCSS("com/event.css");
 
 	function init(cont) {
 		cont = $(cont);

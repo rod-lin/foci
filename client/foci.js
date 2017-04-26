@@ -2,7 +2,6 @@
 
 window.jQuery = window.$ = require("jquery");
 window.foci = {};
-// window.com = {};
 
 (function () {
 	var NodeRSA = require("node-rsa");
@@ -212,73 +211,13 @@ window.foci = {};
 	foci.download = function (chsum) {
 		return "/file/download?chsum=" + chsum;
 	};
+
+	foci.loadCSS = function (path) {
+		$("<link>")
+			.attr({
+				rel: "stylesheet",
+				href: path
+			})
+			.appendTo("head");
+	}
 })();
-
-// (function () {
-// 	var config = require("./config");
-// 	var loaded = {};
-// 	var pending = {};
-
-// 	var loadJS = function (path, cb) {
-// 		return $.getScript(path, cb);
-// 	}
-
-// 	function loadCSS(path) {
-// 		$("<link>")
-// 			.attr({
-// 				rel: "stylesheet",
-// 				href: path
-// 			})
-// 			.appendTo("head");
-// 	}
-
-// 	com.load = function (names, cb) {
-// 		var i = 0;
-// 		var coms = {};
-// 		var cb_back = window.callback;
-
-// 		window.callback = cb;
-
-// 		var iter = function () {
-// 			var name = names[i];
-// 			var backup;
-
-// 			if (window.exports) {
-// 				backup = window.exports;
-// 			}
-
-// 			var next = function (obj) {
-// 				loaded[name] = coms[name] = obj;
-// 				window.exports = backup;
-
-// 				i++;
-
-// 				if (i < names.length) {
-// 					iter();
-// 				} else {
-// 					var tmp = window.callback;
-// 					window.callback = cb_back;
-// 					tmp(coms);
-// 				}
-// 			};
-
-// 			if (loaded.hasOwnProperty(name)) {
-// 				if (loaded[name] === pending) {
-// 					console.log("error: circular dependency");
-// 				}
-
-// 				next(loaded[name]);
-// 			} else {
-// 				window.exports = {};
-// 				loaded[name] = pending;
-
-// 				loadCSS(config.com.base + "/" + name + "/import.css");
-// 				loadJS(config.com.base + "/" + name + "/import.js", function () {
-// 					next(window.exports);
-// 				});
-// 			}
-// 		}
-
-// 		iter();
-// 	};
-// })();

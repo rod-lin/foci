@@ -6,9 +6,9 @@
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-		<script src="foci.js"></script>
-		<script src="vcent.js"></script>
-		<script src="require.js"></script>
+		<script src="lib/foci.js"></script>
+		<script src="lib/vcent.js"></script>
+		<script src="lib/require.js"></script>
 
 		<link rel="stylesheet" href="font/fontawesome/import.css">
 		<link rel="stylesheet" href="font/ubuntu/import.css">
@@ -22,10 +22,10 @@
 		<link rel="stylesheet" href="/semantic/components/rating.min.css">
 		<script src="/semantic/components/rating.min.js"></script>
 
-		<link rel="stylesheet" href="com/tbar/import.css">
+		<!-- <link rel="stylesheet" href="com/tbar/import.css">
 		<link rel="stylesheet" href="com/waterfall/import.css">
 		<link rel="stylesheet" href="com/xfilt/import.css">
-		<link rel="stylesheet" href="com/event/import.css">
+		<link rel="stylesheet" href="com/event/import.css"> -->
 
 		<style>
 			body {
@@ -49,9 +49,8 @@
 		</div>
 
 		<script>
-			require([ "com/tbar/import", "com/event/import" ], function (tbar, event) {
+			require([ "com/tbar", "com/event" ], function (tbar, event) {
 				tbar.init();
-				vcent.update();
 
 				var ev = event.init(".cont");
 

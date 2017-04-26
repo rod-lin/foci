@@ -1,8 +1,5 @@
 /* xfilt */
-
-window.exports = function (str) {
-	return str;
-};
+"use strict";
 
 define(function () {
 	return function (str) { return str; };

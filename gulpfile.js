@@ -17,7 +17,7 @@ gulp.task("build-client", () => {
 		.bundle()
 		.pipe(source(file))
 		.pipe(streamify(uglify()))
-		.pipe(gulp.dest("front/"));
+		.pipe(gulp.dest("front/lib/"));
 
 	comp("foci.js");
 	comp("vcent.js");
