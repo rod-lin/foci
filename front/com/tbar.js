@@ -11,9 +11,9 @@ define(function () {
 		}, config);
 
 		var main = ' \
-			<div class="com-tbar"> \
+			<div class="com-tbar hide"> \
 				<div class="left-bar"> \
-					<i class="tumblr square icon logo vcenter"></i> \
+					<i class="github icon logo vcenter"></i> \
 					<div class="ui search vcenter"> \
 						<div class="ui icon input"> \
 							<input class="prompt" placeholder="Type for surprise" type="text"> \
@@ -37,7 +37,7 @@ define(function () {
 		';
 		main = $(main);
 
-		$("body").append(main);
+		$("body").prepend(main);
 		
 		$(".com-tbar").find(".rating").rating("disable");
 		$(".com-tbar .avatar")
@@ -86,7 +86,10 @@ define(function () {
 			onSelect: function () { search(); }
 		});
 
-		vcent.update();
+		main.ready(function () {
+			vcent.update();
+			main.removeClass("hide");
+		});
 	};
 
 	return {

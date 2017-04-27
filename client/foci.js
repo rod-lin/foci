@@ -220,4 +220,6 @@ window.foci = {};
 			})
 			.appendTo("head");
 	}
+
+	foci.domready = require("domready");
 })();

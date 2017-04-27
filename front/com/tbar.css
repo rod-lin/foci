@@ -17,7 +17,12 @@ body {
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
 
 	opacity: 0.8;
-	transition: opacity 0.3s;
+	transition: opacity 0.3s, top 0.5s;
+}
+
+.com-tbar.hide {
+	top: -5em;
+	opacity: 0;
 }
 
 .com-tbar:hover {
@@ -32,7 +37,7 @@ body {
 .com-tbar .logo {
 	height: auto;
 
-	color: #27AE60;
+	color: #333333;
 	font-size: 2.8em;
 	vertical-align: middle;
 
