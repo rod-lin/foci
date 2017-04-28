@@ -45,12 +45,15 @@
 	</head>
 
 	<body>
-		<div class="cont" style="width: 100%;">
-		</div>
+		<div class="cont" style="width: 100%;"></div>
+
+		<!-- <div class="frame", style="width: 100%; height: 100%; position: fixed; top: 0; left: 0; background: #FFF;"></div> -->
 
 		<script>
-			require([ "com/tbar", "com/event" ], function (tbar, event) {
+			require([ "com/tbar", "com/event", "com/eqview" ], function (tbar, event, eqview) {
 				tbar.init();
+
+				eqview.init();
 
 				var ev = event.init(".cont");
 
@@ -63,6 +66,11 @@
 						alert(dat);
 					}
 				});
+			});
+
+			require([ "com/frame" ], function (frame) {
+				// var f = frame.init(".frame");
+				// f.open("https://pan.baidu.com");
 			});
 
 			// wf1.add("<span>hi</span>");

@@ -31,7 +31,9 @@ define(function () {
 			do {
 				count--;
 				left = (cont.width() - count * width - (count - 1) * gap) / 2;
-			} while (left < config.min_margin);
+			} while (left < config.min_margin && count > 1);
+
+			if (!count) return;
 
 			var top;
 
@@ -65,8 +67,19 @@ define(function () {
 			update();
 		}
 
+		var proc = null;
+		window.onresize = function () {
+			if (proc) {
+				clearTimeout(proc);
+			}
+
+			proc = setTimeout(function () {
+				update();
+				proc = null;
+			}, 50);
+		}
+
 		update();
-		window.onresize = update;
 
 		return {
 			update: update,

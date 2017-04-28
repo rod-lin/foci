@@ -1,0 +1,19 @@
+.com-avatar {
+	display: inline-block;
+}
+
+.com-avatar .avatar {
+	display: inline-block;
+
+	border-radius: 50%;
+
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.com-avatar .dname {
+	font-size: 1em;
+}
