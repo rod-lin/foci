@@ -6,10 +6,6 @@ define([ "com/xfilt" ], function (xfilt) {
 	var $ = jQuery;
 	foci.loadCSS("com/avatar.css");
 
-	function choose(arr) {
-		return arr[Math.floor(Math.random() * arr.length)];
-	}
-
 	function init(cont, info, config) {
 		cont = $(cont);
 		config = $.extend({
@@ -18,7 +14,7 @@ define([ "com/xfilt" ], function (xfilt) {
 
 		info = info || {};
 
-		var url = info.avatar ? foci.download(info.avatar) : choose([ "img/deficon.jpg", "img/matt.jpg", "img/stevie.jpg", "img/elliot.jpg" ]);
+		var url = info.avatar ? foci.download(info.avatar) : [ "img/deficon.jpg", "img/matt.jpg", "img/stevie.jpg", "img/elliot.jpg" ].choose();
 
 		var ava = $(" \
 			<div class='com-avatar'> \

@@ -35,6 +35,7 @@ define(function () {
 				</div> \
 			</div> \
 		';
+
 		main = $(main);
 
 		$("body").prepend(main);
@@ -47,9 +48,13 @@ define(function () {
 				hoverable: true
 			});
 
-		var search = function (e) {
+		var onsearch = null;
+
+		var search = function (e, kw) {
 			if (!e || e.keyCode == 13) {
-				alert("search");
+				if (onsearch) {
+					onsearch(kw || main.find(".prompt").val());
+				}
 			}
 		};
 
@@ -72,7 +77,8 @@ define(function () {
 							// alert(resp.res[i].title);
 							ret.push({
 								title: resp.res[i].title,
-								description: resp.res[i].descr
+								// description: resp.res[i].descr,
+								euid: resp.res[i].euid
 							});
 						}
 
@@ -83,13 +89,21 @@ define(function () {
 				}
 			},
 
-			onSelect: function () { search(); }
+			onSelect: function (arg) {
+				search(null, arg.title);
+			}
 		});
 
 		main.ready(function () {
 			vcent.update();
 			main.removeClass("hide");
 		});
+
+		return {
+			search: function (cb) {
+				onsearch = cb;
+			}
+		};
 	};
 
 	return {

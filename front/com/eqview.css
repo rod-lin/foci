@@ -4,9 +4,35 @@
 	font-family: Lato;
 }
 
+.com-eqview .back {
+	position: absolute;
+	
+	top: 10px;
+	left: 0;
+
+	padding: 0.3em 0.1em 0.3em 0.6em;
+
+	background: rgba(0, 0, 0, 0.85);
+	border-radius: 0 2px 2px 0;
+
+	font-size: 1.5em;
+	color: #F3F3F3;
+
+	box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.5);
+	cursor: pointer;
+
+	transition: color 0.3s, background 0.3s, box-shadow 0.3s;
+}
+
+.com-eqview .back:hover {
+	background: rgba(0, 0, 0, 0.75);
+	color: #FFFFFF;
+	box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.5);
+}
+
 .com-eqview .cover {
 	width: 100%;
-	height: 20em;
+	height: 15em;
 
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -34,7 +60,8 @@
 
 .com-eqview .cont {
 	font-size: 1.5em;
-	padding: 0 10em;
+	line-height: 150% !important;
+	padding: 0 10em 3em 10em;
 }
 
 .com-eqview .logo-cont {
@@ -51,6 +78,7 @@
 	max-width: 90%;
 
 	margin: 1.5em 0 0 0;
+	padding: 0.3em;
 
 	white-space: nowrap;
 	overflow: hidden;
@@ -58,16 +86,41 @@
 	font-size: 3em;
 }
 
+.com-eqview .rating {
+	display: inline-block;
+
+	margin: 2.8em 0 0 0;
+	padding: 0.2em 0.5em;
+	vertical-align: top;
+
+	font-size: 2em;
+	font-weight: bold;
+	font-family: Ubuntu;
+
+	background: #27AE60;
+	color: #F3F3F3;
+	
+	border-radius: 4px;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+
+	cursor: pointer;
+	transition: background 0.3s;
+}
+
+.com-eqview .rating:hover {
+	background: #2ECC71;
+}
+
 .com-eqview .detail {
 	color: #B3B3B3;
-	font-size: 0.7em;
-	margin: 3px 0;
+	font-size: 0.8em;
+	margin: 5px 0;
 }
 
 .com-eqview .tip {
 	display: inline;
 	color: #B3B3B3;
-	font-size: 0.8em;
+	font-size: 1em;
 	vertical-align: top;
 }
 
@@ -90,7 +143,6 @@
 
 	width: 100%;
 
-	margin-top: 3em;
 	padding: 1em 0;
 
 	font-size: 1.4em;
@@ -106,6 +158,12 @@
 	-moz-user-select: none;
 
 	transition: background 0.3s;
+}
+
+.com-eqview .cont-fill {
+	margin-top: 1em;
+	width: 100%;
+	opacity: 0.5
 }
 
 .com-eqview .more:hover {
@@ -135,8 +193,14 @@
 		margin-top: 0.5em;
 	}
 
+	.com-eqview .rating {
+		margin-top: 1.1em;
+		font-size: 1.5em;
+	}
+
 	.com-eqview .cont {
 		font-size: 1em;
-		padding: 0 3em;
+		padding-left: 3em;
+		padding-right: 3em;
 	}
 }

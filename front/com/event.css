@@ -1,6 +1,6 @@
 /* com user bar */
 
-.com-events {
+.com-event {
 	position: relative;
 	width: 100%;
 
@@ -9,13 +9,22 @@
 	transition: opacity 0.3s;
 }
 
-.com-events.hide {
+.com-event.hide {
 	opacity: 0;
+	pointer-events: none;
 }
 
-.com-events .event {
+.com-event .event {
 	position: absolute;
 	top: 0;
 	left: 0;
 	transition: left 0.2s, top 0.2s;
+}
+
+.com-event .image {
+	cursor: pointer;
+}
+
+.com-event .description {
+	cursor: pointer;
 }

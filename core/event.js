@@ -23,6 +23,7 @@ var Event = function (euid, sponsor /* uuid */) {
 	this.created = new Date();
 
 	this.logo = null;
+	this.cover = null;
 
 	this.title = config.def.event.title;
 	this.descr = "";
@@ -37,6 +38,8 @@ var Event = function (euid, sponsor /* uuid */) {
 	this.expect = [ null, null ];
 
 	this.favtag = [];
+
+	this.rating = null;
 
 	this.staff = [];
 	this.partic = []; // participants
@@ -55,6 +58,7 @@ Event.prototype.getInfo = function () {
 		location: this.location,
 
 		logo: this.logo,
+		cover: this.cover,
 
 		state: this.state,
 
@@ -62,6 +66,8 @@ Event.prototype.getInfo = function () {
 		
 		start: this.start ? this.start.getTime() : null,
 		end: this.end ? this.end.getTime() : null,
+
+		rating: this.rating,
 
 		favtag: this.favtag,
 		expect: this.expect,

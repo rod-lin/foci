@@ -50,22 +50,30 @@
 		<!-- <div class="frame", style="width: 100%; height: 100%; position: fixed; top: 0; left: 0; background: #FFF;"></div> -->
 
 		<script>
-			require([ "com/tbar", "com/event", "com/eqview" ], function (tbar, event, eqview) {
-				tbar.init();
+			require([ "com/tbar", "com/event" ], function (tbar, event) {
+				var bar = tbar.init();
+				bar.search(function (kw) {
+					doSearch(kw);
+				});
 
-				eqview.init();
+				// event.qview();
 
 				var ev = event.init(".cont");
 
-				foci.get("/event/search", {}, function (suc, dat) {
-					if (suc) {
-						ev.hide();
-						for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
-						ev.show();
-					} else {
-						alert(dat);
-					}
-				});
+				function doSearch(kw) {
+					ev.clear(function () {
+						foci.get("/event/search", { kw: kw }, function (suc, dat) {
+							if (suc) {
+								ev.hide(function () {
+									for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
+									ev.show();
+								});
+							} else {
+								alert(dat);
+							}
+						});
+					});
+				}
 			});
 
 			require([ "com/frame" ], function (frame) {

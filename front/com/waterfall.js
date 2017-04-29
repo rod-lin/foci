@@ -1,11 +1,12 @@
 /* water fall */
+
 "use strict";
 
 define(function () {
 	var $ = jQuery;
 	function init(cont /* parent container */, config) {
 		config = $.extend({
-			gap: 10, /* px */
+			gap: 20, /* px */
 			count: 5, /* max column count */
 			min_margin: 20
 		}, config);
@@ -83,7 +84,11 @@ define(function () {
 
 		return {
 			update: update,
-			add: add
+			add: add,
+			clear: function () {
+				child = [];
+				cont.html("");
+			}
 		};
 	}
 
