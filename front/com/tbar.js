@@ -125,6 +125,8 @@ define([ "com/login", "com/xfilt" ], function (login, xfilt) {
 				})
 
 				main.find(".login-btn").css("display", "none");
+
+				vcent.update();
 			}
 
 			foci.encop(session, {
