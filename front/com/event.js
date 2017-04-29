@@ -179,7 +179,7 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfi
 					main.find(".orgs").prepend(ava);
 
 					main.ready(function () {
-						main.modal("refresh");
+						// main.modal("refresh");
 					});
 				});
 			}
@@ -188,23 +188,16 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfi
 			fill.remove();
 		}
 
-		main.modal({
-			observeChanges: true
-		});
+		main.modal();
 
-		util.listen(function () {
-			var before = main.offset().top;
-			main.modal("refresh");
-			if (main.offset().top == before) return true;
-		});
+		// util.listen(function () {
+		// 	var before = main.offset().top;
+		// 	// main.modal("refresh");
+		// 	if (main.offset().top == before) return true;
+		// });
 
 		main.ready(function () {
 			main.modal("show");
-
-			main.ready(function () {
-				vcent.update();
-				main.modal("refresh");
-			});
 		});
 	}
 
