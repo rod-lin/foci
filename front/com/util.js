@@ -34,6 +34,13 @@ define(function () {
 		}, 0);
 	};
 
+	util.media = function (max_width, cb) {
+		$(window).on("resize", function () {
+			if ($(window).width() <= max_width)
+				cb();
+		});
+	};
+
 	Array.prototype.choose = function () {
 		return this[Math.floor(Math.random() * this.length)];
 	};

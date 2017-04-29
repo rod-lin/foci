@@ -156,12 +156,11 @@ body {
 		text-align: center;
 	}
 
-	.com-tbar .avatar,
-	.com-tbar .login-btn {
+	.com-tbar .right-bar {
 		position: fixed;
 		display: block;
-		right: 1em;
 		bottom: 1em;
+		top: auto;
 	}
 
 	.com-tbar .avatar {

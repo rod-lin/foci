@@ -1,7 +1,7 @@
 /* top bar */
 "use strict";
 
-define([ "com/login", "com/xfilt" ], function (login, xfilt) {
+define([ "com/login", "com/xfilt", "com/util" ], function (login, xfilt, util) {
 	var $ = jQuery;
 	foci.loadCSS("com/tbar.css");
 
@@ -136,13 +136,9 @@ define([ "com/login", "com/xfilt" ], function (login, xfilt) {
 				main.find(".right-bar").prepend(ava);
 
 				ava.popup({
-					popup: $(".com-tbar").find(".popup"),
+					popup: main.find(".popup"),
 					position: "bottom right",
 					hoverable: true
-				});
-
-				ava.click(function () {
-					ava.popup("show");
 				});
 
 				main.find(".login-btn").css("display", "none");
