@@ -1,9 +1,11 @@
 /* top bar */
 "use strict";
 
-define(function () {
+define([ "com/login", "com/xfilt" ], function (login, xfilt) {
 	var $ = jQuery;
 	foci.loadCSS("com/tbar.css");
+
+	var instance = [];
 
 	function init(config) {
 		config = $.extend({
@@ -27,9 +29,11 @@ define(function () {
 					</div> \
 				</div> \
 				<div class="right-bar"> \
-					<div class="avatar vcenter" style="background-image: url(\'img/deficon.jpg\');"></div> \
+					<button class="circular ui grey basic icon button login-btn vcenter"> \
+						<i class="user icon"></i> \
+					</button> \
 					<div class="ui popup transition hidden"> \
-						<div class="title">Rodlin</div> \
+						<div class="title header"></div> \
 						<div class="ui star mini rating bottom right" data-rating="4" data-max-rating="5"></div> \
 					</div> \
 				</div> \
@@ -38,16 +42,7 @@ define(function () {
 
 		main = $(main);
 
-		$("body").prepend(main);
-		
-		$(".com-tbar").find(".rating").rating("disable");
-		$(".com-tbar .avatar")
-			.popup({
-				popup: $(".com-tbar").find(".popup"),
-				position: "bottom right",
-				hoverable: true
-			});
-
+		/*** search util ***/
 		var onsearch = null;
 
 		var search = function (e, kw) {
@@ -58,9 +53,9 @@ define(function () {
 			}
 		};
 
-		$(".com-tbar .prompt").keydown(search);
+		main.find(".prompt").keydown(search);
 
-		$(".com-tbar .search").search({
+		main.find(".search").search({
 			apiSettings: {
 				url: "/event/search?kw={query}",
 				onResponse: function(resp) {
@@ -94,16 +89,83 @@ define(function () {
 			}
 		});
 
+		/*** login ***/
+		var session = null;
+
+		main.find(".login-btn").click(function () {
+			login.init(function (dat) {
+				session = dat;
+				loadAvatar();
+			});
+		});
+
+		function loadAvatar() {
+			if (!session) return;
+
+			function refresh(info) {
+				info = info || {};
+				var url = info.avatar ? foci.download(info.avatar) : [ "img/deficon.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/matt.jpg" ].choose();
+				var ava = $('<div class="avatar vcenter" style="background-image: url(\'' + url + '\');"></div>');
+
+				var dname = info.dname ? xfilt(info.dname) : "anonymous";
+				var rating = info.rating ? Math.round(info.rating[0]) : "0";
+
+				main.find(".rating")
+					.attr("data-rating", rating.toString())
+					.rating("disable");
+				
+				main.find(".popup .title").append(dname);
+				
+				main.find(".right-bar").prepend(ava);
+
+				ava.popup({
+					popup: $(".com-tbar").find(".popup"),
+					position: "bottom right",
+					hoverable: true
+				})
+
+				main.find(".login-btn").css("display", "none");
+			}
+
+			foci.encop(session, {
+				int: "info",
+				action: "get"
+			}, function (suc, dat) {
+				if (suc) {
+					refresh(dat);
+				} else {
+					util.qmsg(dat);
+				}
+			});
+		}
+
+		var ret = {
+			search: function (cb) {
+				onsearch = cb;
+			},
+
+			updateAvatar: function () {
+				foci.qlogin(function (suc, dat) {
+					if (suc) {
+						session = dat;
+						loadAvatar();
+					}
+				});
+			}
+		};
+
 		main.ready(function () {
 			vcent.update();
 			main.removeClass("hide");
 		});
 
-		return {
-			search: function (cb) {
-				onsearch = cb;
-			}
-		};
+		ret.updateAvatar();
+
+		$("body").prepend(main);
+
+		instance.push(ret);
+
+		return ret;
 	};
 
 	return {

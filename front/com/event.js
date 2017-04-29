@@ -47,7 +47,7 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfi
 			var descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len)) : "(no description)";
 			var title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";
 
-			var main = '<div class="ui card event"> \
+			var main = $('<div class="ui card event"> \
 				<div class="image"> \
 					<img src="' + cover + '"> \
 				</div> \
@@ -65,9 +65,7 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfi
 						<i class="user icon"></i>' + info.partic.length + ' \
 					</a> \
 				</div> \
-			</div>';
-
-			main = $(main);
+			</div>');
 
 			main.find(".image, .header, .description").click(function () { qview(info); });
 

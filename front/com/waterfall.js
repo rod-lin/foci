@@ -61,11 +61,16 @@ define(function () {
 			}
 		}
 
-		function add(elem) {
+		function add(elem, cb) {
 			elem = $(elem);
-			cont.append(elem);
+
 			child.push(elem);
-			update();
+			cont.append(elem);
+		
+			elem.ready(function () {
+				update();
+				if (cb) cb();
+			});
 		}
 
 		var proc = null;

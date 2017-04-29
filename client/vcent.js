@@ -5,7 +5,7 @@ window.vcent = {};
 vcent.update = function () {
 	var e = $(".vcenter");
 	var i;
-	var cent = function (pr, e) { e.css("top", ((pr.innerHeight() - e.height()) / 2) + "px"); };
+	var cent = function (pr, e) { e.css("top", ((pr.innerHeight() - e.outerHeight()) / 2) + "px"); };
 
 	e.css("position", "relative");
 
@@ -13,7 +13,7 @@ vcent.update = function () {
 		cent($(e[i]).parent(), $(e[i]));
 	}
 
-	cent = function (pr, e) { e.css("top", ((pr.innerHeight() - e.height()) / 2) + "px"); };
+	cent = function (pr, e) { e.css("top", ((pr.innerHeight() - e.outerHeight()) / 2) + "px"); };
 
 	e = $(".avcenter");
 	e.css("position", "absolute");
@@ -37,3 +37,20 @@ vcent.reset = function (com) {
 vcent.update();
 window.addEventListener("load", vcent.update);
 window.addEventListener("resize", vcent.update);
+
+(function () {
+	var times = 0;
+	var init = 50;
+
+	var update = function () {
+		times++;
+		vcent.update();
+
+		if (times * init > 5000) {
+			clearInterval(proc);
+			proc = setInterval(vcent.update, 5000);
+		}
+	};
+
+	var proc = setInterval(update, init);
+})();
