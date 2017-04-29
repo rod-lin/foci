@@ -185,6 +185,10 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfi
 			fill.remove();
 		}
 
+		main.modal({
+			observeChanges: true
+		});
+		
 		main.ready(function () {
 			main.modal("show");
 
