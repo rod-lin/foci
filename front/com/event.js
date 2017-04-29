@@ -177,8 +177,10 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfi
 
 					fill.remove();
 					main.find(".orgs").prepend(ava);
-					
-					main.modal("refresh");
+
+					main.ready(function () {
+						main.modal("refresh");
+					});
 				});
 			}
 		} else {
