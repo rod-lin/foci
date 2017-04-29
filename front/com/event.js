@@ -188,6 +188,10 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfi
 			fill.remove();
 		}
 
+		main.modal({
+			observeChanges: true
+		});
+
 		util.listen(function () {
 			var before = main.offset().top;
 			main.modal("refresh");
