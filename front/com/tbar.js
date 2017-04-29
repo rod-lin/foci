@@ -43,7 +43,7 @@ define([ "com/login", "com/xfilt" ], function (login, xfilt) {
 							<div class="title header"></div> \
 							<div class="ui star mini rating bottom right" data-rating="4" data-max-rating="5"></div> \
 						</div> \
-						<div class="ui two bottom attached buttons"> \
+						<div class="ui two bottom attached buttons" style="margin-bottom: -1px;"> \
 							<div class="ui blue button">Profile</div> \
 							<div class="ui button">Logout</div> \
 						</div> \
