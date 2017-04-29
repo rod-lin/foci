@@ -91,7 +91,7 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfi
 
 		function show(cb) {
 			// main.css("display", "");
-			wf.update();
+			util.atimes(wf.update, 20);
 			setTimeout(function () {
 				main.removeClass("hide");
 				if (cb) cb();
@@ -185,14 +185,10 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfi
 			fill.remove();
 		}
 
-		var proc = setInterval(function () {
+		util.listen(function () {
+			var before = main.offset().top;
 			main.modal("refresh");
-		}, 50);
-
-		main.modal({
-			onHide: function () {
-				clearInterval(proc);
-			}
+			if (main.offset().top == before) return true;
 		});
 
 		main.ready(function () {

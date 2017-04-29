@@ -29,14 +29,54 @@ define([ "com/util" ], function (util) {
 			</div> \
 		");
 
+		var uname_input = main.find(".uname");
+		var passwd_input = main.find(".passwd");
+
+		uname_input.keydown(function (e) {
+			uname_input.parent().removeClass("error");
+
+			if (e && e.keyCode == 13) {
+				passwd_input.focus();
+			}
+		});
+
+		passwd_input.keydown(function (e) {
+			passwd_input.parent().removeClass("error");
+
+			if (e && e.keyCode == 13) {
+				login_btn.click();
+			}
+		});
+
+		function check() {
+			var uname = uname_input.val();
+			var passwd = passwd_input.val();
+			var ret = true;
+
+			if (!uname) {
+				uname_input.attr("placeholder", "user name cannot be empty").parent().addClass("error");
+				uname_input.focus();
+				ret = false;
+			}
+
+			if (!passwd) {
+				passwd_input.attr("placeholder", "password cannot be empty").parent().addClass("error");
+				ret = false;
+			}
+
+			return ret;
+		}
+
 		var login_btn = main.find(".login.button");
 		var login_proc = function () {
+			if (!check()) return;
+
 			login_btn
 				.off("click")
 				.addClass("loading");
 
-			var uname = main.find(".uname").val();
-			var passwd = main.find(".passwd").val();
+			var uname = uname_input.val();
+			var passwd = passwd_input.val();
 
 			// var backup = login_btn.html();
 			// var suc = "<i class='checkmark icon'></i>";

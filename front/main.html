@@ -19,9 +19,6 @@
 		<link rel="stylesheet" href="/semantic/semantic.min.css">
 		<script src="/semantic/semantic.min.js"></script>
 
-		<link rel="stylesheet" href="/semantic/components/rating.min.css">
-		<script src="/semantic/components/rating.min.js"></script>
-
 		<!-- <link rel="stylesheet" href="com/tbar/import.css">
 		<link rel="stylesheet" href="com/waterfall/import.css">
 		<link rel="stylesheet" href="com/xfilt/import.css">
@@ -58,7 +55,7 @@
 
 				// event.qview();
 
-				var ev = event.init(".cont");
+				var ev = event.init("body>.cont");
 
 				function doSearch(kw) {
 					ev.clear(function () {

@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "browserify": "^14.1.0",
+    "del": "^2.2.2",
     "gulp": "^3.9.1",
     "gulp-streamify": "^1.0.2",
     "gulp-uglify": "^2.1.2",

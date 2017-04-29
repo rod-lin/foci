@@ -15,32 +15,46 @@ define([ "com/login", "com/xfilt" ], function (login, xfilt) {
 		var main = ' \
 			<div class="com-tbar hide"> \
 				<div class="left-bar"> \
-					<i class="github icon logo vcenter"></i> \
-					<div class="ui search vcenter"> \
-						<div class="ui icon input"> \
+					<div class="ui left action input search-box"> \
+						<div class="ui basic floating dropdown button"> \
+							<div class=""><i class="content icon" style="margin: 0;"></i></div> \
+							<div class="menu"> \
+								<div class="item">Home</div> \
+								<div class="item">Plaza</div> \
+							</div> \
+						</div> \
+						<div class="ui search"> \
 							<input class="prompt" placeholder="Type for surprise" type="text"> \
-							<i class="rocket icon search-icon"></i> \
 						</div> \
 						<div class="results"></div> \
 					</div> \
-					<div class="links avcenter"> \
+					<!--div class="links"> \
 						<div class="link">home</div> \
 						<div class="link">plaza</div> \
-					</div> \
+					</div--> \
 				</div> \
 				<div class="right-bar"> \
-					<button class="circular ui grey basic icon button login-btn vcenter"> \
+					<button class="ui grey basic icon button login-btn"> \
 						<i class="user icon"></i> \
 					</button> \
 					<div class="ui popup transition hidden"> \
-						<div class="title header"></div> \
-						<div class="ui star mini rating bottom right" data-rating="4" data-max-rating="5"></div> \
+						<div class="cont"> \
+							<div class="pop-avatar"></div> \
+							<div class="title header"></div> \
+							<div class="ui star mini rating bottom right" data-rating="4" data-max-rating="5"></div> \
+						</div> \
+						<div class="ui two bottom attached buttons"> \
+							<div class="ui blue button">Profile</div> \
+							<div class="ui button">Logout</div> \
+						</div> \
 					</div> \
 				</div> \
 			</div> \
 		';
 
 		main = $(main);
+
+		main.find(".ui.dropdown").dropdown();
 
 		/*** search util ***/
 		var onsearch = null;
@@ -105,7 +119,7 @@ define([ "com/login", "com/xfilt" ], function (login, xfilt) {
 			function refresh(info) {
 				info = info || {};
 				var url = info.avatar ? foci.download(info.avatar) : [ "img/deficon.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/matt.jpg" ].choose();
-				var ava = $('<div class="avatar vcenter" style="background-image: url(\'' + url + '\');"></div>');
+				var ava = $('<div class="avatar" style="background-image: url(\'' + url + '\');"></div>');
 
 				var dname = info.dname ? xfilt(info.dname) : "anonymous";
 				var rating = info.rating ? Math.round(info.rating[0]) : "0";
@@ -115,7 +129,8 @@ define([ "com/login", "com/xfilt" ], function (login, xfilt) {
 					.rating("disable");
 				
 				main.find(".popup .title").append(dname);
-				
+				main.find(".popup .pop-avatar").css("background-image", "url(\'" + url + "\')");
+
 				main.find(".right-bar").prepend(ava);
 
 				ava.popup({
@@ -126,7 +141,7 @@ define([ "com/login", "com/xfilt" ], function (login, xfilt) {
 
 				main.find(".login-btn").css("display", "none");
 
-				vcent.update();
+				// vcent.update();
 			}
 
 			foci.encop(session, {
@@ -156,14 +171,16 @@ define([ "com/login", "com/xfilt" ], function (login, xfilt) {
 			}
 		};
 
-		main.ready(function () {
-			vcent.update();
-			main.removeClass("hide");
-		});
-
 		ret.updateAvatar();
 
 		$("body").prepend(main);
+
+		main.ready(function () {
+			// vcent.update();
+			setTimeout(function () {
+				main.removeClass("hide");
+			}, 200);
+		});
 
 		instance.push(ret);
 

@@ -10,7 +10,7 @@ body {
 	position: fixed;
 
 	width: 100%;
-	height: 5em;
+	padding: 1em;
 
 	top: 0;
 	left: 0;
@@ -23,7 +23,7 @@ body {
 }
 
 .com-tbar.hide {
-	top: -5em;
+	top: -100%;
 	opacity: 0;
 }
 
@@ -40,7 +40,7 @@ body {
 	height: auto;
 
 	color: #333333;
-	font-size: 2.8em;
+	font-size: 2.7em;
 	vertical-align: middle;
 
 	cursor: pointer;
@@ -48,28 +48,47 @@ body {
 	margin-right: 0.3em;
 }
 
+.com-tbar .search-box {
+	height: 2.7em;
+}
+
+.com-tbar .prompt {
+	border-radius: 0 3px 3px 0 !important;
+	border-left: none !important;
+}
+
 .com-tbar .left-bar {
 	position: relative;
-	left: 1em;
 	height: 100%;
 }
 
 .com-tbar .right-bar {
 	position: absolute;
+	display: inline-block;
 	float: right;
+
+	top: 1em;
 	right: 1em;
-	top: 0;
-	height: 100%;
 }
 
-.com-tbar .login-btn {}
+.com-tbar .login-btn {
+	height: 2.7em;
+	font-size: 1em;
+	padding-right: 1.5em !important;
+	padding-left: 1.5em !important;
+}
 
-.com-tbar .popup {}
+.com-tbar .popup {
+	padding: 0 !important;
+	text-align: center;
+}
 
-.com-tbar .avatar {
-	height: 3.2em;
-	width: 3.2em;
+.com-tbar .popup .cont {
+	padding: 1em;
+}
 
+.com-tbar .avatar,
+.com-tbar .pop-avatar {
 	cursor: pointer;
 
 	border-radius: 50%;
@@ -77,11 +96,23 @@ body {
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 50% 50%;
+}
+
+.com-tbar .avatar {
+	height: 2.7em;
+	width: 2.7em;
 
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
 
 	/* TODO */
 	transition: box-shadow 0.5s;
+}
+
+.com-tbar .pop-avatar {
+	display: inline-block;
+	height: 4em;
+	width: 4em;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
 }
 
 .com-tbar .search {
@@ -113,4 +144,28 @@ body {
 
 .com-tbar .links .link:hover {
 	color: #808080;
+}
+
+@media only screen and (max-width: 640px) {
+	.com-tbar .links {
+		display: block;
+		margin-top: 1em;
+	}
+
+	.com-tbar .left-bar {
+		text-align: center;
+	}
+
+	.com-tbar .avatar,
+	.com-tbar .login-btn {
+		position: fixed;
+		display: block;
+		right: 1em;
+		bottom: 1em;
+	}
+
+	.com-tbar .avatar {
+		height: 3.4em;
+		width: 3.4em;
+	}
 }

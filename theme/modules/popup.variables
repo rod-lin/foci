@@ -1,0 +1,7 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+
+@borderWidth: 0;
+@arrowBoxShadow: -1px -1px 0 rgba(0, 0, 0, 0.1);
+@floatingShadow: 0 0 2px rgba(0, 0, 0, 0.1);
