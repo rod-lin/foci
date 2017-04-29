@@ -43,10 +43,10 @@ update.log
 # Scratch file
 *.nt
 
-test/fcauth.js
-test/vcent.js
-
 upload
 
 # semantic source
 semantic
+
+front/lib/foci.js
+front/lib/vcent.js
