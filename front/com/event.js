@@ -185,10 +185,16 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfi
 			fill.remove();
 		}
 
+		var proc = setInterval(function () {
+			main.modal("refresh");
+		}, 50);
+
 		main.modal({
-			observeChanges: true
+			onHide: function () {
+				clearInterval(proc);
+			}
 		});
-		
+
 		main.ready(function () {
 			main.modal("show");
 
