@@ -61,6 +61,8 @@ define([ "com/login", "com/xfilt" ], function (login, xfilt) {
 
 		var search = function (e, kw) {
 			if (!e || e.keyCode == 13) {
+				main.find(".prompt").blur();
+
 				if (onsearch) {
 					onsearch(kw || main.find(".prompt").val());
 				}
@@ -137,7 +139,11 @@ define([ "com/login", "com/xfilt" ], function (login, xfilt) {
 					popup: $(".com-tbar").find(".popup"),
 					position: "bottom right",
 					hoverable: true
-				})
+				});
+
+				ava.click(function () {
+					ava.popup("show");
+				});
 
 				main.find(".login-btn").css("display", "none");
 
