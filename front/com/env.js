@@ -48,6 +48,7 @@ define([ "com/util" ], function (util) {
 
 		foci.logout(env.session, function () {
 			env.session = null;
+			env.user = null;
 			if (cb) cb();
 		});
 	}
