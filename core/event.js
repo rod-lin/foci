@@ -96,6 +96,14 @@ Event.format.info = {
 	descr: util.checkArg.lenlim(config.lim.event.descr, "description too long"),
 	location: util.checkArg.lenlim(config.lim.event.location, "location too long"),
 
+	cover: {
+		type: "string", lim: chsum => {
+			if (!chsum.length > 32)
+				throw new err.Exc("illegal file id");
+			return chsum;
+		}
+	},
+
 	logo: {
 		type: "string", lim: chsum => {
 			if (!chsum.length > 32)

@@ -12,6 +12,14 @@ define(function () {
 		}, config);
 
 		cont = $(cont);
+		var main = $("<div></div>");
+		cont.append(main);
+		cont = main;
+
+		main.css({
+			position: "relative"
+		});
+
 		var child = cont.children();
 		var width = 0;
 
@@ -38,6 +46,7 @@ define(function () {
 			left = (cont_width - count * width - (count - 1) * gap) / 2;
 
 			var top;
+			var max_top = 0;
 
 			for (var col = 0; col < count; col++) {
 				top = gap;
@@ -46,17 +55,23 @@ define(function () {
 					if (child[i]) {
 						child[i].css({
 							position: "absolute",
+							display: "inline-block",
 							left: left + "px",
 							top: top + "px",
-							margin: "0"
+							margin: "0",
 						});
 
 						top += child[i].height() + gap;
 					}
 				}
 
+				if (top > max_top)
+					max_top = top;
+
 				left += width + gap;
 			}
+
+			cont.css("height", max_top);
 		}
 
 		function add(elem, cb) {

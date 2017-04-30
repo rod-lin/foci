@@ -196,6 +196,17 @@ encop.info = async (env, usr, query) => {
 	}
 };
 
+encop.user = async (env, usr, query) => {
+	switch (query.action) {
+		case "logout":
+			await user.logout(usr.getUUID());
+			return;
+
+		default:
+			throw new err.Exc("no such action");
+	}
+};
+
 // favtags
 // encop.tag = async (env, usr, query) => {
 // 	switch (query.action) {

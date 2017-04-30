@@ -1,0 +1,28 @@
+
+.com-upload {
+	text-align: center !important;
+}
+
+/* extended dim */
+.com-upload .exdim {
+	position: absolute;
+	z-index: 0;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.com-upload .form {
+	z-index: 1;
+	display: inline-block;
+	padding: 2em 2em 1em 2em;
+	background: #F8F8F8;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+
+	border-radius: 3px !important;
+}
+
+.com-upload .file {
+	display: none;
+}

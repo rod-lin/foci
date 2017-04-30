@@ -1,7 +1,7 @@
 /* top bar */
 "use strict";
 
-define([ "com/login", "com/xfilt", "com/util" ], function (login, xfilt, util) {
+define([ "com/login", "com/xfilt", "com/util", "com/env" ], function (login, xfilt, util, env) {
 	var $ = jQuery;
 	foci.loadCSS("com/tbar.css");
 
@@ -34,8 +34,8 @@ define([ "com/login", "com/xfilt", "com/util" ], function (login, xfilt, util) {
 					</div--> \
 				</div> \
 				<div class="right-bar"> \
-					<button class="ui grey basic icon button login-btn"> \
-						<i class="user icon"></i> \
+					<button class="ui black icon button login-btn"> \
+						<i class="rocket icon"></i> \
 					</button> \
 					<div class="ui popup transition hidden"> \
 						<div class="cont"> \
@@ -45,7 +45,7 @@ define([ "com/login", "com/xfilt", "com/util" ], function (login, xfilt, util) {
 						</div> \
 						<div class="ui two bottom attached buttons" style="margin-bottom: -1px;"> \
 							<div class="ui blue button">Profile</div> \
-							<div class="ui button">Logout</div> \
+							<div class="ui button logout">Logout</div> \
 						</div> \
 					</div> \
 				</div> \
@@ -106,18 +106,18 @@ define([ "com/login", "com/xfilt", "com/util" ], function (login, xfilt, util) {
 		});
 
 		/*** login ***/
-		var session = null;
-
 		main.find(".login-btn").click(function () {
+			$(this).addClass("loading");
 			login.init(function (dat) {
-				session = dat;
-				loadAvatar();
+				if (dat) {
+					loadAvatar();
+				} else {
+					main.find(".login-btn").removeClass("loading");
+				}
 			});
 		});
 
 		function loadAvatar() {
-			if (!session) return;
-
 			function refresh(info) {
 				info = info || {};
 				var url = info.avatar ? foci.download(info.avatar) : [ "img/deficon.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/matt.jpg" ].choose();
@@ -130,8 +130,16 @@ define([ "com/login", "com/xfilt", "com/util" ], function (login, xfilt, util) {
 					.attr("data-rating", rating.toString())
 					.rating("disable");
 				
-				main.find(".popup .title").append(dname);
+				main.find(".popup .title").html(dname);
 				main.find(".popup .pop-avatar").css("background-image", "url(\'" + url + "\')");
+				main.find(".popup .logout").click(function () {
+					// ava.addClass("loading");
+					env.logout(function () {
+						ava.popup("hide");
+						ava.remove();
+						main.find(".login-btn").css("display", "");
+					});
+				});
 
 				main.find(".right-bar").prepend(ava);
 
@@ -141,20 +149,16 @@ define([ "com/login", "com/xfilt", "com/util" ], function (login, xfilt, util) {
 					hoverable: true
 				});
 
-				main.find(".login-btn").css("display", "none");
+				ava.ready(function () {
+					main.find(".login-btn").removeClass("loading");
+					main.find(".login-btn").css("display", "none");
+				});
 
 				// vcent.update();
 			}
 
-			foci.encop(session, {
-				int: "info",
-				action: "get"
-			}, function (suc, dat) {
-				if (suc) {
-					refresh(dat);
-				} else {
-					util.qmsg(dat);
-				}
+			env.user(function (info) {
+				refresh(info);
 			});
 		}
 
@@ -164,12 +168,8 @@ define([ "com/login", "com/xfilt", "com/util" ], function (login, xfilt, util) {
 			},
 
 			updateAvatar: function () {
-				foci.qlogin(function (suc, dat) {
-					if (suc) {
-						session = dat;
-						loadAvatar();
-					}
-				});
+				if (env.session())
+					loadAvatar();
 			}
 		};
 

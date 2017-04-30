@@ -51,6 +51,8 @@ User.prototype.getLevel = function () { return this.level; };
 // this will be sent to the client
 User.prototype.getInfo = function () {
 	return {
+		uuid: this.uuid,
+
 		dname: this.dname,
 		level: this.level,
 		favtag: this.favtag,
@@ -186,6 +188,12 @@ exports.login = async (lname, passwd) => {
 		uuid: uuid,
 		sid: sid
 	};
+};
+
+exports.logout = async (uuid) => {
+	var col = await db.col("user");
+	await col.updateOne(User.query.uuid(uuid), User.set.rmsession());
+	return;
 };
 
 exports.getSession = async (lname) => {

@@ -208,6 +208,15 @@ window.foci = {};
 		});
 	};
 
+	foci.logout = function (session, cb) {
+		foci.encop(session, {
+			int: "user",
+			action: "logout"
+		}, function (suc, dat) {
+			cb(suc, dat);
+		});
+	};
+
 	foci.download = function (chsum) {
 		return "/file/download?chsum=" + chsum;
 	};

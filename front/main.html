@@ -26,51 +26,50 @@
 
 		<style>
 			body {
-				font-family: Alegreya;
+				font-family: Ubuntu;
 				line-height: normal;
 			}
 
-			.cards {
-				position: relative;
+			.cont {
 				width: 100%;
-			}
-
-			.cards .card {
-				transition: left 0.2s, top 0.2s;
 			}
 		</style>
 	</head>
 
-	<body>
-		<div class="cont" style="width: 100%;"></div>
+	<body class="padding-tbar">
+		<div class="cont"></div>
 
 		<!-- <div class="frame", style="width: 100%; height: 100%; position: fixed; top: 0; left: 0; background: #FFF;"></div> -->
 
 		<script>
-			require([ "com/tbar", "com/event" ], function (tbar, event) {
-				var bar = tbar.init();
-				bar.search(function (kw) {
-					doSearch(kw);
-				});
-
-				// event.qview();
-
-				var ev = event.init("body>.cont");
-
-				function doSearch(kw) {
-					ev.clear(function () {
-						foci.get("/event/search", { kw: kw }, function (suc, dat) {
-							if (suc) {
-								ev.hide(function () {
-									for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
-									ev.show();
-								});
-							} else {
-								alert(dat);
-							}
-						});
+			require([ "com/tbar", "com/event", "com/env", "com/upload" ], function (tbar, event, env, upload) {
+				env.init(function () {
+					var bar = tbar.init();
+					bar.search(function (kw) {
+						doSearch(kw);
 					});
-				}
+
+					// upload.init();
+
+					// event.qview();
+
+					var ev = event.init("body>.cont");
+
+					function doSearch(kw) {
+						ev.clear(function () {
+							foci.get("/event/search", { kw: kw }, function (suc, dat) {
+								if (suc) {
+									ev.hide(function () {
+										for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
+										ev.show();
+									});
+								} else {
+									alert(dat);
+								}
+							});
+						});
+					}
+				});
 			});
 
 			require([ "com/frame" ], function (frame) {

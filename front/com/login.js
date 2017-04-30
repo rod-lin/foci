@@ -2,7 +2,7 @@
 
 "user strict";
 
-define([ "com/util" ], function (util) {
+define([ "com/util", "com/env" ], function (util, env) {
 	var $ = jQuery;
 	foci.loadCSS("com/login.css");
 
@@ -67,6 +67,8 @@ define([ "com/util" ], function (util) {
 			return ret;
 		}
 
+		var finished = false;
+
 		var login_btn = main.find(".login.button");
 		var login_proc = function () {
 			if (!check()) return;
@@ -85,6 +87,8 @@ define([ "com/util" ], function (util) {
 			foci.login(uname, passwd, function (suc, dat) {
 				if (suc) {
 					main.modal("hide");
+					env.session(dat);
+					finished = true;
 					if (cb) cb(dat);
 				} else {
 					// login_btn.html(fail);
@@ -106,7 +110,10 @@ define([ "com/util" ], function (util) {
 		});
 
 		main.modal({
-			allowMultiple: true
+			allowMultiple: true,
+			onHidden: function () {
+				if (!finished && cb) cb(null);
+			}
 		});
 
 		main.modal("show");

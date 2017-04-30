@@ -1,7 +1,7 @@
 /* event */
 "use strict";
 
-define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfilt, waterfall, util, avatar) {
+define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env" ], function (xfilt, waterfall, util, avatar, env) {
 	var $ = jQuery;
 	foci.loadCSS("com/event.css");
 	foci.loadCSS("com/eqview.css");
@@ -123,13 +123,20 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfi
 		var main = $(" \
 			<div class='com-eqview ui large modal'> \
 				<div class='cover' style='background-image: url(\"" + cover + "\");'></div> \
+				<div class='cover-edit'></div> \
 				<div class='logo-cont'> \
 					<div class='logo' style='background-image: url(\"" + logo + "\");'></div> \
-					<div class='title'>" + title + "</div><div class='rating'>" + rating + "</div> \
+					<div class='title'>" + title + "</div><div class='rating'>" + rating + "</div><br> \
 					<div class='detail'><i class='map outline icon'></i>" + location + "</div> \
 					<div class='detail'><i class='calendar outline icon'></i>" + time + "</div> \
 				</div> \
-				<div class='back'><i class='close icon'></i></div> \
+				<div class='back not-owner'> \
+					<div class='util close'> \
+						<i class='close icon'></i> \
+					</div><div class='util setting' data-content='Click components to edit'> \
+						<i class='setting icon'></i> \
+					</div> \
+				</div> \
 				<div class='cont'> \
 					<div class='descr'> \
 						<img class='cont-fill' src='img/paragraph.png'></img> \
@@ -149,12 +156,72 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar" ], function (xfi
 
 		main.find(".descr").html(descr);
 
-		main.find(".back").click(function () {
+		main.find(".back .util.close").click(function () {
 			main.modal("hide");
+		});
+
+		var setting_open = false;
+
+		function openSetting() {
+			var discard = false;
+
+			main.addClass("setting");
+			main.find(".back .util .setting")
+				.addClass("checkmark");
+
+			main.modal({
+				closable: false,
+				onHide: function () {
+					if (main.hasClass("setting") && !discard) {
+						util.ask("Are you sure to discard all the changes?", function (ans) {
+							if (ans) {
+								discard = true;
+								main.modal("hide");
+							}
+						});
+
+						return false;
+					}
+				}
+			});
+
+			main.modal("refresh");
+		
+			setTimeout(function () {
+				main.find(".back .util.setting")
+					.popup({ position: "right center", on: "manual" })
+					.popup("show");
+			}, 500);
+		}
+
+		function closeSetting() {
+			main.removeClass("setting");
+			main.find(".back .util .setting").removeClass("checkmark");
+			main.find(".back .util.setting").popup("hide");
+			main.modal({ closable: true });
+			main.modal("refresh");
+		}
+
+		main.find(".back .util.setting").click(function () {
+			if (setting_open) {
+				closeSetting();
+			} else {
+				openSetting();
+			}
+
+			setting_open = !setting_open;
 		});
 
 		var ava;
 		var fill = main.find(".orgs .cont-fill");
+
+		if (env.session()) {
+			env.user(function (user) {
+				if (info.org && info.org.indexOf(user.uuid) != -1) {
+					main.find(".back").removeClass("not-owner");
+				}
+			});
+		}
 
 		if (info.org) {
 			var size;

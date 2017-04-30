@@ -4,6 +4,7 @@
 
 define(function () {
 	var util = {};
+	foci.loadCSS("com/util.css");
 
 	util.short = function (str, max, fill) {
 		fill = fill || "...";
@@ -39,6 +40,45 @@ define(function () {
 			if ($(window).width() <= max_width)
 				cb();
 		});
+	};
+
+	util.ask = function (msg, cb) {
+		var main = $(' \
+			<div class="ui small modal com-util-ask"> \
+				<div class="ui header"> \
+					' + msg + ' \
+				</div> \
+				<div class="actions"> \
+					<div class="ui red cancel button"> \
+						<i class="remove icon"></i> \
+						No \
+					</div> \
+					<div class="ui green ok button"> \
+						<i class="checkmark icon"></i> \
+						Yes \
+					</div> \
+				</div> \
+			</div> \
+		');
+
+		var ret = true;
+
+		main.modal({
+			closable: false,
+			allowMultiple: true,
+
+			onDeny: function(){
+				ret = false;
+			},
+
+			onApprove: function() {
+				ret = true;
+			},
+
+			onHidden: function () {
+				cb(ret);
+			}
+		}).modal("show");
 	};
 
 	Array.prototype.choose = function () {
