@@ -80,7 +80,7 @@ define(function () {
 			child.push(elem);
 			cont.append(elem);
 		
-			elem.ready(function () {
+			elem.on("load", function () {
 				update();
 				if (cb) cb();
 			});

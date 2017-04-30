@@ -159,6 +159,7 @@ Event.query = {
 	has_favtag: tags => ({ "favtag": { $in: tags } }),
 
 	keyword: kw => {
+		// TODO: keyword filt
 		var reg = new RegExp(kw, "i");
 		return {
 			$or: [

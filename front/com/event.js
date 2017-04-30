@@ -1,7 +1,7 @@
 /* event */
 "use strict";
 
-define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env" ], function (xfilt, waterfall, util, avatar, env) {
+define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com/upload", "com/login" ], function (xfilt, waterfall, util, avatar, env, upload, login) {
 	var $ = jQuery;
 	foci.loadCSS("com/event.css");
 	foci.loadCSS("com/eqview.css");
@@ -42,42 +42,71 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env" ], fu
 
 		var wf = waterfall.init(main);
 
-		function genEvent(info) {
+		var events = [];
+		var edom = []; // event dom
+
+		var ret = {};
+
+		function setDom(dom, info) {
+			dom = $(dom);
+
 			var cover = info.cover ? foci.download(info.cover) : [ "img/tmp1.jpg", "img/tmp2.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/tmp5.jpg" ].choose();
 			var descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len)) : "(no description)";
 			var title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";
+			var date = genDate(info.start, info.end);
+			var partic = info.partic.length;
 
+			dom.find(".cover").attr("src", cover);
+			dom.find(".title").html(title);
+			dom.find(".date").html(date);
+			dom.find(".description").html(descr);
+			dom.find(".partic").html(partic);
+		}
+
+		function genEvent(info) {
 			var main = $('<div class="ui card event"> \
 				<div class="image"> \
-					<img src="' + cover + '"> \
+					<img class="cover"> \
 				</div> \
 				<div class="content"> \
-					<a class="header">' + title + '</a> \
+					<a class="header title"></a> \
 					<div class="meta"> \
-						<span class="date">' + genDate(info.start, info.end) + '</span> \
+						<span class="date"></span> \
 					</div> \
-					<div class="description"> \
-						' + descr + ' \
-					</div> \
+					<div class="description"></div> \
 				</div> \
 				<div class="extra content"> \
 					<a> \
-						<i class="user icon"></i>' + info.partic.length + ' \
+						<i class="user icon"></i><span class="partic"></span> \
 					</a> \
 				</div> \
 			</div>');
 
-			main.find(".image, .header, .description").click(function () { qview(info); });
+			main.find(".image, .header, .description").click(function () {
+				qview(info, null, ret);
+			});
+
+			setDom(main, info);
 
 			return main;
 		}
 
 		// TODO: S L O W !?
 		function add(info) {
-			wf.add(genEvent(info));
+			var dom;
+			
+			events.push(info);
+
+			dom = genEvent(info);
+			edom.push(dom);
+			
+			wf.add(dom);
 		}
 
 		function clear(cb) {
+			events = [];
+			edom = [];
+
 			hide(function () {
 				wf.clear();
 				show(cb);
@@ -98,43 +127,71 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env" ], fu
 			}, 200);
 		}
 
-		return {
-			add: add,
-			clear: clear,
+		// refresh info
+		function update() {
+			for (var i = 0; i < edom.length; i++) {
+				setDom(edom[i], events[i]);
+			}
+		}
 
-			hide: hide,
-			show: show
-		};
+		ret.add = add;
+		ret.clear = clear;
+
+		ret.hide = hide;
+		ret.show = show;
+
+		ret.update = update;
+
+		return ret;
 	}
 
-	function qview(info, config) {
+	function qview(info, config, event) {
 		info = info || {};
 		config = $.extend({}, lim_config, config);
 
-		var title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";
-		var location = info.title ? xfilt(util.short(info.title, config.max_location_len)) : "(not decided)";
-		var time = genDate(info.start, info.end);
+		function update(info) {
+			var title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";
+			var location = info.title ? xfilt(util.short(info.title, config.max_location_len)) : "(not decided)";
+			var time = genDate(info.start, info.end);
 
-		var cover = info.cover ? foci.download(info.cover) : "img/tmp2.jpg";
-		var logo = info.logo ? foci.download(info.logo) : "img/deficon.jpg";
+			var cover = info.cover ? foci.download(info.cover) : "img/tmp2.jpg";
+			var logo = info.logo ? foci.download(info.logo) : "img/deficon.jpg";
 
-		var rating = info.rating ? info.rating : "nop";
+			var rating = info.rating ? info.rating : "nop";
+
+			var descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len)) : "(no description)";
+
+			main.find(".cover").css("background-image", "url('" + cover + "')");
+			main.find(".logo").css("background-image", "url('" + logo + "')");
+
+			main.find(".title").html(title);
+			main.find(".rating").html(rating);
+
+			main.find(".loaction").html(location);
+			main.find(".time").html(time);
+
+			main.find(".descr").html(descr);
+
+			main.find(".back .util.close").click(function () {
+				main.modal("hide");
+			});
+		}
 
 		var main = $(" \
 			<div class='com-eqview ui large modal'> \
-				<div class='cover' style='background-image: url(\"" + cover + "\");'></div> \
-				<div class='cover-edit'></div> \
+				<div class='cover'></div> \
+				<div class='cover-edit'>Change cover</div> \
 				<div class='logo-cont'> \
-					<div class='logo' style='background-image: url(\"" + logo + "\");'></div> \
-					<div class='title'>" + title + "</div><div class='rating'>" + rating + "</div><br> \
-					<div class='detail'><i class='map outline icon'></i>" + location + "</div> \
-					<div class='detail'><i class='calendar outline icon'></i>" + time + "</div> \
+					<div class='logo'><div>Change logo</div></div> \
+					<div class='title'></div><div class='rating'></div><br> \
+					<div class='detail'><i class='map outline icon'></i><span class='location'></span></div> \
+					<div class='detail'><i class='calendar outline icon'></i><span class='time'></span></div> \
 				</div> \
 				<div class='back not-owner'> \
-					<div class='util close'> \
+					<div class='util close ui icon button'> \
 						<i class='close icon'></i> \
-					</div><div class='util setting' data-content='Click components to edit'> \
-						<i class='setting icon'></i> \
+					</div><div class='util setting ui icon button'> \
+						<i class='setting-btn setting icon'></i> \
 					</div> \
 				</div> \
 				<div class='cont'> \
@@ -152,21 +209,101 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env" ], fu
 			</div> \
 		");
 
-		var descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len)) : "(no description)";
+		update(info);
 
-		main.find(".descr").html(descr);
-
-		main.find(".back .util.close").click(function () {
-			main.modal("hide");
-		});
+		/*** setting ***/
 
 		var setting_open = false;
 
+		function editText(com, cb) {
+			if (!main.hasClass("setting")) return;
+
+			com = $(com);
+			var editor = $("<textarea class='editor-text'></textarea>");
+
+			editor.val(com.html());
+		
+			function updatePos() {
+				var ofs = com.offset();
+				var mofs = main.offset();
+
+				editor.css({
+					position: "absolute",
+					top: (ofs.top - mofs.top) + "px",
+					left: (ofs.left - mofs.left) + "px",
+					height: com.outerHeight(),
+					width: com.outerWidth(),
+					"font-size": com.css("font-size"),
+					"font-family": com.css("font-family"),
+					"font-weight": com.css("font-weight"),
+					"line-height": com.css("line-height")
+				});
+			}
+
+			updatePos()
+
+			main.append(editor);
+			editor.focus();
+
+			$(window).on("resize", updatePos);
+
+			editor.blur(function () {
+				var val = editor.val();
+
+				$(window).off("resize", updatePos);
+				editor.remove();
+				
+				if (cb) cb(val);
+			});
+		}
+
+		var changes;
+
+		/*** editable fields ***/
+		main.find(".title").click(function () {
+			editText(this, function (cont) {
+				changes.title = cont;
+				main.find(".title").html(cont);
+			});
+		});
+
+		main.find(".descr").click(function () {
+			editText(this, function (cont) {
+				changes.descr = cont;
+				main.find(".descr").html(cont);
+			});
+		});
+
+		main.find(".cover-edit").click(function () {
+			upload.init(function (file) {
+				changes.cover = file;
+				main.find(".cover").css("background-image", "url('" + foci.download(file) + "')");
+			});
+		});
+
+		main.find(".logo").click(function () {
+			upload.init(function (file) {
+				changes.logo = file;
+				main.find(".logo").css("background-image", "url('" + foci.download(file) + "')");
+			});
+		});
+		/*** editable fields ***/
+
 		function openSetting() {
+			offproc();
+
 			var discard = false;
+			changes = {};
+
+			setting_open = true;
 
 			main.addClass("setting");
-			main.find(".back .util .setting")
+
+			main.find(".back .util.setting")
+				.attr("data-content", "Click components to edit");
+			
+			main.find(".back .util .setting-btn")
+				.removeClass("setting")
 				.addClass("checkmark");
 
 			main.modal({
@@ -189,28 +326,110 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env" ], fu
 		
 			setTimeout(function () {
 				main.find(".back .util.setting")
-					.popup({ position: "right center", on: "manual" })
+					.popup({ position: "right center", hideOnScroll: true })
 					.popup("show");
+
+				onproc();
 			}, 500);
 		}
 
-		function closeSetting() {
-			main.removeClass("setting");
-			main.find(".back .util .setting").removeClass("checkmark");
-			main.find(".back .util.setting").popup("hide");
-			main.modal({ closable: true });
-			main.modal("refresh");
+		function saveChanges(session, cb) {
+			foci.encop(session, $.extend(changes, {
+				int: "event",
+				action: "setinfo",
+				euid: info.euid
+			}), function (suc, dat) {
+				if (!suc) {
+					util.qmsg(dat);
+					cb(false);
+				} else {
+					foci.get("/event/info", { euid: info.euid }, function (suc, dat) {
+						if (suc) {
+							$.extend(info, dat);
+						} else {
+							util.qmsg(dat);
+						}
+
+						cb(suc);
+					});
+				}
+			});
 		}
 
-		main.find(".back .util.setting").click(function () {
+		function closeSetting() {
+			offproc();
+
+			main.find(".back .util .setting-btn")
+				.removeClass("checkmark");
+			
+			main.find(".back .util.setting").addClass("loading");
+
+			function close() {
+				main.removeClass("setting");
+
+				main.find(".back .util.setting").removeClass("loading");
+				
+				main.find(".back .util .setting-btn")
+					.removeClass("refresh")
+					.addClass("setting");
+
+				main.find(".back .util.setting").popup("hide");
+				main.modal({ closable: true });
+				main.modal("refresh");
+
+				setting_open = false;
+
+				// update event cards
+				if (event) event.update();
+
+				onproc();
+			}
+
+			function fail() {
+				main.find(".back .util.setting")
+					.removeClass("loading")
+					.popup("change content", "Click here to retry");
+
+				main.find(".back .util .setting-btn")
+					.addClass("refresh");
+			
+				// not set session_open
+				onproc();
+			}
+
+			var session = env.session();
+
+			if (!session) {
+				login.init(function (dat) {
+					if (dat) closeSetting(); // redo the saving
+				});
+			} else {
+				saveChanges(session, function (suc) {
+					if (suc) {
+						close();
+						update(info);
+					} else fail();
+				})
+			}
+		}
+
+		var proc = function () {
 			if (setting_open) {
 				closeSetting();
 			} else {
 				openSetting();
 			}
+		};
 
-			setting_open = !setting_open;
-		});
+		var offproc = function () {
+			main.find(".back .util.setting").off("click", proc);
+		};
+
+		var onproc = function () {
+			main.find(".back .util.setting").on("click", proc);
+		};
+
+		onproc();
 
 		var ava;
 		var fill = main.find(".orgs .cont-fill");

@@ -14,15 +14,16 @@ define([ "com/util" ], function (util) {
 					<div class='field preview-cont' style='display: none;'> \
 						<img class='ui medium rounded bordered image preview' src='img/tmp3.jpg'> \
 					</div> \
-					<div class='field'> \
-						<div class='ui buttons'> \
-							<button type='button' class='ui teal button select-btn'> \
-								Select \
-							</button> \
-							<button type='button' class='ui blue button use-btn'> \
-								Use \
-							</button> \
-						</div> \
+					<div class='ui buttons'> \
+						<button type='button' class='ui icon button exit-btn'> \
+							<i class='remove icon'></i> \
+						</button> \
+						<button type='button' class='ui blue icon button select-btn'> \
+							<i class='upload icon'></i> \
+						</button> \
+						<button type='button' class='ui green icon button use-btn'> \
+							<i class='checkmark icon'></i> \
+						</button> \
 					</div> \
 					<input class='file' name='file' type='file'> \
 				</form> \
@@ -30,7 +31,7 @@ define([ "com/util" ], function (util) {
 		");
 
 		var selected = null;
-
+		
 		main.find(".select-btn").click(function () {
 			main.find(".file").click();
 		});
@@ -82,7 +83,7 @@ define([ "com/util" ], function (util) {
 			}
 		});
 
-		main.find(".exdim").click(function () {
+		main.find(".exit-btn, .exdim").click(function () {
 			main.modal("hide");
 		});
 
