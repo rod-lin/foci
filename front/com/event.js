@@ -282,6 +282,7 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 		});
 
 		main.find(".logo").click(function () {
+			if (!main.hasClass("setting")) return;
 			upload.init(function (file) {
 				changes.logo = file;
 				main.find(".logo").css("background-image", "url('" + foci.download(file) + "')");
@@ -292,7 +293,6 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 		function openSetting() {
 			offproc();
 
-			var discard = false;
 			changes = {};
 
 			setting_open = true;
@@ -306,27 +306,11 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 				.removeClass("setting")
 				.addClass("checkmark");
 
-			main.modal({
-				closable: false,
-				onHide: function () {
-					if (main.hasClass("setting") && !discard) {
-						util.ask("Are you sure to discard all the changes?", function (ans) {
-							if (ans) {
-								discard = true;
-								main.modal("hide");
-							}
-						});
-
-						return false;
-					}
-				}
-			});
-
 			main.modal("refresh");
 		
 			setTimeout(function () {
 				main.find(".back .util.setting")
-					.popup({ position: "right center", hideOnScroll: true })
+					.popup({ position: "right center", hideOnScroll: true, on: "manual", inline: true })
 					.popup("show");
 
 				onproc();
@@ -334,6 +318,11 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 		}
 
 		function saveChanges(session, cb) {
+			if (!util.kcount(changes)) {
+				cb(true);
+				return;
+			}
+
 			foci.encop(session, $.extend(changes, {
 				int: "event",
 				action: "setinfo",
@@ -374,7 +363,7 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 					.addClass("setting");
 
 				main.find(".back .util.setting").popup("hide");
-				main.modal({ closable: true });
+				// main.modal({ closable: true });
 				main.modal("refresh");
 
 				setting_open = false;
@@ -474,7 +463,22 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 			fill.remove();
 		}
 
-		main.modal();
+		var discard = false;
+
+		main.modal({
+			onHide: function () {
+				if (main.hasClass("setting") && !discard) {
+					util.ask("Are you sure to discard all the changes?", function (ans) {
+						if (ans) {
+							discard = true;
+							main.modal("hide");
+						}
+					});
+
+					return false;
+				}
+			}
+		});
 
 		// util.listen(function () {
 		// 	var before = main.offset().top;

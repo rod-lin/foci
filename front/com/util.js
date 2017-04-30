@@ -81,6 +81,16 @@ define(function () {
 		}).modal("show");
 	};
 
+	util.kcount = function (obj) {
+		var count = 0;
+		
+		for (var k in obj) {
+			if (obj.hasOwnProperty(k)) count++;
+		}
+
+		return count;
+	};
+
 	Array.prototype.choose = function () {
 		return this[Math.floor(Math.random() * this.length)];
 	};
