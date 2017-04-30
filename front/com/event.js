@@ -216,8 +216,6 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 		var setting_open = false;
 
 		function editText(com, cb) {
-			if (!main.hasClass("setting")) return;
-
 			com = $(com);
 			var editor = $("<textarea class='editor-text'></textarea>");
 
@@ -257,37 +255,62 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 			});
 		}
 
+		var exc_state = false;
+		function exclude(cb) {
+			if (exc_state) return;
+			exc_state = true;
+			cb(function () { exc_state = false; });
+		}
+
 		var changes;
 
+		function editable(elem, type, field, cb) {
+			elem = $(elem);
+			elem.click(function () {
+				if (!main.hasClass("setting")) return;
+
+				exclude(function (unlock) {
+					switch (type) {
+						case "text":
+							editText(elem, function (cont) {
+								changes[field] = cont;
+								if (cb) cb(cont);
+								unlock();
+							});
+							break;
+
+						case "image":
+							upload.init(function (file) {
+								if (file) {
+									changes[field] = file;
+									if (cb) cb(file);
+								}
+								
+								unlock();
+							});
+							break;
+					}
+				});
+			});
+		}
+
 		/*** editable fields ***/
-		main.find(".title").click(function () {
-			editText(this, function (cont) {
-				changes.title = cont;
-				main.find(".title").html(cont);
-			});
+		editable(main.find(".title"), "text", "title", function (cont) {
+			main.find(".title").html(cont);
 		});
 
-		main.find(".descr").click(function () {
-			editText(this, function (cont) {
-				changes.descr = cont;
-				main.find(".descr").html(cont);
-			});
+		editable(main.find(".descr"), "text", "descr", function (cont) {
+			main.find(".descr").html(cont);
 		});
 
-		main.find(".cover-edit").click(function () {
-			upload.init(function (file) {
-				changes.cover = file;
-				main.find(".cover").css("background-image", "url('" + foci.download(file) + "')");
-			});
+		editable(main.find(".cover-edit"), "image", "cover", function (cont) {
+			main.find(".cover").css("background-image", "url('" + foci.download(cont) + "')");
 		});
 
-		main.find(".logo").click(function () {
-			if (!main.hasClass("setting")) return;
-			upload.init(function (file) {
-				changes.logo = file;
-				main.find(".logo").css("background-image", "url('" + foci.download(file) + "')");
-			});
+		editable(main.find(".logo"), "image", "logo", function (cont) {
+			main.find(".logo").css("background-image", "url('" + foci.download(cont) + "')");
 		});
+
 		/*** editable fields ***/
 
 		function openSetting() {
@@ -464,11 +487,16 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 		}
 
 		var discard = false;
+		var ask_open = false;
 
 		main.modal({
 			onHide: function () {
+				if (ask_open) return false;
+
 				if (main.hasClass("setting") && !discard) {
+					ask_open = true;
 					util.ask("Are you sure to discard all the changes?", function (ans) {
+						ask_open = false;
 						if (ans) {
 							discard = true;
 							main.modal("hide");

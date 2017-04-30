@@ -26,3 +26,12 @@
 .com-upload .file {
 	display: none;
 }
+
+.com-upload .preview {
+	display: block;
+	max-height: 40vh;
+
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+}

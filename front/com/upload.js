@@ -12,7 +12,7 @@ define([ "com/util" ], function (util) {
 				<div class='exdim'></div> \
 				<form class='ui form' enctype='multipart/form-data'> \
 					<div class='field preview-cont' style='display: none;'> \
-						<img class='ui medium rounded bordered image preview' src='img/tmp3.jpg'> \
+						<img class='ui medium rounded bordered preview' src='img/tmp3.jpg'> \
 					</div> \
 					<div class='ui buttons'> \
 						<button type='button' class='ui icon button exit-btn'> \
@@ -31,7 +31,7 @@ define([ "com/util" ], function (util) {
 		");
 
 		var selected = null;
-		
+
 		main.find(".select-btn").click(function () {
 			main.find(".file").click();
 		});
@@ -85,6 +85,7 @@ define([ "com/util" ], function (util) {
 
 		main.find(".exit-btn, .exdim").click(function () {
 			main.modal("hide");
+			if (cb) cb(null);
 		});
 
 		main.modal({
