@@ -45,8 +45,8 @@
 			require([ "com/tbar", "com/event", "com/env", "com/upload" ], function (tbar, event, env, upload) {
 				env.init(function () {
 					var bar = tbar.init();
-					bar.search(function (kw) {
-						doSearch(kw);
+					bar.search(function (query) {
+						doSearch(query);
 					});
 
 					// upload.init();
@@ -55,9 +55,9 @@
 
 					var ev = event.init("body>.cont");
 
-					function doSearch(kw) {
+					function doSearch(query) {
 						ev.clear(function () {
-							foci.get("/event/search", { kw: kw }, function (suc, dat) {
+							foci.get("/event/search", query, function (suc, dat) {
 								if (suc) {
 									ev.hide(function () {
 										for (var i = 0; i < dat.length; i++) ev.add(dat[i]);

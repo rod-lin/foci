@@ -15,18 +15,32 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 		var main = ' \
 			<div class="com-tbar hide"> \
 				<div class="left-bar"> \
-					<div class="ui left action input search-box"> \
-						<div class="ui basic floating dropdown button"> \
-							<div class=""><i class="content icon" style="margin: 0;"></i></div> \
+					<div class="ui left action right icon input search-box"> \
+						<div class="nav ui basic floating dropdown button"> \
+							<div><i class="content icon" style="margin: 0;"></i></div> \
 							<div class="menu"> \
 								<div class="item">Home</div> \
 								<div class="item">Plaza</div> \
 							</div> \
 						</div> \
-						<div class="ui search"> \
+						<!--div class="tags">Hi</div--> \
+						<div class="ui search fluid"> \
+							<div class="filter-tag fluid ui multiple dropdown"> \
+								<div class="ui fluid menu"> ' + /* tags add here! */ ' \
+									<div class="header"> \
+										<i class="tags icon"></i> \
+										Add tag \
+									</div> \
+									<div class="scrolling menu"> \
+										<div class="item" data-value="no-select" style="display: none;"> \
+											dont select me \
+										</div> \
+									</div> \
+								</div> \
+							</div> \
 							<input class="prompt" placeholder="Type for surprise" type="text"> \
 						</div> \
-						<div class="results"></div> \
+						<i class="filter-btn filter link icon"></i> \
 					</div> \
 					<!--div class="links"> \
 						<div class="link">home</div> \
@@ -55,7 +69,74 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 		main = $(main);
 
-		main.find(".ui.dropdown").dropdown();
+		main.find(".nav").dropdown();
+
+		main.find(".filter-tag").dropdown({
+			hideAdditions: true,
+
+			onShow: function () {
+				main.find(".filter-tag").css("pointer-events", "auto");
+			},
+
+			onHide: function () {
+				main.find(".filter-tag").css("pointer-events", "none");
+			},
+
+			keys: {
+				enter: -1 // avoid enter select
+			}
+		});
+
+		var tag_dname = {}; // TODO: tag display name map
+		var tag_selected = {};
+
+		function getTag() {
+			var ret = [];
+
+			for (var k in tag_selected) {
+				if (tag_selected.hasOwnProperty(k) && tag_selected[k]) {
+					ret.push(k);
+				}
+			}
+
+			return ret;
+		}
+
+		function clearTag() {
+			tag_selected = {};
+			main.find(".filter-tag .scrolling.menu .tag div").removeClass("blue").addClass("grey");
+		}
+
+		function addTag(name) {
+			var tag = $(" \
+				<div class='item tag filtered' style='display: block !important; font-weight: normal !important;'> \
+					<div class='ui grey empty circular label'></div> \
+				</div> \
+			");
+			
+			tag.attr("data-value", name);
+			tag.append(tag_dname.hasOwnProperty(name) ? tag_dname[name] : name);
+			tag.click(function () {
+				tag_selected[name] = !tag_selected[name];
+				tag.find("div").toggleClass("grey").toggleClass("blue");
+			});
+
+			main.find(".filter-tag .scrolling.menu").append(tag);
+		}
+
+		foci.get("/favtag", {}, function (suc, dat) {
+			if (suc) {
+				for (var i = 0; i < dat.length; i++) {
+					addTag(dat[i]);
+				}
+			} else {
+				util.qmsg(dat);
+			}
+		});
+
+		main.find(".filter-btn").click(function () {
+			main.find(".filter-tag").dropdown("toggle");
+		});
 
 		/*** search util ***/
 		var onsearch = null;
@@ -65,7 +146,13 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				main.find(".prompt").blur();
 
 				if (onsearch) {
-					onsearch(kw || main.find(".prompt").val());
+					kw = kw || main.find(".prompt").val();
+					onsearch({
+						kw: kw,
+						favtag: getTag()
+					});
+
+					clearTag();
 				}
 			}
 		};

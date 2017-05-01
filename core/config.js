@@ -12,7 +12,7 @@ var conf = module.exports = {
 	},
 
 	lim: {
-		favtag: [ "tech", "music", "travel" ],
+		favtag: [ "sports", "art", "academic" ],
 
 		user: {
 			dname: 64,

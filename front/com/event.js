@@ -86,6 +86,10 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 				qview(info, null, ret);
 			});
 
+			main.find(".cover").on("load", function () {
+				wf.update();
+			});
+
 			setDom(main, info);
 
 			return main;
