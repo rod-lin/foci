@@ -29,7 +29,12 @@
 
 .com-upload .preview {
 	display: block;
+
 	max-height: 40vh;
+	max-width: 60vw;
+
+	border-radius: 3px;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 
 	background-repeat: no-repeat;
 	background-size: cover;

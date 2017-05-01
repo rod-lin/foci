@@ -2,10 +2,12 @@
 
 "use strict";
 
-window.env = {};
+if (!window.top.env)
+	window.top.env = {};
 
 define([ "com/util" ], function (util) {
 	var $ = jQuery;
+	var env = window.top.env;
 
 	function qlogin(cb) {
 		foci.qlogin(function (suc, dat) {
@@ -59,12 +61,9 @@ define([ "com/util" ], function (util) {
 		});
 	}
 
-	// var proc = setInterval(function () {
-	// 	qlogin(function (suc, dat) {
-	// 		if (!suc) util.qmsg(dat);
-	// 		else clearInterval(proc);
-	// 	});
-	// }, 7000);
+	var proc = setInterval(function () {
+		qlogin();
+	}, 1000);
 
 	return {
 		init: init,

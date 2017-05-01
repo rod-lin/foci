@@ -105,10 +105,6 @@ define([ "com/util", "com/env" ], function (util, env) {
 
 		login_btn.click(login_proc);
 
-		main.find(".exdim").click(function () {
-			main.modal("hide");
-		});
-
 		main.modal({
 			allowMultiple: true,
 			onHidden: function () {
@@ -117,6 +113,10 @@ define([ "com/util", "com/env" ], function (util, env) {
 		});
 
 		main.modal("show");
+
+		main.find(".exdim").click(function () {
+			main.modal("hide");
+		});
 	}
 
 	return {

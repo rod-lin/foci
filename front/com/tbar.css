@@ -82,6 +82,18 @@
 	margin-right: 0 !important;
 }
 
+.com-tbar .logged .login-btn {
+	display: none;
+}
+
+.com-tbar .avatar {
+	display: none;
+}
+
+.com-tbar .logged .avatar {
+	display: block;
+}
+
 .com-tbar .popup {
 	padding: 0 !important;
 	text-align: center;
@@ -116,7 +128,35 @@
 	display: inline-block;
 	height: 4em;
 	width: 4em;
+	margin-bottom: 0.5em;
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+	transition: box-shadow 0.5s;
+
+}
+
+.com-tbar .pop-avatar:hover {
+	box-shadow:
+		0 0 1px rgba(0, 0, 0, 0.3),
+		0 0 4em rgba(0, 0, 0, 0.5) inset;
+}
+
+.com-tbar .pop-avatar div {
+	color: #F3F3F3;
+	font-weight: bold;
+	opacity: 0;
+	line-height: 2.667em;
+	font-size: 1.5em;
+	text-align: center;
+
+	transition: opacity 0.5s;
+}
+
+.com-tbar .pop-avatar div i {
+	margin: 0 !important;
+}
+
+.com-tbar .pop-avatar:hover div {
+	opacity: 1;
 }
 
 .com-tbar .search {

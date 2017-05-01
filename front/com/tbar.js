@@ -1,7 +1,7 @@
 /* top bar */
 "use strict";
 
-define([ "com/login", "com/xfilt", "com/util", "com/env" ], function (login, xfilt, util, env) {
+define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], function (login, xfilt, util, env, upload) {
 	var $ = jQuery;
 	foci.loadCSS("com/tbar.css");
 
@@ -34,12 +34,13 @@ define([ "com/login", "com/xfilt", "com/util", "com/env" ], function (login, xfi
 					</div--> \
 				</div> \
 				<div class="right-bar"> \
+					<div class="avatar"></div> \
 					<button class="ui black icon button login-btn"> \
 						<i class="rocket icon"></i> \
 					</button> \
 					<div class="ui popup transition hidden"> \
 						<div class="cont"> \
-							<div class="pop-avatar"></div> \
+							<div class="pop-avatar"><div><i class="setting icon"></i></div></div> \
 							<div class="title header"></div> \
 							<div class="ui star mini rating bottom right" data-rating="4" data-max-rating="5"></div> \
 						</div> \
@@ -107,60 +108,104 @@ define([ "com/login", "com/xfilt", "com/util", "com/env" ], function (login, xfi
 
 		/*** login ***/
 		main.find(".login-btn").click(function () {
-			$(this).addClass("loading");
+			hideAvatar();
+			main.find(".login-btn").addClass("loading");
 			login.init(function (dat) {
-				if (dat) {
-					loadAvatar();
-				} else {
-					main.find(".login-btn").removeClass("loading");
-				}
+				updateAvatar();
+				main.find(".login-btn").removeClass("loading");
 			});
 		});
 
-		function loadAvatar() {
+		var ava = main.find(".avatar");
+		ava.popup({
+			popup: main.find(".popup"),
+			position: "bottom right",
+			hoverable: true
+		});
+
+		function showAvatar() {
+			main.find(".right-bar").addClass("logged");
+		}
+
+		function hideAvatar() {
+			ava.popup("hide");
+			main.find(".right-bar").removeClass("logged");
+		}
+
+		main.find(".popup .pop-avatar")
+			.click(function () {
+				upload.init(function (file) {
+					if (file) {
+						var session = env.session();
+
+						if (!session) {
+							util.qmsg("no session");
+							return;
+						}
+
+						// set avatar
+						foci.encop(session, {
+							int: "info",
+							action: "set",
+							avatar: file
+						}, function (suc, dat) {
+							if (suc) {
+								info.avatar = file;
+								update();
+							} else {
+								util.qmsg(dat);
+							}
+						});
+					}
+				});
+			});
+
+		function updateAvatar() {
 			function refresh(info) {
 				info = info || {};
-				var url = info.avatar ? foci.download(info.avatar) : [ "img/deficon.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/matt.jpg" ].choose();
-				var ava = $('<div class="avatar" style="background-image: url(\'' + url + '\');"></div>');
 
 				var dname = info.dname ? xfilt(info.dname) : "anonymous";
 				var rating = info.rating ? Math.round(info.rating[0]) : "0";
+
+				function update() {
+					var url = info.avatar ? foci.download(info.avatar) : [ "img/deficon.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/matt.jpg" ].choose();
+					ava.css("background-image", "url(\'" + url + "\')");
+					main.find(".popup .pop-avatar").css("background-image", "url(\'" + url + "\')")
+				}
 
 				main.find(".rating")
 					.attr("data-rating", rating.toString())
 					.rating("disable");
 				
 				main.find(".popup .title").html(dname);
-				main.find(".popup .pop-avatar").css("background-image", "url(\'" + url + "\')");
 				main.find(".popup .logout").click(function () {
 					// ava.addClass("loading");
 					env.logout(function () {
-						ava.popup("hide");
-						ava.remove();
-						main.find(".login-btn").css("display", "");
+						updateAvatar();
 					});
 				});
 
-				main.find(".right-bar").prepend(ava);
-
-				ava.popup({
-					popup: main.find(".popup"),
-					position: "bottom right",
-					hoverable: true
-				});
+				update();
 
 				ava.ready(function () {
 					main.find(".login-btn").removeClass("loading");
-					main.find(".login-btn").css("display", "none");
+					showAvatar();
+					// main.find(".right-bar").prepend(ava);
 				});
 
 				// vcent.update();
 			}
 
-			env.user(function (info) {
-				refresh(info);
-			});
+			if (env.session()) {
+				env.user(function (info) {
+					refresh(info);
+				});
+			} else {
+				hideAvatar();
+			}
 		}
+
+		var session = null;
 
 		var ret = {
 			search: function (cb) {
@@ -168,12 +213,14 @@ define([ "com/login", "com/xfilt", "com/util", "com/env" ], function (login, xfi
 			},
 
 			updateAvatar: function () {
-				if (env.session())
-					loadAvatar();
+				if (env.session() != session) {
+					updateAvatar();
+					session = env.session();
+				}
 			}
 		};
 
-		ret.updateAvatar();
+		setInterval(ret.updateAvatar, 50);
 
 		$("body").prepend(main);
 

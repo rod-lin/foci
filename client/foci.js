@@ -170,7 +170,6 @@ window.foci = {};
 		};
 
 		if (!session) {
-			clear();
 			return cb(false, "no session stored");
 		}
 
@@ -181,7 +180,7 @@ window.foci = {};
 			enc: foci.aesenc("hello", session.getSID())
 		}, function (suc, dat) {
 			if (!suc) {
-				clear();
+				// clear(); no clear on network error
 				return cb(false, "network error");
 			}
 

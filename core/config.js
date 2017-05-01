@@ -6,7 +6,7 @@ var conf = module.exports = {
 	debug: true,
 
 	file: {
-		max_size: 1024 * 1024 * 1,
+		max_size: 1024 * 1024 * 10,
 		// with respect to the root dir of the app
 		save_dir: "upload"
 	},
