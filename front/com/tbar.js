@@ -237,8 +237,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 							avatar: file
 						}, function (suc, dat) {
 							if (suc) {
-								info.avatar = file;
-								update();
+								updateAvatar(file);
 							} else {
 								util.qmsg(dat);
 							}
@@ -247,7 +246,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				});
 			});
 
-		function updateAvatar() {
+		function updateAvatar(file) {
 			function refresh(info) {
 				info = info || {};
 
@@ -285,6 +284,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 			if (env.session()) {
 				env.user(function (info) {
+					if (file) info.avatar = file;
 					refresh(info);
 				});
 			} else {

@@ -45,6 +45,10 @@ define(function () {
 
 			left = (cont_width - count * width - (count - 1) * gap) / 2;
 
+			var ret = {
+				left: left
+			};
+
 			var top;
 			var max_top = 0;
 
@@ -72,6 +76,10 @@ define(function () {
 			}
 
 			cont.css("height", max_top);
+
+			if (config.onUpdate) config.onUpdate(ret);
+
+			return ret;
 		}
 
 		function add(elem, cb) {

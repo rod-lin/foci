@@ -40,7 +40,9 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 		
 		cont.append(main);
 
-		var wf = waterfall.init(main);
+		var wf = waterfall.init(main, {
+			onUpdate: config.onUpdate
+		});
 
 		var events = [];
 		var edom = []; // event dom
