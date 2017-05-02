@@ -91,6 +91,10 @@ define(function () {
 		return count;
 	};
 
+	util.fill = function () {
+		return $("<img class='com-util-cont-fill' src='img/paragraph.png'></img>");
+	};
+
 	Array.prototype.choose = function () {
 		return this[Math.floor(Math.random() * this.length)];
 	};

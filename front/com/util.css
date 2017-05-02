@@ -3,3 +3,9 @@
 	border: 0 !important;
 	background: transparent !important;
 }
+
+.com-util-cont-fill {
+	margin-top: 1em;
+	width: 100%;
+	opacity: 0.5
+}

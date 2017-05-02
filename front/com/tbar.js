@@ -55,7 +55,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 					<div class="ui popup transition hidden"> \
 						<div class="cont"> \
 							<div class="pop-avatar"><div><i class="setting icon"></i></div></div> \
-							<div class="title header"></div> \
+							<div class="pop-title header"></div> \
 							<div class="ui star mini rating bottom right" data-rating="4" data-max-rating="5"></div> \
 						</div> \
 						<div class="ui two bottom attached buttons" style="margin-bottom: -1px;"> \
@@ -263,7 +263,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 					.attr("data-rating", rating.toString())
 					.rating("disable");
 				
-				main.find(".popup .title").html(dname);
+				main.find(".popup .pop-title").html(dname);
 				main.find(".popup .logout").click(function () {
 					// ava.addClass("loading");
 					env.logout(function () {

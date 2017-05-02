@@ -57,7 +57,7 @@
 
 					var ev = event.init("body>.cont", {
 						onUpdate: function (pos) {
-							$(".cont>.header")
+							$("body>.cont>.header")
 								.css("padding-left", pos.left + "px")
 								.css("padding-right", pos.left + "px");
 						}
