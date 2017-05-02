@@ -21,8 +21,16 @@
 	box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-.com.eqview .back:last-child {
+.com-eqview .back .util:last-child {
 	border-radius: 0 2px 2px 0;
+}
+
+.com-eqview .back.not-owner .util.close {
+	border-radius: 0 2px 2px 0;
+}
+
+.com-eqview .back.not-owner .util.setting {
+	display: none;
 }
 
 .com-eqview .back .util {
@@ -49,10 +57,6 @@
 .com-eqview .util.setting.loading:before,
 .com-eqview .util.setting.loading:after {
 	font-size: 0.8em;
-}
-
-.com-eqview .not-owner .util.setting {
-	display: none;
 }
 
 .com-eqview .back .util i {
@@ -172,29 +176,63 @@
 }
 
 .com-eqview .descr {
-	margin: 1em 0 2em 0;
+	margin: 1em 0 0 0;
 }
 
-.com-eqview .more {
+.com-eqview .tagbox {
+	margin: 0.3em 0 1em 0;
+}
+
+.com-eqview .favtag {
 	display: inline-block;
+	padding: 0.5em 0.7em;
+	margin: 0 0.2em 0.2em 0;
+	
+	line-height: 1rem;
 
-	width: 100%;
+	font-size: 0.6em;
 
-	padding: 1em 0;
+	background: #95A5A6;
+	color: white;
 
-	font-size: 1.4em;
-	font-weight: bold;
-	text-align: center;
+	border: 1px solid #7F8C8D;
+	border-radius: 3px;
 
-	background: #7F8C8D;
-	color: #F3F3F3;
-
-	cursor: pointer;
-
-	user-select: none;
-	-moz-user-select: none;
+	cursor: default;
 
 	transition: background 0.3s;
+}
+
+.com-eqview .tagadd-btn {
+	display: none;
+	padding: 0.5em 0.7em;
+	margin: 0 0.2em 0.2em 0;
+
+	line-height: 1rem;
+
+	font-size: 0.6em;
+
+	background: transparent;
+	color: rgba(0, 0, 0, 0.7);
+
+	border: 2px dotted rgba(0, 0, 0, 0.5);
+	border-radius: 3px;
+
+	cursor: pointer;
+}
+
+.com-eqview .tagdel-btn {
+	display: none;
+	cursor: pointer;
+	margin: 0 0 0 0.7em;
+}
+
+.com-eqview .tagadd-btn i {
+	margin: 0 !important;
+}
+
+.com-eqview .favtag:hover {
+	background: #A0B2B3;
 }
 
 .com-eqview .cont-fill {
@@ -219,12 +257,21 @@
 	display: none;
 }
 
+.com-eqview.setting .tagadd-btn {
+	display: inline-block;
+}
+
+.com-eqview.setting .tagdel-btn {
+	display: inline;
+}
+
 .com-eqview.setting .title,
 .com-eqview.setting .detail,
 .com-eqview.setting .descr {
 	border: 2px dotted rgba(0, 0, 0, 0.5);
 	cursor: pointer;
 	padding: 0.5em;
+	border-radius: 3px;
 }
 
 .com-eqview.setting .detail {
@@ -239,7 +286,7 @@
 
 	border-radius: 3px 3px 0 0;
 
-	background: rgba(0, 0, 0, 0.7);
+	background: rgba(0, 0, 0, 0.);
 	color: #E6E6E6;
 	font-size: 1.5em;
 	font-weight: bold;
@@ -286,6 +333,7 @@
 	min-height: 2em;
 
 	border: 2px dotted rgba(0, 0, 0, 0.5);
+	border-radius: 3px;
 }
 
 /**

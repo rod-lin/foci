@@ -169,6 +169,9 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 				<div class='cont'> \
 					<div class='descr'> \
 					</div> \
+					<div class='tagbox'> \
+						<div class='tagadd-btn'><i class='add icon'></i></div> \
+					</div> \
 					<div class='ui horizontal divider'>organizer</div> \
 					<div class='orgs'> \
 					</div> \
@@ -240,18 +243,33 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 				orgs.html("<div class='tip'>no organizer</div>");
 			}
 
+			function genTag(name) {
+				var tag = $("<div class='favtag' data-value='" + name + "'>" + name + "<i class='tagdel-btn cancel icon'></i></div>");
+				return tag;
+			}
+
+			main.find(".tagbox .favtag").remove();
+
+			if (info.favtag) {
+				for (var i = 0; i < info.favtag.length; i++) {
+					main.find(".tagbox").prepend(genTag(info.favtag[i]));
+				}
+			}
+
 			// check is owner
 			if (env.session()) {
 				env.user(function (user) {
 					if (info.org && info.org.indexOf(user.uuid) != -1) {
 						main.find(".back").removeClass("not-owner");
+					} else {
+						main.find(".back").addClass("not-owner");
 					}
 				});
 			}
 		}
 
 		// setting
-		(function () {
+		function enableSetting() {
 			var setting_open = false;
 			var discard = false;
 			var ask_open = false;
@@ -369,6 +387,24 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 
 			editable(main.find(".logo"), "image", "logo", function (cont) {
 				main.find(".logo").css("background-image", "url('" + foci.download(cont) + "')");
+			});
+
+			main.find(".tagdel-btn").click(function () {
+				if (!main.hasClass("setting")) return;
+
+				var tag = $(this).parent();
+				var tagname = tag.attr("data-value");
+				var i;
+
+				if (!changes.favtag) {
+					changes.favtag = info.favtag;
+					i = changes.favtag.indexOf(tagname);
+
+					if (i != -1) {
+						tag.remove();
+						changes.favtag.splice(i, 1);
+					}
+				}
 			});
 
 			/*** editable fields ***/
@@ -502,9 +538,10 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 			};
 
 			onproc();
-		})();
+		}
 
 		updateInfo(info);
+		enableSetting();
 
 		main.ready(function () { main.modal("show"); });
 	}
