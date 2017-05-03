@@ -30,15 +30,52 @@
 				line-height: normal;
 			}
 
-			.cont {
+			body>.cont {
 				width: 100%;
+			}
+
+			#showcase {
+				position: absolute;
+				left: 0;
+				top: 0;
+				height: 100%;
+				width: 100%;
+
+				background-image: url("img/cover1.jpg");
+				background-repeat: no-repeat;
+				background-size: cover;
+				background-position: 50% 50%;
+
+				opacity: 1;
+
+				transition: opacity 0.3s;
+			}
+
+			#showcase .headline {
+				font-size: 5em;
+				margin-top: -1.5em;
+				font-weight: bold;
+				color: white;
+				text-align: center;
+			}
+
+			#showcase.hide {
+				opacity: 0;
+				pointer-events: none;
 			}
 		</style>
 	</head>
 
 	<body class="padding-tbar">
 		<div class="cont">
-			<div class="header"></div>
+			<div class="header">
+				<!-- <div class="ui breadcrumb" style="margin-top: 20px;">
+					<div class="active section"></div>
+				</div> -->
+			</div>
+		</div>
+
+		<div id="showcase">
 		</div>
 
 		<!-- <div class="frame", style="width: 100%; height: 100%; position: fixed; top: 0; left: 0; background: #FFF;"></div> -->
@@ -51,8 +88,23 @@
 						doSearch(query, cb);
 					});
 
-					// upload.init();
+					bar.style("simple");
 
+					function hideCover() {
+						bar.style("");
+						$("#showcase").addClass("hide");
+					}
+
+					function toggleCover() {
+						bar.toggleStyle("simple");
+						$("#showcase").toggleClass("hide");
+					}
+
+					bar.clickMenu(function () {
+						toggleCover();
+					});
+
+					// upload.init();
 					// event.qview();
 
 					var ev = event.init("body>.cont", {
@@ -63,13 +115,20 @@
 						}
 					});
 
+					function setBreadcrumb(kw) {
+						$("body>.cont>.header .section").html("Search result(s) for: <a>" + kw + "</a>");
+					}
+
 					function doSearch(query, cb) {
+						hideCover();
+
 						ev.clear(function () {
 							foci.get("/event/search", query, function (suc, dat) {
 								if (suc) {
 									ev.hide(function () {
 										for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
 										ev.show();
+										// setBreadcrumb(query.kw);
 										cb();
 									});
 								} else {

@@ -17,10 +17,8 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				<div class="left-bar"> \
 					<div class="ui left action right icon input search-box"> \
 						<div class="nav ui basic floating dropdown button"> \
-							<div><i class="content icon" style="margin: 0;"></i></div> \
+							<i class="content icon" style="margin: 0;"></i> \
 							<div class="menu"> \
-								<div class="item">Home</div> \
-								<div class="item">Plaza</div> \
 							</div> \
 						</div> \
 						<!--div class="tags">Hi</div--> \
@@ -42,10 +40,6 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 						</div> \
 						<i class="filter-btn filter link icon"></i> \
 					</div> \
-					<!--div class="links"> \
-						<div class="link">home</div> \
-						<div class="link">plaza</div> \
-					</div--> \
 				</div> \
 				<div class="right-bar"> \
 					<div class="avatar"></div> \
@@ -69,7 +63,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 		main = $(main);
 
-		main.find(".nav").dropdown();
+		// main.find(".nav").dropdown();
 
 		main.find(".filter-tag").dropdown({
 			hideAdditions: true,
@@ -303,6 +297,25 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 					updateAvatar();
 					session = env.session();
 				}
+			},
+
+			style: function (style) {
+				main.attr("class", "com-tbar");
+				main.addClass(style);
+			},
+
+			toggleStyle: function (style) {
+				main.toggleClass(style);
+			},
+
+			addMenu: function (name, cb) {
+				var item = $("<div class='item'>" + name + "</div>");
+				item.click(cb);
+				main.find(".search-box .nav .menu").append(item);
+			},
+
+			clickMenu: function (cb) {
+				main.find(".nav").click(cb);
 			}
 		};
 
