@@ -30,6 +30,10 @@
 				line-height: normal;
 			}
 
+			body.no-scroll {
+				overflow: hidden;
+			}
+
 			body>.cont {
 				width: 100%;
 			}
@@ -93,11 +97,13 @@
 					function hideCover() {
 						bar.style("");
 						$("#showcase").addClass("hide");
+						$("body").removeClass("no-scroll");
 					}
 
 					function toggleCover() {
 						bar.toggleStyle("simple");
 						$("#showcase").toggleClass("hide");
+						$("body").toggleClass("no-scroll");
 					}
 
 					bar.clickMenu(function () {
