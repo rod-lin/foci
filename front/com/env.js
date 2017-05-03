@@ -42,6 +42,24 @@ define([ "com/util" ], function (util) {
 		});
 	}
 
+	function favtag(cb) {
+		if (env.favtag) {
+			cb(env.favtag);
+			return;
+		}
+
+		foci.get("/favtag", {}, function (suc, dat) {
+			if (suc) {
+				env.favtag = dat;
+			} else {
+				util.qmsg(dat);
+				env.favtag = null;
+			}
+
+			cb(env.favtag);
+		});
+	}
+
 	function logout(cb) {
 		if (!env.session) {
 			if (cb) cb();
@@ -78,6 +96,8 @@ define([ "com/util" ], function (util) {
 		user: function (cb) {
 			load_info(cb);
 		},
+
+		favtag: favtag,
 
 		logout: logout
 	};

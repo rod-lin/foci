@@ -124,13 +124,9 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 			main.find(".filter-tag .scrolling.menu").append(tag);
 		}
 
-		foci.get("/favtag", {}, function (suc, dat) {
-			if (suc) {
-				for (var i = 0; i < dat.length; i++) {
-					addTag(dat[i]);
-				}
-			} else {
-				util.qmsg(dat);
+		env.favtag(function (tags) {
+			if (tags) for (var i = 0; i < tags.length; i++) {
+				addTag(tags[i]);
 			}
 		});
 
@@ -142,6 +138,8 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 		var onsearch = null;
 
 		var search = function (e, kw) {
+			main.find(".search-box").addClass("loading");
+
 			if (!e || e.keyCode == 13) {
 				main.find(".prompt").blur();
 
@@ -150,6 +148,8 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 					onsearch({
 						kw: kw,
 						favtag: getTag()
+					}, function () {
+						main.find(".search-box").removeClass("loading");
 					});
 
 					clearTag();

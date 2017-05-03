@@ -170,7 +170,11 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 					<div class='descr'> \
 					</div> \
 					<div class='tagbox'> \
-						<div class='tagadd-btn'><i class='add icon'></i></div> \
+						<div class='tagadd-btn ui floating dropdown'> \
+							<i class='add icon'></i> \
+							<div class='menu'> \
+							</div> \
+						</div> \
 					</div> \
 					<div class='ui horizontal divider'>organizer</div> \
 					<div class='orgs'> \
@@ -179,6 +183,11 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 				<!--div class='more'>MORE</div--> \
 			</div> \
 		");
+
+		function genTag(name) {
+			var tag = $("<div class='favtag' data-value='" + name + "'>" + name + "<i class='tagdel-btn cancel icon'></i></div>");
+			return tag;
+		}
 
 		// update info
 		function updateInfo(info) {
@@ -241,11 +250,6 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 			} else {
 				fill.remove();
 				orgs.html("<div class='tip'>no organizer</div>");
-			}
-
-			function genTag(name) {
-				var tag = $("<div class='favtag' data-value='" + name + "'>" + name + "<i class='tagdel-btn cancel icon'></i></div>");
-				return tag;
 			}
 
 			main.find(".tagbox .favtag").remove();
@@ -389,21 +393,69 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 				main.find(".logo").css("background-image", "url('" + foci.download(cont) + "')");
 			});
 
-			main.find(".tagdel-btn").click(function () {
+			function initTag() {
+				if (!changes.favtag) {
+					changes.favtag = info.favtag;
+				}
+			}
+
+			function removeTag(name) {
+				initTag();
+
+				var i = changes.favtag.indexOf(name);
+				if (i != -1)
+					changes.favtag.splice(i, 1);
+
+				main.find(".tagadd-btn .menu").find(".t-" + name).css("display", "");
+			}
+
+			function addTag(name) {
+				initTag();
+
+				if (changes.favtag.indexOf(name) == -1)
+					changes.favtag.push(name);
+
+				main.find(".tagadd-btn .menu").find(".t-" + name).css("display", "none");
+			}
+
+			function tagdel() {
 				if (!main.hasClass("setting")) return;
 
 				var tag = $(this).parent();
-				var tagname = tag.attr("data-value");
-				var i;
+				var name = tag.attr("data-value");
+				
+				removeTag(name);
+				tag.remove();
+			}
 
-				if (!changes.favtag) {
-					changes.favtag = info.favtag;
-					i = changes.favtag.indexOf(tagname);
-
-					if (i != -1) {
-						tag.remove();
-						changes.favtag.splice(i, 1);
+			env.favtag(function (tags) {
+				if (tags) {
+					for (var i = 0; i < tags.length; i++) {
+						main.find(".tagadd-btn .menu").append(" \
+							<div class='item t-" + tags[i] + "' data-value='" + tags[i] + "'>" + tags[i] + " \
+						</div>");
 					}
+				}
+			});
+
+			main.find(".tagadd-btn").dropdown({
+				onShow: function () {
+					var menu = $(this).find(".menu");
+
+					initTag();
+
+					for (var i = 0; i < changes.favtag.length; i++) {
+						menu.find(".t-" + changes.favtag[i]).css("display", "none");
+					}
+				},
+
+				onChange: function (value) {
+					addTag(value);
+
+					var ntag = genTag(value);
+
+					$(this).before(ntag);
+					ntag.find(".tagdel-btn").click(tagdel);
 				}
 			});
 
@@ -425,11 +477,19 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 					.removeClass("setting")
 					.addClass("checkmark");
 
+				main.find(".tagdel-btn").click(tagdel);
+
 				main.modal("refresh");
 			
 				setTimeout(function () {
 					main.find(".back .util.setting")
-						.popup({ position: "right center", hideOnScroll: true, on: "manual", inline: true })
+						.popup({
+							position: "right center",
+							hideOnScroll: true,
+							on: "manual",
+							inline: true,
+							lastResort: true /* force show */
+						})
 						.popup("show");
 
 					onproc();

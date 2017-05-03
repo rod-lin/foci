@@ -47,8 +47,8 @@
 			require([ "com/tbar", "com/event", "com/env", "com/upload" ], function (tbar, event, env, upload) {
 				env.init(function () {
 					var bar = tbar.init();
-					bar.search(function (query) {
-						doSearch(query);
+					bar.search(function (query, cb) {
+						doSearch(query, cb);
 					});
 
 					// upload.init();
@@ -63,16 +63,18 @@
 						}
 					});
 
-					function doSearch(query) {
+					function doSearch(query, cb) {
 						ev.clear(function () {
 							foci.get("/event/search", query, function (suc, dat) {
 								if (suc) {
 									ev.hide(function () {
 										for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
 										ev.show();
+										cb();
 									});
 								} else {
 									alert(dat);
+									cb();
 								}
 							});
 						});
