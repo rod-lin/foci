@@ -138,10 +138,9 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 		var onsearch = null;
 
 		var search = function (e, kw) {
-			main.find(".search-box").addClass("loading");
-
 			if (!e || e.keyCode == 13) {
 				main.find(".prompt").blur();
+				main.find(".search-box").addClass("loading");
 
 				if (onsearch) {
 					kw = kw || main.find(".prompt").val();
