@@ -52,9 +52,63 @@ define(function () {
 				left: left
 			};
 
-			var top;
-			var max_top = 0;
+			// var top;
+			// var max_top = 0;
 
+			var heights = new Array(count);
+
+			for (var i = 0; i < count; i++) {
+				heights[i] = gap;
+			}
+
+			function findMinColumn() {
+				var min = heights[0];
+				var col = 0;
+
+				for (var i = 1; i < count; i++) {
+					if (heights[i] < min) {
+						min = heights[i];
+						col = i;
+					}
+				}
+
+				return col;
+			}
+
+			function findMaxColumn() {
+				var max = heights[0];
+				var col = 0;
+
+				for (var i = 1; i < count; i++) {
+					if (heights[i] > max) {
+						max = heights[i];
+						col = i;
+					}
+				}
+
+				return col;
+			}
+
+			function getLeft(col) {
+				return left + col * (width + gap);
+			}
+
+			for (var i = 0; i < child.length; i++) {
+				var col = findMinColumn();
+				var top = heights[col];
+
+				child[i].css({
+					position: "absolute",
+					display: "inline-block",
+					left: getLeft(col) + "px",
+					top: top + "px",
+					margin: "0",
+				});
+
+				heights[col] += child[i].height() + gap;
+			}
+
+			/*
 			for (var col = 0; col < count; col++) {
 				top = gap;
 
@@ -77,8 +131,9 @@ define(function () {
 
 				left += width + gap;
 			}
+			*/
 
-			cont.css("height", max_top);
+			cont.css("height", heights[findMaxColumn()]);
 
 			if (config.onUpdate) config.onUpdate(ret);
 
