@@ -29,7 +29,10 @@ define(function () {
 
 		function update(from) {
 			if (child.length) width = child[0].width();
-			else return;
+			else {
+				cont.css("height", 0);
+				return;
+			}
 
 			from = from || 0;
 
@@ -82,16 +85,13 @@ define(function () {
 			return ret;
 		}
 
-		function add(elem, cb) {
+		function add(elem) {
 			elem = $(elem);
+
+			elem.css("opacity", "0");
 
 			child.push(elem);
 			cont.append(elem);
-		
-			elem.on("load", function () {
-				update();
-				if (cb) cb();
-			});
 		}
 
 		var proc = null;

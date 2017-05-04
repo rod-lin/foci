@@ -136,7 +136,18 @@ Event.format.search = {
 	kw: util.checkArg.lenlim(config.lim.event.keyword, "keyword too long"),
 
 	after: { type: "int", lim: time => new Date(time) },
-	before: { type: "int", lim: time => new Date(time) }
+	before: { type: "int", lim: time => new Date(time) },
+
+	skip: { type: "int" },
+	n: {
+		type: "int", lim: n => {
+			if (n > config.lim.event.max_search_results) {
+				throw new err.Exc("too many results");
+			}
+
+			return n;
+		}
+	}
 };
 
 Event.query = {
@@ -254,8 +265,15 @@ exports.search = async (conf) => {
 	if (conf.after) query.extend(Event.query.after(conf.after));
 	if (conf.before) query.extend(Event.query.after(conf.before));
 
+	var maxn = conf.n || config.lim.event.max_search_results;
+	var skip = conf.skip || 0;
+
 	var col = await db.col("event");
-	var res = await col.find(query).toArray();
+
+	var found = col.find(query);
+	var count = await found.count();
+
+	var res = await found.skip(skip).limit(maxn).toArray();
 	var ret = [];
 
 	res.forEach(ev => ret.push(new Event(ev).getInfo()));

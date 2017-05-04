@@ -84,8 +84,13 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 				qview(info, null, mod);
 			});
 
+			main.css("opacity", "0");
+
 			main.find(".cover").on("load", function () {
 				wf.update();
+				setTimeout(function () {
+					main.css("opacity", "1");
+				}, 200);
 			});
 
 			setDom(main, info);

@@ -316,6 +316,18 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 			clickMenu: function (cb) {
 				main.find(".nav").click(cb);
+			},
+
+			toggleIcon: function (icon) {
+				main.find(".nav i")
+					.toggleClass(icon)
+					.toggleClass("content");
+			},
+
+			icon: function (icon) {
+				main.find(".nav i")
+					.addClass(icon)
+					.removeClass("content");
 			}
 		};
 

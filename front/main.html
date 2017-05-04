@@ -34,7 +34,7 @@
 				overflow: hidden;
 			}
 
-			body>.cont {
+			#cont {
 				width: 100%;
 			}
 
@@ -67,16 +67,33 @@
 				opacity: 0;
 				pointer-events: none;
 			}
+
+			#loader {}
+
+			#bottom-bar {
+				padding-top: 1em;
+				padding-bottom: 2em;
+			}
+
+			#result {
+				text-align: center;
+				color: #D9D9D9;
+				font-weight: bold;
+			}
 		</style>
 	</head>
 
 	<body class="padding-tbar">
-		<div class="cont">
+		<div id="cont">
 			<div class="header">
 				<!-- <div class="ui breadcrumb" style="margin-top: 20px;">
 					<div class="active section"></div>
 				</div> -->
 			</div>
+		</div>
+		<div id="bottom-bar">
+			<div id="loader" class="ui active centered inline loader" style="display: none;"></div>
+			<div id="result" style="display: none;">no result</div>
 		</div>
 
 		<div id="showcase">
@@ -85,25 +102,42 @@
 		<!-- <div class="frame", style="width: 100%; height: 100%; position: fixed; top: 0; left: 0; background: #FFF;"></div> -->
 
 		<script>
-			require([ "com/tbar", "com/event", "com/env", "com/upload" ], function (tbar, event, env, upload) {
+			require([ "com/tbar", "com/event", "com/env", "com/upload", "com/util" ], function (tbar, event, env, upload, util) {
 				env.init(function () {
 					var bar = tbar.init();
-					bar.search(function (query, cb) {
-						doSearch(query, cb);
-					});
 
 					bar.style("simple");
 
 					function hideCover() {
 						bar.style("");
+						bar.icon("idea");
 						$("#showcase").addClass("hide");
 						$("body").removeClass("no-scroll");
 					}
 
 					function toggleCover() {
 						bar.toggleStyle("simple");
+						bar.toggleIcon("idea");
 						$("#showcase").toggleClass("hide");
 						$("body").toggleClass("no-scroll");
+					}
+
+					function showLoader() {
+						$("#loader").css("display", "");
+					}
+
+					function hideLoader() {
+						$("#loader").css("display", "none");
+					}
+
+					function showResult(msg) {
+						$("#result")
+							.html(msg)
+							.css("display", "");
+					}
+
+					function hideResult() {
+						$("#result").css("display", "none");
 					}
 
 					bar.clickMenu(function () {
@@ -113,7 +147,7 @@
 					// upload.init();
 					// event.qview();
 
-					var ev = event.init("body>.cont", {
+					var ev = event.init("#cont", {
 						onUpdate: function (pos) {
 							$("body>.cont>.header")
 								.css("padding-left", pos.left + "px")
@@ -122,25 +156,82 @@
 					});
 
 					function setBreadcrumb(kw) {
-						$("body>.cont>.header .section").html("Search result(s) for: <a>" + kw + "</a>");
+						$("#cont>.header .section").html("Search result(s) for: <a>" + kw + "</a>");
 					}
 
-					function doSearch(query, cb) {
+					var cur_count, maxn = 2;
+					var cur_query;
+
+					function search(query, clear, cb) {
+						if (clear) cur_count = 0;
+
+						if (!query) {
+							if (cur_query) {
+								query = cur_query;
+							} else {
+								cb(false);
+								return;
+							}
+						} else cur_query = query;
+
+						$.extend(query, { n: maxn, skip: cur_count });
+
+						foci.get("/event/search", query, function (suc, dat) {
+							if (suc) {
+								cur_count += dat.length;
+								for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
+								cb(dat.length != 0);
+							} else {
+								util.qmsg(dat);
+								cb(false);
+							}
+						});
+					}
+
+					var no_refresh = false;
+
+					$(window).scroll(function () {
+						if (no_refresh) return;
+
+						if ($(window).scrollTop() >= ($(document).height() - $(window).height())) {
+							showLoader();
+							hideResult();
+
+							$(window).scrollTop($(document).height() - $(window).height());
+							search(null, false, function (suc) {
+								hideLoader();
+
+								if (!suc) {
+									showResult("no result");
+									no_refresh = true;
+								}
+							});
+						}
+					});
+
+					bar.search(function (query, cb) {
+						research(query, cb);
+					});
+
+					// re-search
+					function research(query, cb) {
+						hideResult();
 						hideCover();
 
 						ev.clear(function () {
-							foci.get("/event/search", query, function (suc, dat) {
-								if (suc) {
-									ev.hide(function () {
-										for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
-										ev.show();
-										// setBreadcrumb(query.kw);
-										cb();
-									});
-								} else {
-									alert(dat);
+							$(window).scrollTop(0);
+							ev.hide(function () {
+								search(query, true, function (suc) {
+									ev.show();
+
+									if (!suc) {
+										showResult("no result");
+									}
+
+									no_refresh = false;
+
 									cb();
-								}
+								});
 							});
 						});
 					}

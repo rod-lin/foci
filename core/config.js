@@ -38,7 +38,9 @@ var conf = module.exports = {
 			descr: 40960,
 			location: 1024,
 
-			keyword: 128
+			keyword: 128,
+
+			max_search_results: 64
 		}
 	},
 

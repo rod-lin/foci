@@ -78,6 +78,10 @@
 	padding: 0 1.5em;
 }
 
+.com-tbar .search-box .nav i {
+	font-size: 1.2em;
+}
+
 .com-tbar .right-bar {
 	position: absolute;
 	display: inline-block;
