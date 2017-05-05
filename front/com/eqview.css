@@ -129,12 +129,14 @@
 
 .com-eqview .rating {
 	display: inline-block;
-
-	margin: 2.8em 0 0 0;
-	padding: 0.2em 0.5em;
-	vertical-align: top;
-
+	margin: 3em 0 0 0;
 	font-size: 2em;
+	vertical-align: top;
+}
+
+.com-eqview .rating>span {
+	padding: 0.2em 0.5em;
+
 	font-weight: bold;
 	font-family: Ubuntu;
 
@@ -148,7 +150,7 @@
 	transition: background 0.3s;
 }
 
-.com-eqview .rating:hover {
+.com-eqview .rating>span:hover {
 	background: #2ECC71;
 }
 
@@ -346,7 +348,7 @@
  * 480px < w < 768px: small
  */
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 768px) {
 	.com-eqview .logo {
 		height: 6em;
 		width: 6em;
@@ -373,5 +375,19 @@
 		font-size: 1em;
 		padding-left: 3em;
 		padding-right: 3em;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	.com-eqview .cont {
+		font-size: 1em;
+		padding-left: 2em;
+		padding-right: 2em;
+	}
+
+	.com-eqview .rating {
+		display: block;
+		margin-top: 0;
+		font-size: 1.5em;
 	}
 }

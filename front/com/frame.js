@@ -1,6 +1,8 @@
 "use strict";
 
 define(function () {
+	var $ = jQuery;
+
 	function init(cont) {
 		cont = $(cont);
 
@@ -12,9 +14,12 @@ define(function () {
 			position: "absolute",
 			height: "100%",
 			width: "100%",
+
+			top: "0",
 			left: "0",
 
 			border: "0",
+			background: "white",
 
 			transition: "top 0.3s, opacity 0.3s"
 		};

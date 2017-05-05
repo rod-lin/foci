@@ -95,6 +95,26 @@ define(function () {
 		return $("<img class='com-util-cont-fill' src='img/paragraph.png'></img>");
 	};
 
+	util.scroll = {
+		toTop: function (ofs) {
+			$(window).scrollTop(ofs || 0);
+		},
+
+		toBottom: function (ofs) {
+			$(window).scrollTop($(document).height() - $(window).height() - (ofs || 0));
+		}
+	};
+
+	util.scrollBottom = function (ofs, cb) {
+		ofs = ofs || 0;
+
+		$(window).scroll(function () {
+			if (($(window).scrollTop() + ofs) >= ($(document).height() - $(window).height())) {
+				cb(util.scroll);
+			}
+		});
+	};
+
 	Array.prototype.choose = function () {
 		return this[Math.floor(Math.random() * this.length)];
 	};

@@ -52,8 +52,8 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 							<div class="pop-title header"></div> \
 							<div class="ui star mini rating bottom right" data-rating="4" data-max-rating="5"></div> \
 						</div> \
-						<div class="ui two bottom attached buttons" style="margin-bottom: -1px;"> \
-							<div class="ui blue button">Profile</div> \
+						<div class="ui two bottom attached buttons"> \
+							<div class="ui button profile">Profile</div> \
 							<div class="ui button logout">Logout</div> \
 						</div> \
 					</div> \
@@ -299,13 +299,16 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				}
 			},
 
-			style: function (style) {
-				main.attr("class", "com-tbar");
-				main.addClass(style);
+			setSimple: function () {
+				main.addClass("simple");
 			},
 
-			toggleStyle: function (style) {
-				main.toggleClass(style);
+			delSimple: function () {
+				main.removeClass("simple");
+			},
+
+			toggleSimple: function () {
+				main.toggleClass("simple");
 			},
 
 			addMenu: function (name, cb) {
@@ -314,7 +317,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				main.find(".search-box .nav .menu").append(item);
 			},
 
-			clickMenu: function (cb) {
+			menu: function (cb) {
 				main.find(".nav").click(cb);
 			},
 
@@ -328,6 +331,10 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				main.find(".nav i")
 					.addClass(icon)
 					.removeClass("content");
+			},
+
+			profile: function (cb) {
+				main.find(".profile").click(cb);
 			}
 		};
 

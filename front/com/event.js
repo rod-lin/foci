@@ -85,11 +85,13 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 			});
 
 			main.css("opacity", "0");
+			main.css("pointer-events", "none");
 
 			main.find(".cover").on("load", function () {
 				wf.update();
 				setTimeout(function () {
 					main.css("opacity", "1");
+					main.css("pointer-events", "auto");
 				}, 200);
 			});
 
@@ -160,7 +162,7 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 				<div class='cover-edit'>Change cover</div> \
 				<div class='logo-cont'> \
 					<div class='logo'><div>Change logo</div></div> \
-					<div class='title'></div><div class='rating'></div><br> \
+					<div class='title'></div><div class='rating'><span></span></div><br> \
 					<div class='detail'><i class='map outline icon'></i><span class='location'></span></div> \
 					<div class='detail'><i class='calendar outline icon'></i><span class='time'></span></div> \
 				</div> \
@@ -211,7 +213,7 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 			main.find(".logo").css("background-image", "url('" + logo + "')");
 
 			main.find(".title").html(title);
-			main.find(".rating").html(rating);
+			main.find(".rating>span").html(rating);
 
 			main.find(".loaction").html(location);
 			main.find(".time").html(time);

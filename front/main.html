@@ -14,8 +14,6 @@
 		<link rel="stylesheet" href="font/ubuntu/import.css">
 		<link rel="stylesheet" href="font/alegreya/import.css">
 
-		<link rel="stylesheet" href="css/com.css">
-
 		<link rel="stylesheet" href="/semantic/semantic.min.css">
 		<script src="/semantic/semantic.min.js"></script>
 
@@ -28,24 +26,35 @@
 			body {
 				font-family: Ubuntu;
 				line-height: normal;
-			}
-
-			body.no-scroll {
 				overflow: hidden;
 			}
 
-			#cont {
+			#main {
+				position: relative;
+				height: 100%;
 				width: 100%;
 			}
 
-			#showcase {
+			#search, #part {
+				position: absolute;
+
+				top: 0;
+				left: 0;
+
+				width: 100%;
+				height: 100%;
+
+				overflow: auto;
+			}
+
+			#cover {
 				position: fixed;
 				left: 0;
 				top: 0;
 				height: 100%;
 				width: 100%;
 
-				background-image: url("img/cover1.jpg");
+				background-image: url("img/cover2.jpg");
 				background-repeat: no-repeat;
 				background-size: cover;
 				background-position: 50% 50%;
@@ -55,20 +64,13 @@
 				transition: opacity 0.3s;
 			}
 
-			#showcase .headline {
+			#cover .headline {
 				font-size: 5em;
 				margin-top: -1.5em;
 				font-weight: bold;
 				color: white;
 				text-align: center;
 			}
-
-			#showcase.hide {
-				opacity: 0;
-				pointer-events: none;
-			}
-
-			#loader {}
 
 			#bottom-bar {
 				padding-top: 1em;
@@ -84,42 +86,83 @@
 	</head>
 
 	<body class="padding-tbar">
-		<div id="cont">
-			<div class="header">
-				<!-- <div class="ui breadcrumb" style="margin-top: 20px;">
-					<div class="active section"></div>
+		<div id="main">
+			<div id="search">
+				<!-- <div class="header">
+					<div class="ui breadcrumb" style="margin-top: 20px;">
+						<div class="active section"></div>
+					</div>
 				</div> -->
+				<div id="search-cont"></div>
+				<div id="bottom-bar">
+					<div id="loader" class="ui active centered inline loader" style="display: none;"></div>
+					<div id="result" style="display: none;">no result</div>
+				</div>
 			</div>
-		</div>
-		<div id="bottom-bar">
-			<div id="loader" class="ui active centered inline loader" style="display: none;"></div>
-			<div id="result" style="display: none;">no result</div>
+
+			<div id="cover"></div>
+
+			<div id="part"></div>
 		</div>
 
-		<div id="showcase">
-		</div>
+		<!-- <div id="frame" style="height: 100px; width: 200px; background: white;"></div> -->
 
 		<!-- <div class="frame", style="width: 100%; height: 100%; position: fixed; top: 0; left: 0; background: #FFF;"></div> -->
 
 		<script>
-			require([ "com/tbar", "com/event", "com/env", "com/upload", "com/util" ], function (tbar, event, env, upload, util) {
+			require([ "com/frame" ], function (frame) {
+				// var fr = frame.init("#frame");
+				// fr.open("main.html");
+			});
+
+			require([
+				"com/tbar", "com/event", "com/env",
+				"com/upload", "com/util", "com/pages",
+				"com/parts"
+			], function (tbar, event, env, upload, util, pages, parts) {
 				env.init(function () {
+					var pg = pages.init({
+						"search": "#search",
+						"cover": "#cover",
+						"part": "#part"
+					}, { init: "cover" });
+
 					var bar = tbar.init();
 
-					bar.style("simple");
+					bar.setSimple();
+					
+					bar.menu(function () {
+						toggleCover();
+					});
+
+					bar.profile(function () {
+						pt.load("profile");
+						bar.delSimple();
+						pg.switch("part");
+					});
+
+					var ev = event.init("#search>#search-cont", {
+						onUpdate: function (pos) {}
+					});
+
+					var pt = parts.init("#part");
 
 					function hideCover() {
-						bar.style("");
+						bar.delSimple();
 						bar.icon("idea");
-						$("#showcase").addClass("hide");
-						$("body").removeClass("no-scroll");
+						pg.switch("search");
 					}
 
 					function toggleCover() {
-						bar.toggleStyle("simple");
-						bar.toggleIcon("idea");
-						$("#showcase").toggleClass("hide");
-						$("body").toggleClass("no-scroll");
+						if (pg.cur() == "cover") {
+							bar.delSimple();
+							bar.icon("idea");
+							pg.switch("search");
+						} else {
+							bar.setSimple();
+							bar.icon("content");
+							pg.switch("cover");
+						}
 					}
 
 					function showLoader() {
@@ -138,25 +181,6 @@
 
 					function hideResult() {
 						$("#result").css("display", "none");
-					}
-
-					bar.clickMenu(function () {
-						toggleCover();
-					});
-
-					// upload.init();
-					// event.qview();
-
-					var ev = event.init("#cont", {
-						onUpdate: function (pos) {
-							$("body>.cont>.header")
-								.css("padding-left", pos.left + "px")
-								.css("padding-right", pos.left + "px");
-						}
-					});
-
-					function setBreadcrumb(kw) {
-						$("#cont>.header .section").html("Search result(s) for: <a>" + kw + "</a>");
 					}
 
 					var cur_count, maxn = 32;
@@ -190,23 +214,21 @@
 
 					var no_refresh = false;
 
-					$(window).scroll(function () {
+					util.scrollBottom(0, function (scroll) {
 						if (no_refresh) return;
+						showLoader();
+						hideResult();
 
-						if ($(window).scrollTop() >= ($(document).height() - $(window).height())) {
-							showLoader();
-							hideResult();
+						scroll.toBottom();
 
-							$(window).scrollTop($(document).height() - $(window).height());
-							search(null, false, function (suc) {
-								hideLoader();
+						search(null, false, function (suc) {
+							hideLoader();
 
-								if (!suc) {
-									showResult("no result");
-									no_refresh = true;
-								}
-							});
-						}
+							if (!suc) {
+								showResult("no result");
+								no_refresh = true;
+							}
+						});
 					});
 
 					bar.search(function (query, cb) {
@@ -237,13 +259,6 @@
 					}
 				});
 			});
-
-			require([ "com/frame" ], function (frame) {
-				// var f = frame.init(".frame");
-				// f.open("https://pan.baidu.com");
-			});
-
-			// wf1.add("<span>hi</span>");
 		</script>
 	</body>
 </html>
