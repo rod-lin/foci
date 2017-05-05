@@ -96,7 +96,7 @@
 <div id="sub-profile">
 	<div class="left-bar">
 		<div class="avatar"></div>
-		<div class="dname">Rodlin</div>
+		<div class="dname"></div>
 		<div class="ui rating" data-rating="4" data-max-rating="5"></div>
 		<div class="descr">Hi. My name is Rod. I love all these computer stuff especially compilers and programming languages.</div>
 		<div class="ui horizontal divider">Some Data</div>
@@ -134,11 +134,23 @@
 
 <script>
 	function init(main) {
-		require([ "com/env", "com/util", "com/event" ], function (env, util, event) {
+		require([ "com/env", "com/util", "com/event", "com/xfilt" ], function (env, util, event, xfilt) {
 			var left_bar = main.find(".left-bar");
 			var right_bar = main.find(".right-bar");
 
+			left_bar.find(".dname").html(util.fill());
+			left_bar.find(".descr").html(util.fill());
 			left_bar.find(".rating").rating();
+
+			function setDom(info) {
+				var avatar = info.avatar ? foci.download(info.avatar) : [ "img/matt.jpg", "img/stevie.jpg", "img/elliot.jpg" ].choose();
+				var dname = info.dname ? xfilt(util.short(info.dname, 12)) : "anonymous";
+				var descr = info.descr ? xfilt(util.short(info.descr, 128)) : "(no description)";
+
+				left_bar.find(".dname").html(dname);
+				left_bar.find(".descr").html(descr);
+				left_bar.find(".avatar").css("background-image", "url('" + avatar + "')");
+			}
 
 			function resize() {
 				right_bar.width(main.innerWidth() - left_bar.outerWidth());
@@ -154,6 +166,10 @@
 				} else {
 					util.qmsg(dat);
 				}
+			});
+
+			env.user(function (info) {
+				setDom(info);
 			});
 		});
 	}
