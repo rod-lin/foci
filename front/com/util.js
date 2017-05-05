@@ -95,22 +95,18 @@ define(function () {
 		return $("<img class='com-util-cont-fill' src='img/paragraph.png'></img>");
 	};
 
-	util.scroll = {
-		toTop: function (ofs) {
-			$(window).scrollTop(ofs || 0);
-		},
-
-		toBottom: function (ofs) {
-			$(window).scrollTop($(document).height() - $(window).height() - (ofs || 0));
-		}
-	};
-
-	util.scrollBottom = function (ofs, cb) {
+	util.scrollBottom = function (elem, ofs, cb) {
+		elem = $(elem);
 		ofs = ofs || 0;
 
-		$(window).scroll(function () {
-			if (($(window).scrollTop() + ofs) >= ($(document).height() - $(window).height())) {
-				cb(util.scroll);
+		var scroll = {
+			toTop: function (ofs) { elem.scrollTop(ofs || 0); },
+			toBottom: function (ofs) { elem.scrollTop(elem.prop("scrollHeight") - elem.height() - (ofs || 0)); }
+		};
+
+		elem.scroll(function () {
+			if ((elem.scrollTop() + ofs) >= (elem.prop("scrollHeight") - elem.height())) {
+				cb(scroll);
 			}
 		});
 	};

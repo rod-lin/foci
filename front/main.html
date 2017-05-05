@@ -220,7 +220,7 @@
 
 					var no_refresh = false;
 
-					util.scrollBottom(0, function (scroll) {
+					util.scrollBottom("#search", 0, function (scroll) {
 						if (no_refresh) return;
 						showLoader();
 						hideResult();
