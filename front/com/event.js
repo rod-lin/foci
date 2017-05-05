@@ -37,8 +37,7 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 			max_descr_len: 64
 		}, config);
 
-		var main = "<div class='com-event'></div>";
-		main = $(main);
+		var main = $("<div class='com-event'></div>");
 
 		/* init waterfall */
 		var wf = waterfall.init(main, { onUpdate: config.onUpdate });
@@ -91,7 +90,7 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 				wf.update();
 				setTimeout(function () {
 					main.css("opacity", "1");
-					main.css("pointer-events", "auto");
+					main.css("pointer-events", "");
 				}, 200);
 			});
 

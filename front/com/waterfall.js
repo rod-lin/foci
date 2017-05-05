@@ -27,14 +27,12 @@ define(function () {
 			child[i] = $(child[i]);
 		}
 
-		function update(from) {
+		function update() {
 			if (child.length) width = child[0].width();
 			else {
 				cont.css("height", 0);
 				return;
 			}
-
-			from = from || 0;
 
 			/* side margin */
 			var count = config.count + 1;
@@ -150,7 +148,7 @@ define(function () {
 		}
 
 		var proc = null;
-		window.onresize = function () {
+		$(window).resize(function () {
 			if (proc) {
 				clearTimeout(proc);
 			}
@@ -159,7 +157,7 @@ define(function () {
 				update();
 				proc = null;
 			}, 50);
-		}
+		});
 
 		update();
 

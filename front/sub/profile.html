@@ -1,8 +1,160 @@
-<div>
+<style>
+	.column {
+		background: black;
+	}
+
+	#sub-profile {
+		height: 100%;
+	}
+
+	#sub-profile .left-bar {
+		position: fixed;
+		width: 20em;
+		height: 100%;
+
+		padding: 0 2rem;
+
+		background: rgba(253, 253, 253, 0.7);
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		border-width: 0 1px 0 0;
+
+		text-align: center;
+
+		overflow: auto;
+	}
+
+	#sub-profile .left-bar .avatar {
+		display: inline-block;
+
+		width: 9em;
+		height: 9em;
+		margin-top: 4em;
+
+		border-radius: 50%;
+
+		background-image: url("img/matt.jpg");
+
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: 50% 50%;
+
+		box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+	}
+
+	#sub-profile .left-bar .dname {
+		margin: 1rem 0 0 0;
+
+		font-size: 2em;
+		font-weight: bold;
+
+		color: #262626;
+	}
+
+	#sub-profile .left-bar .rating {
+		margin: 0.5rem 0 0 0;
+	}
+
+	#sub-profile .left-bar .descr {
+		margin: 1rem 0 2rem 0;
+		padding: 0 1rem;
+		color: #999999;
+	}
+
+	#sub-profile .right-bar {
+		margin-left: 20em;
+	}
+
+	#sub-profile .right-bar .menu {
+		width: 100%;
+		background: rgba(253, 253, 253, 0.7);
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		border-width: 0 0 1px 0;
+	}
+
+	#sub-profile .right-bar .menu .item {
+		display: inline-block;
+
+		padding: 1.5rem 2rem;
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		border-width: 0 1px 0 0;
+
+		color: #595959;
+		cursor: pointer;
+
+		transition: background 0.3s;
+	}
+
+	#sub-profile .right-bar .menu .item:hover {
+		background: rgba(250, 250, 250, 1);
+	}
+
+	#sub-profile .right-bar .menu .item.active {
+		background: rgba(248, 248, 248, 1);
+	}
+</style>
+
+<div id="sub-profile">
+	<div class="left-bar">
+		<div class="avatar"></div>
+		<div class="dname">Rodlin</div>
+		<div class="ui rating" data-rating="4" data-max-rating="5"></div>
+		<div class="descr">Hi. My name is Rod. I love all these computer stuff especially compilers and programming languages.</div>
+		<div class="ui horizontal divider">Some Data</div>
+		<div class="ui grey statistic">
+			<div class="value">
+				5
+			</div>
+			<div class="label">
+				Organized
+			</div>
+		</div>
+		<div class="ui grey statistic">
+			<div class="value">
+				54
+			</div>
+			<div class="label">
+				Followers
+			</div>
+		</div><br>
+		<div class="ui grey statistic">
+			<div class="value">
+				104
+			</div>
+			<div class="label">
+				Participated
+			</div>
+		</div>
+	</div>
+	<div class="right-bar">
+		<div class="menu">
+			<div class="item active">Participating</div><div class="item">Organized</div>
+		</div>
+	</div>
 </div>
 
 <script>
 	function init(main) {
-		main.append("hello, world!");
+		require([ "com/env", "com/util", "com/event" ], function (env, util, event) {
+			var left_bar = main.find(".left-bar");
+			var right_bar = main.find(".right-bar");
+
+			left_bar.find(".rating").rating();
+
+			function resize() {
+				right_bar.width(main.innerWidth() - left_bar.outerWidth());
+			}
+
+			$(window).resize(resize);
+
+			var ev = event.init(main.find(right_bar));
+
+			foci.get("/event/search", {}, function (suc, dat) {
+				if (suc) {
+					for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
+				} else {
+					util.qmsg(dat);
+				}
+			});
+		});
 	}
 </script>

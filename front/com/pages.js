@@ -13,7 +13,7 @@ define(function () {
 		function show(elem, cb) {
 			elem.css({
 				"opacity": "1",
-				"pointer-events": "auto"
+				"pointer-events": ""
 			});
 		}
 
