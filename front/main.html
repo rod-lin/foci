@@ -100,7 +100,9 @@
 				</div>
 			</div>
 
-			<div id="cover"></div>
+			<div id="cover" style="opacity: 0;">
+				<div class="ui active big loader"></div>
+			</div>
 
 			<div id="part"></div>
 		</div>
@@ -118,6 +120,11 @@
 			function jump(url) {
 				window.location = url;
 			}
+
+			$("#cover").ready(function () {
+				$("#cover>.loader").removeClass("active");
+				$("#cover").css("opacity", "");
+			});
 
 			require([
 				"com/tbar", "com/event", "com/env",
