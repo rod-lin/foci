@@ -73,7 +73,7 @@ var checkArg = (args, req, opt) => {
 			continue;
 
 		if (!args.hasOwnProperty(k)) {
-			if (opt) continue;
+			if (opt || (req[k] && req[k].opt)) continue;
 			throw new err.Exc("wrong argument(expecting " + k + " field)");
 		}
 
@@ -92,6 +92,7 @@ var checkArg = (args, req, opt) => {
 			case "string":
 				if (typeof tmp !== "string")
 					throw new err.Exc("wrong argument type(expecting string)");
+
 				break;
 
 			case "int":
@@ -101,6 +102,7 @@ var checkArg = (args, req, opt) => {
 				tmp = parseInt(tmp);
 				if (isNaN(tmp))
 					throw new err.Exc("wrong argument type(expecting int)");
+
 				break;
 
 			case "number":
@@ -110,6 +112,7 @@ var checkArg = (args, req, opt) => {
 				tmp = parseFloat(tmp);
 				if (isNaN(tmp))
 					throw new err.Exc("wrong argument type(expecting int)");
+
 				break;
 
 			case "json":

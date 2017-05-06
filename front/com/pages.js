@@ -26,32 +26,44 @@ define(function () {
 
 		for (var k in pg) {
 			if (pg.hasOwnProperty(k)) {
-				pg[k] = $(pg[k]).css("transition", "opacity " + config.trans + "s, height 0s " + config.trans + "s");
-				hide(pg[k], true);
+				var sele;
+				var onShow = null;
+
+				if (typeof pg[k] === "object") {
+					sele = pg[k].page;
+					onShow = pg[k].onShow;
+				} else {
+					sele = pg[k];
+				}
+
+				pg[k] = {
+					page: $(sele).css("transition", "opacity " + config.trans + "s, height 0s " + config.trans + "s"),
+					onShow: onShow
+				}
+
+				hide(pg[k].page, true);
 			}
 		}
 
 		var cur = null;
 
-		if (config.init) {
-			show(pg[cur = config.init], true);
-		}
-
 		var ret = {};
 
-		ret.switch = function (name) {
+		ret.to = function (name) {
 			if (name == cur) return;
-			if (cur) hide(pg[cur]);
-			show(pg[name]);
+			if (cur) hide(pg[cur].page);
+			show(pg[name].page);
 			cur = name;
+
+			if (pg[name].onShow) pg[name].onShow();
 		};
 
 		ret.toggle = function (p1, p2) {
 			if (cur == p1) {
-				ret.switch(p2);
+				ret.to(p2);
 				cur = p2;
 			} else {
-				ret.switch(p1);
+				ret.to(p1);
 				cur = p1;
 			}
 		};
@@ -59,6 +71,10 @@ define(function () {
 		ret.cur = function () {
 			return cur;
 		};
+
+		if (config.init) {
+			ret.to(config.init);
+		}
 
 		return ret;
 	};

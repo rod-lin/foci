@@ -1,0 +1,46 @@
+.com-tab {
+	height: 100%;
+}
+
+.com-tab .menu {
+	width: 100%;
+	background: rgba(253, 253, 253, 0.7);
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-width: 0 0 1px 0;
+}
+
+.com-tab .menu .loader {
+	float: right;
+}
+
+.com-tab .menu .item {
+	display: inline-block;
+
+	padding: 1.5rem 2rem;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-width: 0 1px 0 0;
+
+	color: #595959;
+	cursor: pointer;
+
+	text-align: center;
+
+	transition: background 0.3s;
+}
+
+.com-tab .menu .item:hover {
+	background: rgba(250, 250, 250, 1);
+}
+
+.com-tab .menu .item.active {
+	background: rgba(248, 248, 248, 1);
+}
+
+.com-tab .tab {
+	display: none;
+	transition: opacity 0.3s;
+}
+
+.com-tab .tab.active {
+	display: block;
+}

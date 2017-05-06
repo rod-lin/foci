@@ -130,8 +130,24 @@ _user.info = util.route(async env => {
 });
 
 _user.org = util.route(async env => {
-	var args = util.checkArg(env.query, { "uuid": "int" });
+	var args = util.checkArg(env.query, {
+		"uuid": "int",
+		"skip": { type: "int", opt: true },
+		"lim": { type: "int", opt: true }
+	});
+
 	var ret = await event.getOrganized(args.uuid);
+	env.qsuc(ret);
+});
+
+_user.partic = util.route(async env => {
+	var args = util.checkArg(env.query, {
+		"uuid": "int",
+		"skip": { type: "int", opt: true },
+		"lim": { type: "int", opt: true }
+	});
+	
+	var ret = await event.getPartic(args.uuid);
 	env.qsuc(ret);
 });
 

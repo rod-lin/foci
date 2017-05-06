@@ -41,6 +41,10 @@
 		box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 	}
 
+	#sub-profile .left-bar .avatar.empty {
+		background: rgba(0, 0, 0, 0.2);
+	}
+
 	#sub-profile .left-bar .dname {
 		margin: 1rem 0 0 0;
 
@@ -61,7 +65,9 @@
 	}
 
 	#sub-profile .right-bar {
+		position: relative;
 		margin-left: 20em;
+		height: 100%;
 	}
 
 	#sub-profile .right-bar .menu {
@@ -91,34 +97,52 @@
 	#sub-profile .right-bar .menu .item.active {
 		background: rgba(248, 248, 248, 1);
 	}
+
+	#sub-profile .right-bar.main-tab {
+		height: 100%;
+	}
+
+	@media only screen and (max-width: 640px) {
+		#sub-profile .left-bar {
+			position: relative;
+			height: auto;
+			width: 100%;
+			padding-bottom: 2rem;
+			border-width: 0 0 1px 0;
+		}
+
+		#sub-profile .right-bar {
+			margin-left: 0;
+		}
+	}
 </style>
 
 <div id="sub-profile">
 	<div class="left-bar">
-		<div class="avatar"></div>
+		<div class="avatar empty"></div>
 		<div class="dname"></div>
-		<div class="ui rating" data-rating="4" data-max-rating="5"></div>
-		<div class="descr">Hi. My name is Rod. I love all these computer stuff especially compilers and programming languages.</div>
+		<div class="ui rating" data-max-rating="5"></div>
+		<div class="descr"></div>
 		<div class="ui horizontal divider">Some Data</div>
 		<div class="ui grey statistic">
-			<div class="value">
-				5
+			<div class="value follows">
+				--
 			</div>
 			<div class="label">
-				Organized
+				Follows
 			</div>
 		</div>
 		<div class="ui grey statistic">
-			<div class="value">
-				54
+			<div class="value followers">
+				--
 			</div>
 			<div class="label">
 				Followers
 			</div>
 		</div><br>
 		<div class="ui grey statistic">
-			<div class="value">
-				104
+			<div class="value participated">
+				--
 			</div>
 			<div class="label">
 				Participated
@@ -126,51 +150,142 @@
 		</div>
 	</div>
 	<div class="right-bar">
-		<div class="menu">
-			<div class="item active">Participating</div><div class="item">Organized</div>
+		<div class="main-tab"></div>
+		<!-- <div class="menu">
+			<div class="item active partic-btn">Participating</div><div class="item org-btn">Organized</div>
 		</div>
+		<div class="tab">
+			<div class="partic-event active"></div>
+			<div class="org-event active"></div>
+		</div> -->
 	</div>
 </div>
 
 <script>
-	function init(main) {
-		require([ "com/env", "com/util", "com/event", "com/xfilt" ], function (env, util, event, xfilt) {
-			var left_bar = main.find(".left-bar");
-			var right_bar = main.find(".right-bar");
+	function init(main, args) {
+		require([ "com/env", "com/util", "com/event", "com/xfilt", "com/pages", "com/tab", "com/login" ], function (env, util, event, xfilt, pages, tab, login) {
+			var init = function (info) {
+				var left_bar = main.find(".left-bar");
+				var right_bar = main.find(".right-bar");
 
-			left_bar.find(".dname").html(util.fill());
-			left_bar.find(".descr").html(util.fill());
-			left_bar.find(".rating").rating();
+				left_bar.find(".dname").html(util.fill());
+				left_bar.find(".descr").html(util.fill());
 
-			function setDom(info) {
-				var avatar = info.avatar ? foci.download(info.avatar) : [ "img/matt.jpg", "img/stevie.jpg", "img/elliot.jpg" ].choose();
-				var dname = info.dname ? xfilt(util.short(info.dname, 12)) : "anonymous";
-				var descr = info.descr ? xfilt(util.short(info.descr, 128)) : "(no description)";
+				left_bar.find(".follows").html("--");
+				left_bar.find(".followers").html("--");
+				left_bar.find(".participated").html("--");
 
-				left_bar.find(".dname").html(dname);
-				left_bar.find(".descr").html(descr);
-				left_bar.find(".avatar").css("background-image", "url('" + avatar + "')");
-			}
+				left_bar.find(".rating").rating("disable").rating("set rating", 0);
 
-			function resize() {
-				right_bar.width(main.innerWidth() - left_bar.outerWidth());
-			}
+				function setDom(info) {
+					var avatar = info.avatar ? foci.download(info.avatar) : [ "img/matt.jpg", "img/stevie.jpg", "img/elliot.jpg" ].choose();
+					var dname = info.dname ? xfilt(util.short(info.dname, 12)) : "anonymous";
+					var descr = info.descr ? xfilt(util.short(info.descr, 128)) : "(no description)";
 
-			$(window).resize(resize);
+					var rating = info.rating ? (info.rating[0] + info.rating[1]) / 2 : 0;
 
-			var ev = event.init(main.find(right_bar));
+					left_bar.find(".rating").rating("set rating", 0);
 
-			foci.get("/event/search", {}, function (suc, dat) {
-				if (suc) {
-					for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
-				} else {
-					util.qmsg(dat);
+					left_bar.find(".dname").html(dname);
+					left_bar.find(".descr").html(descr);
+					left_bar.find(".avatar").css("background-image", "url('" + avatar + "')").removeClass("empty");
 				}
-			});
 
-			env.user(function (info) {
+				function fetchEvent(url, ev, cb) {
+					foci.get(url, { uuid: info.uuid }, function (suc, dat) {
+						if (suc) {
+							for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
+						} else {
+							util.qmsg(dat);
+						}
+
+						cb();
+					});
+				}
+
+				var partic_ev = null;
+				var org_ev = null;
+
+				var tb = tab.init(right_bar.find(".main-tab"), {
+					"partic": {
+						name: "Participated",
+						onShow: function (show) {
+							var next = function () {
+								partic_ev.update();
+								setTimeout(function () {
+									show();
+								}, 300);
+							};
+
+							if (!partic_ev) {
+								partic_ev = event.init(tb.getTab("partic"));
+								fetchEvent("/user/partic", partic_ev, next);
+							} else {
+								next();
+							}
+						}
+					},
+
+					"org": {
+						name: "Organized",
+						onShow: function (show) {
+							var next = function () {
+								org_ev.update();
+								setTimeout(function () {
+									show();
+								}, 300);
+							};
+
+							if (!org_ev) {
+								org_ev = event.init(tb.getTab("org"));
+								fetchEvent("/user/org", org_ev, next);
+							} else {
+								next();
+							}
+						}
+					}
+				});
+
+				$(window).resize(function () {
+					if (right_bar.offset().left) {
+						right_bar.width(main.innerWidth() - left_bar.outerWidth());
+						tb.flow(false);
+					} else {
+						right_bar.width(main.innerWidth());
+						tb.flow(true);
+					}
+				});
+
+				$(window).resize();
+
+				tb.to("partic");
+
 				setDom(info);
-			});
+			};
+
+			if (args && args[0]) {
+				var uuid = parseInt(args[0]);
+
+				if (isNaN(uuid)) {
+					util.qmsg("illegal uuid");
+				} else {
+					foci.get("/user/info", { uuid: uuid }, function (suc, dat) {
+						if (suc) {
+							init(dat);
+						} else {
+							util.qmsg(dat);
+						}
+					});
+				}
+			} else {
+				if (!env.session()) {
+					login.init(function () {
+						env.user(function (info) { init(info); });
+					});
+				} else {
+					env.user(function (info) { init(info); });
+				}
+			}
 		});
 	}
 </script>

@@ -242,12 +242,17 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 				for (var i = 0; i < info.org.length; i++) {
 					foci.get("/user/info", { uuid: info.org[i] }, function (suc, dat) {
 						ava = $("<div class='org'></div>");
-						if (suc) {
-							avatar.init(ava, dat, { size: size });
-						} else {
+						if (!suc) {
 							util.qmsg(dat);
-							avatar.init(ava, null, { size: size });
+							dat = null;
 						}
+
+						avatar.init(ava, dat, {
+							size: size,
+							onClick: function () {
+								main.modal("hide all");
+							}
+						});
 
 						fill.remove();
 						orgs.prepend(ava);

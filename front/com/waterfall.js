@@ -28,6 +28,10 @@ define(function () {
 		}
 
 		function update() {
+			if (!cont.is(":visible")) {
+				return;
+			}
+
 			if (child.length) width = child[0].width();
 			else {
 				cont.css("height", 0);

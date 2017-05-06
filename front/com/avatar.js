@@ -31,6 +31,13 @@ define([ "com/xfilt" ], function (xfilt) {
 			hoverable: true
 		});
 
+		ava.click(function () {
+			if (info.uuid) {
+				if (config.onClick) config.onClick();
+				jump("#profile/" + info.uuid);
+			}
+		});
+
 		cont.append(ava);
 
 		return {};

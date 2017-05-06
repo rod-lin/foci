@@ -166,6 +166,7 @@ Event.query = {
 	check_sponsor: (euid, uuid) => ({ "euid": euid, "org.0": uuid }),
 
 	org: uuid => ({ "org": uuid }),
+	partic: uuid => ({ "partic": uuid }),
 
 	has_favtag: tags => ({ "favtag": { $in: tags } }),
 
@@ -245,9 +246,28 @@ exports.setInfo = async (euid, info) => {
 };
 
 // events organized by a certain user(in event info)
-exports.getOrganized = async (uuid) => {
+exports.getOrganized = async (uuid, skip, lim) => {
+	skip = skip || 0;
+	lim = lim || config.lim.event.max_search_results;
+
 	var col = await db.col("event");
-	var arr = await col.find(Event.query.org(uuid)).toArray();
+	var arr = await col.find(Event.query.org(uuid)).skip(skip).limit(lim).toArray();
+	var ret = [];
+
+	arr.forEach(function (ev) {
+		ret.push(new Event(ev).getInfo());
+	});
+
+	return ret;
+};
+
+// events participated by a user
+exports.getPartic = async (uuid, skip, lim) => {
+	skip = skip || 0;
+	lim = lim || config.lim.event.max_search_results;
+
+	var col = await db.col("event");
+	var arr = await col.find(Event.query.partic(uuid)).skip(skip).limit(lim).toArray();
 	var ret = [];
 
 	arr.forEach(function (ev) {

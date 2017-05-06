@@ -115,61 +115,75 @@
 				// fr.open("main.html");
 			});
 
+			function jump(url) {
+				window.location = url;
+			}
+
 			require([
 				"com/tbar", "com/event", "com/env",
 				"com/upload", "com/util", "com/pages",
 				"com/parts"
 			], function (tbar, event, env, upload, util, pages, parts) {
 				env.init(function () {
-					var pg = pages.init({
-						"search": "#search",
-						"cover": "#cover",
-						"part": "#part"
-					}, { init: "cover" });
-
 					var bar = tbar.init();
 
-					bar.setSimple();
-					
 					bar.menu(function () {
-						toggleCover();
+						if (!window.location.hash) {
+							pg.toggle("cover", "search");
+						} else {
+							jump("#");
+						}
 					});
 
 					bar.profile(function () {
-						pt.load("profile");
-						bar.delSimple();
-						pg.switch("part");
+						jump("#profile");
 					});
+
+					var pg = pages.init({
+						"search": {
+							page: "#search",
+							onShow: function () {
+								bar.delSimple();
+							}
+						},
+						
+						"cover": {
+							page: "#cover",
+							onShow: function () {
+								bar.setSimple();
+							}
+						},
+
+						"part": {
+							page: "#part",
+							onShow: function () {
+								bar.delSimple();
+							}
+						},
+					}, { init: "cover" });
 
 					var ev = event.init("#search>#search-cont", {
 						onUpdate: function (pos) {}
 					});
 
-					var pt = parts.init("#part");
+					var orig = null;
+
+					var pt = parts.init("#part", {
+						onJump: function (notmain) {
+							if (notmain) {
+								orig = pg.cur();
+								pg.to("part");
+							} else {
+								pg.to(orig || "cover");
+							}
+						}
+					});
 
 					/* test */
 					// pt.load("profile");
 					// bar.delSimple();
-					// pg.switch("part");
+					// pg.to("part");
 					/* test */
-
-					function hideCover() {
-						bar.delSimple();
-						bar.icon("idea");
-						pg.switch("search");
-					}
-
-					function toggleCover() {
-						if (pg.cur() == "cover") {
-							bar.delSimple();
-							bar.icon("idea");
-							pg.switch("search");
-						} else {
-							bar.setSimple();
-							bar.icon("content");
-							pg.switch("cover");
-						}
-					}
 
 					function showLoader() {
 						$("#loader").css("display", "");
@@ -244,7 +258,9 @@
 					// re-search
 					function research(query, cb) {
 						hideResult();
-						hideCover();
+						jump("#");
+						orig = "search";
+						pg.to("search");
 
 						ev.clear(function () {
 							$(window).scrollTop(0);

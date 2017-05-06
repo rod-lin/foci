@@ -27,6 +27,11 @@ define([ "com/util" ], function (util) {
 			return;
 		}
 
+		if (!env.session) {
+			cb(null);
+			return;
+		}
+
 		foci.encop(env.session, {
 			int: "info",
 			action: "get"
