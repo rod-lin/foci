@@ -29,24 +29,46 @@ define(function () {
 			if (tabs.hasOwnProperty(k)) {
 				(function (name) {
 					var dname;
+					var onright = false;
+					var style = "";
+
 					var onShow = null;
+					var onChange = null;
 
 					if (typeof tabs[k] === "object") {
 						dname = tabs[k].name;
+						
 						onShow = tabs[k].onShow;
+						onChange = tabs[k].onChange;
+
+						onright = tabs[k].float === "right";
+						
+						if (tabs[k].style) style = tabs[k].style;
 					} else {
 						dname = tabs[k];
 					}
 
-					var item = $("<div class='item'>" + dname + "</div>");
+					var item = $("<div class='item" + (onright ? " right" : "") + " " + style + "'>" + dname + "</div>");
 					var tab = $("<div class='tab'></div>");
 					
-					items[k] = [ item, tab ];
+					items[k] = { 
+						item: item,
+						tab: tab,
+						onChange: onChange
+					};
+
 					menu.append(item);
 					main.children(".tabs").append(tab);
 
 					item.click(function () {
 						if (cur == name) return;
+
+						if (cur && items[cur].onChange) {
+							if (items[cur].onChange() === false) {
+								return;
+							}
+						}
+
 						cur = name;
 
 						menu.children(".item.active").removeClass("active");
@@ -76,20 +98,30 @@ define(function () {
 		var ret = {};
 
 		ret.getTab = function (name) {
-			return items[name][1];
+			return items[name].tab;
+		};
+
+		ret.getItem = function (name) {
+			return items[name].item;
 		};
 
 		ret.to = function (name) {
-			items[name][0].click();
+			items[name].item.click();
 		};
 
 		ret.flow = function (open) {
 			if (open) {
 				var items = menu.children(".item");
 				items.css("width", (1 / items.length * 100) + "%");
+				menu.addClass("flow");
 			} else {
 				menu.children(".item").css("width", "");
+				menu.removeClass("flow");
 			}
+		};
+
+		ret.displayHeight = function () {
+			return cont.parent().innerHeight() - menu.outerHeight();
 		};
 
 		return ret;

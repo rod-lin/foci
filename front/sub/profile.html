@@ -131,12 +131,121 @@
 			<div class="org-event active"></div>
 		</div> -->
 	</div>
+
+	<style>
+		
+		#sub-profile .new-event {
+		}
+
+		#sub-profile .new-event>.content {
+			position: absolute;
+			width: 70%;
+
+			top: 0;
+			left: 30%;
+
+			border: 1px solid rgba(0, 0, 0, 0.1);
+			border-width: 0 0 0 1px;
+		}
+
+		#sub-profile .new-event .ev-step {
+			position: absolute;
+			width: 30%;
+
+			top: 0;
+			left: 0;
+		}
+
+		#sub-profile .new-event .no-style {
+			margin: 0;
+			padding: 0;
+			background: 0;
+			outline: none;
+			border: 0;
+			resize: none;
+		}
+
+		#sub-profile .new-event .ev-title {
+			width: 100%;
+			padding: 2rem;
+			background: white;
+			color: #252525;
+
+			font-size: 2em;
+			font-weight: bold;
+
+			border: 1px solid rgba(0, 0, 0, 0.1);
+			border-width: 0 0 1px 0;
+		}
+
+		#sub-profile .new-event .ev-descr {
+			width: 100%;
+			padding: 2rem;
+			background: white;
+			color: #252525;
+
+			min-height: 10em;
+
+			font-size: 1.5em;
+		}
+
+		#sub-profile .new-event .ui.steps {
+			border-width: 0 0 1px 0 !important;
+		}
+
+		@media only screen and (max-width: 640px) {
+			#sub-profile .new-event>.content {
+				left: 0;
+				width: 100%;
+			}
+
+			#sub-profile .new-event .ev-step {
+				display: none;
+			}
+		}
+
+	</style>
+
+	<div class="new-event-draft" style="display: none;">
+		<div class="new-event">
+			<div class="ev-step">
+				<div class="ui vertical fluid steps">
+					<div class="link active step">
+						<i class="info icon"></i>
+						<div class="content">
+							<div class="title">Basic Info</div>
+							<div class="description">Title and description</div>
+						</div>
+					</div>
+					<div class="link step">
+						<i class="camera retro card icon"></i>
+						<div class="content">
+							<div class="title">Cover</div>
+							<div class="description">Cover and logo</div>
+						</div>
+					</div>
+					<div class="link step">
+						<i class="map outline icon"></i>
+						<div class="content">
+							<div class="title">Location</div>
+							<div class="description">When and where</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="content">
+				<!-- <div id="sub-profile-map" class="map"></div> -->
+				<input class="ev-title no-style" placeholder="Title">
+				<textarea class="ev-descr no-style" placeholder="Description"></textarea>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
 	function init(main, args) {
 		require([ "com/env", "com/util", "com/event", "com/xfilt", "com/pages", "com/tab", "com/login" ], function (env, util, event, xfilt, pages, tab, login) {
-			var init = function (info) {
+			var init = function (info, is_self) {
 				var left_bar = main.find(".left-bar");
 				var right_bar = main.find(".right-bar");
 
@@ -178,7 +287,7 @@
 				var partic_ev = null;
 				var org_ev = null;
 
-				var tb = tab.init(right_bar.find(".main-tab"), {
+				var tabs = {
 					"partic": {
 						name: "Participated",
 						onShow: function (show) {
@@ -203,6 +312,7 @@
 						onShow: function (show) {
 							var next = function () {
 								org_ev.update();
+
 								setTimeout(function () {
 									show();
 								}, 300);
@@ -216,16 +326,47 @@
 							}
 						}
 					}
-				});
+				};
+
+				var new_tab = main.children(".new-event-draft").children();
+
+				function updateNewEvent() {
+					new_tab
+						.find(".ev-descr")
+						.css("height", tb.displayHeight() - new_tab.find(".ev-title").outerHeight() + "px");
+				}
+
+				if (is_self) {
+					tabs["new"] = {
+						name: "New",
+						float: "right",
+						style: "green",
+
+						onShow: function (show) {
+							tb.getTab("new").html(new_tab);
+							updateNewEvent();
+							// initBaiduMap();
+							show();
+						},
+
+						onChange: function () {
+							return false;
+						}
+					};
+				}
+
+				var tb = tab.init(right_bar.find(".main-tab"), tabs);
 
 				$(window).resize(function () {
-					if (right_bar.offset().left) {
+					if (right_bar.offset().left) { // if to mobile mode
 						right_bar.width(main.innerWidth() - left_bar.outerWidth());
 						tb.flow(false);
 					} else {
 						right_bar.width(main.innerWidth());
 						tb.flow(true);
 					}
+
+					updateNewEvent();
 				});
 
 				$(window).resize();
@@ -243,7 +384,9 @@
 				} else {
 					foci.get("/user/info", { uuid: uuid }, function (suc, dat) {
 						if (suc) {
-							init(dat);
+							env.user(function (cur) {
+								init(dat, cur && cur.uuid == dat.uuid);
+							});
 						} else {
 							util.qmsg(dat);
 						}
@@ -252,10 +395,10 @@
 			} else {
 				if (!env.session()) {
 					login.init(function () {
-						env.user(function (info) { init(info); });
+						env.user(function (info) { init(info, true); });
 					});
 				} else {
-					env.user(function (info) { init(info); });
+					env.user(function (info) { init(info, true); });
 				}
 			}
 		});

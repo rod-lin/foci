@@ -1,0 +1,44 @@
+.com-map {
+	text-align: center !important;
+}
+
+/* extended dim */
+.com-map .exdim {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.com-map .board {
+	position: relative;
+
+	width: 100%;
+
+	border-radius: 3px !important;
+
+	padding: 0.8rem;
+
+	background: #F8F8F8;
+}
+
+.com-map .message {
+	margin: 0 0 0.8rem 0 !important;
+	cursor: pointer;
+}
+
+.com-map .map {
+	position: relative;
+	
+	left: 0;
+	top: 0;
+
+	max-height: 65vh;
+	height: 30em;
+
+	width: 100%;
+
+	border-radius: 3px;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}

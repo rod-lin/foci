@@ -36,7 +36,31 @@
 	background: rgba(248, 248, 248, 1);
 }
 
+.com-tab .menu:not(.flow) .item.right {
+	float: right;
+	border-width: 0 0 0 1px;
+}
+
+.com-tab .menu .item.green {
+	background: #2ECC71;
+	border-color: #28B363;
+	color: white;
+}
+
+.com-tab .menu .item.green:hover {
+	background: #28B363;
+}
+
+.com-tab .menu .item.green.active {
+	background: #28B363;
+}
+
+.com-tab .menu.flow .item {
+	padding: 1.5rem 0;
+}
+
 .com-tab .tab {
+	position: relative;
 	display: none;
 	transition: opacity 0.3s;
 }

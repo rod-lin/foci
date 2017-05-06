@@ -45,6 +45,7 @@
 				height: 100%;
 
 				overflow: auto;
+				overflow-x: hidden;
 			}
 
 			#cover {
@@ -54,7 +55,7 @@
 				height: 100%;
 				width: 100%;
 
-				background-image: url("img/cover2.jpg");
+				background-image: url("img/cover3.jpg");
 				background-repeat: no-repeat;
 				background-size: cover;
 				background-position: 50% 50%;
@@ -96,7 +97,7 @@
 				<div id="search-cont"></div>
 				<div id="bottom-bar">
 					<div id="loader" class="ui active centered inline loader" style="display: none;"></div>
-					<div id="result" style="display: none;">no result</div>
+					<div id="result" style="display: none;"></div>
 				</div>
 			</div>
 
@@ -129,9 +130,11 @@
 			require([
 				"com/tbar", "com/event", "com/env",
 				"com/upload", "com/util", "com/pages",
-				"com/parts"
-			], function (tbar, event, env, upload, util, pages, parts) {
+				"com/parts", "com/map"
+			], function (tbar, event, env, upload, util, pages, parts, map) {
 				env.init(function () {
+					// map.init();
+
 					var bar = tbar.init();
 
 					bar.menu(function () {
@@ -252,7 +255,7 @@
 							hideLoader();
 
 							if (!suc) {
-								showResult("no result");
+								showResult("no more results");
 								no_refresh = true;
 							}
 						});
@@ -276,7 +279,7 @@
 									ev.show();
 
 									if (!suc) {
-										showResult("no result");
+										showResult("no more results");
 									}
 
 									no_refresh = false;

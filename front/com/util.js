@@ -35,10 +35,12 @@ define(function () {
 		}, 0);
 	};
 
-	util.media = function (max_width, cb) {
+	util.media = function (max_width, cb, exit) {
 		$(window).on("resize", function () {
 			if ($(window).width() <= max_width)
 				cb();
+			else
+				exit();
 		});
 	};
 
