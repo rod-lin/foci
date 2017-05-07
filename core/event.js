@@ -28,8 +28,9 @@ var Event = function (euid, sponsor /* uuid */) {
 	this.title = config.def.event.title;
 	this.descr = "";
 
-	this.location = config.def.event.unsettled;
-		
+	this.loclng = null; // longitude
+	this.loclat = null; // latitude
+
 	// start date and end date
 	this.start = null;
 	this.end = null;
@@ -55,7 +56,9 @@ Event.prototype.getInfo = function () {
 
 		title: this.title,
 		descr: this.descr,
-		location: this.location,
+
+		loclng: this.loclng,
+		loclat: this.loclat,
 
 		logo: this.logo,
 		cover: this.cover,
@@ -94,7 +97,9 @@ Event.format = {};
 Event.format.info = {
 	title: util.checkArg.lenlim(config.lim.event.title, "title too long"),
 	descr: util.checkArg.lenlim(config.lim.event.descr, "description too long"),
-	location: util.checkArg.lenlim(config.lim.event.location, "location too long"),
+
+	loclng: "number",
+	loclat: "number",
 
 	cover: {
 		type: "string", lim: chsum => {
@@ -151,10 +156,10 @@ Event.format.search = {
 };
 
 Event.query = {
-	euid: euid => ({ "euid": euid }),
+	euid: (euid, state) => ({ "euid": euid, "state": { $gte: (state == undefined ? 1 : state) } /* published state */ }),
 
 	count_sponsor: (uuid, after) => {
-		var res = { "org.0": uuid };
+		var res = { "org.0": uuid, "state": { $gte: 1 } };
 
 		if (after) {
 			res["created"] = { $gt: after };
@@ -165,10 +170,11 @@ Event.query = {
 
 	check_sponsor: (euid, uuid) => ({ "euid": euid, "org.0": uuid }),
 
-	org: uuid => ({ "org": uuid }),
-	partic: uuid => ({ "partic": uuid }),
+	org: uuid => ({ "org": uuid, "state": { $gte: 1 } }),
+	partic: uuid => ({ "partic": uuid, "state": { $gte: 1 } }),
+	draft: uuid => ({ "org": uuid, "state": 0 }),
 
-	has_favtag: tags => ({ "favtag": { $in: tags } }),
+	has_favtag: tags => ({ "favtag": { $in: tags }, "state": { $gte: 1 } }),
 
 	keyword: kw => {
 		// TODO: keyword filt
@@ -176,18 +182,19 @@ Event.query = {
 		return {
 			$or: [
 				{ "title": { $regex: reg } },
-				{ "descr": { $regex: reg } },
-				{ "location": { $regex: reg } }
-			]
+				{ "descr": { $regex: reg } }
+			],
+
+			"state": { $gte: 1 }
 		};
 	},
 
-	after: date => ({ start: { $ge: date } }),
-	before: date => ({ end: { $le: date } }),
+	after: date => ({ start: { $gte: date }, "state": { $gte: 1 } }),
+	before: date => ({ end: { $lte: date }, "state": { $gte: 1 } }),
 
 	// register for participant, next = last_index + 1, use with set.reg
 	reg: (euid, next) => {
-		var q = { "euid": euid };
+		var q = { "euid": euid, "state": { $gte: 1 } };
 		q["test." + next] = { $exists: 0 };
 		return q;
 	}
@@ -234,15 +241,15 @@ exports.isSponsor = async (euid, uuid) => {
 	return (await col.count(Event.query.check_sponsor(euid, uuid))) != 0;
 };
 
-exports.exist = async (euid) => {
+exports.exist = async (euid, state) => {
 	var col = await db.col("event");
-	if (!await col.count(Event.query.euid(euid)))
+	if (!await col.count(Event.query.euid(euid, state == undefined ? 1 : state)))
 		throw new err.Exc("event not exist");
 };
 
 exports.setInfo = async (euid, info) => {
 	var col = await db.col("event");
-	await col.updateOne(Event.query.euid(euid), Event.set.info(info));
+	await col.updateOne(Event.query.euid(euid, 0), Event.set.info(info));
 };
 
 // events organized by a certain user(in event info)
@@ -277,8 +284,24 @@ exports.getPartic = async (uuid, skip, lim) => {
 	return ret;
 };
 
-exports.search = async (conf) => {
-	var query = {};
+exports.getDraft = async (uuid, skip, lim) => {
+	skip = skip || 0;
+	lim = lim || config.lim.event.max_search_results;
+
+	var col = await db.col("event");
+	var arr = await col.find(Event.query.draft(uuid)).skip(skip).limit(lim).toArray();
+	var ret = [];
+
+	arr.forEach(function (ev) {
+		ret.push(new Event(ev).getInfo());
+	});
+
+	return ret;
+};
+
+exports.search = async (conf, state) => {
+	state = state || 1;
+	var query = { "state": { $gte: 1 } };
 
 	if (conf.favtag) query.extend(Event.query.has_favtag(conf.favtag));
 	if (conf.kw) query.extend(Event.query.keyword(conf.kw));

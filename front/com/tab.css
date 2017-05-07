@@ -16,7 +16,11 @@
 .com-tab .menu .item {
 	display: inline-block;
 
-	padding: 1.5rem 2rem;
+	padding: 0 2rem;
+	height: 4rem;
+
+	background: white;
+
 	border: 1px solid rgba(0, 0, 0, 0.1);
 	border-width: 0 1px 0 0;
 

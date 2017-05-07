@@ -267,12 +267,20 @@ encop.event = async (env, usr, query) => {
 			var args = util.checkArg(query, { euid: "int", type: "string" });
 			return await event.register(args.euid, usr.getUUID(), args.type);
 
+		case "draft":
+			var args = util.checkArg(query, {
+				"skip": { type: "int", opt: true },
+				"lim": { type: "int", opt: true }
+			});
+
+			return await event.getDraft(usr.getUUID(), args.skip, args.lim);
+
 		case "setinfo":
 			// format and check limit
 			var args = util.checkArg(query, { euid: "int" });
 			var setq = util.checkArg(query, event.Event.format.info, true);
 
-			await event.exist(args.euid);
+			await event.exist(args.euid, 0);
 			await event.setInfo(args.euid, setq);
 			
 			return;

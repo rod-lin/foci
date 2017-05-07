@@ -91,7 +91,7 @@ var checkArg = (args, req, opt) => {
 		switch (entry) {
 			case "string":
 				if (typeof tmp !== "string")
-					throw new err.Exc("wrong argument type(expecting string)");
+					throw new err.Exc("wrong argument type for " + k + "(expecting string)");
 
 				break;
 
@@ -101,7 +101,7 @@ var checkArg = (args, req, opt) => {
 
 				tmp = parseInt(tmp);
 				if (isNaN(tmp))
-					throw new err.Exc("wrong argument type(expecting int)");
+					throw new err.Exc("wrong argument type for " + k + "(expecting int)");
 
 				break;
 
@@ -111,7 +111,7 @@ var checkArg = (args, req, opt) => {
 
 				tmp = parseFloat(tmp);
 				if (isNaN(tmp))
-					throw new err.Exc("wrong argument type(expecting int)");
+					throw new err.Exc("wrong argument type for " + k + "(expecting int)");
 
 				break;
 
@@ -123,7 +123,7 @@ var checkArg = (args, req, opt) => {
 					// console.log(tmp);
 					tmp = JSON.parse(tmp);
 				} catch (e) {
-					throw new err.Exc("wrong json format", e);
+					throw new err.Exc("wrong json format for " + k, e);
 				}
 
 				break;

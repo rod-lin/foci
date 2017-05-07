@@ -137,7 +137,7 @@
 		#sub-profile .new-event {
 		}
 
-		#sub-profile .new-event>.content {
+		#sub-profile .new-event .ev-content {
 			position: absolute;
 			width: 70%;
 
@@ -191,12 +191,35 @@
 
 		#sub-profile .new-event .ui.steps {
 			border-width: 0 0 1px 0 !important;
+			border-radius: 0 !important;
+		}
+
+		#sub-profile .new-event .ui.steps .step {
+			border-radius: 0 !important;
+		}
+
+		#sub-profile .new-event .ev-content .page {
+			display: none;
+		}
+
+		#sub-profile .new-event .ev-content .page.active {
+			display: block;
+		}
+
+		#sub-profile .new-event .ev-content .warning {
+			background: #FFF6F6;
+			color: #9F3A38;
+		}
+
+		#sub-profile .new-event .ev-content .p2 {
+			text-align: center;
 		}
 
 		@media only screen and (max-width: 640px) {
-			#sub-profile .new-event>.content {
+			#sub-profile .new-event .ev-content {
 				left: 0;
 				width: 100%;
+				border-width: 0;
 			}
 
 			#sub-profile .new-event .ev-step {
@@ -210,21 +233,21 @@
 		<div class="new-event">
 			<div class="ev-step">
 				<div class="ui vertical fluid steps">
-					<div class="link active step">
+					<div class="link active step info-step">
 						<i class="info icon"></i>
 						<div class="content">
 							<div class="title">Basic Info</div>
 							<div class="description">Title and description</div>
 						</div>
 					</div>
-					<div class="link step">
+					<div class="link step cover-step">
 						<i class="camera retro card icon"></i>
 						<div class="content">
 							<div class="title">Cover</div>
 							<div class="description">Cover and logo</div>
 						</div>
 					</div>
-					<div class="link step">
+					<div class="link step loc-step">
 						<i class="map outline icon"></i>
 						<div class="content">
 							<div class="title">Location</div>
@@ -233,10 +256,16 @@
 					</div>
 				</div>
 			</div>
-			<div class="content">
+			<div class="ev-content">
 				<!-- <div id="sub-profile-map" class="map"></div> -->
-				<input class="ev-title no-style" placeholder="Title">
-				<textarea class="ev-descr no-style" placeholder="Description"></textarea>
+				<div class="page p1 active">
+					<input class="ev-title no-style" placeholder="Title">
+					<textarea class="ev-descr no-style" placeholder="Description"></textarea>
+				</div>
+				<div class="page p2"></div>
+				<div class="page p3">
+					<div class="map"></div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -244,7 +273,12 @@
 
 <script>
 	function init(main, args) {
-		require([ "com/env", "com/util", "com/event", "com/xfilt", "com/pages", "com/tab", "com/login" ], function (env, util, event, xfilt, pages, tab, login) {
+		require([
+			"com/env", "com/util", "com/event",
+			"com/xfilt", "com/pages", "com/tab",
+			"com/login", "com/event", "com/upload",
+			"com/map"
+		], function (env, util, event, xfilt, pages, tab, login, event, upload, map) {
 			var init = function (info, is_self) {
 				var left_bar = main.find(".left-bar");
 				var right_bar = main.find(".right-bar");
@@ -284,46 +318,36 @@
 					});
 				}
 
-				var partic_ev = null;
-				var org_ev = null;
+				var ev_list = {};
+
+				function eventTabOnShow(name, url, cb) {
+					var next = function () {
+						ev_list[name].update();
+						setTimeout(function () {
+							cb();
+						}, 300);
+					};
+
+					if (!ev_list[name]) {
+						ev_list[name] = event.init(tb.getTab(name));
+						fetchEvent(url, ev_list[name], next);
+					} else {
+						next();
+					}
+				}
 
 				var tabs = {
 					"partic": {
 						name: "Participated",
 						onShow: function (show) {
-							var next = function () {
-								partic_ev.update();
-								setTimeout(function () {
-									show();
-								}, 300);
-							};
-
-							if (!partic_ev) {
-								partic_ev = event.init(tb.getTab("partic"));
-								fetchEvent("/user/partic", partic_ev, next);
-							} else {
-								next();
-							}
+							eventTabOnShow("partic", "/user/partic", show);
 						}
 					},
 
 					"org": {
 						name: "Organized",
 						onShow: function (show) {
-							var next = function () {
-								org_ev.update();
-
-								setTimeout(function () {
-									show();
-								}, 300);
-							};
-
-							if (!org_ev) {
-								org_ev = event.init(tb.getTab("org"));
-								fetchEvent("/user/org", org_ev, next);
-							} else {
-								next();
-							}
+							eventTabOnShow("org", "/user/org", show);
 						}
 					}
 				};
@@ -334,28 +358,433 @@
 					new_tab
 						.find(".ev-descr")
 						.css("height", tb.displayHeight() - new_tab.find(".ev-title").outerHeight() + "px");
+
+					new_tab
+						.find(".ev-content .p2")
+						.css("height", tb.displayHeight());
+
+					new_tab
+						.find(".ev-content .p3 .map")
+						.css("height", tb.displayHeight());
 				}
 
+				new_tab.find(".ev-title").keyup(function () {
+					$(this).removeClass("warning");
+				});
+
+				new_tab.find(".ev-descr").keyup(function () {
+					$(this).removeClass("warning");
+				});
+
+				/*
+					To add step, you need to:
+						1. Add a step item in the .ev-step
+						2. Add a page in the .ev-content
+						3. Add the step name in the "steps" array below
+						4. Add check and show event in "step_show" and "step_check"
+						5. Add initialization code in loadDraft
+				 */
+				
+				"use strict";
+
+				var loadDraft, clearDraft, hasDraft, saveDraft;
+
+				function initDraft() {
+					var euid = null;
+					var steps = [ "info", "cover", "loc" ];
+					var cur_step = 1;
+
+					var bmap = null;
+
+					var step_show = {};
+					var step_check = {
+						"info": function (cb) {
+							var suc = true;
+
+							if (!new_tab.find(".ev-title").val()) {
+								new_tab.find(".ev-title").addClass("warning");
+								suc = false;
+							}
+
+							if (!new_tab.find(".ev-descr").val()) {
+								new_tab.find(".ev-descr").addClass("warning");
+								suc = false;
+							}
+
+							if (suc) {
+								uploadChanges({
+									title: new_tab.find(".ev-title").val(),
+									descr: new_tab.find(".ev-descr").val()
+								}, function (suc) {
+									if (suc) {
+										new_tab.find(".info-step").addClass("completed");
+										cb(true);
+									} else {
+										cb(false);
+									}
+								});
+							} else cb(false);
+
+							return;
+						},
+
+						"cover": function (cb) {
+							if (field_cover) {
+								uploadChanges({
+									cover: field_cover
+								}, function (suc) {
+									if (suc) {
+										new_tab.find(".cover-step").addClass("completed");
+										cb(true);
+									} else {
+										cb(false);
+									}
+								});
+							} else {
+								util.ask("You haven't selected any cover. Are you sure to leave?", function (suc) {
+									if (suc) {
+										// new_tab.find(".cover-step").addClass("completed");
+										cb(true);
+									} else {
+										cb(false);
+									}
+								});
+							}
+						},
+
+						"loc": function (cb) {
+							if (field_lng && field_lat) {
+								uploadChanges({
+									loclng: field_lng,
+									loclat: field_lat
+								}, function (suc) {
+									if (suc) {
+										// alert(field_lng + ", " + field_lat + " saved");
+										new_tab.find(".loc-step").addClass("completed");
+										cb(true);
+									} else {
+										cb(false);
+									}
+								});
+							} else {
+								util.ask("You haven't selected any location. Are you sure to leave?", function (suc) {
+									if (suc) {
+										// new_tab.find(".loc-step").addClass("completed");
+										cb(true);
+									} else {
+										cb(false);
+									}
+								});
+							}
+						}
+					};
+
+					var field_cover;
+					var field_lng, field_lat;
+					
+					/* loader icon on the New/Save button */
+					function setLoader() {
+						tb.getItem("new").html("<div class='ui active inverted small inline loader'></div>");
+					}
+
+					function delLoader() {
+						tb.getItem("new").html("Save");
+					}
+
+					function uploadChanges(changes, cb) {
+						if (!env.session()) {
+							util.qmsg("you haven't logged in");
+							cb(false);
+
+							return;
+						}
+
+						setLoader();
+
+						foci.encop(env.session(), $.extend({
+							int: "event",
+							action: "setinfo",
+							euid: euid
+						}, changes), function (suc, dat) {
+							delLoader();
+
+							if (!suc) {
+								util.qmsg(dat);
+							}
+
+							cb(suc);
+						});
+					}
+					
+					function checkStep(cb) {
+						var check = cur_step <= steps.length ? step_check[steps[cur_step - 1]] : null;
+						if (check) {
+							check(cb);
+						} else cb();
+					}
+
+					function setStep(page, nocheck) {
+						var next = function (cast) {
+							if (cast === false) return;
+
+							new_tab.find(".ev-content .page.active").removeClass("active");
+							new_tab.find(".ev-step .active").removeClass("active");
+							new_tab.find("." + steps[page - 1] + "-step").addClass("active");
+							new_tab.find(".ev-content .p" + page).addClass("active");
+							cur_step = page;
+
+							var show = step_show[steps[cur_step - 1]];
+							if (show) show();
+						};
+
+						if (nocheck) next();
+						else checkStep(next);
+					}
+
+					// step initalize
+					function initStep() {
+						function set(select, page) {
+							// alert("bond " + select + ", " + page);
+							new_tab.find(select).on("click", function () {
+								setStep(page);
+							});
+						}
+
+						for (var i = 1; i <= steps.length; i++) {
+							set("." + steps[i - 1] + "-step", i);
+						}
+					}
+
+					function nextStep() {
+						if (cur_step < steps.length) {
+							setStep(cur_step + 1);
+						} else {
+							checkStep(function () {});
+						}
+					}
+
+					clearDraft = function () {
+						euid = null;
+						cur_step = 1;
+
+						field_cover = null;
+						field_lng = null;
+						field_lat = null;
+
+						tb.getItem("new").off("click", nextStep);
+						tb.getItem("new").html("New");
+						// new_tab.find(".ev-step .step").off("click");
+					};
+
+					hasDraft = function () {
+						return euid != null;
+					};
+
+					saveDraft = function (cb) {
+						setLoader();
+						checkStep(function (suc) {
+							delLoader();
+							cb(suc);
+						});
+					};
+
+					loadDraft = function (ev_info) {
+						if (!ev_info || !ev_info.euid) {
+							util.qmsg("event not created");
+							return;
+						} // make sure the event has been created
+
+						updateNewEvent(); // update position
+
+						// alert(ev_info.euid);
+
+						euid = ev_info.euid;
+						cur_step = 1;
+
+						var title = ev_info.title ? ev_info.title : "";
+						var descr = ev_info.descr ? ev_info.descr : "";
+
+						tb.getItem("new").html("Save")
+							.off("click", nextStep); // avoid duplication
+
+						util.nextTick(function () { // avoid bubbling
+							tb.getItem("new").on("click", nextStep);
+						});
+
+						// page 1
+						new_tab.find(".ev-title").val(title);
+						new_tab.find(".ev-descr").val(descr);
+
+						// page 2
+						var event_tmp = event.eventTemplate();
+						new_tab.find(".ev-content .p2").html(event_tmp);
+						event_tmp
+							.css("display", "inline-block")
+							.css("text-align", "left")
+							.addClass("vcenter");
+
+						field_cover = ev_info.cover;
+
+						event.setDom(event_tmp, {
+							title: "Tmplate",
+							descr: "Click the picture to change cover",
+							cover: ev_info.cover
+						}, {
+							onCoverClick: function (dom) {
+								upload.init(function (file) {
+									if (file) {
+										field_cover = file;
+										dom.changeCover(file);
+									}
+								});
+							}
+						});
+
+						// page 3
+						field_lng = ev_info.loclng;
+						field_lat = ev_info.loclat;
+
+						if (!bmap) {
+							map.embed(new_tab.find(".ev-content .p3 .map"), function (map) {
+								bmap = map;
+
+								step_show["loc"] = function () {
+									bmap.init(); // init position
+
+									if (field_lng && field_lat)
+										bmap.set(field_lng, field_lat);
+									else
+										bmap.clear();
+								}
+
+							}, function (lng, lat, addr) {
+								field_lng = lng;
+								field_lat = lat;
+								// alert(lng + ", " + lat + ", " + addr);
+							});
+						}
+
+						var last = null;
+
+						new_tab.find(".completed").removeClass("completed");
+
+						if (title && descr) {
+							new_tab.find(".info-step").addClass("completed");
+						} else last = 1;
+
+						if (field_cover) {
+							new_tab.find(".cover-step").addClass("completed");
+						} else if (!last) last = 2;
+
+						if (field_lng && field_lat) {
+							new_tab.find(".loc-step").addClass("completed");
+						} else if (!last) last = 3;
+
+						// if (last)
+						//	new_tab.find(last).click();
+						// initStep(); // initialize event bondings
+
+						setStep(last || 1, true);
+					};
+
+					initStep();
+				};
+
 				if (is_self) {
+					initDraft();
+
+					tabs["draft"] = {
+						name: "Draft",
+						onShow: function (show) {
+							if (!env.session()) {
+								util.qmsg("You haven't logged in");
+								show();
+								return;
+							}
+
+							var next = function () {
+								ev_list["draft"].update();
+								setTimeout(function () {
+									show();
+								}, 300);
+							};
+
+							if (!ev_list["draft"]) {
+								ev_list["draft"] = event.init(tb.getTab("draft"), {
+									view: function (info) {
+										loadDraft(info);
+										tb.to("new");
+									}
+								});
+							}
+
+							// always update
+							foci.encop(env.session(), {
+								int: "event",
+								action: "draft"
+							}, function (suc, dat) {
+								if (suc) {
+									ev_list["draft"].clear(function () {
+										for (var i = 0; i < dat.length; i++)
+											ev_list["draft"].add(dat[i]);
+									});
+								} else {
+									util.qmsg(dat);
+								}
+
+								next();
+							});
+						}
+					};
+
 					tabs["new"] = {
 						name: "New",
 						float: "right",
 						style: "green",
 
 						onShow: function (show) {
-							tb.getTab("new").html(new_tab);
-							updateNewEvent();
 							// initBaiduMap();
-							show();
+							
+							if (env.session()) {
+								if (hasDraft()) {
+									// alert("hi");
+									updateNewEvent();
+									show();
+								} else {
+									// alert("hi");
+									foci.encop(env.session(), {
+										int: "event",
+										action: "new"
+									}, function (suc, dat) {
+										// alert("wyea");
+										if (suc) {
+											loadDraft({ euid: dat });
+											updateNewEvent();
+											show();
+										} else {
+											util.qmsg(dat);
+										}
+									});
+								}
+							} else {
+								util.qmsg("you haven't logged in");
+							}
 						},
 
-						onChange: function () {
+						onChange: function (cb) {
+							saveDraft(function (suc) {
+								if (suc) clearDraft();
+								cb(suc); // if suc == true, change the tab
+							});
+							
 							return false;
 						}
 					};
 				}
 
 				var tb = tab.init(right_bar.find(".main-tab"), tabs);
+
+				tb.getTab("new").html(new_tab);
 
 				$(window).resize(function () {
 					if (right_bar.offset().left) { // if to mobile mode

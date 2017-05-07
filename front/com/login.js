@@ -32,7 +32,7 @@ define([ "com/util", "com/env" ], function (util, env) {
 		var uname_input = main.find(".uname");
 		var passwd_input = main.find(".passwd");
 
-		uname_input.keydown(function (e) {
+		uname_input.keyup(function (e) {
 			uname_input.parent().removeClass("error");
 
 			if (e && e.keyCode == 13) {
@@ -40,7 +40,7 @@ define([ "com/util", "com/env" ], function (util, env) {
 			}
 		});
 
-		passwd_input.keydown(function (e) {
+		passwd_input.keyup(function (e) {
 			passwd_input.parent().removeClass("error");
 
 			if (e && e.keyCode == 13) {

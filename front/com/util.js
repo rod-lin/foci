@@ -113,6 +113,10 @@ define(function () {
 		});
 	};
 
+	util.nextTick = function (cb) {
+		setTimeout(cb, 0);
+	};
+
 	Array.prototype.choose = function () {
 		return this[Math.floor(Math.random() * this.length)];
 	};

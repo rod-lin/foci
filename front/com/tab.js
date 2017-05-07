@@ -48,7 +48,7 @@ define(function () {
 						dname = tabs[k];
 					}
 
-					var item = $("<div class='item" + (onright ? " right" : "") + " " + style + "'>" + dname + "</div>");
+					var item = $("<button class='item" + (onright ? " right" : "") + " " + style + "'>" + dname + "</button>");
 					var tab = $("<div class='tab'></div>");
 					
 					items[k] = { 
@@ -61,33 +61,40 @@ define(function () {
 					main.children(".tabs").append(tab);
 
 					item.click(function () {
+						var next = function () {
+							cur = name;
+
+							menu.children(".item.active").removeClass("active");
+							main.children(".tabs").children(".active").removeClass("active");
+
+							item.addClass("active");
+						
+							if (onShow) {
+								tab.addClass("active");
+								loader.addClass("active");
+								tab.css("opacity", "0");
+								
+								onShow(function () {
+									loader.removeClass("active");
+									tab.css("opacity", "1");
+								});
+							} else {
+								tab.addClass("active");
+							}
+						};
+
 						if (cur == name) return;
 
 						if (cur && items[cur].onChange) {
-							if (items[cur].onChange() === false) {
+							if (items[cur].onChange(function (cast) {
+								if (cast !== false)
+									next();
+							}) === false) {
 								return;
 							}
 						}
 
-						cur = name;
-
-						menu.children(".item.active").removeClass("active");
-						main.children(".tabs").children(".active").removeClass("active");
-
-						item.addClass("active");
-					
-						if (onShow) {
-							tab.addClass("active");
-							loader.addClass("active");
-							tab.css("opacity", "0");
-							
-							onShow(function () {
-								loader.removeClass("active");
-								tab.css("opacity", "1");
-							});
-						} else {
-							tab.addClass("active");
-						}
+						next();
 					});
 				})(k);
 			}

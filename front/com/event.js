@@ -1,7 +1,11 @@
 /* event */
 "use strict";
 
-define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com/upload", "com/login" ], function (xfilt, waterfall, util, avatar, env, upload, login) {
+define([
+	"com/xfilt", "com/waterfall", "com/util",
+	"com/avatar", "com/env", "com/upload",
+	"com/login", "com/map"
+], function (xfilt, waterfall, util, avatar, env, upload, login, map) {
 	var $ = jQuery;
 	foci.loadCSS("com/event.css");
 	foci.loadCSS("com/eqview.css");
@@ -29,12 +33,67 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 		return ret;
 	}
 
+	function eventTemplate() {
+		var main = $('<div class="ui card event"> \
+			<div class="image"> \
+				<img class="cover"> \
+			</div> \
+			<div class="content"> \
+				<a class="header title"></a> \
+				<div class="meta"> \
+					<span class="date"></span> \
+				</div> \
+				<div class="description"></div> \
+			</div> \
+			<div class="extra content"> \
+				<a> \
+					<i class="user icon"></i><span class="partic"></span> \
+				</a> \
+			</div> \
+		</div>');
+
+		return main;
+	}
+
+	function setDom(dom, info, config) {
+		config = config || {};
+		dom = $(dom);
+
+		var cover = info.cover ? foci.download(info.cover) : [ "img/tmp1.jpg", "img/tmp2.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/tmp5.jpg" ].choose();
+		var descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len)) : "(no description)";
+		var title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";
+		var date = genDate(info.start, info.end);
+		var partic = info.partic ? info.partic.length : 0;
+
+		dom.find(".cover").attr("src", cover);
+		dom.find(".title").html(title);
+		dom.find(".date").html(date);
+		dom.find(".description").html(descr);
+		dom.find(".partic").html(partic);
+
+		var dom_util = {
+			changeCover: function (cover) {
+				dom.find(".cover").attr("src", foci.download(cover));
+			}
+		};
+
+		if (config.onCoverClick) {
+			dom.find(".cover").css("cursor", "pointer");
+			dom.find(".cover").click(function () {
+				config.onCoverClick(dom_util);
+			});
+		}
+	}
+
 	/* waterfall view of events */
 	/* for search results and listing */
 	function init(cont, config) {
 		cont = $(cont);
 		config = $.extend({}, lim_config, {
-			max_descr_len: 64
+			max_descr_len: 64,
+			view: function (info) {
+				qview(info, null, mod);
+			}
 		}, config);
 
 		var main = $("<div class='com-event'></div>");
@@ -44,43 +103,11 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 
 		cont.append(main);
 
-		function setDom(dom, info) {
-			dom = $(dom);
-
-			var cover = info.cover ? foci.download(info.cover) : [ "img/tmp1.jpg", "img/tmp2.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/tmp5.jpg" ].choose();
-			var descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len)) : "(no description)";
-			var title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";
-			var date = genDate(info.start, info.end);
-			var partic = info.partic.length;
-
-			dom.find(".cover").attr("src", cover);
-			dom.find(".title").html(title);
-			dom.find(".date").html(date);
-			dom.find(".description").html(descr);
-			dom.find(".partic").html(partic);
-		}
-
 		function genEvent(info) {
-			var main = $('<div class="ui card event"> \
-				<div class="image"> \
-					<img class="cover"> \
-				</div> \
-				<div class="content"> \
-					<a class="header title"></a> \
-					<div class="meta"> \
-						<span class="date"></span> \
-					</div> \
-					<div class="description"></div> \
-				</div> \
-				<div class="extra content"> \
-					<a> \
-						<i class="user icon"></i><span class="partic"></span> \
-					</a> \
-				</div> \
-			</div>');
+			var main = eventTemplate();
 
 			main.find(".image, .header, .description").click(function () {
-				qview(info, null, mod);
+				config.view(info);
 			});
 
 			main.css("opacity", "0");
@@ -94,7 +121,7 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 				}, 200);
 			});
 
-			setDom(main, info);
+			setDom(main, info, config);
 
 			return main;
 		}
@@ -143,7 +170,7 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 		// refresh info
 		mod.update = function () {
 			for (var i = 0; i < edom.length; i++) {
-				setDom(edom[i], events[i]);
+				setDom(edom[i], events[i], config);
 			}
 		};
 
@@ -198,8 +225,15 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 		// update info
 		function updateInfo(info) {
 			var title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";
-			var location = info.title ? xfilt(util.short(info.title, config.max_location_len)) : "(not decided)";
 			var time = genDate(info.start, info.end);
+
+			if (info.loclng && info.loclat) {
+				map.locToName(info.loclng, info.loclat, function (addr) {
+					main.find(".location").html(addr);
+				});
+			} else {
+				main.find(".location").html("(unsettled)");
+			}
 
 			var cover = info.cover ? foci.download(info.cover) : "img/tmp2.jpg";
 			var logo = info.logo ? foci.download(info.logo) : "img/deficon.jpg";
@@ -214,7 +248,6 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 			main.find(".title").html(title);
 			main.find(".rating>span").html(rating);
 
-			main.find(".loaction").html(location);
 			main.find(".time").html(time);
 
 			main.find(".descr").html(descr);
@@ -620,6 +653,8 @@ define([ "com/xfilt", "com/waterfall", "com/util", "com/avatar", "com/env", "com
 	return {
 		init: init,
 		qview: qview,
-		genDate: genDate
+		genDate: genDate,
+		eventTemplate: eventTemplate,
+		setDom: setDom
 	}
 });

@@ -67,7 +67,8 @@ var conf = module.exports = {
 	def: {
 		event: {
 			title: "(untitled)",
-			location: "(unsettled)"
+			loclng: 120.159236,
+			loclat: 30.273407
 		}
 	}
 };

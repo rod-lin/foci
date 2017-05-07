@@ -19,6 +19,8 @@
 	top: 0;
 	left: 0;
 
+	text-align: left;
+
 	transition: left 0.1s, top 0.1s, opacity 0.3s;
 }
 
