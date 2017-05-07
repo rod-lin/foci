@@ -30,4 +30,5 @@
 
 .com-event .description {
 	cursor: pointer;
+	word-wrap: break-word;
 }
