@@ -567,7 +567,7 @@
 						var check = cur_step <= steps.length ? step_check[steps[cur_step - 1]] : null;
 						if (check) {
 							check(cb);
-						} else cb();
+						} else cb(true);
 					}
 
 					function setStep(page, nocheck) {
@@ -671,6 +671,7 @@
 							.css("display", "inline-block")
 							.css("text-align", "left")
 							.css("max-width", "90%")
+							.css("max-height", "90%")
 							.addClass("vcenter");
 
 						field_cover = ev_info.cover;
@@ -816,7 +817,6 @@
 							
 							login.session(function (session) {
 								if (hasDraft()) {
-									// alert("hi");
 									updateNewEventPos();
 									show();
 								} else {
@@ -825,7 +825,6 @@
 										int: "event",
 										action: "new"
 									}, function (suc, dat) {
-										// alert("wyea");
 										if (suc) {
 											loadDraft({ euid: dat });
 											updateNewEventPos();
@@ -840,7 +839,7 @@
 
 						onChange: function (cb) {
 							saveDraft(function (suc) {
-								if (suc) clearDraft();
+								if (suc !== false) clearDraft();
 								cb(suc); // if suc == true, change the tab
 							});
 							

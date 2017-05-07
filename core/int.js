@@ -245,7 +245,7 @@ encop.user = async (env, usr, query) => {
 encop.event = async (env, usr, query) => {
 	switch (query.action) {
 		case "new":
-			var ev = await event.newEvent(uuid);
+			var ev = await event.newEvent(usr.getUUID());
 			return ev.getEUID();
 
 		case "publish":
@@ -261,7 +261,7 @@ encop.event = async (env, usr, query) => {
 
 			// console.log(count);
 
-			await event.publish(args.euid, usr.getUUID());
+			await event.publish(args.euid, uuid);
 
 			return;
 
