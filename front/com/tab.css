@@ -9,7 +9,7 @@
 	border-width: 0 0 1px 0;
 }
 
-.com-tab .menu .loader {
+.com-tab .menu>.loader {
 	float: right;
 }
 
@@ -28,6 +28,7 @@
 	cursor: pointer;
 
 	text-align: center;
+	vertical-align: middle;
 
 	transition: background 0.3s;
 }
@@ -60,7 +61,7 @@
 }
 
 .com-tab .menu.flow .item {
-	padding: 1.5rem 0;
+	padding: 0;
 }
 
 .com-tab .tab {
@@ -71,4 +72,11 @@
 
 .com-tab .tab.active {
 	display: block;
+}
+
+@media only screen and (max-width: 640px) {
+	.com-tab .menu.flow .item {
+		height: 3rem;
+		font-size: 90%;
+	}
 }

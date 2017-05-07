@@ -211,19 +211,45 @@
 			color: #9F3A38;
 		}
 
-		#sub-profile .new-event .ev-content .p2 {
+		#sub-profile .new-event .ev-content .p2,
+		#sub-profile .new-event .ev-content .p4 {
 			text-align: center;
+		}
+
+		.ui.steps .step.active .title {
+			color: rgba(0, 0, 0, .87) !important;
 		}
 
 		@media only screen and (max-width: 640px) {
 			#sub-profile .new-event .ev-content {
-				left: 0;
-				width: 100%;
-				border-width: 0;
+				left: 20%;
+				width: 80%;
 			}
 
 			#sub-profile .new-event .ev-step {
+				width: 20%;
+			}
+
+			#sub-profile .new-event .ev-step .description {
 				display: none;
+			}
+
+			#sub-profile .new-event .ev-title {
+				padding: 1.4rem;
+				font-size: 1.5em;
+			}
+
+			#sub-profile .new-event .ev-descr {
+				padding: 1.4rem;
+				font-size: 1.2em;
+			}
+
+			#sub-profile .new-event .ev-step .step {
+				font-size: 0.7em;
+			}
+
+			#sub-profile .new-event .ev-step .step .icon {
+				margin-bottom: 0.1em;
 			}
 		}
 
@@ -254,6 +280,13 @@
 							<div class="description">When and where</div>
 						</div>
 					</div>
+					<div class="link step pub-step">
+						<i class="send outline icon"></i>
+						<div class="content">
+							<div class="title">Publish</div>
+							<div class="description">Rules and Protocols</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="ev-content">
@@ -265,6 +298,27 @@
 				<div class="page p2"></div>
 				<div class="page p3">
 					<div class="map"></div>
+				</div>
+				<div class="page p4">
+					<div class="protocol">
+						<style>
+							
+							#sub-profile .new-event .ev-content .p4 .protocol {
+								padding: 0 2rem;
+							}
+
+							#sub-profile .new-event .ev-content .p4 .protocol .prompt {
+								font-size: 2em;
+								margin-bottom: 1rem;
+								margin-top: -5rem;
+							}
+
+						</style>
+						<div class="vcenter" style="display: inline-block;">
+							<div class="prompt"></div>
+							<div class="ui primary button publish-btn">Publish!</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -309,7 +363,9 @@
 				function fetchEvent(url, ev, cb) {
 					foci.get(url, { uuid: info.uuid }, function (suc, dat) {
 						if (suc) {
-							for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
+							ev.clear(function () {
+								for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
+							});
 						} else {
 							util.qmsg(dat);
 						}
@@ -330,10 +386,9 @@
 
 					if (!ev_list[name]) {
 						ev_list[name] = event.init(tb.getTab(name));
-						fetchEvent(url, ev_list[name], next);
-					} else {
-						next();
 					}
+
+					fetchEvent(url, ev_list[name], next);
 				}
 
 				var tabs = {
@@ -353,20 +408,6 @@
 				};
 
 				var new_tab = main.children(".new-event-draft").children();
-
-				function updateNewEvent() {
-					new_tab
-						.find(".ev-descr")
-						.css("height", tb.displayHeight() - new_tab.find(".ev-title").outerHeight() + "px");
-
-					new_tab
-						.find(".ev-content .p2")
-						.css("height", tb.displayHeight());
-
-					new_tab
-						.find(".ev-content .p3 .map")
-						.css("height", tb.displayHeight());
-				}
 
 				new_tab.find(".ev-title").keyup(function () {
 					$(this).removeClass("warning");
@@ -391,7 +432,7 @@
 
 				function initDraft() {
 					var euid = null;
-					var steps = [ "info", "cover", "loc" ];
+					var steps = [ "info", "cover", "loc", "pub" ];
 					var cur_step = 1;
 
 					var bmap = null;
@@ -481,10 +522,21 @@
 
 					var field_cover;
 					var field_lng, field_lat;
+
+					function setPublishMsg(msg) {
+						new_tab.find(".ev-content .protocol .prompt").html(msg);
+					}
+
+					function resetPublishMsg() {
+						setPublishMsg("Publish your event now for everyone!");
+					}
 					
 					/* loader icon on the New/Save button */
 					function setLoader() {
-						tb.getItem("new").html("<div class='ui active inverted small inline loader'></div>");
+						tb.getItem("new").html("<div class='ui active inverted " + (
+							display_mode == "normal"
+							? "small" : "tiny"
+						) + " inline loader'></div>");
 					}
 
 					function delLoader() {
@@ -492,27 +544,22 @@
 					}
 
 					function uploadChanges(changes, cb) {
-						if (!env.session()) {
-							util.qmsg("you haven't logged in");
-							cb(false);
+						login.session(function (session) {
+							setLoader();
 
-							return;
-						}
+							foci.encop(session, $.extend({
+								int: "event",
+								action: "setinfo",
+								euid: euid
+							}, changes), function (suc, dat) {
+								delLoader();
 
-						setLoader();
+								if (!suc) {
+									util.qmsg(dat);
+								}
 
-						foci.encop(env.session(), $.extend({
-							int: "event",
-							action: "setinfo",
-							euid: euid
-						}, changes), function (suc, dat) {
-							delLoader();
-
-							if (!suc) {
-								util.qmsg(dat);
-							}
-
-							cb(suc);
+								cb(suc);
+							});
 						});
 					}
 					
@@ -594,8 +641,10 @@
 							return;
 						} // make sure the event has been created
 
-						updateNewEvent(); // update position
+						updateNewEventPos(); // update position
 
+						resetPublishMsg();
+						new_tab.find(".ev-content .protocol .publish-btn").removeClass("disabled");
 						// alert(ev_info.euid);
 
 						euid = ev_info.euid;
@@ -621,6 +670,7 @@
 						event_tmp
 							.css("display", "inline-block")
 							.css("text-align", "left")
+							.css("max-width", "90%")
 							.addClass("vcenter");
 
 						field_cover = ev_info.cover;
@@ -684,10 +734,33 @@
 						//	new_tab.find(last).click();
 						// initStep(); // initialize event bondings
 
-						setStep(last || 1, true);
+						setStep(last || 4, true);
 					};
 
 					initStep();
+
+					new_tab.find(".ev-content .protocol .publish-btn").click(function () {
+						var btn = $(this);
+
+						btn.addClass("loading");
+
+						login.session(function (session) {
+							foci.encop(session, {
+								int: "event",
+								action: "publish",
+								euid: euid
+							}, function (suc, dat) {
+								btn.removeClass("loading");
+								
+								if (suc) {
+									btn.addClass("disabled");
+									setPublishMsg("Success! You can now go to the 'Organized' tab to view your event");
+								} else {
+									util.qmsg(dat);
+								}
+							});
+						});
+					});
 				};
 
 				if (is_self) {
@@ -696,43 +769,39 @@
 					tabs["draft"] = {
 						name: "Draft",
 						onShow: function (show) {
-							if (!env.session()) {
-								util.qmsg("You haven't logged in");
-								show();
-								return;
-							}
+							login.session(function (session) {
+								var next = function () {
+									ev_list["draft"].update();
+									setTimeout(function () {
+										show();
+									}, 300);
+								};
 
-							var next = function () {
-								ev_list["draft"].update();
-								setTimeout(function () {
-									show();
-								}, 300);
-							};
-
-							if (!ev_list["draft"]) {
-								ev_list["draft"] = event.init(tb.getTab("draft"), {
-									view: function (info) {
-										loadDraft(info);
-										tb.to("new");
-									}
-								});
-							}
-
-							// always update
-							foci.encop(env.session(), {
-								int: "event",
-								action: "draft"
-							}, function (suc, dat) {
-								if (suc) {
-									ev_list["draft"].clear(function () {
-										for (var i = 0; i < dat.length; i++)
-											ev_list["draft"].add(dat[i]);
+								if (!ev_list["draft"]) {
+									ev_list["draft"] = event.init(tb.getTab("draft"), {
+										view: function (info) {
+											loadDraft(info);
+											tb.to("new");
+										}
 									});
-								} else {
-									util.qmsg(dat);
 								}
 
-								next();
+								// always update
+								foci.encop(session, {
+									int: "event",
+									action: "draft"
+								}, function (suc, dat) {
+									if (suc) {
+										ev_list["draft"].clear(function () {
+											for (var i = 0; i < dat.length; i++)
+												ev_list["draft"].add(dat[i]);
+										});
+									} else {
+										util.qmsg(dat);
+									}
+
+									next();
+								});
 							});
 						}
 					};
@@ -745,30 +814,28 @@
 						onShow: function (show) {
 							// initBaiduMap();
 							
-							if (env.session()) {
+							login.session(function (session) {
 								if (hasDraft()) {
 									// alert("hi");
-									updateNewEvent();
+									updateNewEventPos();
 									show();
 								} else {
 									// alert("hi");
-									foci.encop(env.session(), {
+									foci.encop(session, {
 										int: "event",
 										action: "new"
 									}, function (suc, dat) {
 										// alert("wyea");
 										if (suc) {
 											loadDraft({ euid: dat });
-											updateNewEvent();
+											updateNewEventPos();
 											show();
 										} else {
 											util.qmsg(dat);
 										}
 									});
 								}
-							} else {
-								util.qmsg("you haven't logged in");
-							}
+							});
 						},
 
 						onChange: function (cb) {
@@ -784,23 +851,50 @@
 
 				var tb = tab.init(right_bar.find(".main-tab"), tabs);
 
-				tb.getTab("new").html(new_tab);
+				if (is_self)
+					tb.getTab("new").html(new_tab);
 
-				$(window).resize(function () {
-					if (right_bar.offset().left) { // if to mobile mode
-						right_bar.width(main.innerWidth() - left_bar.outerWidth());
-						tb.flow(false);
-					} else {
+				tb.to("partic");
+
+				var display_mode = "normal";
+
+				function updateNewEventPos() {
+					new_tab
+						.find(".ev-descr")
+						.css("height", tb.displayHeight() - new_tab.find(".ev-title").outerHeight() + "px");
+
+					new_tab
+						.find(".ev-content .p2")
+						.css("height", tb.displayHeight());
+
+					new_tab
+						.find(".ev-content .p3 .map")
+						.css("height", tb.displayHeight());
+
+					new_tab
+						.find(".ev-content .p4 .protocol")
+						.css("height", tb.displayHeight());
+				}
+
+				function updateAllPos(mobile) {
+					if (mobile) {
+						display_mode = "mobile";
 						right_bar.width(main.innerWidth());
 						tb.flow(true);
+					} else {
+						display_mode = "normal";
+						right_bar.width(main.innerWidth() - left_bar.outerWidth());
+						tb.flow(false);
 					}
 
-					updateNewEvent();
+					updateNewEventPos();
+				}
+
+				$(window).resize(function () {
+					updateAllPos(!right_bar.offset().left);
 				});
 
 				$(window).resize();
-
-				tb.to("partic");
 
 				setDom(info);
 			};

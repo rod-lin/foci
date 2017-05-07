@@ -120,6 +120,13 @@ define([ "com/util", "com/env" ], function (util, env) {
 	}
 
 	return {
-		init: init
+		init: init,
+		session: function (cb) {
+			if (!env.session()) {
+				this.init(cb);
+			} else {
+				cb(env.session());
+			}
+		}
 	};
 });

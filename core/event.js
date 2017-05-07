@@ -8,15 +8,15 @@ var user = require("./user");
 var config = require("./config");
 
 // event
-var Event = function (euid, sponsor /* uuid */) {
-	if (sponsor === undefined) {
+var Event = function (euid, owner /* uuid */) {
+	if (owner === undefined) {
 		this.extend(euid); // extend the first argument
 		return;
 	}
 
 	this.euid = euid;
 
-	this.org = [ sponsor ];
+	this.org = [ owner ];
 	this.state = 0; // draft state
 
 	// time created
@@ -92,6 +92,10 @@ Event.prototype.hasPeople = function (uuid) {
 	return this.partic.indexOf(uuid) != -1 || this.staff.indexOf(uuid) != -1;
 };
 
+Event.prototype.isDraft = function () {
+	return this.state === 0;
+};
+
 Event.format = {};
 
 Event.format.info = {
@@ -158,7 +162,7 @@ Event.format.search = {
 Event.query = {
 	euid: (euid, state) => ({ "euid": euid, "state": { $gte: (state == undefined ? 1 : state) } /* published state */ }),
 
-	count_sponsor: (uuid, after) => {
+	count_owner: (uuid, after) => {
 		var res = { "org.0": uuid, "state": { $gte: 1 } };
 
 		if (after) {
@@ -168,7 +172,7 @@ Event.query = {
 		return res;
 	},
 
-	check_sponsor: (euid, uuid) => ({ "euid": euid, "org.0": uuid }),
+	check_owner: (euid, uuid) => ({ "euid": euid, "org.0": uuid }),
 
 	org: uuid => ({ "org": uuid, "state": { $gte: 1 } }),
 	partic: uuid => ({ "partic": uuid, "state": { $gte: 1 } }),
@@ -206,12 +210,14 @@ Event.set = {
 		var q = {};
 		q[type] = uuid;
 		return { $push: q };
-	}
+	},
+
+	publish: () => ({ $set: { state: 1 } })
 };
 
-exports.euid = async (euid) => {
+exports.euid = async (euid, state) => {
 	var col = await db.col("event");
-	var found = await col.findOne(Event.query.euid(euid));
+	var found = await col.findOne(Event.query.euid(euid, state));
 
 	if (!found)
 		throw new err.Exc("no such event");
@@ -231,14 +237,19 @@ exports.newEvent = async (uuid) => {
 
 // count how many times has a user created a event(after a certain date)
 // after is optional
-exports.countSponsor = async (uuid, after) => {
+exports.countOwn = async (uuid, after) => {
 	var col = await db.col("event");
-	return await col.count(Event.query.count_sponsor(uuid, after));
+	return await col.count(Event.query.count_owner(uuid, after));
 };
 
-exports.isSponsor = async (euid, uuid) => {
+exports.isOwner = async (euid, uuid) => {
 	var col = await db.col("event");
-	return (await col.count(Event.query.check_sponsor(euid, uuid))) != 0;
+	return (await col.count(Event.query.check_owner(euid, uuid))) != 0;
+};
+
+exports.checkOwner = async (euid, uuid) => {
+	if (!await exports.isOwner(euid, uuid))
+		throw new err.Exc("not owner");
 };
 
 exports.exist = async (euid, state) => {
@@ -247,8 +258,9 @@ exports.exist = async (euid, state) => {
 		throw new err.Exc("event not exist");
 };
 
-exports.setInfo = async (euid, info) => {
+exports.setInfo = async (euid, uuid, info) => {
 	var col = await db.col("event");
+	await exports.checkOwner(euid, uuid);
 	await col.updateOne(Event.query.euid(euid, 0), Event.set.info(info));
 };
 
@@ -344,6 +356,21 @@ exports.register = async (euid, uuid, type) => {
 
 	if (!ret)
 		throw new err.Exc("operation conflict");
+
+	return;
+};
+
+exports.publish = async (euid, uuid) => {
+	var col = await db.col("event");
+
+	await exports.checkOwner(euid, uuid);
+
+	var ev = await exports.euid(euid, 0);
+
+	if (!ev.isDraft())
+		throw new err.Exc("not draft");
+
+	await col.findOneAndUpdate(Event.query.euid(euid, 0), Event.set.publish());
 
 	return;
 };

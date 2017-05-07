@@ -245,23 +245,29 @@ encop.user = async (env, usr, query) => {
 encop.event = async (env, usr, query) => {
 	switch (query.action) {
 		case "new":
+			var ev = await event.newEvent(uuid);
+			return ev.getEUID();
+
+		case "publish":
+			var args = util.checkArg(query, { euid: "int" });
+
 			var lv = usr.getLevel();
 			var after = new Date(new Date - config.lim.user.level[lv].event_interval);
 			var uuid = usr.getUUID();
-			var count = await event.countSponsor(uuid, after);
+			var count = await event.countOwn(uuid, after);
 
 			if (count && !config.debug)
 				throw new err.Exc("max event count reached");
 
 			// console.log(count);
 
-			var ev = await event.newEvent(uuid);
+			await event.publish(args.euid, usr.getUUID());
 
-			return ev.getEUID();
+			return;
 
 		case "own":
 			var args = util.checkArg(query, { euid: "int" });
-			return await event.isSponsor(args.euid, usr.getUUID());
+			return await event.isOwner(args.euid, usr.getUUID());
 
 		case "reg":
 			var args = util.checkArg(query, { euid: "int", type: "string" });
@@ -281,7 +287,7 @@ encop.event = async (env, usr, query) => {
 			var setq = util.checkArg(query, event.Event.format.info, true);
 
 			await event.exist(args.euid, 0);
-			await event.setInfo(args.euid, setq);
+			await event.setInfo(args.euid, usr.getUUID(), setq);
 			
 			return;
 
