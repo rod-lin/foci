@@ -12,7 +12,7 @@ define([ "com/util" ], function (util) {
 				<div class='exdim'></div> \
 				<form class='ui form' enctype='multipart/form-data'> \
 					<div class='field preview-cont' style='display: none;'> \
-						<img class='ui medium rounded bordered preview' src='img/tmp3.jpg'> \
+						<img class='ui medium rounded bordered preview'> \
 					</div> \
 					<div class='ui buttons'> \
 						<button type='button' class='ui icon button exit-btn'> \
