@@ -197,8 +197,6 @@ window.foci = {};
 		var uuid = session.getUUID();
 		var sid = session.getSID();
 
-		console.log(query);
-
 		sendAsync(server + "/user/encop", {
 			uuid: uuid,
 			enc: foci.aesenc(JSON.stringify(query), sid)
