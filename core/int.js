@@ -136,7 +136,7 @@ _user.org = util.route(async env => {
 		"lim": { type: "int", opt: true }
 	});
 
-	var ret = await event.getOrganized(args.uuid);
+	var ret = await event.getOrganized(args.uuid, args.skip, args.lim);
 	env.qsuc(ret);
 });
 
@@ -147,7 +147,7 @@ _user.partic = util.route(async env => {
 		"lim": { type: "int", opt: true }
 	});
 	
-	var ret = await event.getPartic(args.uuid);
+	var ret = await event.getPartic(args.uuid, args.skip, args.lim);
 	env.qsuc(ret);
 });
 

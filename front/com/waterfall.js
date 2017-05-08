@@ -32,16 +32,16 @@ define(function () {
 				return;
 			}
 
-			if (child.length) width = child[0].width();
-			else {
-				cont.css("height", 0);
-				return;
-			}
-
 			/* side margin */
 			var count = config.count + 1;
 			var gap = config.gap;
 			var left;
+
+			if (child.length) width = child[0].width();
+			else {
+				cont.css("height", gap);
+				return;
+			}
 
 			var cont_width = cont.width();
 			count = Math.floor((cont_width - config.min_margin * 2) / width);

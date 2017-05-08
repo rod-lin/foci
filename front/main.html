@@ -72,17 +72,6 @@
 				color: white;
 				text-align: center;
 			}
-
-			#bottom-bar {
-				padding-top: 1em;
-				padding-bottom: 2em;
-			}
-
-			#result {
-				text-align: center;
-				color: #CCCCCC;
-				font-weight: bold;
-			}
 		</style>
 	</head>
 
@@ -95,10 +84,6 @@
 					</div>
 				</div> -->
 				<div id="search-cont"></div>
-				<div id="bottom-bar">
-					<div id="loader" class="ui active centered inline loader" style="display: none;"></div>
-					<div id="result" style="display: none;"></div>
-				</div>
 			</div>
 
 			<div id="cover" style="opacity: 0;">
@@ -172,10 +157,6 @@
 						},
 					}, { init: "cover" });
 
-					var ev = event.init("#search>#search-cont", {
-						onUpdate: function (pos) {}
-					});
-
 					var orig = null;
 
 					var pt = parts.init("#part", {
@@ -195,70 +176,16 @@
 					// pg.to("part");
 					/* test */
 
-					function showLoader() {
-						$("#loader").css("display", "");
-					}
+					var ev = event.init("#search>#search-cont", {
+						onUpdate: function (pos) {},
+						fetch: {
+							fetch: function (skip, cb) {
+								foci.get("/event/search", $.extend({ skip: skip }, cur_query), cb);
+							},
 
-					function hideLoader() {
-						$("#loader").css("display", "none");
-					}
-
-					function showResult(msg) {
-						$("#result")
-							.html(msg)
-							.css("display", "");
-					}
-
-					function hideResult() {
-						$("#result").css("display", "none");
-					}
-
-					var cur_count, maxn = 32;
-					var cur_query;
-
-					function search(query, clear, cb) {
-						if (clear) cur_count = 0;
-
-						if (!query) {
-							if (cur_query) {
-								query = cur_query;
-							} else {
-								cb(false);
-								return;
-							}
-						} else cur_query = query;
-
-						$.extend(query, { n: maxn, skip: cur_count });
-
-						foci.get("/event/search", query, function (suc, dat) {
-							if (suc) {
-								cur_count += dat.length;
-								for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
-								cb(dat.length != 0);
-							} else {
-								util.qmsg(dat);
-								cb(false);
-							}
-						});
-					}
-
-					var no_refresh = false;
-
-					util.scrollBottom("#search", 5, function (scroll) {
-						if (no_refresh) return;
-						showLoader();
-						hideResult();
-
-						scroll.toBottom();
-
-						search(null, false, function (suc) {
-							hideLoader();
-
-							if (!suc) {
-								showResult("no more results");
-								no_refresh = true;
-							}
-						});
+							cont: "#search",
+							no_more_prompt: "no more results"
+						}
 					});
 
 					bar.search(function (query, cb) {
@@ -267,25 +194,16 @@
 
 					// re-search
 					function research(query, cb) {
-						hideResult();
 						jump("#");
 						orig = "search";
 						pg.to("search");
 
 						ev.clear(function () {
-							$(window).scrollTop(0);
-							ev.hide(function () {
-								search(query, true, function (suc) {
-									ev.show();
-
-									if (!suc) {
-										showResult("no more results");
-									}
-
-									no_refresh = false;
-
-									cb();
-								});
+							$("#search").scrollTop(0);
+							cur_query = query;
+							// alert("fetch");
+							ev.fetch(function () {
+								cb();
 							});
 						});
 					}

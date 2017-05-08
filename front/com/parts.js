@@ -35,9 +35,9 @@ define([ "com/util" ], function (util) {
 
 				cont.scrollTop(0);
 
-				// TODO: weird?
-				if (window.init)
-					window.init(part, args);
+				if (window.init) {
+					window.init(part, args, cont);
+				}
 	
 				if (cb) cb(true);
 			};

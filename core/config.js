@@ -40,7 +40,7 @@ var conf = module.exports = {
 
 			keyword: 128,
 
-			max_search_results: 64
+			max_search_results: 16
 		}
 	},
 

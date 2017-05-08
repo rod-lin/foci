@@ -326,7 +326,7 @@
 </div>
 
 <script>
-	function init(main, args) {
+	function init(main, args, cont) {
 		require([
 			"com/env", "com/util", "com/event",
 			"com/xfilt", "com/pages", "com/tab",
@@ -360,49 +360,53 @@
 					left_bar.find(".avatar").css("background-image", "url('" + avatar + "')").removeClass("empty");
 				}
 
-				function fetchEvent(url, ev, cb) {
-					foci.get(url, { uuid: info.uuid }, function (suc, dat) {
-						if (suc) {
-							ev.clear(function () {
-								for (var i = 0; i < dat.length; i++) ev.add(dat[i]);
-							});
-						} else {
-							util.qmsg(dat);
-						}
-
-						cb();
-					});
-				}
-
 				var ev_list = {};
 
-				function eventTabOnShow(name, url, cb) {
-					var next = function () {
+				function eventTabOnShow(name, enc, cb) {
+					var next = function (suc) {
 						ev_list[name].update();
 						setTimeout(function () {
 							cb();
 						}, 300);
 					};
 
+
 					if (!ev_list[name]) {
-						ev_list[name] = event.init(tb.getTab(name));
+						ev_list[name] = event.init(tb.getTab(name), {
+							fetch: {
+								fetch: function (skip, cb) {
+									if (enc) {
+										login.session(function (session) {
+											foci.encop(session, { int: "event", action: name, skip: skip }, cb);
+										});
+									} else {
+										foci.get("/user/" + name, { uuid: info.uuid, skip: skip }, cb);
+									}
+								},
+
+								cont: cont,
+								no_more_prompt: "no more results"
+							}
+						});
 					}
 
-					fetchEvent(url, ev_list[name], next);
+					ev_list[name].clear(function () {
+						ev_list[name].fetch(next);
+					});
 				}
 
 				var tabs = {
 					"partic": {
 						name: "Participated",
 						onShow: function (show) {
-							eventTabOnShow("partic", "/user/partic", show);
+							eventTabOnShow("partic", false, show);
 						}
 					},
 
 					"org": {
 						name: "Organized",
 						onShow: function (show) {
-							eventTabOnShow("org", "/user/org", show);
+							eventTabOnShow("org", false, show);
 						}
 					}
 				};
@@ -770,40 +774,7 @@
 					tabs["draft"] = {
 						name: "Draft",
 						onShow: function (show) {
-							login.session(function (session) {
-								var next = function () {
-									ev_list["draft"].update();
-									setTimeout(function () {
-										show();
-									}, 300);
-								};
-
-								if (!ev_list["draft"]) {
-									ev_list["draft"] = event.init(tb.getTab("draft"), {
-										view: function (info) {
-											loadDraft(info);
-											tb.to("new");
-										}
-									});
-								}
-
-								// always update
-								foci.encop(session, {
-									int: "event",
-									action: "draft"
-								}, function (suc, dat) {
-									if (suc) {
-										ev_list["draft"].clear(function () {
-											for (var i = 0; i < dat.length; i++)
-												ev_list["draft"].add(dat[i]);
-										});
-									} else {
-										util.qmsg(dat);
-									}
-
-									next();
-								});
-							});
+							eventTabOnShow("draft", true, show);
 						}
 					};
 

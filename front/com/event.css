@@ -32,3 +32,14 @@
 	cursor: pointer;
 	word-wrap: break-word;
 }
+
+.com-event .flow-loader {
+	padding-top: 1em;
+	padding-bottom: 2em;
+}
+
+.com-event .flow-loader .prompt {
+	text-align: center;
+	color: #CCCCCC;
+	font-weight: bold;
+}

@@ -116,6 +116,10 @@ define(function () {
 			items[name].item.click();
 		};
 
+		ret.cur = function () {
+			return cur;
+		};
+
 		ret.flow = function (open) {
 			if (open) {
 				var items = menu.children(".item");

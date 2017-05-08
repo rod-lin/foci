@@ -94,6 +94,12 @@ define([
 			view: function (info) {
 				qview(info, null, mod);
 			}
+
+			// fetch: {
+			//     fetch: function (skip, cb(suc, dat)),
+			//     cont: the scroll container,
+			//     no_more_prompt: prompt shown when no more event is loaded
+			// }
 		}, config);
 
 		var main = $("<div class='com-event'></div>");
@@ -147,6 +153,8 @@ define([
 			events = [];
 			edom = [];
 
+			clearFetch();
+
 			mod.hide(function () {
 				wf.clear();
 				mod.show(cb);
@@ -173,6 +181,91 @@ define([
 				setDom(edom[i], events[i], config);
 			}
 		};
+
+		function bottomBar() {
+			var bar = $(' \
+				<div class="flow-loader"> \
+					<div class="ui active centered inline loader" style="display: none;"></div> \
+					<div class="prompt" style="display: none;"></div> \
+				</div> \
+			')
+
+			bar.setLoader = function () {
+				bar.find(".loader").css("display", "");
+				bar.find(".prompt").css("display", "none");
+			};
+
+			bar.setPrompt = function (msg) {
+				bar.find(".loader").css("display", "none");
+				bar.find(".prompt").css("display", "").html(msg);
+			};
+
+			return bar;
+		}
+
+		function clearFetch() {
+			fetch_skip = 0;
+			if (fetch_loader) fetch_loader.remove();
+			fetch_loader = null;
+			fetch_lock = false;
+		}
+
+		var fetch_skip = 0;
+		var fetch_loader = null;
+		var fetch_lock = false;
+
+		mod.fetch = function (cb) {
+			if (!config.fetch) {
+				util.qmsg("fetch not set");
+				return;
+			}
+
+			if (fetch_loader) return; // already loading
+
+			// console.log("load");
+
+			// set bottom loader icon
+			var bar = bottomBar();
+			fetch_loader = bar; // as a sign to prevent reload
+			main.append(bar);
+			bar.setLoader();
+
+			config.fetch.fetch(fetch_skip, function (suc, dat) {
+				if (suc) {
+					fetch_skip += dat.length;
+					for (var i = 0; i < dat.length; i++)
+						mod.add(dat[i]);
+				} else {
+					util.qmsg(dat);
+				}
+
+				suc = suc && dat.length > 0;
+
+				if (!suc) {
+					bar.setPrompt(config.fetch.no_more_prompt);
+					// no unlock
+				} else {
+					bar.remove();
+					fetch_loader = null; // unlock fetch
+				}
+
+				if (cb) cb(suc);
+			});
+		};
+
+		if (config.fetch) {
+			util.scrollBottom($(config.fetch.cont), 3, function (com) {
+				if (fetch_lock || fetch_loader) return;
+				fetch_lock = true;
+				
+				mod.fetch(function () {
+					com.toBottom(4); // to avoid duplicated loadings
+					fetch_lock = false;
+				});
+
+				com.toBottom();
+			});
+		}
 
 		return mod;
 	}
