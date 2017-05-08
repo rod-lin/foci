@@ -362,7 +362,7 @@
 
 				var ev_list = {};
 
-				function eventTabOnShow(name, enc, cb) {
+				function eventTabOnShow(name, enc, view, cb) {
 					var next = function (suc) {
 						ev_list[name].update();
 						setTimeout(function () {
@@ -373,6 +373,7 @@
 
 					if (!ev_list[name]) {
 						ev_list[name] = event.init(tb.getTab(name), {
+							view: view,
 							fetch: {
 								fetch: function (skip, cb) {
 									if (enc) {
@@ -399,14 +400,14 @@
 					"partic": {
 						name: "Participated",
 						onShow: function (show) {
-							eventTabOnShow("partic", false, show);
+							eventTabOnShow("partic", false, undefined, show);
 						}
 					},
 
 					"org": {
 						name: "Organized",
 						onShow: function (show) {
-							eventTabOnShow("org", false, show);
+							eventTabOnShow("org", false, undefined, show);
 						}
 					}
 				};
@@ -774,7 +775,10 @@
 					tabs["draft"] = {
 						name: "Draft",
 						onShow: function (show) {
-							eventTabOnShow("draft", true, show);
+							eventTabOnShow("draft", true, function (info) {
+								loadDraft(info);
+								tb.to("new");
+							}, show);
 						}
 					};
 
