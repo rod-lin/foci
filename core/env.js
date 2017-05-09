@@ -30,7 +30,7 @@ var Env = function (req, res) {
 
 			form.parse(req, (e, query, file) => {
 				if (e) {
-					this.qerr("failed to upload file");
+					this.qerr("$fail_upload");
 					util.log(e, util.style.yellow("EXCEPTION"));
 					return;
 				}

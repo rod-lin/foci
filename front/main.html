@@ -115,10 +115,13 @@
 			require([
 				"com/tbar", "com/event", "com/env",
 				"com/upload", "com/util", "com/pages",
-				"com/parts", "com/map"
-			], function (tbar, event, env, upload, util, pages, parts, map) {
+				"com/parts", "com/map", "com/lang"
+			], function (tbar, event, env, upload, util, pages, parts, map, lang) {
+				lang.loadDict("english", util);
+
 				env.init(function () {
 					// map.init();
+					// console.log(lang.expand("hola"));
 
 					var bar = tbar.init();
 

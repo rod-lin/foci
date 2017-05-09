@@ -26,8 +26,8 @@ app.get("/test", util.route(async env => {
 
 /* official api */
 app.get("/auth", int.auth);
-
 app.get("/favtag", int.favtag);
+app.get("/dict", int.dict);
 
 app.get("/user/new", int.user.new);
 app.get("/user/login", int.user.login);
@@ -44,8 +44,7 @@ app.post("/file/upload", int.file.upload);
 app.get("/file/download", int.file.download);
 /* official api */
 
-app.get("/test", util.route(async env => {
-}));
+app.get("/test", util.route(async env => {}));
 
 app.get("/test/enc", util.route(async env => {
 	var args = util.checkArg(env.query, { "dat": "string" });

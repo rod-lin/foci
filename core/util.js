@@ -50,7 +50,7 @@ exports.route = (handler) => async (req, res) => {
 					util.log(e.exc.stack, exports.style.yellow("ERROR"));
 				}
 			} else {
-				env.qerr("internal error");
+				env.qerr("$internal_err");
 				util.log(e.stack, exports.style.red("ERROR"));
 			}
 		}
@@ -74,7 +74,7 @@ var checkArg = (args, req, opt) => {
 
 		if (!args.hasOwnProperty(k)) {
 			if (opt || (req[k] && req[k].opt)) continue;
-			throw new err.Exc("wrong argument(expecting " + k + " field)");
+			throw new err.Exc("$expect($argument(" + k + "))");
 		}
 
 		var entry = req[k];
@@ -91,7 +91,7 @@ var checkArg = (args, req, opt) => {
 		switch (entry) {
 			case "string":
 				if (typeof tmp !== "string")
-					throw new err.Exc("wrong argument type for " + k + "(expecting string)");
+					throw new err.Exc("$wrong($argument_type(" + k + ",string))");
 
 				break;
 
@@ -101,7 +101,7 @@ var checkArg = (args, req, opt) => {
 
 				tmp = parseInt(tmp);
 				if (isNaN(tmp))
-					throw new err.Exc("wrong argument type for " + k + "(expecting int)");
+					throw new err.Exc("$wrong($argument_type(" + k + ",int))");
 
 				break;
 
@@ -111,7 +111,7 @@ var checkArg = (args, req, opt) => {
 
 				tmp = parseFloat(tmp);
 				if (isNaN(tmp))
-					throw new err.Exc("wrong argument type for " + k + "(expecting int)");
+					throw new err.Exc("$wrong($argument_type(" + k + ",number))");
 
 				break;
 
@@ -123,7 +123,7 @@ var checkArg = (args, req, opt) => {
 					// console.log(tmp);
 					tmp = JSON.parse(tmp);
 				} catch (e) {
-					throw new err.Exc("wrong json format for " + k, e);
+					throw new err.Exc("$wrong($json_format)", e);
 				}
 
 				break;
@@ -152,7 +152,7 @@ checkArg.lenlim = (len, sth) => {
 		type: "string",
 		lim: (val) => {
 			if (val.length > len)
-				throw new err.Exc(sth || "string too long");
+				throw new err.Exc(sth || "$too_long($string)");
 			return val;
 		}
 	};

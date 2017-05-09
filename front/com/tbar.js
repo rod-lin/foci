@@ -216,24 +216,19 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 			.click(function () {
 				upload.init(function (file) {
 					if (file) {
-						var session = env.session();
-
-						if (!session) {
-							util.qmsg("no session");
-							return;
-						}
-
-						// set avatar
-						foci.encop(session, {
-							int: "info",
-							action: "set",
-							avatar: file
-						}, function (suc, dat) {
-							if (suc) {
-								updateAvatar(file);
-							} else {
-								util.qmsg(dat);
-							}
+						login.session(function () {
+							// set avatar
+							foci.encop(session, {
+								int: "info",
+								action: "set",
+								avatar: file
+							}, function (suc, dat) {
+								if (suc) {
+									updateAvatar(file);
+								} else {
+									util.emsg(dat);
+								}
+							});
 						});
 					}
 				});

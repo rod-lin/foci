@@ -38,7 +38,7 @@ define([ "com/util" ], function (util) {
 
 		main.find(".use-btn").click(function () {
 			if (!selected) {
-				util.qmsg("no file selected");
+				util.emsg("no file selected");
 			} else {
 				main.modal("hide");
 				if (cb) cb(selected);
@@ -63,7 +63,7 @@ define([ "com/util" ], function (util) {
 			if (val) {
 				if (!FormData) {
 					// TODO: fallback upload mode
-					util.qmsg("eh... form data not supported");
+					util.emsg("$unsupported(FormData)");
 					return;
 				}
 
@@ -77,7 +77,7 @@ define([ "com/util" ], function (util) {
 						selected = dat;
 						showPreview();
 					} else {
-						util.qmsg(dat);
+						util.emsg(dat);
 					}
 				});
 			}

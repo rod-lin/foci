@@ -58,7 +58,7 @@ window.foci = {};
 	foci.sget = sendSync;
 	foci.get = function (url, data, cb) {
 		sendAsync(url, data, function (suc, dat) {
-			if (!suc) return cb(false, "network error");
+			if (!suc) return cb(false, "$network_error");
 			if (!dat.suc) return cb(false, dat.msg);
 			return cb(true, dat.res);
 		});
@@ -66,7 +66,7 @@ window.foci = {};
 
 	foci.post = function (url, data, cb) {
 		sendAsync(url, data, function (suc, dat) {
-			if (!suc) return cb(false, "network error");
+			if (!suc) return cb(false, "$network_error");
 			if (!dat.suc) return cb(false, dat.msg);
 			return cb(true, dat.res);
 		}, "POST", { cache: false, contentType: false, processData: false });
@@ -115,7 +115,7 @@ window.foci = {};
 
 	foci.newUser = function (lname, passwd, cb) {
 		sendAsync(server + "/auth", {}, function (suc, dat) {
-			if (!suc) return cb(false, "network error");
+			if (!suc) return cb(false, "$network_error");
 			if (!dat.suc) return cb(false, dat.msg);
 
 			var pub = dat.res;
@@ -125,7 +125,7 @@ window.foci = {};
 				pkey: pub,
 				penc: foci.rsaenc(passwd, pub)
 			}, function (suc, dat) {
-				if (!suc) return cb(false, "network error");
+				if (!suc) return cb(false, "$network_error");
 				if (!dat.suc) return cb(false, dat.msg);
 				return cb(true, dat.res);
 			});
@@ -137,7 +137,7 @@ window.foci = {};
 		var salt = foci.salt();
 
 		sendAsync(server + "/auth", {}, function (suc, dat) {
-			if (!suc) return cb(false, "network error");
+			if (!suc) return cb(false, "$network_error");
 			if (!dat.suc) return cb(false, dat.msg);
 
 			var pub = dat.res;
@@ -147,11 +147,11 @@ window.foci = {};
 				pkey: pub,
 				penc: foci.rsaenc(salt + ":" + passwd, pub)
 			}, function (suc, dat) {
-				if (!suc) return cb(false, "network error");
+				if (!suc) return cb(false, "$network_error");
 				if (!dat.suc) return cb(false, dat.msg);
 
 				var sid = foci.aesdec(dat.res.sid, salt);
-				if (!sid) return cb(false, "server error");
+				if (!sid) return cb(false, "$server_error");
 
 				var ses = new Session(lname, dat.res.uuid, sid);
 
@@ -170,7 +170,7 @@ window.foci = {};
 		};
 
 		if (!session) {
-			return cb(false, "no session stored");
+			return cb(false, "$no_session");
 		}
 
 		session = new Session(session);
@@ -181,12 +181,12 @@ window.foci = {};
 		}, function (suc, dat) {
 			if (!suc) {
 				// clear(); no clear on network error
-				return cb(false, "network error");
+				return cb(false, "$network_error");
 			}
 
 			if (!dat.suc) {
 				clear();
-				return cb(false, "invalid session id");
+				return cb(false, "$illegal($sid)");
 			}
 
 			return cb(true, session);
@@ -201,7 +201,7 @@ window.foci = {};
 			uuid: uuid,
 			enc: foci.aesenc(JSON.stringify(query), sid)
 		}, function (suc, dat) {
-			if (!suc) return cb(false, "network error");
+			if (!suc) return cb(false, "$network_error");
 			if (!dat.suc) return cb(false, dat.msg);
 			return cb(true, JSON.parse(foci.aesdec(dat.res, sid)));
 		});

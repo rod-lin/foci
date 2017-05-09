@@ -216,7 +216,7 @@ define([
 
 		mod.fetch = function (cb) {
 			if (!config.fetch) {
-				util.qmsg("fetch not set");
+				util.emsg("$impossible(fetch function is not set for the current container)");
 				return;
 			}
 
@@ -236,7 +236,7 @@ define([
 					for (var i = 0; i < dat.length; i++)
 						mod.add(dat[i]);
 				} else {
-					util.qmsg(dat);
+					util.emsg(dat);
 				}
 
 				suc = suc && dat.length > 0;
@@ -369,7 +369,7 @@ define([
 					foci.get("/user/info", { uuid: info.org[i] }, function (suc, dat) {
 						ava = $("<div class='org'></div>");
 						if (!suc) {
-							util.qmsg(dat);
+							util.emsg(dat);
 							dat = null;
 						}
 
@@ -645,14 +645,14 @@ define([
 					euid: info.euid
 				}), function (suc, dat) {
 					if (!suc) {
-						util.qmsg(dat);
+						util.emsg(dat);
 						cb(false);
 					} else {
 						foci.get("/event/info", { euid: info.euid }, function (suc, dat) {
 							if (suc) {
 								$.extend(info, dat);
 							} else {
-								util.qmsg(dat);
+								util.emsg(dat);
 							}
 
 							cb(suc);

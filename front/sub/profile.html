@@ -258,36 +258,7 @@
 	<div class="new-event-draft" style="display: none;">
 		<div class="new-event">
 			<div class="ev-step">
-				<div class="ui vertical fluid steps">
-					<div class="link active step info-step">
-						<i class="info icon"></i>
-						<div class="content">
-							<div class="title">Basic Info</div>
-							<div class="description">Title and description</div>
-						</div>
-					</div>
-					<div class="link step cover-step">
-						<i class="camera retro card icon"></i>
-						<div class="content">
-							<div class="title">Cover</div>
-							<div class="description">Cover and logo</div>
-						</div>
-					</div>
-					<div class="link step loc-step">
-						<i class="map outline icon"></i>
-						<div class="content">
-							<div class="title">Location</div>
-							<div class="description">When and where</div>
-						</div>
-					</div>
-					<div class="link step pub-step">
-						<i class="send outline icon"></i>
-						<div class="content">
-							<div class="title">Publish</div>
-							<div class="description">Rules and Protocols</div>
-						</div>
-					</div>
-				</div>
+				<div class="ui vertical fluid steps"></div>
 			</div>
 			<div class="ev-content">
 				<!-- <div id="sub-profile-map" class="map"></div> -->
@@ -326,16 +297,18 @@
 </div>
 
 <script>
-	function init(main, args, cont) {
+	function init(main, args, show, cont) {
 		require([
 			"com/env", "com/util", "com/event",
 			"com/xfilt", "com/pages", "com/tab",
 			"com/login", "com/event", "com/upload",
-			"com/map"
-		], function (env, util, event, xfilt, pages, tab, login, event, upload, map) {
+			"com/map", "com/lang"
+		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang) {
 			var init = function (info, is_self) {
 				var left_bar = main.find(".left-bar");
 				var right_bar = main.find(".right-bar");
+
+				var m = lang.msg;
 
 				left_bar.find(".dname").html(util.fill());
 				left_bar.find(".descr").html(util.fill());
@@ -348,8 +321,8 @@
 
 				function setDom(info) {
 					var avatar = info.avatar ? foci.download(info.avatar) : [ "img/matt.jpg", "img/stevie.jpg", "img/elliot.jpg" ].choose();
-					var dname = info.dname ? xfilt(util.short(info.dname, 12)) : "anonymous";
-					var descr = info.descr ? xfilt(util.short(info.descr, 128)) : "(no description)";
+					var dname = info.dname ? xfilt(util.short(info.dname, 12)) : lang.msg("$anonymous");
+					var descr = info.descr ? xfilt(util.short(info.descr, 128)) : lang.msg("($no_descr)");
 
 					var rating = info.rating ? (info.rating[0] + info.rating[1]) / 2 : 0;
 
@@ -386,7 +359,7 @@
 								},
 
 								cont: cont,
-								no_more_prompt: "no more results"
+								no_more_prompt: lang.msg("$no_more_result")
 							}
 						});
 					}
@@ -398,14 +371,14 @@
 
 				var tabs = {
 					"partic": {
-						name: "Participated",
+						name: lang.msg("$participated").capital(),
 						onShow: function (show) {
 							eventTabOnShow("partic", false, undefined, show);
 						}
 					},
 
 					"org": {
-						name: "Organized",
+						name: lang.msg("$organized").capital(),
 						onShow: function (show) {
 							eventTabOnShow("org", false, undefined, show);
 						}
@@ -421,6 +394,37 @@
 				new_tab.find(".ev-descr").keyup(function () {
 					$(this).removeClass("warning");
 				});
+
+				new_tab.find(".ev-step .steps").append(' \
+					<div class="link active step info-step"> \
+						<i class="info icon"></i> \
+						<div class="content"> \
+							<div class="title">' + m("$basic").capital() + '</div> \
+							<div class="description">Title and description</div> \
+						</div> \
+					</div> \
+					<div class="link step cover-step"> \
+						<i class="camera retro card icon"></i> \
+						<div class="content"> \
+							<div class="title">' + m("$cover").capital() + '</div> \
+							<div class="description">Cover and logo</div> \
+						</div> \
+					</div> \
+					<div class="link step loc-step"> \
+						<i class="map outline icon"></i> \
+						<div class="content"> \
+							<div class="title">' + m("$location").capital() + '</div> \
+							<div class="description">When and where</div> \
+						</div> \
+					</div> \
+					<div class="link step pub-step"> \
+						<i class="send outline icon"></i> \
+						<div class="content"> \
+							<div class="title">' + m("$publish").capital() + '</div> \
+							<div class="description">Rules and Protocols</div> \
+						</div> \
+					</div> \
+				');
 
 				/*
 					To add step, you need to:
@@ -487,7 +491,7 @@
 									}
 								});
 							} else {
-								util.ask("You haven't selected any cover. Are you sure to leave?", function (suc) {
+								util.ask(lang.msg("$no_selected($cover)$period $sure_to_leave?").capital(), function (suc) {
 									if (suc) {
 										// new_tab.find(".cover-step").addClass("completed");
 										cb(true);
@@ -513,7 +517,7 @@
 									}
 								});
 							} else {
-								util.ask("You haven't selected any location. Are you sure to leave?", function (suc) {
+								util.ask(lang.msg("$no_selected($location)$period $sure_to_leave?").capital(), function (suc) {
 									if (suc) {
 										// new_tab.find(".loc-step").addClass("completed");
 										cb(true);
@@ -533,7 +537,7 @@
 					}
 
 					function resetPublishMsg() {
-						setPublishMsg("Publish your event now for everyone!");
+						setPublishMsg(lang.msg("$publish_event").capital());
 					}
 					
 					/* loader icon on the New/Save button */
@@ -560,7 +564,7 @@
 								delLoader();
 
 								if (!suc) {
-									util.qmsg(dat);
+									util.emsg(dat);
 								}
 
 								cb(suc);
@@ -624,7 +628,7 @@
 						field_lat = null;
 
 						tb.getItem("new").off("click", nextStep);
-						tb.getItem("new").html("New");
+						tb.getItem("new").html(lang.msg("$new").capital());
 						// new_tab.find(".ev-step .step").off("click");
 					};
 
@@ -642,7 +646,7 @@
 
 					loadDraft = function (ev_info) {
 						if (!ev_info || !ev_info.euid) {
-							util.qmsg("event not created");
+							util.emsg("$impossible(euid not given)");
 							return;
 						} // make sure the event has been created
 
@@ -658,7 +662,7 @@
 						var title = ev_info.title ? ev_info.title : "";
 						var descr = ev_info.descr ? ev_info.descr : "";
 
-						tb.getItem("new").html("Save")
+						tb.getItem("new").html(lang.msg("$save").capital())
 							.off("click", nextStep); // avoid duplication
 
 						util.nextTick(function () { // avoid bubbling
@@ -682,8 +686,8 @@
 						field_cover = ev_info.cover;
 
 						event.setDom(event_tmp, {
-							title: "Tmplate",
-							descr: "Click the picture to change cover",
+							title: lang.msg("$template"),
+							descr: lang.msg("$click_pic_to_change"),
 							cover: ev_info.cover
 						}, {
 							onCoverClick: function (dom) {
@@ -760,9 +764,9 @@
 								
 								if (suc) {
 									btn.addClass("disabled");
-									setPublishMsg("Success! You can now go to the 'Organized' tab to view your event");
+									setPublishMsg(lang.msg("$success! $you_can_go_tab_to_view($organized)").capital());
 								} else {
-									util.qmsg(dat);
+									util.emsg(dat);
 								}
 							});
 						});
@@ -773,7 +777,7 @@
 					initDraft();
 
 					tabs["draft"] = {
-						name: "Draft",
+						name: lang.msg("$draft").capital(),
 						onShow: function (show) {
 							eventTabOnShow("draft", true, function (info) {
 								loadDraft(info);
@@ -783,7 +787,7 @@
 					};
 
 					tabs["new"] = {
-						name: "New",
+						name: lang.msg("$new").capital(),
 						float: "right",
 						style: "green",
 
@@ -805,7 +809,7 @@
 											updateNewEventPos();
 											show();
 										} else {
-											util.qmsg(dat);
+											util.emsg(dat);
 										}
 									});
 								}
@@ -871,13 +875,16 @@
 				$(window).resize();
 
 				setDom(info);
+
+				show(true); // show part
 			};
 
 			if (args && args[0]) {
 				var uuid = parseInt(args[0]);
 
 				if (isNaN(uuid)) {
-					util.qmsg("illegal uuid");
+					util.emsg("$illegal_uuid");
+					show(false);
 				} else {
 					foci.get("/user/info", { uuid: uuid }, function (suc, dat) {
 						if (suc) {
@@ -885,17 +892,26 @@
 								init(dat, cur && cur.uuid == dat.uuid);
 							});
 						} else {
-							util.qmsg(dat);
+							util.emsg(dat);
+							show(false);
 						}
 					});
 				}
 			} else {
 				if (!env.session()) {
-					login.init(function () {
-						env.user(function (info) { init(info, true); });
+					login.init(function (ses) {
+						if (ses)
+							env.user(function (info) { init(info, true); });
+						else
+							show(false);
 					});
 				} else {
-					env.user(function (info) { init(info, true); });
+					env.user(function (info) {
+						if (info)
+							init(info, true);
+						else
+							show(false);
+					});
 				}
 			}
 		});

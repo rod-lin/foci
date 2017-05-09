@@ -88,7 +88,7 @@ var findFile = async (chsum) => {
 	var found = await col.findOne({ chsum: chsum });
 
 	if (!found)
-		throw new err.Exc("no such file");
+		throw new err.Exc("$not_exist($file)");
 
 	return found;
 }
@@ -108,5 +108,5 @@ exports.ref = async (chsum) => {
 	var ret = await col.findOneAndUpdate({ chsum: chsum }, { $inc: { ref: 1 } });
 
 	if (!ret.value)
-		throw new err.Exc("no such file");
+		throw new err.Exc("$not_exist($file)");
 };

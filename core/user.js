@@ -13,11 +13,11 @@ var User = function (uuid, dname, lname, passwd) {
 		return;
 	}
 
-	err.assert(typeof uuid === "number" && uuid > 0, "illegal uuid");
-	err.assert(typeof dname === "string" && dname.length <= config.lim.user.dname,
-			   "illegal display name");
-	err.assert(typeof lname === "string" && lname.length <= config.lim.user.lname,
-			   "illegal login name");
+	// err.assert(typeof uuid === "number" && uuid > 0, "illegal uuid");
+	// err.assert(typeof dname === "string" && dname.length <= config.lim.user.dname,
+	// 		   "illegal display name");
+	// err.assert(typeof lname === "string" && lname.length <= config.lim.user.lname,
+	// 		   "illegal login name");
 	// err.assert(typeof passwd === "string" && passwd.length == config.lim.user.passwd,
 	//		   "illegal password checksum");
 
@@ -75,7 +75,7 @@ User.format.info = {
 	age: {
 		type: "int", lim: age => {
 			if (age < 0 || age > 120)
-				throw new err.Exc("illegal age");
+				throw new err.Exc("$illegal($age)");
 			return age;
 		}
 	},
@@ -83,13 +83,13 @@ User.format.info = {
 	avatar: {
 		type: "string", lim: chsum => {
 			if (!chsum.length > 32)
-				throw new err.Exc("illegal file id");
+				throw new err.Exc("$illegal($file_id)");
 			return chsum;
 		}
 	},
 
-	intro: util.checkArg.lenlim(config.lim.user.intro, "introduction too long"),
-	school: util.checkArg.lenlim(config.lim.user.school, "school name too long")
+	intro: util.checkArg.lenlim(config.lim.user.intro, "$too_long($intro)"),
+	school: util.checkArg.lenlim(config.lim.user.school, "$too_long($school)")
 };
 
 User.query = {
@@ -137,7 +137,7 @@ exports.uuid = async (uuid) => {
 	var found = await col.findOne(User.query.uuid(uuid));
 
 	if (!found)
-		throw new err.Exc("no such user");
+		throw new err.Exc("$not_exist($user)");
 
 	return new User(found);
 };
@@ -149,7 +149,7 @@ exports.newUser = async (dname, lname, passwd) => {
 	var found = await col.findOne(User.query.lname(lname));
 	
 	if (found) {
-		throw new err.Exc("duplicated user login name");
+		throw new err.Exc("$dup_user_name");
 	}
 
 	var uuid = await uid.genUID("uuid");
@@ -169,7 +169,7 @@ exports.checkPass = async (lname, passwd) => {
 	var found = await col.findOne(User.query.pass(lname, passwd));
 
 	if (!found) {
-		throw new err.Exc("wrong username or password");
+		throw new err.Exc("$wrong($user_passwd)");
 	}
 
 	return new User(found).getUUID();
@@ -201,7 +201,7 @@ exports.getSession = async (lname) => {
 	var res = await col.findOne(User.query.lname(lname));
 
 	if (!res)
-		throw new err.Exc("no such user");
+		throw new err.Exc("$not_exist($user)");
 
 	return res.sid;
 };
@@ -214,17 +214,17 @@ exports.checkSession = async (uuid, enc) => {
 	var now = util.stamp();
 
 	if (!res || !res.sid)
-		throw new err.Exc("invalid session id");
+		throw new err.Exc("$illegal($sid)");
 
 	if (now - res.stamp > config.lim.user.session_timeout) {
 		await col.updateOne(User.query.uuid(uuid), User.set.rmsession());
-		throw new err.Exc("session timeout");
+		throw new err.Exc("$session_timeout");
 	}
 
 	var msg = auth.aes.dec(enc, res.sid);
 
 	if (!msg)
-		throw new err.Exc("invalid session id");
+		throw new err.Exc("$illegal($sid)");
 
 	return {
 		msg: msg,
@@ -243,11 +243,11 @@ exports.checkTag = (tags) => {
 	tags = new Set(tags);
 
 	if (tags.size > config.lim.favtag.length)
-		throw new err.Exc("too many tags");
+		throw new err.Exc("$too_many($tag)");
 
 	tags.forEach((tag) => {
 		if (config.lim.favtag.indexOf(tag) === -1) {
-			throw new err.Exc("no such tag");
+			throw new err.Exc("$not_exist($tag)");
 		}
 
 		ntags.push(tag);

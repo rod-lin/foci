@@ -92,7 +92,7 @@ define([ "com/util", "com/env" ], function (util, env) {
 					if (cb) cb(dat);
 				} else {
 					// login_btn.html(fail);
-					util.qmsg(dat);
+					util.emsg(dat);
 				}
 
 				setTimeout(function () {

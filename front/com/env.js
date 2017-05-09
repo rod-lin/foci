@@ -39,7 +39,7 @@ define([ "com/util" ], function (util) {
 			if (suc) {
 				env.user = dat;
 			} else {
-				util.qmsg(dat);
+				util.emsg(dat);
 				env.user = null;
 			}
 
@@ -57,7 +57,7 @@ define([ "com/util" ], function (util) {
 			if (suc) {
 				env.favtag = dat;
 			} else {
-				util.qmsg(dat);
+				util.emsg(dat);
 				env.favtag = null;
 			}
 

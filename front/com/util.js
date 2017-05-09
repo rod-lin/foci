@@ -16,8 +16,50 @@ define(function () {
 		return str;
 	};
 
-	util.qmsg = function (str) {
-		alert("debug error: " + str);
+	util.mfilt = function (str) {
+		return str;
+	};
+
+	util.emsg = function (str) {
+		var msg = $(" \
+			<div style='text-align: center;'> \
+				<div> \
+					<div class='ui error message' style='word-wrap: break-word;'></div> \
+				</div> \
+			</div> \
+		");
+
+		var hide = function () {
+			msg.transition("scale");
+			clearTimeout(proc);
+
+			setTimeout(function () {
+				msg.remove();
+			}, 5000);
+		};
+
+		msg.css({
+			"position": "fixed",
+			"top": "9px",
+			"z-index": "1000000",
+			"width": "100%"
+		});
+
+		msg.children("div")
+			.css({
+				"max-width": "80%",
+				"display": "inline-block"
+			})
+		
+		msg.find(".message")
+			.css("cursor", "pointer")
+			.transition("scale")
+			.html(util.mfilt(str))
+			.click(hide);
+
+		var proc = setTimeout(hide, 5000);
+		
+		$("body").append(msg);
 	};
 
 	util.listen = function (dob) {
@@ -48,7 +90,7 @@ define(function () {
 		var main = $(' \
 			<div class="ui small modal com-util-ask"> \
 				<div class="ui header"> \
-					' + msg + ' \
+					' + util.mfilt(msg) + ' \
 				</div> \
 				<div class="actions"> \
 					<div class="ui red cancel button"> \
@@ -119,6 +161,10 @@ define(function () {
 
 	Array.prototype.choose = function () {
 		return this[Math.floor(Math.random() * this.length)];
+	};
+
+	String.prototype.capital = function () {
+		return this[0].toUpperCase() + this.substr(1);
 	};
 
 	return util;
