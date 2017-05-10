@@ -4,6 +4,48 @@ window.jQuery = window.$ = require("jquery");
 window.foci = {};
 
 (function () {
+	var global = window;
+
+	if (typeof global.ArrayBuffer !== 'function') {
+		return;
+	}
+
+	/*!
+	 * This polyfill is implemented by
+	 * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+	 * @license  MIT
+	 */
+
+	function isBuffer(b) {
+		if (global.Buffer && typeof global.Buffer.isBuffer === 'function') {
+			return global.Buffer.isBuffer(b);
+		}
+
+		return !!(b != null && b._isBuffer);
+	}
+
+	ArrayBuffer.isView = ArrayBuffer.isView || function (arrbuf) {
+		if (isBuffer(arrbuf)) {
+			return false;
+		}
+
+		if (!arrbuf) {
+			return false;
+		}
+
+		if (arrbuf instanceof DataView) {
+			return true;
+		}
+
+		if (arrbuf.buffer && arrbuf.buffer instanceof ArrayBuffer) {
+			return true;
+		}
+
+		return false;
+	};
+})();
+
+(function () {
 	var NodeRSA = require("node-rsa");
 	var CryptoJS = require("crypto-js");
 
@@ -77,7 +119,7 @@ window.foci = {};
 		var tab = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
 		for (var i = 0; i < static_buf.length; i++) {
-			static_buf[i] = tab[Math.trunc(Math.random() * tab.length)];
+			static_buf[i] = tab[Math.floor(Math.random() * tab.length)];
 		}
 
 		return static_buf.join("");

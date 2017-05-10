@@ -234,6 +234,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				});
 			});
 
+		var old_info = null;
 		function updateAvatar(file) {
 			function refresh(info) {
 				info = info || {};
@@ -272,11 +273,20 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 			if (env.session()) {
 				env.user(function (info) {
-					if (file) info.avatar = file;
-					refresh(info);
+					if (file) {
+						info.avatar = file;
+						old_info = null;
+						refresh(info);
+					} else {
+						if (info !== old_info) {
+							old_info = info;
+							refresh(info);
+						}
+					}
 				});
 			} else {
 				hideAvatar();
+				old_info = null;
 			}
 		}
 

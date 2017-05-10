@@ -277,36 +277,38 @@ define([
 
 		var main = $(" \
 			<div class='com-eqview ui large modal'> \
-				<div class='cover'></div> \
-				<div class='cover-edit'>Change cover</div> \
-				<div class='logo-cont'> \
-					<div class='logo'><div>Change logo</div></div> \
-					<div class='title'></div><div class='rating'><span></span></div><br> \
-					<div class='detail'><i class='map outline icon'></i><span class='location'></span></div> \
-					<div class='detail'><i class='calendar outline icon'></i><span class='time'></span></div> \
-				</div> \
-				<div class='back not-owner'> \
-					<div class='util close ui icon button'> \
-						<i class='close icon'></i> \
-					</div><div class='util setting ui icon button'> \
-						<i class='setting-btn setting icon'></i> \
+				<div style='position: relative;'> \
+					<div class='cover'></div> \
+					<div class='cover-edit'>Change cover</div> \
+					<div class='logo-cont'> \
+						<div class='logo'><div>Change logo</div></div> \
+						<div class='title'></div><div class='rating'><span></span></div><br> \
+						<div class='detail'><i class='map outline icon'></i><span class='location'></span></div> \
+						<div class='detail'><i class='calendar outline icon'></i><span class='time'></span></div> \
 					</div> \
-				</div> \
-				<div class='cont'> \
-					<div class='descr'> \
-					</div> \
-					<div class='tagbox'> \
-						<div class='tagadd-btn ui floating dropdown'> \
-							<i class='add icon'></i> \
-							<div class='menu'> \
-							</div> \
+					<div class='back not-owner'> \
+						<div class='util close ui icon button'> \
+							<i class='close icon'></i> \
+						</div><div class='util setting ui icon button'> \
+							<i class='setting-btn setting icon'></i> \
 						</div> \
 					</div> \
-					<div class='ui horizontal divider'>organizer</div> \
-					<div class='orgs'> \
+					<div class='cont'> \
+						<div class='descr'> \
+						</div> \
+						<div class='tagbox'> \
+							<div class='tagadd-btn ui floating dropdown'> \
+								<i class='add icon'></i> \
+								<div class='menu'> \
+								</div> \
+							</div> \
+						</div> \
+						<div class='ui horizontal divider'>organizer</div> \
+						<div class='orgs'> \
+						</div> \
 					</div> \
+					<!--div class='more'>MORE</div--> \
 				</div> \
-				<!--div class='more'>MORE</div--> \
 			</div> \
 		");
 

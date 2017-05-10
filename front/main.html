@@ -86,12 +86,12 @@
 				<div id="search-cont"></div>
 			</div>
 
-			<div id="cover" style="opacity: 0;">
-				<div class="ui active big loader"></div>
-			</div>
+			<div id="cover" style="opacity: 0;"></div>
 
 			<div id="part"></div>
 		</div>
+
+		<div id="main-loader" class="ui active large loader"></div>
 
 		<!-- <div id="frame" style="height: 100px; width: 200px; background: white;"></div> -->
 
@@ -106,11 +106,6 @@
 			function jump(url) {
 				window.location = url;
 			}
-
-			$("#cover").ready(function () {
-				$("#cover>.loader").removeClass("active");
-				$("#cover").css("opacity", "");
-			});
 
 			require([
 				"com/tbar", "com/event", "com/env",
@@ -149,6 +144,15 @@
 							page: "#cover",
 							onShow: function () {
 								bar.setSimple();
+							},
+
+							onLoad: function (show) {
+								$("#cover").off("ready").ready(function () {
+									setTimeout(function () {
+										$("#main-loader").removeClass("active");
+										show();
+									}, 2000);
+								});
 							}
 						},
 
