@@ -61,8 +61,10 @@ define(function () {
 			cur = name;
 
 			var next = function () {
-				show(pg[name].page);
-				if (pg[name].onShow) pg[name].onShow();
+				if (cur == name) {
+					show(pg[name].page);
+					if (pg[name].onShow) pg[name].onShow();
+				}
 			}
 
 			// onLoad is called before the page is shown

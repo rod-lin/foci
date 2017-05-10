@@ -169,6 +169,7 @@
 					var pt = parts.init("#part", {
 						onJump: function (notmain) {
 							if (notmain) {
+								$("#main-loader").removeClass("active");
 								orig = pg.cur();
 								pg.to("part");
 							} else {
