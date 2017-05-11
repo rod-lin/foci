@@ -30,7 +30,7 @@ define(function () {
 	//             $call($name, $phone) -> call Rod with phone number 110
 	//             
 	function expand(msg, def, em) {
-		var reg_id = /\$([a-zA-Z_][a-zA-Z0-9_]*)/g;
+		var reg_id = /\$([a-zA-Z_.][a-zA-Z0-9_.]*)/g;
 		var reg_num = /\$([1-9][0-9]*)/g;
 
 		var res;
@@ -135,9 +135,9 @@ define(function () {
 	}
 
 	var dict = {
-		"network_error": "network error",
-		"server_error": "server_error",
-		"no_session": "no session stored"
+		"def.network_error": "network error",
+		"def.server_error": "server_error",
+		"def.no_session": "no session stored"
 	};
 
 	function msg(msg) {
@@ -154,7 +154,7 @@ define(function () {
 				var tmp = util.mfilt;
 				util.mfilt = function (str) { return tmp(msg(str)); };
 			} else {
-				util.emsg(msg("$fail_load_dict(" + name + "): " + dat));
+				util.emsg(msg("$front.com.lang.fail_load_dict(" + name + "): " + dat));
 			}
 		});
 	}

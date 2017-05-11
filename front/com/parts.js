@@ -63,7 +63,7 @@ define([ "com/util" ], function (util) {
 				url: url,
 				success: function (dat) { suc(dat); },
 				error: function (req, err) {
-					util.emsg("$fail_get(" + url + "," + err + ")");
+					util.emsg("$front.com.parts.fail_get_url(" + url + "," + err + ")");
 					err();
 				}
 			});

@@ -69,13 +69,13 @@ User.prototype.getInfo = function () {
 User.format = {};
 
 User.format.info = {
-	dname: util.checkArg.lenlim(config.lim.user.dname, "display name too long"),
+	dname: util.checkArg.lenlim(config.lim.user.dname, "$core.too_long($core.word.dname)"),
 	favtag: { type: "json", lim: tags => exports.checkTag(tags) },
 
 	age: {
 		type: "int", lim: age => {
 			if (age < 0 || age > 120)
-				throw new err.Exc("$illegal($age)");
+				throw new err.Exc("$core.illegal($core.word.age)");
 			return age;
 		}
 	},
@@ -83,13 +83,13 @@ User.format.info = {
 	avatar: {
 		type: "string", lim: chsum => {
 			if (!chsum.length > 32)
-				throw new err.Exc("$illegal($file_id)");
+				throw new err.Exc("$core.illegal($core.word.file_id)");
 			return chsum;
 		}
 	},
 
-	intro: util.checkArg.lenlim(config.lim.user.intro, "$too_long($intro)"),
-	school: util.checkArg.lenlim(config.lim.user.school, "$too_long($school)")
+	intro: util.checkArg.lenlim(config.lim.user.intro, "$core.too_long($core.word.intro)"),
+	school: util.checkArg.lenlim(config.lim.user.school, "$core.too_long($core.word.school)")
 };
 
 User.query = {
@@ -137,7 +137,7 @@ exports.uuid = async (uuid) => {
 	var found = await col.findOne(User.query.uuid(uuid));
 
 	if (!found)
-		throw new err.Exc("$not_exist($user)");
+		throw new err.Exc("$core.not_exist($core.word.user)");
 
 	return new User(found);
 };
@@ -149,7 +149,7 @@ exports.newUser = async (dname, lname, passwd) => {
 	var found = await col.findOne(User.query.lname(lname));
 	
 	if (found) {
-		throw new err.Exc("$dup_user_name");
+		throw new err.Exc("$core.dup_user_name");
 	}
 
 	var uuid = await uid.genUID("uuid");
@@ -169,7 +169,7 @@ exports.checkPass = async (lname, passwd) => {
 	var found = await col.findOne(User.query.pass(lname, passwd));
 
 	if (!found) {
-		throw new err.Exc("$wrong($user_passwd)");
+		throw new err.Exc("$core.wrong_user_passwd");
 	}
 
 	return new User(found).getUUID();
@@ -201,7 +201,7 @@ exports.getSession = async (lname) => {
 	var res = await col.findOne(User.query.lname(lname));
 
 	if (!res)
-		throw new err.Exc("$not_exist($user)");
+		throw new err.Exc("$core.not_exist($core.word.user)");
 
 	return res.sid;
 };
@@ -214,17 +214,17 @@ exports.checkSession = async (uuid, enc) => {
 	var now = util.stamp();
 
 	if (!res || !res.sid)
-		throw new err.Exc("$illegal($sid)");
+		throw new err.Exc("$core.illegal($core.word.sid)");
 
 	if (now - res.stamp > config.lim.user.session_timeout) {
 		await col.updateOne(User.query.uuid(uuid), User.set.rmsession());
-		throw new err.Exc("$session_timeout");
+		throw new err.Exc("$core.session_timeout");
 	}
 
 	var msg = auth.aes.dec(enc, res.sid);
 
 	if (!msg)
-		throw new err.Exc("$illegal($sid)");
+		throw new err.Exc("$core.illegal($core.word.sid)");
 
 	return {
 		msg: msg,
@@ -243,11 +243,11 @@ exports.checkTag = (tags) => {
 	tags = new Set(tags);
 
 	if (tags.size > config.lim.favtag.length)
-		throw new err.Exc("$too_many($tag)");
+		throw new err.Exc("$core.too_many($core.word.tag)");
 
 	tags.forEach((tag) => {
 		if (config.lim.favtag.indexOf(tag) === -1) {
-			throw new err.Exc("$not_exist($tag)");
+			throw new err.Exc("$core.not_exist($core.word.tag)");
 		}
 
 		ntags.push(tag);

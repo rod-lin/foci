@@ -78,6 +78,8 @@ app.get("/user/test/echo", util.route(async env => {
 app.use("/", express.static("front"));
 app.use("/semantic", express.static("semantic/dist"));
 
+app.use("/main", express.static("front/main.html"));
+
 var server = app.listen(config.port, function () {
 	var host = server.address().address;
 	var port = server.address().port;

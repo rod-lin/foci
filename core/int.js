@@ -26,7 +26,7 @@ exports.dict = util.route(async env => {
 	var args = util.checkArg(env.query, { "lang": "string" });
 
 	if (!dict.hasOwnProperty(args.lang))
-		throw new err.Exc("$dict_not_exist(" + args.lang + ")");
+		throw new err.Exc("$core.dict_not_exist(" + args.lang + ")");
 
 	env.qsuc(dict[args.lang]);
 });
@@ -60,7 +60,7 @@ _user.login = util.route(async env => {
 	var sep = dat.split(":", 2);
 
 	if (!sep[0].length || sep.length < 2)
-		throw new err.Exc("$wrong_format");
+		throw new err.Exc("$core.wrong_login_format");
 
 	var tmpkey = sep[0];
 
@@ -82,7 +82,7 @@ _user.csid = util.route(async env => {
 	var res = await user.checkSession(args.uuid, args.enc);
 
 	if (res.msg !== "hello")
-		throw new err.Exc("$wrong_csid_message");
+		throw new err.Exc("$core.wrong_csid_message");
 
 	env.qsuc();
 });
@@ -103,14 +103,14 @@ _user.encop = util.route(async env => {
 	try {
 		query = JSON.parse(res.msg);
 	} catch (e) {
-		throw new err.Exc("$wrong_encop_format");
+		throw new err.Exc("$core.wrong_encop_format");
 	}
 
 	if (!query.int)
-		throw new err.Exc("$wrong_format");
+		throw new err.Exc("$core.wrong_encop_format");
 
 	if (!encop.hasOwnProperty(query.int))
-		throw new err.Exc("$int_not_exist");
+		throw new err.Exc("$core.int_not_exist");
 
 	var proc = encop[query.int];
 	var res = await proc(env, res.usr, query);
@@ -218,7 +218,7 @@ encop.info = async (env, usr, query) => {
 			return;
 
 		default:
-			throw new err.Exc("$action_not_exist");
+			throw new err.Exc("$core.action_not_exist");
 	}
 };
 
@@ -229,7 +229,7 @@ encop.user = async (env, usr, query) => {
 			return;
 
 		default:
-			throw new err.Exc("$action_not_exist");
+			throw new err.Exc("$core.action_not_exist");
 	}
 };
 
@@ -267,7 +267,7 @@ encop.event = async (env, usr, query) => {
 			var count = await event.countOwn(uuid, after);
 
 			if (count && !config.debug)
-				throw new err.Exc("$max_event_count");
+				throw new err.Exc("$core.max_event_count");
 
 			// console.log(count);
 
@@ -306,6 +306,6 @@ encop.event = async (env, usr, query) => {
 			return await event.search(args);
 
 		default:
-			throw new err.Exc("$action_not_exist");
+			throw new err.Exc("$core.action_not_exist");
 	}
 };

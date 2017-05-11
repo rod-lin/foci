@@ -99,8 +99,8 @@ Event.prototype.isDraft = function () {
 Event.format = {};
 
 Event.format.info = {
-	title: util.checkArg.lenlim(config.lim.event.title, "$too_long($title)"),
-	descr: util.checkArg.lenlim(config.lim.event.descr, "$too_long($descr)"),
+	title: util.checkArg.lenlim(config.lim.event.title, "$core.too_long($core.word.title)"),
+	descr: util.checkArg.lenlim(config.lim.event.descr, "$core.too_long($core.word.descr)"),
 
 	loclng: "number",
 	loclat: "number",
@@ -108,7 +108,7 @@ Event.format.info = {
 	cover: {
 		type: "string", lim: chsum => {
 			if (!chsum.length > 32)
-				throw new err.Exc("$illegal($file_id)");
+				throw new err.Exc("$core.illegal($core.word.file_id)");
 			return chsum;
 		}
 	},
@@ -116,7 +116,7 @@ Event.format.info = {
 	logo: {
 		type: "string", lim: chsum => {
 			if (!chsum.length > 32)
-				throw new err.Exc("$illegal($file_id)");
+				throw new err.Exc("$core.illegal($core.word.file_id)");
 			return chsum;
 		}
 	},
@@ -128,7 +128,7 @@ Event.format.info = {
 	expect: {
 		type: "json", lim: expect => {
 			if (expect[0] < 0 || expect[1] < 0)
-				throw new err.Exc("$illegal_expect");
+				throw new err.Exc("$core.illegal_expect_partic");
 		
 			return [ expect[0], expect[1] ];
 		}
@@ -136,13 +136,13 @@ Event.format.info = {
 
 	$overall: obj => {
 		if (obj.start && obj.end && obj.end <= obj.start)
-			throw new err.Exc("$illegal($date)");
+			throw new err.Exc("$core.illegal($core.word.date)");
 	}
 };
 
 Event.format.search = {
 	favtag: { type: "json", lim: tags => user.checkTag(tags) },
-	kw: util.checkArg.lenlim(config.lim.event.keyword, "$too_long($search_keyword)"),
+	kw: util.checkArg.lenlim(config.lim.event.keyword, "$core.too_long($core.word.search_keyword)"),
 
 	after: { type: "int", lim: time => new Date(time) },
 	before: { type: "int", lim: time => new Date(time) },
@@ -151,7 +151,7 @@ Event.format.search = {
 	n: {
 		type: "int", lim: n => {
 			if (n > config.lim.event.max_search_results) {
-				throw new err.Exc("$too_many($search_result)");
+				throw new err.Exc("$core.too_many($core.word.search_result)");
 			}
 
 			return n;
@@ -220,7 +220,7 @@ exports.euid = async (euid, state) => {
 	var found = await col.findOne(Event.query.euid(euid, state));
 
 	if (!found)
-		throw new err.Exc("$not_exist($event)");
+		throw new err.Exc("$core.not_exist($core.word.event)");
 
 	return new Event(found);
 };
@@ -249,13 +249,13 @@ exports.isOwner = async (euid, uuid) => {
 
 exports.checkOwner = async (euid, uuid) => {
 	if (!await exports.isOwner(euid, uuid))
-		throw new err.Exc("$not_owner");
+		throw new err.Exc("$core.not_event_owner");
 };
 
 exports.exist = async (euid, state) => {
 	var col = await db.col("event");
 	if (!await col.count(Event.query.euid(euid, state == undefined ? 1 : state)))
-		throw new err.Exc("$not_exist($event)");
+		throw new err.Exc("$core.not_exist($core.word.event)");
 };
 
 exports.setInfo = async (euid, uuid, info) => {
@@ -339,17 +339,17 @@ exports.search = async (conf, state) => {
 // register as pertipants
 exports.register = async (euid, uuid, type) => {
 	if (type != "partic" && type != "staff")
-		throw new err.Exc("$illegal_reg_type");
+		throw new err.Exc("$core.illegal_reg_type");
 
 	var ev = await exports.euid(euid);
 	var next = ev.countPeople("partic");
 	var expect = ev.getExpect(1);
 
 	if (expect != null && next >= expect)
-		throw new err.Exc("$partic_full");
+		throw new err.Exc("$core.partic_full");
 
 	if (ev.hasPeople(uuid))
-		throw new err.Exc("$dup_partic");
+		throw new err.Exc("$core.dup_partic");
 
 	var col = await db.col("event");
 	var ret = await col.findOneAndUpdate(Event.query.reg(euid, next), Event.set.reg(euid, uuid, "partic"));
@@ -368,7 +368,7 @@ exports.publish = async (euid, uuid) => {
 	var ev = await exports.euid(euid, 0);
 
 	if (!ev.isDraft())
-		throw new err.Exc("$not_draft");
+		throw new err.Exc("$core.event_not_draft");
 
 	await col.findOneAndUpdate(Event.query.euid(euid, 0), Event.set.publish());
 

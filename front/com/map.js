@@ -22,7 +22,7 @@ define([ "com/util" ], function (util) {
 			if (!geoc) geoc = new BMap.Geocoder();
 
 			geoc.getLocation(new BMap.Point(lng, lat), function(rs) {
-				cb(rs.address);
+				cb(rs.address || "未知");
 			});
 		});
 	}
@@ -80,6 +80,10 @@ define([ "com/util" ], function (util) {
 
 					map.centerAndZoom(p, 12);
 					map.addOverlay(cur_marker);
+
+					locToName(lng, lat, function(addr) {
+						cb(lng, lat, addr);
+					});
 				},
 
 				clear: function () {

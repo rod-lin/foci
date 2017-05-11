@@ -270,6 +270,9 @@
 				<div class="page p2"></div>
 				<div class="page p3">
 					<div class="map"></div>
+					<div style="text-align: center; position: absolute; top: 0; width: 100%; margin-top: 0.6rem;">
+						<div class="ui compact black inline message loc-selected" style="min-width: 50%; max-width: 95%;">Select a location on the map</div>
+					</div>
 				</div>
 				<div class="page p4">
 					<div class="protocol">
@@ -322,8 +325,8 @@
 
 				function setDom(info) {
 					var avatar = info.avatar ? foci.download(info.avatar) : [ "img/matt.jpg", "img/stevie.jpg", "img/elliot.jpg" ].choose();
-					var dname = info.dname ? xfilt(util.short(info.dname, 12)) : lang.msg("$anonymous");
-					var descr = info.descr ? xfilt(util.short(info.descr, 128)) : lang.msg("($no_descr)");
+					var dname = info.dname ? xfilt(util.short(info.dname, 12)) : lang.msg("$front.sub.profile.anonymous");
+					var descr = info.descr ? xfilt(util.short(info.descr, 128)) : lang.msg("($front.sub.profile.no_descr)");
 
 					var rating = info.rating ? (info.rating[0] + info.rating[1]) / 2 : 0;
 
@@ -340,10 +343,12 @@
 					var next = function (suc) {
 						ev_list[name].update();
 						setTimeout(function () {
+							updateAllPos(); // update pos after loading(because the scroll bar may appear)
 							cb();
 						}, 300);
 					};
 
+					updateAllPos();
 
 					if (!ev_list[name]) {
 						ev_list[name] = event.init(tb.getTab(name), {
@@ -360,7 +365,7 @@
 								},
 
 								cont: cont,
-								no_more_prompt: lang.msg("$no_more_result")
+								no_more_prompt: lang.msg("$front.sub.profile.no_more_result")
 							}
 						});
 					}
@@ -372,14 +377,14 @@
 
 				var tabs = {
 					"partic": {
-						name: lang.msg("$participated").capital(),
+						name: lang.msg("$front.sub.profile.participated").capital(),
 						onShow: function (show) {
 							eventTabOnShow("partic", false, undefined, show);
 						}
 					},
 
 					"org": {
-						name: lang.msg("$organized").capital(),
+						name: lang.msg("$front.sub.profile.organized").capital(),
 						onShow: function (show) {
 							eventTabOnShow("org", false, undefined, show);
 						}
@@ -400,28 +405,28 @@
 					<div class="link active step info-step"> \
 						<i class="info icon"></i> \
 						<div class="content"> \
-							<div class="title">' + m("$basic").capital() + '</div> \
+							<div class="title">' + m("$front.sub.profile.basic").capital() + '</div> \
 							<div class="description">Title and description</div> \
 						</div> \
 					</div> \
 					<div class="link step cover-step"> \
 						<i class="camera retro card icon"></i> \
 						<div class="content"> \
-							<div class="title">' + m("$cover").capital() + '</div> \
+							<div class="title">' + m("$front.sub.profile.cover").capital() + '</div> \
 							<div class="description">Cover and logo</div> \
 						</div> \
 					</div> \
 					<div class="link step loc-step"> \
 						<i class="map outline icon"></i> \
 						<div class="content"> \
-							<div class="title">' + m("$location").capital() + '</div> \
+							<div class="title">' + m("$front.sub.profile.location").capital() + '</div> \
 							<div class="description">When and where</div> \
 						</div> \
 					</div> \
 					<div class="link step pub-step"> \
 						<i class="send outline icon"></i> \
 						<div class="content"> \
-							<div class="title">' + m("$publish").capital() + '</div> \
+							<div class="title">' + m("$front.sub.profile.publish").capital() + '</div> \
 							<div class="description">Rules and Protocols</div> \
 						</div> \
 					</div> \
@@ -492,7 +497,7 @@
 									}
 								});
 							} else {
-								util.ask(lang.msg("$no_selected($cover)$period $sure_to_leave?").capital(), function (suc) {
+								util.ask(lang.msg("$front.sub.profile.no_selected($front.sub.profile.cover)$front.sub.profile.period $front.sub.profile.sure_to_leave?").capital(), function (suc) {
 									if (suc) {
 										// new_tab.find(".cover-step").addClass("completed");
 										cb(true);
@@ -518,7 +523,7 @@
 									}
 								});
 							} else {
-								util.ask(lang.msg("$no_selected($location)$period $sure_to_leave?").capital(), function (suc) {
+								util.ask(lang.msg("$front.sub.profile.no_selected($front.sub.profile.location)$front.sub.profile.period $front.sub.profile.sure_to_leave?").capital(), function (suc) {
 									if (suc) {
 										// new_tab.find(".loc-step").addClass("completed");
 										cb(true);
@@ -538,7 +543,7 @@
 					}
 
 					function resetPublishMsg() {
-						setPublishMsg(lang.msg("$publish_event").capital());
+						setPublishMsg(lang.msg("$front.sub.profile.publish_event").capital());
 					}
 					
 					/* loader icon on the New/Save button */
@@ -629,7 +634,7 @@
 						field_lat = null;
 
 						tb.getItem("new").off("click", nextStep);
-						tb.getItem("new").html(lang.msg("$new").capital());
+						tb.getItem("new").html(lang.msg("$front.sub.profile.new").capital());
 						// new_tab.find(".ev-step .step").off("click");
 					};
 
@@ -663,7 +668,7 @@
 						var title = ev_info.title ? ev_info.title : "";
 						var descr = ev_info.descr ? ev_info.descr : "";
 
-						tb.getItem("new").html(lang.msg("$save").capital())
+						tb.getItem("new").html(lang.msg("$front.sub.profile.save").capital())
 							.off("click", nextStep); // avoid duplication
 
 						util.nextTick(function () { // avoid bubbling
@@ -687,8 +692,8 @@
 						field_cover = ev_info.cover;
 
 						event.setDom(event_tmp, {
-							title: lang.msg("$template"),
-							descr: lang.msg("$click_pic_to_change"),
+							title: lang.msg("$front.sub.profile.template"),
+							descr: lang.msg("$front.sub.profile.click_pic_to_change"),
 							cover: ev_info.cover
 						}, {
 							onCoverClick: function (dom) {
@@ -718,9 +723,10 @@
 										bmap.clear();
 								}
 
-							}, function (lng, lat, addr) {
+							}, function (lng, lat, addr) { // called everytime a position is selected
 								field_lng = lng;
 								field_lat = lat;
+								new_tab.find(".loc-selected").html(addr);
 								// alert(lng + ", " + lat + ", " + addr);
 							});
 						}
@@ -765,7 +771,7 @@
 								
 								if (suc) {
 									btn.addClass("disabled");
-									setPublishMsg(lang.msg("$success! $you_can_go_tab_to_view($organized)").capital());
+									setPublishMsg(lang.msg("$front.sub.profile.success! $front.sub.profile.you_can_go_tab_to_view($front.sub.profile.organized)").capital());
 								} else {
 									util.emsg(dat);
 								}
@@ -778,7 +784,7 @@
 					initDraft();
 
 					tabs["draft"] = {
-						name: lang.msg("$draft").capital(),
+						name: lang.msg("$front.sub.profile.draft").capital(),
 						onShow: function (show) {
 							eventTabOnShow("draft", true, function (info) {
 								loadDraft(info);
@@ -788,16 +794,16 @@
 					};
 
 					tabs["new"] = {
-						name: lang.msg("$new").capital(),
+						name: lang.msg("$front.sub.profile.new").capital(),
 						float: "right",
 						style: "green",
 
 						onShow: function (show) {
-							// initBaiduMap();
-							
+							updateAllPos();
+
 							login.session(function (session) {
 								if (hasDraft()) {
-									updateNewEventPos();
+									updateAllPos();
 									show();
 								} else {
 									// alert("hi");
@@ -807,7 +813,7 @@
 									}, function (suc, dat) {
 										if (suc) {
 											loadDraft({ euid: dat });
-											updateNewEventPos();
+											updateAllPos();
 											show();
 										} else {
 											util.emsg(dat);
@@ -855,8 +861,8 @@
 						.css("height", tb.displayHeight());
 				}
 
-				function updateAllPos(mobile) {
-					if (mobile) {
+				function updateAllPos() {
+					if (!right_bar.offset().left) {
 						display_mode = "mobile";
 						right_bar.width(main.innerWidth());
 						tb.flow(true);
@@ -870,7 +876,7 @@
 				}
 
 				$(window).resize(function () {
-					updateAllPos(!right_bar.offset().left);
+					updateAllPos();
 				});
 
 				$(window).resize();
@@ -884,7 +890,7 @@
 				var uuid = parseInt(args[0]);
 
 				if (isNaN(uuid)) {
-					util.emsg("$illegal_uuid");
+					util.emsg("$front.sub.profile.illegal_uuid");
 					show(false);
 				} else {
 					foci.get("/user/info", { uuid: uuid }, function (suc, dat) {

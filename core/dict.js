@@ -4,105 +4,86 @@
 
 module.exports = {
 	"english": {
-		"internal_err": "internal error",
-
-		/* no-such's */
-		"not_exist": "no such $1",
-		"dict_not_exist": "the dictionary for $1 does not exist",
-
-		/* words */
-		"file_id": "file id",
-		"age": "age",
-		"descr": "description",
-		"title": "title",
-		"date": "date",
-		"intro": "self introduction",
-		"school": "school name",
-		"period": ".",
-
-		"participated": "participated",
-		"organized": "organized",
-		"draft": "draft",
-		"new": "new",
-		"save": "save",
-		"template": "template",
-		"success": "success",
-
-		"basic": "basic",
-		"publish": "publish",
-
-		"location": "location",
-		"cover": "cover",
-		"folllower": "followers",
-		"follows": "follows",
-
-		"json_format": "json format",
-		"string": "string",
-		"key": "key",
-
-		"argument": "argument",
-
-		"user": "user",
-		"event": "event",
-		"sid": "session id",
-		"tag": "tag",
-
-		"anonymous": "anonymous",
-		/* words */
-
-		"argument_name": "argument $1",
-		"argument_type": "argument type of $1, expecting $2",
-
-		"expect": "expecting $1",
-
-		"search_keyword": "search keyword",
-		"search_result": "search result",
-
-		"session_timeout": "session timeout",
-
-		"dup_user_name": "duplicated user login name",
-
 		"impossible": "impossible: $1",
 		"unsupported": "there is a vital component($1) not supported by your browser",
-		"illegal_uuid": "illegal user id",
-		"fail_get": "fail to get url $1: $2",
-		"fail_upload": "fail to upload file",
-		
-		"too_long": "$1 too long",
-		"too_many": "too many $1s",
 
-		"not_owner": "you're not the owner of this event",
-		"illegal_reg_type": "illegal type of registration",
-		"partic_full": "no more places for participants",
-		"dup_partic": "duplicated particiants",
+		"core.word.rsakey": "RSA key",
+		"core.word.title": "title",
+		"core.word.descr": "description",
+		"core.word.date": "date",
+		"core.word.file_id": "file id",
+		"core.word.file": "file",
+		"core.word.search_keyword": "search keyword",
+		"core.word.search_result": "search result",
 
-		"not_draft": "not a draft",
+		"core.word.event": "event",
 
-		"user_passwd": "user name or password",
+		"core.word.user": "user",
+		"core.word.dname": "display name",
+		"core.word.age": "age",
+		"core.word.intro": "self introduction",
+		"core.word.school": "school name",
+		"core.word.tag": "tag",
 
-		"wrong": "wrong $1",
+		"core.word.sid": "session id",
+		"core.word.string": "string",
 
-		"wrong_format": "wrong format",
-		"wrong_csid_message": "wrong session id check message(should be 'hello')",
-		"wrong_encop_format": "wrong encrypted operation format",
+		"core.internal_err": "internal error",
+		"core.fail_upload": "fail to upload file",
+		"core.too_long": "$1 too long",
+		"core.illegal": "illegal $1",
+		"core.illegal_expect_partic": "illegal expected participant number",
+		"core.too_many": "too many $1s",
+		"core.not_exist": "no such $1",
+		"core.not_event_owner": "you're not the owner of this event",
+		"core.illegal_reg_type": "illegal type of registration",
+		"core.partic_full": "no more places for participants",
+		"core.dup_partic": "duplicated particiants",
+		"core.event_not_draft": "event not a draft",
 
-		"int_not_exist": "no such interface",
-		"action_not_exist": "no such action",
+		"core.dict_not_exist": "the dictionary for $1 does not exist",
+		"core.wrong_login_format": "wrong login format",
+		"core.wrong_csid_message": "wrong session id check message(should be 'hello')",
+		"core.wrong_encop_format": "wrong encrypted operation format",
+		"core.int_not_exist": "no such interface",
+		"core.action_not_exist": "no such action",
+		"core.max_event_count": "you cannot created too many events due to your level",
 
-		"max_event_count": "you cannot created too many events due to your level",
+		"core.dup_user_name": "duplicated user login name",
+		"core.wrong_user_passwd": "wrong user name or password",
 
-		"illegal": "illegal $1",
-		"illegal_expect": "illegal expected enroll number",
+		"core.session_timeout": "session timeout",
 
-		"no_selected": "you haven't selected any $1",
-		"sure_to_leave": "are you sure to leave",
-		"publish_event": "publish your event now for everyone!",
-		"click_pic_to_change": "click the picture to change cover",
-		"you_can_go_tab_to_view": "you can now go to the '$1' tab to view your event",
+		"core.expect_argument": "expecting argument '$1'",
+		"core.expect_argument_type": "expecting argument '$1' of type $2",
+		"core.wrong_json_format": "wrong json format",
 
-		"no_descr": "no description",
-		"no_more_result": "no more results",
+		"front.com.parts.fail_get_url": "fail to get url $1: $2",
+		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",
 
-		"fail_load_dict": "fail to load dictionary of $1"
+		"front.sub.profile.anonymous": "anonymous",
+		"front.sub.profile.no_descr": "no description",
+		"front.sub.profile.no_more_result": "no more results",
+		"front.sub.profile.participated": "participated",
+		"front.sub.profile.organized": "organized",
+		"front.sub.profile.draft": "draft",
+		"front.sub.profile.new": "new",
+		"front.sub.profile.save": "save",
+		"front.sub.profile.template": "template",
+		"front.sub.profile.success": "success",
+
+		"front.sub.profile.basic": "basic",
+		"front.sub.profile.publish": "publish",
+		"front.sub.profile.location": "location",
+		"front.sub.profile.cover": "cover",
+		"front.sub.profile.folllower": "followers",
+		"front.sub.profile.follows": "follows",
+		"front.sub.profile.period": ".",
+		"front.sub.profile.no_selected": "you haven't selected any $1",
+		"front.sub.profile.sure_to_leave": "are you sure to leave",
+		"front.sub.profile.publish_event": "publish your event now for everyone!",
+		"front.sub.profile.click_pic_to_change": "click the picture to change cover",
+		"front.sub.profile.you_can_go_tab_to_view": "you can now go to the '$1' tab to view your event",
+		"front.sub.profile.illegal_uuid": "illegal user id",
 	}
 };
