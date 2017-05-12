@@ -296,12 +296,12 @@
 .com-tbar.simple .prompt {
 	border-radius: 3px !important;
 	border: none !important;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
 .com-tbar.simple .prompt:focus {
 	border: none !important;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
 .com-tbar.simple .search-box .nav {
@@ -317,7 +317,8 @@
 	box-shadow: none !important;
 }
 
-.com-tbar.simple .avatar {
+.com-tbar.simple .avatar,
+.com-tbar.simple .login-btn {
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 

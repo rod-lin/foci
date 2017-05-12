@@ -75,18 +75,20 @@ define([ "com/util" ], function (util) {
 				incProg();
 
 				var show = function (suc) {
-					main.removeClass("hide");
+					setTimeout(function () {
+						main.removeClass("hide");
 
-					if (suc) {
-						completeProg();
-						setTimeout(hideProg, 300);
-					} else {
-						errProg();
-						setTimeout(hideProg, 2000);
-					}
+						if (suc) {
+							completeProg();
+							setTimeout(hideProg, 300);
+						} else {
+							errProg();
+							setTimeout(hideProg, 2000);
+						}
 
-					// loader.remove();
-					if (cb) cb(!!suc);
+						// loader.remove();
+						if (cb) cb(!!suc);
+					}, 300);
 				};
 
 				var part = $(text);

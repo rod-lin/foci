@@ -1,9 +1,36 @@
 <style>
-	
+	#sub-event {
+		height: 100%;
+	}
+
+	#sub-event .cover {
+		height: 100%;
+		background-image: url("img/cover1.jpg");
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: 50% 50%;
+	}
+
+	#sub-event .cover .dim {
+		height: 100%;
+		width: 50%;
+
+		background-image: url("img/cover1.jpg");
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: 50% 50%;
+		transition: opacity 0.5s;
+	}
+
+	#sub-event .cover .cont {
+		height: 100%;
+		width: 100%;
+	}
 </style>
 
 <div id="sub-event">
-	<div></div>
+	<div class="cover">
+	</div>
 </div>
 
 <script>
@@ -27,6 +54,17 @@
 			}
 
 			show(true);
+
+			var tbar = env.get("tbar");
+
+			tbar.setSimple();
+			$("body").removeClass("padding-tbar");
+
+			// util.blur(main.find(".dim"), 10);
+
+			// setTimeout(function () {
+			// 	main.find(".dim").css("opacity", "1");
+			// }, 3000);
 		});
 	}
 </script>

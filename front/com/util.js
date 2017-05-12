@@ -20,6 +20,10 @@ define(function () {
 		return str;
 	};
 
+	util.jump = function (url) {
+		window.location = url;
+	};
+
 	util.emsg = function (str, style) {
 		style = style || "error";
 		var msg = $(" \
@@ -166,6 +170,17 @@ define(function () {
 
 	String.prototype.capital = function () {
 		return this[0].toUpperCase() + this.substr(1);
+	};
+
+	util.blur = function (obj, r) {
+		obj = $(obj);
+		r = r || 5;
+		obj.css({
+			"-webkit-filter": "blur(" + r + "px)",
+			"-moz-filter": "blur(" + r + "px)",
+			"-ms-filter": "blur(" + r + "px)",
+			"filter": "blur(" + r + "px)"
+		});
 	};
 
 	return util;

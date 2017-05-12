@@ -317,6 +317,13 @@ define([
 			return tag;
 		}
 
+		if (info.euid) {
+			main.find(".more").click(function () {
+				main.modal("hide all");
+				util.jump("#event/" + info.euid);
+			});
+		}
+
 		// update info
 		function updateInfo(info) {
 			var title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";

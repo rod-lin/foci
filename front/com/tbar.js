@@ -44,7 +44,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				<div class="right-bar"> \
 					<div class="avatar"></div> \
 					<button class="ui black icon button login-btn"> \
-						<i class="rocket icon"></i> \
+						<i class="sign in icon"></i> \
 					</button> \
 					<div class="ui popup transition hidden"> \
 						<div class="cont"> \

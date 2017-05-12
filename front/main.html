@@ -57,7 +57,7 @@
 				height: 100%;
 				width: 100%;
 
-				background-image: url("img/cover3.jpg");
+				background-image: url("img/cover1.jpg");
 				background-repeat: no-repeat;
 				background-size: cover;
 				background-position: 50% 50%;
@@ -105,10 +105,6 @@
 				// fr.open("main.html");
 			});
 
-			function jump(url) {
-				window.location = url;
-			}
-
 			require([
 				"com/tbar", "com/event", "com/env",
 				"com/util", "com/pages", "com/parts",
@@ -116,24 +112,30 @@
 			], function (tbar, event, env, util, pages, parts, lang) {
 				lang.loadDict("english", util);
 
+				var cover = [ "img/cover1.jpg", "img/cover2.jpg", "img/cover3.jpg" ].choose();
+				$("#cover").css("background-image", "url(" + cover + ")");
+
 				env.init(function () {
 					// map.init();
 					// console.log(lang.expand("hola"));
 
 					var bar = tbar.init();
 
+					env.store("tbar", bar);
+
 					bar.menu(function () {
 						if (!window.location.hash) {
 							pg.toggle("cover", "search");
 						} else {
-							jump("#");
+							util.jump("#");
 						}
 					});
 
 					bar.profile(function () {
-						jump("#profile");
+						util.jump("#profile");
 					});
 
+					var cover_loaded = false;
 					var pg = pages.init({
 						"search": {
 							page: "#search",
@@ -149,12 +151,17 @@
 							},
 
 							onLoad: function (show) {
-								$("#cover").off("ready").ready(function () {
-									setTimeout(function () {
-										$("#main-loader").removeClass("active");
-										show();
-									}, 2000);
-								});
+								if (cover_loaded) {
+									show();
+								} else {
+									$("#cover").off("ready").ready(function () {
+										setTimeout(function () {
+											$("#main-loader").removeClass("active");
+											show();
+											cover_loaded = true;
+										}, 2000);
+									});
+								}
 							}
 						},
 
@@ -170,6 +177,8 @@
 
 					var pt = parts.init("#part", {
 						onJump: function (notmain) {
+							$("body").addClass("padding-tbar");
+
 							if (notmain) {
 								$("#main-loader").removeClass("active");
 								orig = pg.cur();
@@ -204,7 +213,7 @@
 
 					// re-search
 					function research(query, cb) {
-						jump("#");
+						util.jump("#");
 						orig = "search";
 						pg.to("search");
 

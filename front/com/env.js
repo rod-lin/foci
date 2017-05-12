@@ -9,6 +9,10 @@ define([ "com/util" ], function (util) {
 	var $ = jQuery;
 	var env = window.top.env;
 
+	if (!env.storage) {
+		env.storage = {};
+	}
+
 	function qlogin(cb) {
 		foci.qlogin(function (suc, dat) {
 			if (suc) {
@@ -103,7 +107,18 @@ define([ "com/util" ], function (util) {
 		},
 
 		favtag: favtag,
+		logout: logout,
 
-		logout: logout
+		store: function (key, value) {
+			env.storage[key] = value;
+		},
+
+		get: function (key) {
+			if (env.storage.hasOwnProperty(key)) {
+				return env.storage[key];
+			}
+
+			return undefined;
+		}
 	};
 });
