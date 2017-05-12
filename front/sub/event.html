@@ -1,0 +1,32 @@
+<style>
+	
+</style>
+
+<div id="sub-event">
+	<div></div>
+</div>
+
+<script>
+	function init(main, args, show, cont) {
+		require([
+			"com/env", "com/util", "com/event",
+			"com/xfilt", "com/pages", "com/tab",
+			"com/login", "com/event", "com/upload",
+			"com/map", "com/lang"
+		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang) {
+			if (!args || !args.length) {
+				util.emsg("$front.sub.event.no_euid");
+				return;
+			}
+
+			var euid = parseInt(args[0]);
+
+			if (isNaN(euid)) {
+				util.emsg("$front.sub.event.illegal_euid");
+				return;
+			}
+
+			show(true);
+		});
+	}
+</script>

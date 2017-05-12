@@ -85,5 +85,9 @@ module.exports = {
 		"front.sub.profile.click_pic_to_change": "click the picture to change cover",
 		"front.sub.profile.you_can_go_tab_to_view": "you can now go to the '$1' tab to view your event",
 		"front.sub.profile.illegal_uuid": "illegal user id",
+		"front.sub.profile.save_draft": "draft saved",
+
+		"front.sub.event.no_euid": "no event uid given",
+		"front.sub.event.illegal_euid": "illegal event uid"
 	}
 };

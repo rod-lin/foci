@@ -270,7 +270,7 @@
 				<div class="page p2"></div>
 				<div class="page p3">
 					<div class="map"></div>
-					<div style="text-align: center; position: absolute; top: 0; width: 100%; margin-top: 0.6rem;">
+					<div style="text-align: center; position: absolute; top: 0; width: 100%; margin-top: 0.6rem; pointer-events: none;">
 						<div class="ui compact black inline message loc-selected" style="min-width: 50%; max-width: 95%;">Select a location on the map</div>
 					</div>
 				</div>
@@ -825,7 +825,11 @@
 
 						onChange: function (cb) {
 							saveDraft(function (suc) {
-								if (suc !== false) clearDraft();
+								if (suc !== false) {
+									clearDraft();
+									util.emsg("$front.sub.profile.save_draft", "info");
+								}
+
 								cb(suc); // if suc == true, change the tab
 							});
 							

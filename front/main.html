@@ -111,9 +111,9 @@
 
 			require([
 				"com/tbar", "com/event", "com/env",
-				"com/upload", "com/util", "com/pages",
-				"com/parts", "com/map", "com/lang"
-			], function (tbar, event, env, upload, util, pages, parts, map, lang) {
+				"com/util", "com/pages", "com/parts",
+				"com/lang"
+			], function (tbar, event, env, util, pages, parts, lang) {
 				lang.loadDict("english", util);
 
 				env.init(function () {

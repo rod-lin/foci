@@ -102,7 +102,7 @@
 .com-eqview .cont {
 	font-size: 1.5em;
 	line-height: 150% !important;
-	padding: 0 10em 3em 10em;
+	padding: 0 10em 2em 10em;
 }
 
 .com-eqview .logo-cont {
@@ -246,10 +246,6 @@
 	margin-top: 1em;
 	width: 100%;
 	opacity: 0.5
-}
-
-.com-eqview .more:hover {
-	background: #95A5A6;
 }
 
 .com-eqview.setting .util.setting {

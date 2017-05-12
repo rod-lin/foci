@@ -277,7 +277,7 @@ define([
 
 		var main = $(" \
 			<div class='com-eqview ui large modal'> \
-				<div style='position: relative;'> \
+				<div style='position: relative; border-radius: 3px; overflow: hidden'> \
 					<div class='cover'></div> \
 					<div class='cover-edit'>Change cover</div> \
 					<div class='logo-cont'> \
@@ -307,7 +307,7 @@ define([
 						<div class='orgs'> \
 						</div> \
 					</div> \
-					<!--div class='more'>MORE</div--> \
+					<button class='ui button more' style='width: 100%; border-radius: 0; height: 4rem;'>MORE</button> \
 				</div> \
 			</div> \
 		");
@@ -741,6 +741,8 @@ define([
 
 		updateInfo(info);
 		enableSetting();
+
+		main.modal({ autofocus: false });
 
 		main.ready(function () { main.modal("show"); });
 	}

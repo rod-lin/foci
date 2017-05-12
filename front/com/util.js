@@ -20,11 +20,12 @@ define(function () {
 		return str;
 	};
 
-	util.emsg = function (str) {
+	util.emsg = function (str, style) {
+		style = style || "error";
 		var msg = $(" \
 			<div style='text-align: center;'> \
 				<div> \
-					<div class='ui error message' style='word-wrap: break-word;'></div> \
+					<div class='ui " + style + " message' style='word-wrap: break-word;'></div> \
 				</div> \
 			</div> \
 		");
