@@ -444,6 +444,7 @@
 				"use strict";
 
 				var loadDraft, clearDraft, hasDraft, saveDraft;
+				var published;
 
 				function initDraft() {
 					var euid = null;
@@ -664,6 +665,7 @@
 
 						euid = ev_info.euid;
 						cur_step = 1;
+						published = false;
 
 						var title = ev_info.title ? ev_info.title : "";
 						var descr = ev_info.descr ? ev_info.descr : "";
@@ -771,6 +773,7 @@
 								
 								if (suc) {
 									btn.addClass("disabled");
+									published = true;
 									setPublishMsg(lang.msg("$front.sub.profile.success! $front.sub.profile.you_can_go_tab_to_view($front.sub.profile.organized)").capital());
 								} else {
 									util.emsg(dat);
@@ -827,7 +830,8 @@
 							saveDraft(function (suc) {
 								if (suc !== false) {
 									clearDraft();
-									util.emsg("$front.sub.profile.save_draft", "info");
+									if (!published)
+										util.emsg("$front.sub.profile.save_draft", "info");
 								}
 
 								cb(suc); // if suc == true, change the tab
