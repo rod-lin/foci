@@ -426,6 +426,7 @@ define([
 			var ask_open = false;
 
 			main.modal({
+				autofocus: false,
 				onHide: function () {
 					if (ask_open) return false;
 
@@ -749,8 +750,6 @@ define([
 
 		updateInfo(info);
 		enableSetting();
-
-		main.modal({ autofocus: false });
 
 		main.ready(function () { main.modal("show"); });
 	}
