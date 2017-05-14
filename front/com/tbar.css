@@ -28,7 +28,7 @@
 	border: 1px solid rgba(0, 0, 0, 0.1);
 	border-width: 0 0 1px 0;
 
-	opacity: 0.8;
+	opacity: 1;
 	transition: opacity 0.3s, top 0.5s, box-shadow 0.3s, background 0.3s;
 }
 
@@ -37,9 +37,9 @@
 	opacity: 0;
 }
 
-.com-tbar:hover {
+/* .com-tbar:hover {
 	opacity: 1;
-}
+} */
 
 .com-tbar .logo {
 	height: auto;

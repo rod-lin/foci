@@ -385,6 +385,7 @@ define([
 						avatar.init(ava, dat, {
 							size: size,
 							onClick: function () {
+								util.jump("#profile/" + dat.uuid);
 								main.modal("hide all");
 							}
 						});
