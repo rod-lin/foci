@@ -45,6 +45,10 @@ define([ "com/util" ], function (util) {
 
 		function hideProg() {
 			progress.css("opacity", "0");
+
+			setTimeout(function () {
+				progress.progress("reset");
+			}, 300);
 		}
 
 		function errProg() {

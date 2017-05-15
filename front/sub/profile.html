@@ -725,11 +725,13 @@
 										bmap.clear();
 								}
 
-							}, function (lng, lat, addr) { // called everytime a position is selected
-								field_lng = lng;
-								field_lat = lat;
-								new_tab.find(".loc-selected").html(addr);
-								// alert(lng + ", " + lat + ", " + addr);
+							}, {
+								onClick: function (lng, lat, addr) { // called everytime a position is selected
+									field_lng = lng;
+									field_lat = lat;
+									new_tab.find(".loc-selected").html(addr);
+									// alert(lng + ", " + lat + ", " + addr);
+								}
 							});
 						}
 

@@ -180,6 +180,7 @@
 							$("body").addClass("padding-tbar");
 
 							if (notmain) {
+								bar.delSimple();
 								$("#main-loader").removeClass("active");
 								orig = pg.cur();
 								pg.to("part");

@@ -12,7 +12,6 @@ define([
 
 	var lim_config = {
 		max_title_len: 32,
-		max_location_len: 64,
 		max_descr_len: 512
 	};
 
@@ -55,25 +54,53 @@ define([
 		return main;
 	}
 
+	function parseInfo(info, config) {
+		config = $.extend({}, lim_config, config);
+
+		var ret = {};
+
+		ret.cover = info.cover ? foci.download(info.cover) : [ "img/tmp1.jpg", "img/tmp2.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/tmp5.jpg" ].choose();
+		ret.logo = info.logo ? foci.download(info.logo) : "img/deficon.jpg";
+		
+		ret.descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len)) : "(no description)";
+		ret.title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";
+		
+		ret.date = genDate(info.start, info.end);
+		
+		ret.partic = info.partic ? info.partic.length : 0;
+		ret.rating = info.rating ? info.rating : "nop";
+
+		ret.location = function (cb) {
+			if (info.loclng && info.loclat) {
+				ret.loclng = info.loclng;
+				ret.loclat = info.loclat;
+
+				map.locToName(info.loclng, info.loclat, function (addr) {
+					cb(addr);
+				});
+			} else {
+				cb("(unsettled)");
+			}
+		};
+
+		return ret;
+	}
+
 	function setDom(dom, info, config) {
 		config = config || {};
 		dom = $(dom);
 
-		var cover = info.cover ? foci.download(info.cover) : [ "img/tmp1.jpg", "img/tmp2.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/tmp5.jpg" ].choose();
-		var descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len)) : "(no description)";
-		var title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";
-		var date = genDate(info.start, info.end);
-		var partic = info.partic ? info.partic.length : 0;
+		var parsed = parseInfo(info, config);
 
-		dom.find(".cover").attr("src", cover);
-		dom.find(".title").html(title);
-		dom.find(".date").html(date);
-		dom.find(".description").html(descr);
-		dom.find(".partic").html(partic);
+		dom.find(".cover").attr("src", parsed.cover);
+		dom.find(".title").html(parsed.title);
+		dom.find(".date").html(parsed.date);
+		dom.find(".description").html(parsed.descr);
+		dom.find(".partic").html(parsed.partic);
 
 		var dom_util = {
 			changeCover: function (cover) {
-				dom.find(".cover").attr("src", foci.download(cover));
+				dom.find(".cover").attr("src", foci.download(parsed.cover));
 			}
 		};
 
@@ -326,33 +353,21 @@ define([
 
 		// update info
 		function updateInfo(info) {
-			var title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";
-			var time = genDate(info.start, info.end);
+			var parsed = parseInfo(info, config);
 
-			if (info.loclng && info.loclat) {
-				map.locToName(info.loclng, info.loclat, function (addr) {
-					main.find(".location").html(addr);
-				});
-			} else {
-				main.find(".location").html("(unsettled)");
-			}
+			parsed.location(function (addr) {
+				main.find(".location").html(addr);
+			});
 
-			var cover = info.cover ? foci.download(info.cover) : "img/tmp2.jpg";
-			var logo = info.logo ? foci.download(info.logo) : "img/deficon.jpg";
+			main.find(".cover").css("background-image", "url('" + parsed.cover + "')");
+			main.find(".logo").css("background-image", "url('" + parsed.logo + "')");
 
-			var rating = info.rating ? info.rating : "nop";
+			main.find(".title").html(parsed.title);
+			main.find(".rating>span").html(parsed.rating);
 
-			var descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len)) : "(no description)";
+			main.find(".time").html(parsed.date);
 
-			main.find(".cover").css("background-image", "url('" + cover + "')");
-			main.find(".logo").css("background-image", "url('" + logo + "')");
-
-			main.find(".title").html(title);
-			main.find(".rating>span").html(rating);
-
-			main.find(".time").html(time);
-
-			main.find(".descr").html(descr);
+			main.find(".descr").html(parsed.descr);
 
 			main.find(".back .util.close").click(function () {
 				main.modal("hide");
@@ -759,6 +774,7 @@ define([
 		qview: qview,
 		genDate: genDate,
 		eventTemplate: eventTemplate,
-		setDom: setDom
+		setDom: setDom,
+		parseInfo: parseInfo
 	}
 });

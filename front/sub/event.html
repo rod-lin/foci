@@ -4,18 +4,35 @@
 	}
 
 	#sub-event .cover {
+		position: fixed;
+
 		height: 100%;
-		background-image: url("img/cover1.jpg");
+		width: 100%;
+		top: 0;
+
+		background-image: url("img/cover3.jpg");
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 50% 50%;
+		
+		overflow: hidden;
+
+		box-shadow:
+			0 -10em 20em rgba(0, 0, 0, 0.7) inset,
+			0 0 5px rgba(0, 0, 0, 0.5);
+
+		transition: top 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+	}
+
+	#sub-event .cover.hide {
+		top: -100%;
 	}
 
 	#sub-event .cover .dim {
 		height: 100%;
 		width: 50%;
 
-		background-image: url("img/cover1.jpg");
+		background-image: url("img/cover3.jpg");
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 50% 50%;
@@ -26,10 +43,208 @@
 		height: 100%;
 		width: 100%;
 	}
+
+	#sub-event .cover .left-corner.shadow {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		left: -100%;
+		bottom: -100%;
+
+		box-shadow: 10em -10em 10em black;
+	}
+
+	#sub-event .cover .left-corner {
+		position: absolute;
+		bottom: 1.5em;
+		left: 1.5em;
+		color: white;
+		max-width: 70%;
+	}
+
+	#sub-event .cover .left-corner .date,
+	#sub-event .cover .left-corner .location {
+		font-size: 0.8em;
+		color: #B3B3B3;
+		margin-top: 0.4em;
+	}
+
+	#sub-event .cover .left-corner .title {
+		font-size: 3em;
+		font-weight: bold;
+		margin-top: 0.5rem;
+	}
+
+	#sub-event .cover .left-corner .tip {
+		font-size: 1em;
+		margin-top: 1rem;
+		opacity: 0.4;
+	}
+
+	@media only screen and (min-width: 1024px) {
+		#sub-event .cover .left-corner {
+			bottom: 2em;
+			left: 2em;
+
+			font-size: 140%;
+		}
+	}
+
+	#sub-event .cont {
+		position: relative;
+
+		width: 100%;
+		height: 100%;
+
+		overflow-y: auto;
+		overflow-x: hidden;
+
+		opacity: 0;
+		background: rgba(251, 251, 251, 1);
+
+		transition: opacity 0.3s;
+
+		text-align: center;
+	}
+
+	#sub-event .cont.show {
+		opacity: 1;
+	}
+
+	#sub-event .cont .title {
+		position: relative;
+
+		text-align: center;
+		font-size: 3em;
+		font-weight: bold;
+
+		color: #333333;
+
+		margin-bottom: 1rem;
+		padding: 0 2rem;
+	}
+
+	#sub-event .cont .date,
+	#sub-event .cont .location {
+		text-align: center;
+		font-size: 0.8em;
+		margin-top: 0.5rem;
+		color: #999999;
+	}
+
+	#sub-event .cont .info-box {
+		padding: 3rem 4rem 4rem;
+		color: #333333;
+	}
+
+	#sub-event .cont .descr {
+		font-size: 1.5em;
+		text-align: left;
+		margin-top: 1.5rem;
+	}
+
+	#sub-event .cont .bmap {
+		width: 100%;
+		height: 20rem;
+	}
+
+	#sub-event .cont .cont-box {
+		display: inline-block;
+
+		min-width: 50%;
+		max-width: 60%;
+
+		text-align: center;
+		margin-top: 2rem;
+
+		padding-bottom: 2rem;
+	}
+
+	#sub-event .cont .box {
+		position: relative;
+
+		width: 100%;
+
+		background: white;
+		border-radius: 3px;
+		box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+		overflow: hidden;
+	}
+
+	@media only screen and (max-width: 600px) {
+		#sub-event .cont .cont-box {
+			max-width: 95%;
+			margin-top: 1rem;
+			padding-bottom: 1rem;
+		}
+
+		#sub-event .cont .bmap {
+			height: 15rem;
+		}
+
+		#sub-event .cont .title {
+			font-size: 2em;
+		}
+
+		#sub-event .cont .info-box {
+			padding: 1.5rem 1rem 2rem;
+		}
+	}
 </style>
 
 <div id="sub-event">
+	<div class="cont">
+		<!-- <div class="tcover"></div> -->
+		<div class="cont-box">
+			<div class="box">
+				<div class="bmap"></div>
+				<div class="info-box">
+					<div class="title">Serendipity 邂逅艺术峰会 2017</div>
+					<div class="location"><i class="map outline icon"></i><span>浙江省杭州市西湖区孤山路</span></div>
+					<div class="date"><i class="calendar outline icon"></i><span>2-10 ~ 2-18</span></div>
+					<div class="descr">检察官哈维·登特（艾伦·艾克哈特 Aaron Eckhart 饰）死后的八年间，哥谭市在戈登警长（加里·奥德曼 Gary Oldman 饰）的努力下有效地遏制了犯罪活动。而蝙蝠侠布鲁斯·韦恩（克里斯蒂安·贝尔 Christian Bale 饰）因为背负谋杀登特的罪名，被 警方通缉，在哥谭市销声匿迹。然而，这看似平静的状态被恐怖分子贝恩（汤姆·哈迪 Tom Hardy 饰）的出现打破，他利用猫女（安妮·海瑟薇 Anne Hathaway 饰）偷取布鲁斯的指纹，致使韦恩集团面临破财，布鲁斯被赶出董事会。为了保证韦恩集团投资的能源项目不被坏人利用制造核弹，布鲁斯帮助米兰达（玛丽昂·歌迪亚 Marion Cotillard 饰）成为董事会主席。贝恩接下来一连串精密设计的计划将哥谭市陷入孤绝之境，毁灭之日指日可待。布鲁斯只能再次肩负起拯救哥谭的重任，然而至亲的管家阿福辞职离开、猫女的背叛、贝恩的凶残手段，爱人米拉达的真实面目露出，都让他拯救哥谭的行动变得不可能……
+					</div>
+				</div>
+			</div>
+			<div style="position: relative; width: 100%; margin-top: 1rem;">
+				<div style="width: 60%; float: left; margin-right: 1rem;">
+					<div class="box" style="padding: 2rem;">
+						Organizers
+						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+					</div>
+				</div>
+				<div style="position: relative; width: auto;">
+					<div class="box" style="width: auto; padding: 2rem; background: #3498DB; color: white;">
+						Staff
+					</div>
+					<div class="box" style="width: auto; padding: 2rem; margin-top: 1rem; background: #2ECC71; color: white;">
+						Participant
+					</div>
+				</div>
+			</div>
+
+			<div style="overflow: hidden; padding: 0 5% 3px 5%; width: 110%; margin-left: -5%;">
+				<div class="box" style="padding: 2rem; margin-top: 1rem; width: 100%;">
+					Comments
+					<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+					<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+					<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ui large loader active"></div>
 	<div class="cover">
+		<div class="left-corner shadow"></div>
+		<div class="left-corner">
+			<div class="date"><i class="calendar icon"></i><span>loading</span></div>
+			<div class="location"><i class="map icon"></i><span>loading</span></div>
+			<div class="title">(untitled)</div>
+			<div class="tip">Click for more</div>
+		</div>
+		<!-- <div class="ui loader active"></div> -->
 	</div>
 </div>
 
@@ -60,11 +275,58 @@
 			tbar.setSimple();
 			$("body").removeClass("padding-tbar");
 
+			// modules
+			var display = {};
+
+			display.render = function (info) {
+				var parsed = event.parseInfo(info, { max_title_len: 25 });
+				
+				var cover = main.children(".cover");
+				var cont = main.children(".cont");
+
+				cover.find(".title").html(parsed.title);
+				cover.find(".date span").html(parsed.date);
+
+				parsed.location(function (addr) {
+					cover.find(".location span").html(addr);
+					cont.find(".location span").html(addr);
+				});
+
+				map.embed(main.find(".bmap"), function (bmap) {
+					if (parsed.loclng && parsed.loclat)
+						bmap.set(parsed.loclng, parsed.loclat, 15);
+				}, { initPos: false, canMark: false });
+
+				cover.css("background-image", "url('" + parsed.cover + "')");
+
+				main.children(".loader").removeClass("active");
+
+				cont.find(".title").html(parsed.title);
+				cont.find(".descr").html(parsed.descr);
+				cont.find(".date span").html(parsed.date);
+			};
+
+			foci.get("/event/info", { euid: euid }, function (suc, dat) {
+				if (suc) {
+					display.render(dat);
+				} else {
+					util.emsg(dat);
+				}
+			});
+
 			// util.blur(main.find(".dim"), 10);
 
-			// setTimeout(function () {
-			// 	main.find(".dim").css("opacity", "1");
-			// }, 3000);
+			main.find(".cover").click(function () {
+				main.find(".cover").addClass("hide");
+				setTimeout(function () {
+					tbar.delSimple();
+					$("body").addClass("padding-tbar");
+
+					setTimeout(function () {
+						main.find(".cont").addClass("show");
+					}, 0);
+				}, 400);
+			});
 		});
 	}
 </script>

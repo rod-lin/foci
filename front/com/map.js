@@ -27,7 +27,11 @@ define([ "com/util" ], function (util) {
 		});
 	}
 
-	function initMap(cont, init, cb) {
+	function initMap(cont, init, config) {
+		config = $.extend({
+			initPos: true,
+			canMark: true
+		}, config);
 		cont = $(cont);
 
 		var main = $("<div style='height: 100%;'></div>")
@@ -41,7 +45,9 @@ define([ "com/util" ], function (util) {
 
 			var map = new BMap.Map(main[0]);
 
-			map.centerAndZoom("杭州");
+			if (config.initPos)
+				map.centerAndZoom("杭州", 12);
+			
 			map.enableScrollWheelZoom(true);
 			map.setMapStyle({ style: "grayscale" });
 
@@ -49,6 +55,7 @@ define([ "com/util" ], function (util) {
 			var cur_loc = null;
 
 			map.addEventListener("click", function(e) {
+				if (!config.canMark) return;
 				if (cur_marker) map.removeOverlay(cur_marker);
 
 				var marker = new BMap.Marker(e.point);
@@ -58,7 +65,7 @@ define([ "com/util" ], function (util) {
 				cur_loc = e.point;
 
 				locToName(e.point.lng, e.point.lat, function(addr) {
-					cb(e.point.lng, e.point.lat, addr);
+					if (config.onClick) config.onClick(e.point.lng, e.point.lat, addr);
 				});
 			});
 
@@ -71,14 +78,14 @@ define([ "com/util" ], function (util) {
 					map.centerAndZoom("杭州");
 				},
 
-				set: function (lng, lat) {
+				set: function (lng, lat, zoom) {
 					if (cur_marker) map.removeOverlay(cur_marker);
 
 					var p = new BMap.Point(lng, lat);
 					cur_marker = new BMap.Marker(p);
 					cur_loc = p;
 
-					map.centerAndZoom(p, 12);
+					map.centerAndZoom(p, zoom || 12);
 					map.addOverlay(cur_marker);
 
 					locToName(lng, lat, function(addr) {
@@ -95,8 +102,8 @@ define([ "com/util" ], function (util) {
 		});
 	}
 
-	function embed(cont, init, cb) {
-		initMap(cont, init, cb);
+	function embed(cont, init, config) {
+		initMap(cont, init, config);
 	}
 
 	function init(config, cb) {
@@ -136,9 +143,11 @@ define([ "com/util" ], function (util) {
 			main.modal("show");
 			main.find(".dimmer").removeClass("active");
 
-			initMap(".map", function (map) { bmap = map; }, function (lng, lat, addr) {
-				msg.removeClass("red").addClass("blue");
-				msg.html(addr);
+			initMap(".map", function (map) { bmap = map; }, {
+				onClick: function (lng, lat, addr) {
+					msg.removeClass("red").addClass("blue");
+					msg.html(addr);
+				}
 			});
 		});
 
