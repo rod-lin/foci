@@ -28,6 +28,8 @@ var Event = function (euid, owner /* uuid */) {
 	this.title = config.def.event.title;
 	this.descr = "";
 
+	this.detail = null;
+
 	this.loclng = null; // longitude
 	this.loclat = null; // latitude
 
@@ -56,6 +58,8 @@ Event.prototype.getInfo = function () {
 
 		title: this.title,
 		descr: this.descr,
+
+		detail: this.detail,
 
 		loclng: this.loclng,
 		loclat: this.loclat,

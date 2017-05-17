@@ -2,7 +2,7 @@
 
 "use strict";
 
-define([ "com/xfilt" ], function (xfilt) {
+define([ "com/xfilt", "com/util" ], function (xfilt, util) {
 	var $ = jQuery;
 	foci.loadCSS("com/avatar.css");
 
@@ -34,7 +34,7 @@ define([ "com/xfilt" ], function (xfilt) {
 		ava.click(function () {
 			if (info.uuid) {
 				if (config.onClick) config.onClick();
-				jump("#profile/" + info.uuid);
+				util.jump("#profile/" + info.uuid);
 			}
 		});
 

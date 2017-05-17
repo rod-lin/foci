@@ -75,7 +75,7 @@ define([ "com/util" ], function (util) {
 				},
 
 				init: function () {
-					map.centerAndZoom("杭州");
+					map.centerAndZoom("杭州", 12);
 				},
 
 				set: function (lng, lat, zoom) {
@@ -89,11 +89,12 @@ define([ "com/util" ], function (util) {
 					map.addOverlay(cur_marker);
 
 					locToName(lng, lat, function(addr) {
-						cb(lng, lat, addr);
+						if (config.onClick) config.onClick(lng, lat, addr);
 					});
 				},
 
 				clear: function () {
+					map.reset();
 					if (cur_marker) map.removeOverlay(cur_marker);
 					cur_marker = null;
 					cur_loc = null;

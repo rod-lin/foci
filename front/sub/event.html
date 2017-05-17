@@ -169,6 +169,64 @@
 		border-radius: 3px;
 		box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 		overflow: hidden;
+
+		transition: opacity 0.3s;
+	}
+
+	#sub-event .cont .sub-title {
+		color: #4C4C4C;
+		opacity: 0.5;
+		font-size: 1.1em;
+		text-align: left;
+	}
+
+	#sub-event .cont .i-wanna-be {
+		color: #262626;
+		opacity: 0.5;
+		font-size: 1.5em;
+		font-weight: bold;
+	}
+
+	#sub-event .cont .box-set .box {
+		border-radius: 0;
+	}
+
+	#sub-event .cont .box-set .box:first-child {
+		border-radius: 3px 3px 0 0;
+	}
+
+	#sub-event .cont .box-set .box:last-child {
+		border-radius: 0 0 3px 3px;
+	}
+
+	#sub-event .cont .box.btn:hover {
+		opacity: 0.8;
+		cursor: pointer;
+	}
+
+	#sub-event .cont .box.pad {
+		padding: 2rem;
+	}
+
+	#sub-event .cont .box.btn {
+		padding-left: 0;
+		padding-right: 0;
+	}
+
+	#sub-event .cont .relax-left {
+		float: left;
+		width: 70%;
+		margin-right: 1rem;
+	}
+
+	#sub-event .cont .relax-right {
+		position: relative;
+		width: auto;
+		pointer-events: none;
+	}
+
+	#sub-event .cont .relax-right * {
+		pointer-events: auto;
 	}
 
 	@media only screen and (max-width: 600px) {
@@ -189,6 +247,17 @@
 		#sub-event .cont .info-box {
 			padding: 1.5rem 1rem 2rem;
 		}
+
+		#sub-event .cont .descr {
+			font-size: 1.2em;
+		}
+
+		#sub-event .cont .relax-left {
+			float: none;
+			width: 100%;
+			margin-right: 0;
+			margin-bottom: 1rem;
+		}
 	}
 </style>
 
@@ -199,38 +268,50 @@
 			<div class="box">
 				<div class="bmap"></div>
 				<div class="info-box">
-					<div class="title">Serendipity 邂逅艺术峰会 2017</div>
-					<div class="location"><i class="map outline icon"></i><span>浙江省杭州市西湖区孤山路</span></div>
-					<div class="date"><i class="calendar outline icon"></i><span>2-10 ~ 2-18</span></div>
-					<div class="descr">检察官哈维·登特（艾伦·艾克哈特 Aaron Eckhart 饰）死后的八年间，哥谭市在戈登警长（加里·奥德曼 Gary Oldman 饰）的努力下有效地遏制了犯罪活动。而蝙蝠侠布鲁斯·韦恩（克里斯蒂安·贝尔 Christian Bale 饰）因为背负谋杀登特的罪名，被 警方通缉，在哥谭市销声匿迹。然而，这看似平静的状态被恐怖分子贝恩（汤姆·哈迪 Tom Hardy 饰）的出现打破，他利用猫女（安妮·海瑟薇 Anne Hathaway 饰）偷取布鲁斯的指纹，致使韦恩集团面临破财，布鲁斯被赶出董事会。为了保证韦恩集团投资的能源项目不被坏人利用制造核弹，布鲁斯帮助米兰达（玛丽昂·歌迪亚 Marion Cotillard 饰）成为董事会主席。贝恩接下来一连串精密设计的计划将哥谭市陷入孤绝之境，毁灭之日指日可待。布鲁斯只能再次肩负起拯救哥谭的重任，然而至亲的管家阿福辞职离开、猫女的背叛、贝恩的凶残手段，爱人米拉达的真实面目露出，都让他拯救哥谭的行动变得不可能……
-					</div>
+					<div class="title"></div>
+					<div class="location"><i class="map outline icon"></i><span></span></div>
+					<div class="date"><i class="calendar outline icon"></i><span></span></div>
+					<div class="descr"></div>
+				</div>
+			</div>
+			<div class="box pad" style="margin-top: 1rem;">
+				<div class="sub-title">Detail</div>
+				<div class="detail" style="margin-top: 1rem;">
+					<img class="com-util-cont-fill" src="img/paragraph.png"></img>
 				</div>
 			</div>
 			<div style="position: relative; width: 100%; margin-top: 1rem;">
-				<div style="width: 60%; float: left; margin-right: 1rem;">
-					<div class="box" style="padding: 2rem;">
-						Organizers
-						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
-						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
-						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+				<div class="relax-left">
+					<div class="box pad" style="margin-right: 1rem;">
+						<div class="sub-title">Organizers</div>
+						<div class="org" style="margin-top: 1rem;">
+							<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+							<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+							<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+						</div>
 					</div>
 				</div>
-				<div style="position: relative; width: auto;">
-					<div class="box" style="width: auto; padding: 2rem; background: #3498DB; color: white;">
+				<div class="box-set relax-right">
+					<div class="box pad" style="width: auto;">
+						<div class="i-wanna-be">I wanna be</div>
+					</div>
+					<div class="box pad btn" style="width: auto; margin-top: 0.2rem; background: #3498DB; color: white;">
 						Staff
 					</div>
-					<div class="box" style="width: auto; padding: 2rem; margin-top: 1rem; background: #2ECC71; color: white;">
+					<div class="box pad btn" style="width: auto; margin-top: 0.2rem; background: #2ECC71; color: white;">
 						Participant
 					</div>
 				</div>
 			</div>
 
 			<div style="overflow: hidden; padding: 0 5% 3px 5%; width: 110%; margin-left: -5%;">
-				<div class="box" style="padding: 2rem; margin-top: 1rem; width: 100%;">
-					Comments
-					<img class="com-util-cont-fill" src="img/paragraph.png"></img>
-					<img class="com-util-cont-fill" src="img/paragraph.png"></img>
-					<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+				<div class="box pad" style="margin-top: 1rem; width: 100%;">
+					<div class="sub-title">Comments</div>
+					<div class="comment">
+						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -254,8 +335,8 @@
 			"com/env", "com/util", "com/event",
 			"com/xfilt", "com/pages", "com/tab",
 			"com/login", "com/event", "com/upload",
-			"com/map", "com/lang"
-		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang) {
+			"com/map", "com/lang", "com/avatar"
+		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang, avatar) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
 				return;
@@ -268,12 +349,7 @@
 				return;
 			}
 
-			show(true);
-
 			var tbar = env.get("tbar");
-
-			tbar.setSimple();
-			$("body").removeClass("padding-tbar");
 
 			// modules
 			var display = {};
@@ -283,6 +359,12 @@
 				
 				var cover = main.children(".cover");
 				var cont = main.children(".cont");
+
+				cover.ready(function () {
+					tbar.setSimple();
+					$("body").removeClass("padding-tbar");
+					show(true);
+				});
 
 				cover.find(".title").html(parsed.title);
 				cover.find(".date span").html(parsed.date);
@@ -304,6 +386,34 @@
 				cont.find(".title").html(parsed.title);
 				cont.find(".descr").html(parsed.descr);
 				cont.find(".date span").html(parsed.date);
+
+				cont.find(".detail").html(parsed.detail);
+
+				var ava = cont.find(".org");
+				var fill = ava.children();
+
+				var size;
+
+				switch (info.org.length) {
+					case 1: size = "5em"; break;
+					case 2: size = "4em"; break;
+					default: size = "3em";
+				}
+
+				for (var i = 0; i < parsed.org.length; i++) {
+					foci.get("/user/info", { uuid: parsed.org[i] }, function (suc, dat) {
+						if (!suc) {
+							util.emsg(dat);
+							dat = null;
+						}
+
+						avatar.init(ava, dat, {
+							size: size
+						});
+
+						fill.remove();
+					});
+				}
 			};
 
 			foci.get("/event/info", { euid: euid }, function (suc, dat) {

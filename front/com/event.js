@@ -12,7 +12,8 @@ define([
 
 	var lim_config = {
 		max_title_len: 32,
-		max_descr_len: 512
+		max_descr_len: 512,
+		max_detail_len: 1024
 	};
 
 	function genDate(start, end) {
@@ -65,10 +66,14 @@ define([
 		ret.descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len)) : "(no description)";
 		ret.title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";
 		
+		ret.detail = info.detail ? xfilt(util.short(info.title, config.max_detail_len)) : "(no detail)";
+
 		ret.date = genDate(info.start, info.end);
 		
 		ret.partic = info.partic ? info.partic.length : 0;
 		ret.rating = info.rating ? info.rating : "nop";
+
+		ret.org = info.org || [];
 
 		ret.location = function (cb) {
 			if (info.loclng && info.loclat) {
@@ -400,7 +405,6 @@ define([
 						avatar.init(ava, dat, {
 							size: size,
 							onClick: function () {
-								util.jump("#profile/" + dat.uuid);
 								main.modal("hide all");
 							}
 						});
