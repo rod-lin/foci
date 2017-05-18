@@ -35,6 +35,7 @@ define([
 
 	function eventTemplate() {
 		var main = $('<div class="ui card event"> \
+			<div class="ui loader"></div> \
 			<div class="image"> \
 				<img class="cover"> \
 			</div> \
@@ -148,11 +149,13 @@ define([
 				config.view(info);
 			});
 
-			main.css("opacity", "0");
+			main.css("opacity", "0.5");
 			main.css("pointer-events", "none");
+			main.find(".loader").addClass("active");
 
 			main.find(".cover").on("load", function () {
 				wf.update();
+				main.find(".loader").removeClass("active");
 				setTimeout(function () {
 					main.css("opacity", "1");
 					main.css("pointer-events", "");
