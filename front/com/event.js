@@ -149,11 +149,20 @@ define([
 				config.view(info);
 			});
 
-			main.css("opacity", "0.5");
+			// main.css("opacity", "0.4");
 			main.css("pointer-events", "none");
 			main.find(".loader").addClass("active");
 
+			var loaded = false;
+
+			setTimeout(function () {
+				if (!loaded) {
+					main.css("opacity", "0.4");
+				}
+			}, 1000);
+
 			main.find(".cover").on("load", function () {
+				loaded = true;
 				wf.update();
 				main.find(".loader").removeClass("active");
 				setTimeout(function () {
