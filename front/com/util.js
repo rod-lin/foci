@@ -164,6 +164,15 @@ define(function () {
 		setTimeout(cb, 0);
 	};
 
+	util.await = function (cond, cb) {
+		var proc = setInterval(function () {
+			if (cond()) {
+				clearInterval(proc);
+				cb();
+			}
+		}, 30);
+	};
+
 	Array.prototype.choose = function () {
 		return this[Math.floor(Math.random() * this.length)];
 	};

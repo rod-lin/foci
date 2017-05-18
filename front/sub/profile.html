@@ -212,11 +212,6 @@
 			color: #9F3A38;
 		}
 
-		#sub-profile .new-event .ev-content .p2,
-		#sub-profile .new-event .ev-content .p4 {
-			text-align: center;
-		}
-
 		.ui.steps .step.active .title {
 			color: rgba(0, 0, 0, .87) !important;
 		}
@@ -263,26 +258,27 @@
 			</div>
 			<div class="ev-content">
 				<!-- <div id="sub-profile-map" class="map"></div> -->
-				<div class="page p1 active">
+				<div class="page page-info active">
 					<input class="ev-title no-style" placeholder="Title">
 					<textarea class="ev-descr no-style" placeholder="Description"></textarea>
 				</div>
-				<div class="page p2"></div>
-				<div class="page p3">
-					<div class="map"></div>
+				<div class="page page-cover" style="text-align: center;"></div>
+				<div class="page page-loc">
+					<div class="map" style="height: 100%;"></div>
 					<div style="text-align: center; position: absolute; top: 0; width: 100%; margin-top: 0.6rem; pointer-events: none;">
-						<div class="ui compact black inline message loc-selected" style="min-width: 50%; max-width: 95%;">Select a location on the map</div>
+						<div class="ui compact black inline message loc-selected" style="min-width: 50%; max-width: 95%;"></div>
 					</div>
 				</div>
-				<div class="page p4">
+				<div class="page page-pub" style="text-align: center;">
 					<div class="protocol">
 						<style>
 							
-							#sub-profile .new-event .ev-content .p4 .protocol {
+							#sub-profile .new-event .ev-content .page-pub .protocol {
 								padding: 0 2rem;
+								height: 100%;
 							}
 
-							#sub-profile .new-event .ev-content .p4 .protocol .prompt {
+							#sub-profile .new-event .ev-content .page-pub .protocol .prompt {
 								font-size: 2em;
 								margin-bottom: 1rem;
 								margin-top: -5rem;
@@ -401,39 +397,8 @@
 					$(this).removeClass("warning");
 				});
 
-				new_tab.find(".ev-step .steps").append(' \
-					<div class="link active step info-step"> \
-						<i class="info icon"></i> \
-						<div class="content"> \
-							<div class="title">' + m("$front.sub.profile.basic").capital() + '</div> \
-							<div class="description">Title and description</div> \
-						</div> \
-					</div> \
-					<div class="link step cover-step"> \
-						<i class="camera retro card icon"></i> \
-						<div class="content"> \
-							<div class="title">' + m("$front.sub.profile.cover").capital() + '</div> \
-							<div class="description">Cover and logo</div> \
-						</div> \
-					</div> \
-					<div class="link step loc-step"> \
-						<i class="map outline icon"></i> \
-						<div class="content"> \
-							<div class="title">' + m("$front.sub.profile.location").capital() + '</div> \
-							<div class="description">When and where</div> \
-						</div> \
-					</div> \
-					<div class="link step pub-step"> \
-						<i class="send outline icon"></i> \
-						<div class="content"> \
-							<div class="title">' + m("$front.sub.profile.publish").capital() + '</div> \
-							<div class="description">Rules and Protocols</div> \
-						</div> \
-					</div> \
-				');
-
 				/*
-					To add step, you need to:
+					To add a step, you need to:
 						1. Add a step item in the .ev-step
 						2. Add a page in the .ev-content
 						3. Add the step name in the "steps" array below
@@ -448,103 +413,220 @@
 
 				function initDraft() {
 					var euid = null;
-					var steps = [ "info", "cover", "loc", "pub" ];
-					var cur_step = 1;
-
+					// var steps = [ "info", "cover", "loc", "pub" ];
+					var cur_step = "info";
 					var bmap = null;
+					var fields;
 
-					var step_show = {};
-					var step_check = {
-						"info": function (cb) {
-							var suc = true;
+					var steps = {
+						info: {
+							title: "Info",
+							icon: "info",
+							subtitle: "Title and description",
 
-							if (!new_tab.find(".ev-title").val()) {
-								new_tab.find(".ev-title").addClass("warning");
-								suc = false;
-							}
+							page: main.find(".page.page-info"),
+							next: "cover",
 
-							if (!new_tab.find(".ev-descr").val()) {
-								new_tab.find(".ev-descr").addClass("warning");
-								suc = false;
-							}
+							onInit: function (info) {
+								fields.title = info.title ? info.title : "";
+								fields.descr = info.descr ? info.descr : "";
 
-							if (suc) {
-								uploadChanges({
-									title: new_tab.find(".ev-title").val(),
-									descr: new_tab.find(".ev-descr").val()
-								}, function (suc) {
-									if (suc) {
-										new_tab.find(".info-step").addClass("completed");
-										cb(true);
-									} else {
-										cb(false);
-									}
+								tb.getItem("new").html(lang.msg("$front.sub.profile.save").capital())
+									.off("click", nextStep); // avoid duplication
+
+								util.nextTick(function () { // avoid bubbling
+									tb.getItem("new").on("click", nextStep);
 								});
-							} else cb(false);
 
-							return;
+								// page 1
+								new_tab.find(".ev-title").val(fields.title);
+								new_tab.find(".ev-descr").val(fields.descr);
+
+								return fields.title && fields.descr;
+							},
+
+							onCheck: function (cb) {
+								var suc = true;
+
+								if (!new_tab.find(".ev-title").val()) {
+									new_tab.find(".ev-title").addClass("warning");
+									suc = false;
+								}
+
+								if (!new_tab.find(".ev-descr").val()) {
+									new_tab.find(".ev-descr").addClass("warning");
+									suc = false;
+								}
+
+								if (suc) {
+									uploadChanges({
+										title: new_tab.find(".ev-title").val(),
+										descr: new_tab.find(".ev-descr").val()
+									}, function (suc) {
+										if (suc) {
+											new_tab.find(".info-step").addClass("completed");
+											cb(true);
+										} else {
+											cb(false);
+										}
+									});
+								} else cb(false);
+
+								return;
+							}
 						},
 
-						"cover": function (cb) {
-							if (field_cover) {
-								uploadChanges({
-									cover: field_cover
-								}, function (suc) {
-									if (suc) {
-										new_tab.find(".cover-step").addClass("completed");
-										cb(true);
-									} else {
-										cb(false);
+						cover: {
+							title: "Cover",
+							icon: "camera retro card",
+							subtitle: "Cover and logo",
+
+							page: main.find(".page.page-cover"),
+							next: "loc",
+
+							onInit: function (info) {
+								var event_tmp = event.eventTemplate();
+								new_tab.find(".ev-content .page-cover").html(event_tmp);
+								event_tmp
+									.css("display", "inline-block")
+									.css("text-align", "left")
+									.css("max-width", "90%")
+									.css("max-height", "90%")
+									.addClass("vcenter");
+
+								fields.cover = info.cover;
+
+								event.setDom(event_tmp, {
+									title: lang.msg("$front.sub.profile.template"),
+									descr: lang.msg("$front.sub.profile.click_pic_to_change"),
+									cover: info.cover
+								}, {
+									onCoverClick: function (dom) {
+										upload.init(function (file) {
+											if (file) {
+												fields.cover = file;
+												dom.changeCover(file);
+											}
+										});
 									}
 								});
-							} else {
-								util.ask(lang.msg("$front.sub.profile.no_selected($front.sub.profile.cover)$front.sub.profile.period $front.sub.profile.sure_to_leave?").capital(), function (suc) {
-									if (suc) {
-										// new_tab.find(".cover-step").addClass("completed");
-										cb(true);
-									} else {
-										cb(false);
-									}
-								});
+
+								return fields.cover;
+							},
+
+							onCheck: function (cb) {
+								if (fields.cover) {
+									uploadChanges({
+										cover: fields.cover
+									}, function (suc) {
+										if (suc) {
+											new_tab.find(".cover-step").addClass("completed");
+											cb(true);
+										} else {
+											cb(false);
+										}
+									});
+								} else {
+									util.ask(lang.msg("$front.sub.profile.no_selected($front.sub.profile.cover)$front.sub.profile.period $front.sub.profile.sure_to_leave?").capital(), function (suc) {
+										if (suc) {
+											// new_tab.find(".cover-step").addClass("completed");
+											cb(true);
+										} else {
+											cb(false);
+										}
+									});
+								}
 							}
 						},
 
-						"loc": function (cb) {
-							if (field_lng && field_lat) {
-								uploadChanges({
-									loclng: field_lng,
-									loclat: field_lat
-								}, function (suc) {
-									if (suc) {
-										// alert(field_lng + ", " + field_lat + " saved");
-										new_tab.find(".loc-step").addClass("completed");
-										cb(true);
-									} else {
-										cb(false);
-									}
-								});
-							} else {
-								util.ask(lang.msg("$front.sub.profile.no_selected($front.sub.profile.location)$front.sub.profile.period $front.sub.profile.sure_to_leave?").capital(), function (suc) {
-									if (suc) {
-										// new_tab.find(".loc-step").addClass("completed");
-										cb(true);
-									} else {
-										cb(false);
-									}
-								});
+						loc: {
+							title: "Location",
+							icon: "map outline",
+							subtitle: "When and where",
+
+							page: main.find(".page.page-loc"),
+							next: "pub",
+
+							onInit: function (info) {
+								fields.lng = info.loclng;
+								fields.lat = info.loclat;
+
+								new_tab.find(".loc-selected").html("Select a location on the map");
+
+								if (!bmap) {
+									map.embed(new_tab.find(".ev-content .page-loc .map"), function (map) {
+										bmap = map;
+
+										steps["loc"].onShow = function () {
+											bmap.init(); // init position
+
+											if (fields.lng && fields.lat)
+												bmap.set(fields.lng, fields.lat);
+											else
+												bmap.clear();
+										}
+
+									}, {
+										onClick: function (lng, lat, addr) { // called everytime a position is selected
+											fields.lng = lng;
+											fields.lat = lat;
+											new_tab.find(".loc-selected").html(addr);
+											// alert(lng + ", " + lat + ", " + addr);
+										}
+									});
+								}
+
+								return fields.lng && fields.lat;
+							},
+
+							onCheck: function (cb) {
+								if (fields.lng && fields.lat) {
+									uploadChanges({
+										loclng: fields.lng,
+										loclat: fields.lat
+									}, function (suc) {
+										if (suc) {
+											new_tab.find(".loc-step").addClass("completed");
+											cb(true);
+										} else {
+											cb(false);
+										}
+									});
+								} else {
+									util.ask(lang.msg("$front.sub.profile.no_selected($front.sub.profile.location)$front.sub.profile.period $front.sub.profile.sure_to_leave?").capital(), function (suc) {
+										if (suc) {
+											// new_tab.find(".loc-step").addClass("completed");
+											cb(true);
+										} else {
+											cb(false);
+										}
+									});
+								}
+							}
+						},
+
+						pub: {
+							title: "Publish",
+							icon: "send outline",
+							subtitle: "Rules and protocols",
+
+							page: main.find(".page.page-pub"),
+
+							onInit: function (info) {
+								// reset publish message
+								setPublishMsg(lang.msg("$front.sub.profile.publish_event").capital());
+
+								
+								new_tab.find(".ev-content .protocol .publish-btn").removeClass("disabled");
+								published = false;
+								
+								return false;
 							}
 						}
 					};
 
-					var field_cover;
-					var field_lng, field_lat;
-
 					function setPublishMsg(msg) {
 						new_tab.find(".ev-content .protocol .prompt").html(msg);
-					}
-
-					function resetPublishMsg() {
-						setPublishMsg(lang.msg("$front.sub.profile.publish_event").capital());
 					}
 					
 					/* loader icon on the New/Save button */
@@ -559,6 +641,7 @@
 						tb.getItem("new").html("Save");
 					}
 
+					// save the current changes
 					function uploadChanges(changes, cb) {
 						login.session(function (session) {
 							setLoader();
@@ -580,23 +663,25 @@
 					}
 					
 					function checkStep(cb) {
-						var check = cur_step <= steps.length ? step_check[steps[cur_step - 1]] : null;
+						var check = steps[cur_step].onCheck;
 						if (check) {
 							check(cb);
 						} else cb(true);
 					}
 
-					function setStep(page, nocheck) {
+					function setStep(step, nocheck) {
 						var next = function (cast) {
 							if (cast === false) return;
 
+							// some settings to remove active page and cast to the new one
 							new_tab.find(".ev-content .page.active").removeClass("active");
 							new_tab.find(".ev-step .active").removeClass("active");
-							new_tab.find("." + steps[page - 1] + "-step").addClass("active");
-							new_tab.find(".ev-content .p" + page).addClass("active");
-							cur_step = page;
+							new_tab.find("." + step + "-step").addClass("active");
+							steps[step].page.addClass("active");
 
-							var show = step_show[steps[cur_step - 1]];
+							cur_step = step;
+
+							var show = steps[step].onShow;
 							if (show) show();
 						};
 
@@ -613,14 +698,29 @@
 							});
 						}
 
-						for (var i = 1; i <= steps.length; i++) {
-							set("." + steps[i - 1] + "-step", i);
+						// init all step tags
+						for (var k in steps) {
+							if (steps.hasOwnProperty(k)) {
+								var step = $(' \
+									<div class="link step ' + k + '-step"> \
+										<i class="' + steps[k].icon + ' icon"></i> \
+										<div class="content"> \
+											<div class="title">' + steps[k].title + '</div> \
+											<div class="description">' + steps[k].subtitle + '</div> \
+										</div> \
+									</div> \
+								');
+								new_tab.find(".ev-step .steps").append(step);
+								set(step, k);
+							}
 						}
 					}
 
 					function nextStep() {
-						if (cur_step < steps.length) {
-							setStep(cur_step + 1);
+						var next = steps[cur_step].next;
+
+						if (next) {
+							setStep(next);
 						} else {
 							checkStep(function () {});
 						}
@@ -628,12 +728,6 @@
 
 					clearDraft = function () {
 						euid = null;
-						cur_step = 1;
-
-						field_cover = null;
-						field_lng = null;
-						field_lat = null;
-
 						tb.getItem("new").off("click", nextStep);
 						tb.getItem("new").html(lang.msg("$front.sub.profile.new").capital());
 						// new_tab.find(".ev-step .step").off("click");
@@ -651,115 +745,40 @@
 						});
 					};
 
-					loadDraft = function (ev_info) {
-						if (!ev_info || !ev_info.euid) {
+					loadDraft = function (info) {
+						if (!info || !info.euid) {
 							util.emsg("$impossible(euid not given)");
 							return;
 						} // make sure the event has been created
 
 						updateNewEventPos(); // update position
 
-						resetPublishMsg();
-						new_tab.find(".ev-content .protocol .publish-btn").removeClass("disabled");
-						// alert(ev_info.euid);
+						euid = info.euid;
 
-						euid = ev_info.euid;
-						cur_step = 1;
-						published = false;
-
-						var title = ev_info.title ? ev_info.title : "";
-						var descr = ev_info.descr ? ev_info.descr : "";
-
-						tb.getItem("new").html(lang.msg("$front.sub.profile.save").capital())
-							.off("click", nextStep); // avoid duplication
-
-						util.nextTick(function () { // avoid bubbling
-							tb.getItem("new").on("click", nextStep);
-						});
-
-						// page 1
-						new_tab.find(".ev-title").val(title);
-						new_tab.find(".ev-descr").val(descr);
-
-						// page 2
-						var event_tmp = event.eventTemplate();
-						new_tab.find(".ev-content .p2").html(event_tmp);
-						event_tmp
-							.css("display", "inline-block")
-							.css("text-align", "left")
-							.css("max-width", "90%")
-							.css("max-height", "90%")
-							.addClass("vcenter");
-
-						field_cover = ev_info.cover;
-
-						event.setDom(event_tmp, {
-							title: lang.msg("$front.sub.profile.template"),
-							descr: lang.msg("$front.sub.profile.click_pic_to_change"),
-							cover: ev_info.cover
-						}, {
-							onCoverClick: function (dom) {
-								upload.init(function (file) {
-									if (file) {
-										field_cover = file;
-										dom.changeCover(file);
-									}
-								});
-							}
-						});
-
-						// page 3
-						field_lng = ev_info.loclng;
-						field_lat = ev_info.loclat;
-
-						if (!bmap) {
-							map.embed(new_tab.find(".ev-content .p3 .map"), function (map) {
-								bmap = map;
-
-								step_show["loc"] = function () {
-									bmap.init(); // init position
-
-									if (field_lng && field_lat)
-										bmap.set(field_lng, field_lat);
-									else
-										bmap.clear();
-								}
-
-							}, {
-								onClick: function (lng, lat, addr) { // called everytime a position is selected
-									field_lng = lng;
-									field_lat = lat;
-									new_tab.find(".loc-selected").html(addr);
-									// alert(lng + ", " + lat + ", " + addr);
-								}
-							});
-						}
-
+						fields = {};
 						var last = null;
 
-						new_tab.find(".completed").removeClass("completed");
+						// init all steps with new event info
+						for (var k in steps) {
+							if (steps.hasOwnProperty(k)) {
+								if (steps[k].onInit) {
+									var finished = steps[k].onInit(info);
+									if (finished) {
+										new_tab.find("." + k + "-step").addClass("completed");
+									} else {
+										if (!last) last = k;
+										new_tab.find("." + k + "-step").removeClass("completed");
+									}
+								}
+							}
+						}
 
-						if (title && descr) {
-							new_tab.find(".info-step").addClass("completed");
-						} else last = 1;
-
-						if (field_cover) {
-							new_tab.find(".cover-step").addClass("completed");
-						} else if (!last) last = 2;
-
-						if (field_lng && field_lat) {
-							new_tab.find(".loc-step").addClass("completed");
-						} else if (!last) last = 3;
-
-						// if (last)
-						//	new_tab.find(last).click();
-						// initStep(); // initialize event bondings
-
-						setStep(last || 4, true);
+						setStep(last || "pub", true);
 					};
 
 					initStep();
 
+					// publish button onclick
 					new_tab.find(".ev-content .protocol .publish-btn").click(function () {
 						var btn = $(this);
 
@@ -859,15 +878,7 @@
 						.css("height", tb.displayHeight() - new_tab.find(".ev-title").outerHeight() + "px");
 
 					new_tab
-						.find(".ev-content .p2")
-						.css("height", tb.displayHeight());
-
-					new_tab
-						.find(".ev-content .p3 .map")
-						.css("height", tb.displayHeight());
-
-					new_tab
-						.find(".ev-content .p4 .protocol")
+						.find(".ev-content .page")
 						.css("height", tb.displayHeight());
 				}
 

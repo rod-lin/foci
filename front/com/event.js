@@ -4,8 +4,8 @@
 define([
 	"com/xfilt", "com/waterfall", "com/util",
 	"com/avatar", "com/env", "com/upload",
-	"com/login", "com/map"
-], function (xfilt, waterfall, util, avatar, env, upload, login, map) {
+	"com/login", "com/map", "com/tagbox"
+], function (xfilt, waterfall, util, avatar, env, upload, login, map, tagbox) {
 	var $ = jQuery;
 	foci.loadCSS("com/event.css");
 	foci.loadCSS("com/eqview.css");
@@ -328,26 +328,17 @@ define([
 					<div class='cont'> \
 						<div class='descr'> \
 						</div> \
-						<div class='tagbox'> \
-							<div class='tagadd-btn ui floating dropdown'> \
-								<i class='add icon'></i> \
-								<div class='menu'> \
-								</div> \
-							</div> \
-						</div> \
-						<div class='ui horizontal divider'>organizer</div> \
+						<div class='tagbox'></div> \
+						<!--div class='ui horizontal divider'>organizer</div> \
 						<div class='orgs'> \
-						</div> \
+						</div--> \
 					</div> \
-					<button class='ui button more' style='width: 100%; border-radius: 0; height: 4rem;'>MORE</button> \
+					<button class='ui button more' style='width: 100%; border-radius: 0; height: 4rem; opacity: 0.7;'>MORE</button> \
 				</div> \
 			</div> \
 		");
 
-		function genTag(name) {
-			var tag = $("<div class='favtag' data-value='" + name + "'>" + name + "<i class='tagdel-btn cancel icon'></i></div>");
-			return tag;
-		}
+		var tgbox = null;
 
 		if (info.euid) {
 			main.find(".more").click(function () {
@@ -418,12 +409,10 @@ define([
 				orgs.html("<div class='tip'>no organizer</div>");
 			}
 
-			main.find(".tagbox .favtag").remove();
-
 			if (info.favtag) {
-				for (var i = 0; i < info.favtag.length; i++) {
-					main.find(".tagbox").prepend(genTag(info.favtag[i]));
-				}
+				util.await(function () { return tgbox !== null; }, function () {
+					tgbox.set(info.favtag);
+				});
 			}
 
 			// check is owner
@@ -560,70 +549,16 @@ define([
 				main.find(".logo").css("background-image", "url('" + foci.download(cont) + "')");
 			});
 
-			function initTag() {
-				if (!changes.favtag) {
-					changes.favtag = info.favtag;
-				}
-			}
-
-			function removeTag(name) {
-				initTag();
-
-				var i = changes.favtag.indexOf(name);
-				if (i != -1)
-					changes.favtag.splice(i, 1);
-
-				main.find(".tagadd-btn .menu").find(".t-" + name).css("display", "");
-			}
-
-			function addTag(name) {
-				initTag();
-
-				if (changes.favtag.indexOf(name) == -1)
-					changes.favtag.push(name);
-
-				main.find(".tagadd-btn .menu").find(".t-" + name).css("display", "none");
-			}
-
-			function tagdel() {
-				if (!main.hasClass("setting")) return;
-
-				var tag = $(this).parent();
-				var name = tag.attr("data-value");
-				
-				removeTag(name);
-				tag.remove();
-			}
-
 			env.favtag(function (tags) {
-				if (tags) {
-					for (var i = 0; i < tags.length; i++) {
-						main.find(".tagadd-btn .menu").append(" \
-							<div class='item t-" + tags[i] + "' data-value='" + tags[i] + "'>" + tags[i] + " \
-						</div>");
-					}
-				}
-			});
+				tgbox = tagbox.init(main.find(".tagbox"), tags || []);
 
-			main.find(".tagadd-btn").dropdown({
-				onShow: function () {
-					var menu = $(this).find(".menu");
-
-					initTag();
-
-					for (var i = 0; i < changes.favtag.length; i++) {
-						menu.find(".t-" + changes.favtag[i]).css("display", "none");
-					}
-				},
-
-				onChange: function (value) {
-					addTag(value);
-
-					var ntag = genTag(value);
-
-					$(this).before(ntag);
-					ntag.find(".tagdel-btn").click(tagdel);
-				}
+				// if (tags) {
+				// 	for (var i = 0; i < tags.length; i++) {
+				// 		main.find(".tagadd-btn .menu").append(" \
+				// 			<div class='item t-" + tags[i] + "' data-value='" + tags[i] + "'>" + tags[i] + " \
+				// 		</div>");
+				// 	}
+				// }
 			});
 
 			/*** editable fields ***/
@@ -644,10 +579,12 @@ define([
 					.removeClass("setting")
 					.addClass("checkmark");
 
-				main.find(".tagdel-btn").click(tagdel);
-
 				main.modal("refresh");
 			
+				util.await(function () { return tgbox !== null; }, function () {
+					tgbox.openEdit();
+				});
+
 				setTimeout(function () {
 					main.find(".back .util.setting")
 						.popup({
@@ -667,6 +604,10 @@ define([
 				if (!util.kcount(changes)) {
 					cb(true);
 					return;
+				}
+
+				if (tgbox && tgbox.hasChanged()) {
+					changes.favtag = tgbox.cur();
 				}
 
 				foci.encop(session, $.extend(changes, {
@@ -707,6 +648,10 @@ define([
 					main.find(".back .util .setting-btn")
 						.removeClass("refresh")
 						.addClass("setting");
+
+					util.await(function () { return tgbox !== null; }, function () {
+						tgbox.closeEdit();
+					});
 
 					main.find(".back .util.setting").popup("hide");
 					// main.modal({ closable: true });
