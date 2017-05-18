@@ -126,7 +126,9 @@ define([
 			max_descr_len: 64,
 			view: function (info) {
 				qview(info, null, mod);
-			}
+			},
+
+			loader_only_on_buffer: false // only show loader when buffering(not on the beginning)
 
 			// fetch: {
 			//     fetch: function (skip, cb(suc, dat)),
@@ -272,7 +274,10 @@ define([
 			var bar = bottomBar();
 			fetch_loader = bar; // as a sign to prevent reload
 			main.append(bar);
-			bar.setLoader();
+
+			// alert(edom.length);
+			if (edom.length || !config.loader_only_on_buffer)
+				bar.setLoader();
 
 			config.fetch.fetch(fetch_skip, function (suc, dat) {
 				if (suc) {
