@@ -1,0 +1,53 @@
+"use strict";
+
+define([], function () {
+	var $ = jQuery;
+
+	function stat(url, config, cb) {
+		config = $.extend({
+			x: 0, y: 0,
+			w: 1, h: 1
+		}, config);
+
+		var canv = $("<canvas></canvas>")[0];
+
+		if (!canv.getContext || !Image) {
+			cb(null);
+			return;
+		}
+
+		var ctx = canv.getContext("2d");
+
+		var img = new Image();
+		img.src = url;
+		img.onload = function () {
+			ctx.drawImage(img, 0, 0);
+
+			function rgb(r, g, b) {
+				return (r << 16) + (g << 8) + b;
+			}
+
+			var w = canv.width, h = canv.height;
+			var dat = ctx.getImageData(config.x * w, config.y * h, config.w * w, config.h * h);
+
+			var sum = 0;
+
+			var r = 0, g = 0, b = 0;
+
+			for (var i = 0; i < dat.data.length; i += 4) {
+				r += dat.data[i];
+				g += dat.data[i + 1];
+				b += dat.data[i + 2];
+				// alert(dat.data[i] + ", " + dat.data[i + 1] + ", " + dat.data[i + 2] + ", " + rgb(dat.data[i], dat.data[i + 1], dat.data[i + 2]));
+			}
+			
+			var count = w * h;
+
+			cb({
+				average: rgb(r / count, g / count, b / count)
+			});
+		};
+	}
+
+	return { stat: stat };
+});

@@ -41,7 +41,7 @@ define([ "com/util" ], function (util) {
 		cont.append(loader);
 
 		waitBMap(function () {
-			loader.removeClass("active");
+			loader.remove();
 
 			var map = new BMap.Map(main[0]);
 
@@ -115,9 +115,9 @@ define([ "com/util" ], function (util) {
 		var main = $(" \
 			<div class='com-map ui small modal'> \
 				<div class='board'> \
-					<div class='ui active dimmer'> \
+					<!--div class='ui active dimmer'> \
 						<div class='ui large loader'></div> \
-					</div> \
+					</div--> \
 					<div class='ui blue message'></div> \
 					<div class='map'></div> \
 				</div> \
@@ -144,7 +144,7 @@ define([ "com/util" ], function (util) {
 			main.modal("show");
 			main.find(".dimmer").removeClass("active");
 
-			initMap(".map", function (map) { bmap = map; }, {
+			initMap(main.find(".map"), function (map) { bmap = map; }, {
 				onClick: function (lng, lat, addr) {
 					msg.removeClass("red").addClass("blue");
 					msg.html(addr);

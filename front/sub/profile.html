@@ -554,25 +554,27 @@
 								new_tab.find(".loc-selected").html("Select a location on the map");
 
 								if (!bmap) {
-									map.embed(new_tab.find(".ev-content .page-loc .map"), function (map) {
-										bmap = map;
+									new_tab.find(".ev-content .page-loc .map").ready(function () {
+										map.embed(new_tab.find(".ev-content .page-loc .map"), function (map) {
+											bmap = map;
 
-										steps["loc"].onShow = function () {
-											bmap.init(); // init position
+											// steps["loc"].onShow = function () {
+											// 	bmap.init(); // init position
 
-											if (fields.lng && fields.lat)
-												bmap.set(fields.lng, fields.lat);
-											else
-												bmap.clear();
-										}
+											// 	if (fields.lng && fields.lat)
+											// 		bmap.set(fields.lng, fields.lat);
+											// 	else
+											// 		bmap.clear();
+											// }
 
-									}, {
-										onClick: function (lng, lat, addr) { // called everytime a position is selected
-											fields.lng = lng;
-											fields.lat = lat;
-											new_tab.find(".loc-selected").html(addr);
-											// alert(lng + ", " + lat + ", " + addr);
-										}
+										}, {
+											onClick: function (lng, lat, addr) { // called everytime a position is selected
+												fields.lng = lng;
+												fields.lat = lat;
+												new_tab.find(".loc-selected").html(addr);
+												// alert(lng + ", " + lat + ", " + addr);
+											}
+										});
 									});
 								}
 

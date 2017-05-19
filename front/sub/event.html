@@ -17,9 +17,7 @@
 		
 		overflow: hidden;
 
-		box-shadow:
-			0 -10em 20em rgba(0, 0, 0, 0.7) inset,
-			0 0 5px rgba(0, 0, 0, 0.5);
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 
 		transition: top 0.7s cubic-bezier(0.19, 1, 0.22, 1);
 	}
@@ -50,22 +48,18 @@
 		height: 100%;
 		left: -100%;
 		bottom: -100%;
-
-		box-shadow: 10em -10em 10em black;
 	}
 
 	#sub-event .cover .left-corner {
 		position: absolute;
 		bottom: 1.5em;
 		left: 1.5em;
-		color: white;
 		max-width: 70%;
 	}
 
 	#sub-event .cover .left-corner .date,
 	#sub-event .cover .left-corner .location {
 		font-size: 0.8em;
-		color: #B3B3B3;
 		margin-top: 0.4em;
 	}
 
@@ -118,8 +112,6 @@
 		font-size: 3em;
 		font-weight: bold;
 
-		color: #333333;
-
 		margin-bottom: 1rem;
 		padding: 0 2rem;
 	}
@@ -129,7 +121,6 @@
 		text-align: center;
 		font-size: 0.8em;
 		margin-top: 0.5rem;
-		color: #999999;
 	}
 
 	#sub-event .cont .info-box {
@@ -141,6 +132,7 @@
 		font-size: 1.5em;
 		text-align: left;
 		margin-top: 1.5rem;
+		line-height: 150%;
 	}
 
 	#sub-event .cont .bmap {
@@ -335,8 +327,9 @@
 			"com/env", "com/util", "com/event",
 			"com/xfilt", "com/pages", "com/tab",
 			"com/login", "com/event", "com/upload",
-			"com/map", "com/lang", "com/avatar"
-		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang, avatar) {
+			"com/map", "com/lang", "com/avatar",
+			"com/colstat"
+		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang, avatar, colstat) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
 				return;
@@ -380,6 +373,33 @@
 				}, { initPos: false, canMark: false });
 
 				cover.css("background-image", "url('" + parsed.cover + "')");
+
+				colstat.stat(parsed.cover, { x: 0, y: 0.5, w: 0.5, h: 0.5 }, function (res) {
+					var av = res.average;
+
+					if (!av) return;
+
+					var distw = Math.sqrt(
+						Math.pow(256 - av[0], 2) +
+						Math.pow(256 - av[1], 2) +
+						Math.pow(256 - av[2], 2)
+					);
+
+					var distb = Math.sqrt(
+						Math.pow(av[0], 2) +
+						Math.pow(av[1], 2) +
+						Math.pow(av[2], 2)
+					);
+
+					// alert([ distb, distw ]);
+
+					if (distb > distw) {
+						// black text
+						cover.css("color", "#191919");
+					} else {
+						cover.css("color", "#E6E6E6");
+					}
+				});
 
 				main.children(".loader").removeClass("active");
 

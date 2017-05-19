@@ -34,7 +34,7 @@ define([
 	}
 
 	function eventTemplate() {
-		var main = $('<div class="ui card event"> \
+		var main = $('<div class="ui card event" style="overflow: hidden;"> \
 			<div class="ui loader"></div> \
 			<div class="image"> \
 				<img class="cover"> \
