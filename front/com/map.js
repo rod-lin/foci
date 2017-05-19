@@ -5,7 +5,7 @@
 define([ "com/util" ], function (util) {
 	var $ = jQuery;
 	foci.loadCSS("com/map.css");
-	// $("head").append("<script type='text/javascript' src='http://api.map.baidu.com/getscript?v=2.0&ak=B4lBjPwv47t4CNlFiyY4siyy'></script>");
+	$("head").append("<script type='text/javascript' src='http://api.map.baidu.com/getscript?v=2.0&ak=B4lBjPwv47t4CNlFiyY4siyy'></script>");
 
 	var geoc = null;
 
