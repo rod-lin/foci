@@ -41,6 +41,9 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 						<i class="filter-btn filter link icon"></i> \
 					</div> \
 				</div> \
+				<div class="banner-view"> \
+					<div class="banner"><i class="diamond icon"></i></div> \
+				</div> \
 				<div class="right-bar"> \
 					<div class="avatar"></div> \
 					<button class="ui black icon button login-btn"> \
@@ -340,6 +343,22 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 			profile: function (cb) {
 				main.find(".profile").click(cb);
+			},
+
+			showBanner: function () {
+				main.find(".left-bar").addClass("show-banner");
+			},
+
+			hideBanner: function () {
+				main.find(".left-bar").removeClass("show-banner");
+			},
+
+			setBanner: function (html) {
+				main.find(".banner").html(html);
+			},
+
+			setTitle: function (title) {
+				main.find(".banner").html(title.replace(/-/g, "<i class='sub caret right icon'></i>"));
 			}
 		};
 

@@ -10,7 +10,6 @@
 		width: 100%;
 		top: 0;
 
-		background-image: url("img/cover3.jpg");
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 50% 50%;
@@ -135,9 +134,19 @@
 		line-height: 150%;
 	}
 
-	#sub-event .cont .bmap {
+	#sub-event .cont .scover {
 		width: 100%;
 		height: 20rem;
+
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: 50% 50%;
+	}
+
+	#sub-event .cont .bmap {
+		width: 100%;
+		height: 30rem;
+		pointer-events: none;
 	}
 
 	#sub-event .cont .cont-box {
@@ -205,30 +214,14 @@
 		padding-right: 0;
 	}
 
-	#sub-event .cont .relax-left {
-		float: left;
-		width: 70%;
-		margin-right: 1rem;
-	}
-
-	#sub-event .cont .relax-right {
-		position: relative;
-		width: auto;
-		pointer-events: none;
-	}
-
-	#sub-event .cont .relax-right * {
-		pointer-events: auto;
-	}
-
-	@media only screen and (max-width: 600px) {
+	@media only screen and (max-width: 720px) {
 		#sub-event .cont .cont-box {
 			max-width: 95%;
 			margin-top: 1rem;
 			padding-bottom: 1rem;
 		}
 
-		#sub-event .cont .bmap {
+		#sub-event .cont .scover {
 			height: 15rem;
 		}
 
@@ -243,13 +236,6 @@
 		#sub-event .cont .descr {
 			font-size: 1.2em;
 		}
-
-		#sub-event .cont .relax-left {
-			float: none;
-			width: 100%;
-			margin-right: 0;
-			margin-bottom: 1rem;
-		}
 	}
 </style>
 
@@ -258,7 +244,7 @@
 		<!-- <div class="tcover"></div> -->
 		<div class="cont-box">
 			<div class="box">
-				<div class="bmap"></div>
+				<div class="scover"></div>
 				<div class="info-box">
 					<div class="title"></div>
 					<div class="location"><i class="map outline icon"></i><span></span></div>
@@ -272,9 +258,55 @@
 					<img class="com-util-cont-fill" src="img/paragraph.png"></img>
 				</div>
 			</div>
-			<div style="position: relative; width: 100%; margin-top: 1rem;">
-				<div class="relax-left">
-					<div class="box pad" style="margin-right: 1rem;">
+			<div class="box" style="margin-top: 1rem;">
+				<div class="blurring dimmable bmap-box">
+					<div class="ui dimmer">
+						<div class="content">
+							<div class="center">
+								<div class="ui inverted button view-btn">View</div>
+							</div>
+						</div>
+					</div>
+					<div class="bmap"></div>
+				</div>
+			</div>
+
+			<style>
+				
+				#sub-event .cont .row {}
+
+				#sub-event .cont .col {
+					display: inline-block;
+					vertical-align: top;
+					padding-right: 0.5rem;
+					margin-top: 1rem;
+				}
+
+				#sub-event .cont .col:last-child {
+					padding-right: 0;
+					padding-left: 0.5rem;
+				}
+
+				#sub-event .cont .col-7 {
+					width: 70%;
+				}
+
+				#sub-event .cont .col-3 {
+					width: 30%;
+				}
+
+				@media only screen and (max-width: 720px) {
+					#sub-event .cont .col-mid-full {
+						padding: 0;
+						width: 100%;
+					}
+				}
+
+			</style>
+
+			<div class="row">
+				<div class="col col-7 col-mid-full">
+					<div class="box pad">
 						<div class="sub-title">Organizers</div>
 						<div class="org" style="margin-top: 1rem;">
 							<img class="com-util-cont-fill" src="img/paragraph.png"></img>
@@ -282,15 +314,14 @@
 							<img class="com-util-cont-fill" src="img/paragraph.png"></img>
 						</div>
 					</div>
-				</div>
-				<div class="box-set relax-right">
-					<div class="box pad" style="width: auto;">
+				</div><div class="col col-3 col-mid-full box-set">
+					<div class="box pad">
 						<div class="i-wanna-be">I wanna be</div>
 					</div>
-					<div class="box pad btn" style="width: auto; margin-top: 0.2rem; background: #3498DB; color: white;">
+					<div class="box pad btn" style=" margin-top: 0.2rem; background: #3498DB; color: white;">
 						Staff
 					</div>
-					<div class="box pad btn" style="width: auto; margin-top: 0.2rem; background: #2ECC71; color: white;">
+					<div class="box pad btn" style="margin-top: 0.2rem; background: #2ECC71; color: white;">
 						Participant
 					</div>
 				</div>
@@ -344,6 +375,16 @@
 
 			var tbar = env.get("tbar");
 
+			tbar.setTitle("loading");
+
+			util.scroll(main.find(".cont"), function (n) {
+				if (n > 0) {
+					tbar.showBanner();
+				} else {
+					tbar.hideBanner();
+				}
+			});
+
 			// modules
 			var display = {};
 
@@ -352,6 +393,8 @@
 				
 				var cover = main.children(".cover");
 				var cont = main.children(".cont");
+
+				tbar.setTitle(parsed.title + " - " + parsed.date);
 
 				cover.ready(function () {
 					tbar.setSimple();
@@ -366,11 +409,6 @@
 					cover.find(".location span").html(addr);
 					cont.find(".location span").html(addr);
 				});
-
-				map.embed(main.find(".bmap"), function (bmap) {
-					if (parsed.loclng && parsed.loclat)
-						bmap.set(parsed.loclng, parsed.loclat, 15);
-				}, { initPos: false, canMark: false });
 
 				cover.css("background-image", "url('" + parsed.cover + "')");
 
@@ -403,11 +441,23 @@
 
 				main.children(".loader").removeClass("active");
 
+				cont.find(".scover").css("background-image", "url('" + parsed.cover + "')");
 				cont.find(".title").html(parsed.title);
 				cont.find(".descr").html(parsed.descr);
 				cont.find(".date span").html(parsed.date);
 
 				cont.find(".detail").html(parsed.detail);
+
+				map.embed(main.find(".bmap"), function (bmap) {
+					if (parsed.loclng && parsed.loclat)
+						bmap.set(parsed.loclng, parsed.loclat, 15);
+				}, { initPos: false, canMark: false });
+
+				cont.find(".bmap-box").dimmer({ on: "hover" });
+
+				cont.find(".bmap-box .view-btn").click(function () {
+					map.init({ init_lng: parsed.loclng, init_lat: parsed.loclat, view: true, prompt: "loading address" });
+				});
 
 				var ava = cont.find(".org");
 				var fill = ava.children();

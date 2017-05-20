@@ -18,7 +18,8 @@
 	position: fixed;
 
 	width: 100%;
-	padding: 1em;
+	padding: 0;
+	height: 4.7em;
 
 	top: 0;
 	left: 0;
@@ -65,9 +66,49 @@
 	pointer-events: none;
 }
 
+.com-tbar .banner-view,
 .com-tbar .left-bar {
 	position: relative;
-	height: 100%;
+	
+	top: 0;
+	left: 0;
+	height: 4.7em;
+	padding: 1em;
+	transition: top 0.2s;
+}
+
+.com-tbar .banner-view {
+	position: absolute;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.com-tbar .left-bar.show-banner {
+	top: -3.7em;
+}
+
+.com-tbar .banner {
+	position: relative;
+	
+	top: 4.7rem;
+	font-size: 1.2em;
+
+	line-height: 2.7rem;
+	margin-left: 1.5rem;
+
+	transition: top 0.2s;
+}
+
+.com-tbar .banner .sub {
+	opacity: 0.5;
+}
+
+.com-tbar .left-bar.show-banner+.banner-view {
+	pointer-events: auto;
+}
+
+.com-tbar .left-bar.show-banner+.banner-view .banner {
+	top: 0;
 }
 
 .com-tbar .search-box .prompt {
@@ -218,8 +259,17 @@
 		margin-top: 1em;
 	}
 
+	.com-tbar .banner-view,
 	.com-tbar .left-bar {
 		text-align: center;
+	}
+
+	.com-tbar .banner-view {
+		width: 100%;
+	}
+
+	.com-tbar .banner {
+		margin-left: 0;
 	}
 
 	.com-tbar .right-bar {

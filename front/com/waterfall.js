@@ -27,10 +27,18 @@ define(function () {
 			child[i] = $(child[i]);
 		}
 
+		var intact = false;
+
 		function update() {
 			if (!cont.is(":visible")) {
 				return;
 			}
+
+			// if (intact) {
+			// 	return;
+			// }
+
+			intact = true;
 
 			/* side margin */
 			var count = config.count + 1;
@@ -110,31 +118,6 @@ define(function () {
 				heights[col] += child[i].height() + gap;
 			}
 
-			/*
-			for (var col = 0; col < count; col++) {
-				top = gap;
-
-				for (var i = col; i < child.length; i += count) {
-					if (child[i]) {
-						child[i].css({
-							position: "absolute",
-							display: "inline-block",
-							left: left + "px",
-							top: top + "px",
-							margin: "0",
-						});
-
-						top += child[i].height() + gap;
-					}
-				}
-
-				if (top > max_top)
-					max_top = top;
-
-				left += width + gap;
-			}
-			*/
-
 			cont.css("height", heights[findMaxColumn()]);
 
 			if (config.onUpdate) config.onUpdate(ret);
@@ -143,6 +126,7 @@ define(function () {
 		}
 
 		function add(elem) {
+			intact = false;
 			elem = $(elem);
 
 			elem.css("opacity", "0");
@@ -169,6 +153,7 @@ define(function () {
 			update: update,
 			add: add,
 			clear: function () {
+				intact = false;
 				child = [];
 				cont.html("");
 			}

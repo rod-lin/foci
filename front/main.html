@@ -135,11 +135,20 @@
 						util.jump("#profile");
 					});
 
+					util.scroll("#search, #part", function (n) {
+						if (n > 0) {
+							bar.showBanner();
+						} else {
+							bar.hideBanner();
+						}
+					});
+
 					var cover_loaded = false;
 					var pg = pages.init({
 						"search": {
 							page: "#search",
 							onShow: function () {
+								bar.setTitle("Search");
 								bar.delSimple();
 							}
 						},
@@ -147,6 +156,7 @@
 						"cover": {
 							page: "#cover",
 							onShow: function () {
+								bar.setTitle("Foci");
 								bar.setSimple();
 							},
 
@@ -177,6 +187,7 @@
 
 					var pt = parts.init("#part", {
 						onJump: function (notmain) {
+							bar.hideBanner();
 							$("body").addClass("padding-tbar");
 
 							if (notmain) {
@@ -221,6 +232,8 @@
 						pg.to("search");
 
 						ev.clear(function () {
+							bar.setTitle("Search results - " + query.kw);
+
 							$("#search").scrollTop(0);
 							cur_query = query;
 							// alert("fetch");

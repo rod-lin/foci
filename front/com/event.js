@@ -50,8 +50,13 @@ define([
 				<a> \
 					<i class="user icon"></i><span class="partic"></span> \
 				</a> \
+				<i class="right floated star icon" style="margin: 0;" data-content="focus"></i> \
 			</div> \
 		</div>');
+
+		main.find(".star.icon").popup({
+			position: "left center"
+		});
 
 		return main;
 	}
@@ -151,19 +156,25 @@ define([
 				config.view(info);
 			});
 
-			// main.css("opacity", "0.4");
+			main.css("opacity", "0");
 			main.css("pointer-events", "none");
 			main.find(".loader").addClass("active");
 
 			var loaded = false;
 
-			setTimeout(function () {
+			// main.ready(function () {
+			// 	if (!loaded) {
+			// 		// wf.update();
+			// 		// main.css("opacity", "0.2");
+			// 	}
+			// });
+
+			main.find(".cover").ready(function () {
 				if (!loaded) {
+					wf.update();
 					main.css("opacity", "0.4");
 				}
-			}, 1000);
-
-			main.find(".cover").on("load", function () {
+			}).on("load", function () {
 				loaded = true;
 				wf.update();
 				main.find(".loader").removeClass("active");

@@ -160,6 +160,32 @@ define(function () {
 		});
 	};
 
+	// cb(n) if scroll down
+	// cb(-n) if scroll up
+	util.scroll = function (elem, cb) {
+		elem = $(elem);
+
+		var cur = elem.scrollTop();
+		var acc = 0;
+
+		var onscr = function () {
+			var now = $(this).scrollTop();
+
+			if (Math.abs(now - cur) > 20) {
+				cb(now - cur);
+			}
+
+			cur = now;
+
+			// elem.off("scroll", onscr);
+			// setTimeout(function () {
+			// 	elem.on("scroll", onscr);
+			// }, 100);
+		};
+
+		elem.on("scroll", onscr);
+	};
+
 	util.nextTick = function (cb) {
 		setTimeout(cb, 0);
 	};

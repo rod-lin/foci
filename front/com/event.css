@@ -21,7 +21,7 @@
 
 	text-align: left;
 
-	transition: left 0.1s, top 0.1s, opacity 0.3s;
+	transition: opacity 0.3s;
 }
 
 .com-event .image {

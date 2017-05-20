@@ -305,6 +305,10 @@
 			"com/map", "com/lang"
 		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang) {
 			var init = function (info, is_self) {
+				var tbar = env.get("tbar");
+
+				tbar.setTitle("Profile - " + info.dname);
+
 				var left_bar = main.find(".left-bar");
 				var right_bar = main.find(".right-bar");
 
@@ -375,6 +379,7 @@
 					"partic": {
 						name: lang.msg("$front.sub.profile.participated").capital(),
 						onShow: function (show) {
+							tbar.setTitle("Profile - " + info.dname + " - Participated");
 							eventTabOnShow("partic", false, undefined, show);
 						}
 					},
@@ -382,6 +387,7 @@
 					"org": {
 						name: lang.msg("$front.sub.profile.organized").capital(),
 						onShow: function (show) {
+							tbar.setTitle("Profile - " + info.dname + " - Organized");
 							eventTabOnShow("org", false, undefined, show);
 						}
 					}
@@ -812,6 +818,7 @@
 					tabs["draft"] = {
 						name: lang.msg("$front.sub.profile.draft").capital(),
 						onShow: function (show) {
+							tbar.setTitle("Profile - " + info.dname + " - Draft");
 							eventTabOnShow("draft", true, function (info) {
 								loadDraft(info);
 								tb.to("new");
@@ -826,6 +833,8 @@
 
 						onShow: function (show) {
 							updateAllPos();
+
+							tbar.setTitle("Profile - " + info.dname + " - New");
 
 							login.session(function (session) {
 								if (hasDraft()) {
@@ -871,6 +880,14 @@
 					tb.getTab("new").html(new_tab);
 
 				tb.to("partic");
+
+				// util.scroll(main, function (n) {
+				// 	if (n > 0) {
+				// 		tbar.showBanner();
+				// 	} else {
+				// 		tbar.hideBanner();
+				// 	}
+				// });
 
 				var display_mode = "normal";
 

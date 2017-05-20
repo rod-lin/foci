@@ -30,7 +30,7 @@ define([ "com/util" ], function (util) {
 	function initMap(cont, init, config) {
 		config = $.extend({
 			initPos: true,
-			canMark: true
+			canMark: true,
 		}, config);
 		cont = $(cont);
 
@@ -40,36 +40,15 @@ define([ "com/util" ], function (util) {
 		cont.append(main);
 		cont.append(loader);
 
+		var cur_marker = null;
+		var cur_loc = null;
+
 		waitBMap(function () {
 			loader.remove();
 
 			var map = new BMap.Map(main[0]);
 
-			if (config.initPos)
-				map.centerAndZoom("杭州", 12);
-			
-			map.enableScrollWheelZoom(true);
-			map.setMapStyle({ style: "grayscale" });
-
-			var cur_marker = null;
-			var cur_loc = null;
-
-			map.addEventListener("click", function(e) {
-				if (!config.canMark) return;
-				if (cur_marker) map.removeOverlay(cur_marker);
-
-				var marker = new BMap.Marker(e.point);
-				map.addOverlay(marker);
-
-				cur_marker = marker;
-				cur_loc = e.point;
-
-				locToName(e.point.lng, e.point.lat, function(addr) {
-					if (config.onClick) config.onClick(e.point.lng, e.point.lat, addr);
-				});
-			});
-
-			if (init) init({
+			var ret = {
 				cur: function () {
 					return cur_loc;
 				},
@@ -99,7 +78,24 @@ define([ "com/util" ], function (util) {
 					cur_marker = null;
 					cur_loc = null;
 				}
+			};
+
+			if (config.initPos)
+				map.centerAndZoom("杭州", 12);
+			
+			map.enableScrollWheelZoom(true);
+			map.setMapStyle({ style: "grayscale" });
+
+			map.addEventListener("click", function(e) {
+				if (!config.canMark) return;
+				ret.set(e.point.lng, e.point.lat);
 			});
+
+			if (init) init(ret);
+			
+			if (config.init_lng && config.init_lat) {
+				ret.set(config.init_lng, config.init_lat);
+			}
 		});
 	}
 
@@ -109,6 +105,9 @@ define([ "com/util" ], function (util) {
 
 	function init(config, cb) {
 		config = $.extend({
+			view: false, /* view a map, not choose location */
+			init_lng: null,
+			init_lat: null,
 			prompt: "Click and choose a location"
 		}, config);
 
@@ -145,6 +144,10 @@ define([ "com/util" ], function (util) {
 			main.find(".dimmer").removeClass("active");
 
 			initMap(main.find(".map"), function (map) { bmap = map; }, {
+				init_lng: config.init_lng,
+				init_lat: config.init_lat,
+				canMark: !config.view,
+
 				onClick: function (lng, lat, addr) {
 					msg.removeClass("red").addClass("blue");
 					msg.html(addr);
@@ -160,6 +163,8 @@ define([ "com/util" ], function (util) {
 			closable: true,
 
 			onHide: function () {
+				if (config.view) return true;
+
 				if (!bmap) return false;
 
 				if (!bmap.cur()) {
