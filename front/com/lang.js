@@ -137,7 +137,8 @@ define(function () {
 	var dict = {
 		"def.network_error": "network error",
 		"def.server_error": "server_error",
-		"def.no_session": "no session stored"
+		"def.no_session": "no session stored",
+		"def.failed_parse_form": "failed to parse form"
 	};
 
 	function msg(msg) {

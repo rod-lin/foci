@@ -1,0 +1,25 @@
+.com-form {
+	padding: 3rem;
+}
+
+.com-form .title {
+	font-size: 2em;
+	font-weight: bold;
+
+	text-align: center;
+	margin-bottom: 3rem;
+
+	opacity: 0.9;
+}
+
+.com-form .form .fields {
+	margin-bottom: 0 !important;
+}
+
+.com-form .form .field {
+	margin-bottom: 1rem !important;
+}
+
+.com-form .form .header {
+	opacity: 0.3;
+}

@@ -108,8 +108,8 @@
 			require([
 				"com/tbar", "com/event", "com/env",
 				"com/util", "com/pages", "com/parts",
-				"com/lang"
-			], function (tbar, event, env, util, pages, parts, lang) {
+				"com/lang", "com/formi"
+			], function (tbar, event, env, util, pages, parts, lang, formi) {
 				lang.loadDict("english", util);
 
 				var cover = [ "img/cover1.jpg", "img/cover2.jpg", "img/cover3.jpg" ].choose();
@@ -118,6 +118,77 @@
 				env.init(function () {
 					// map.init();
 					// console.log(lang.expand("hola"));
+
+					// formi.modal({
+					// 	name: "staff register",
+					// 	block: [
+					// 		{
+					// 			name: "Basic info",
+					// 			field: [
+					// 				[
+					// 					{
+					// 						name: "lala",
+					// 						input: {
+					// 							type: "text",
+					// 							name: "first_name",
+					// 							placeholder: "First name"
+					// 						}
+					// 					},
+
+					// 					{
+					// 						name: "lolo",
+					// 						input: {
+					// 							type: "text",
+					// 							name: "last_name",
+					// 							placeholder: "Last name"
+					// 						}
+					// 					}
+					// 				],
+
+					// 				{
+					// 					sub: [
+					// 						{
+					// 							input: {
+					// 								type: "check",
+					// 								name: "ischild",
+					// 								placeholder: "I'm a child",
+					// 								label: "ha"
+					// 							}
+					// 						},
+
+					// 						{
+					// 							input: {
+					// 								type: "check",
+					// 								name: "ischild",
+					// 								placeholder: "I'm a child",
+					// 								label: "ha"
+					// 							}
+					// 						}
+					// 					]
+					// 				}
+					// 			]
+					// 		},
+
+					// 		{
+					// 			name: "Contact",
+					// 			field: [
+					// 				{
+					// 					name: "Phone",
+					// 					input: {
+					// 						type: "text"
+					// 					}
+					// 				},
+
+					// 				{
+					// 					name: "Other",
+					// 					input: {
+					// 						type: "textarea"
+					// 					}
+					// 				}
+					// 			]
+					// 		}
+					// 	]
+					// });
 
 					var bar = tbar.init();
 
