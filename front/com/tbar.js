@@ -16,11 +16,9 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 			<div class="com-tbar hide"> \
 				<div class="left-bar"> \
 					<div class="ui left action right icon input search-box"> \
-						<div class="nav ui basic floating dropdown button"> \
+						<button class="menu-btn"> \
 							<i class="content icon" style="margin: 0;"></i> \
-							<div class="menu"> \
-							</div> \
-						</div> \
+						</button> \
 						<!--div class="tags">Hi</div--> \
 						<div class="ui search fluid"> \
 							<div class="filter-tag fluid ui multiple dropdown"> \
@@ -39,6 +37,13 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 							<input class="prompt" placeholder="Type for surprise" type="text"> \
 						</div> \
 						<i class="filter-btn filter link icon"></i> \
+					</div> \
+				</div> \
+				<div class="menu-view"> \
+					<div class="menu-cont"> \
+						<i class="cancel icon"></i> \
+						<span class="menu-link">HOME</span> \
+						<span class="menu-link">PLAZA</span> \
 					</div> \
 				</div> \
 				<div class="banner-view"> \
@@ -66,7 +71,28 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 		main = $(main);
 
-		// main.find(".nav").dropdown();
+		var showMenu, hideMenu;
+
+		(function () {
+			var proc;
+
+			showMenu = function () {
+				main.addClass("show-menu");
+				main.removeClass("show-banner");
+				main.css("overflow", "hidden");
+				clearTimeout(proc);
+			};
+
+			hideMenu = function () {
+				main.removeClass("show-menu");
+				proc = setTimeout(function () {
+					main.css("overflow", "");
+				}, 300);
+			};
+
+			main.find(".menu-btn").click(showMenu);
+			main.find(".menu-cont .cancel.icon").click(hideMenu);
+		})();
 
 		main.find(".filter-tag").dropdown({
 			hideAdditions: true,
@@ -319,24 +345,18 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				main.toggleClass("simple");
 			},
 
-			addMenu: function (name, cb) {
-				var item = $("<div class='item'>" + name + "</div>");
-				item.click(cb);
-				main.find(".search-box .nav .menu").append(item);
-			},
-
 			menu: function (cb) {
-				main.find(".nav").click(cb);
+				// main.find(".menu-btn").click(cb);
 			},
 
 			toggleIcon: function (icon) {
-				main.find(".nav i")
+				main.find(".menu-btn i")
 					.toggleClass(icon)
 					.toggleClass("content");
 			},
 
 			icon: function (icon) {
-				main.find(".nav i")
+				main.find(".menu-btn i")
 					.addClass(icon)
 					.removeClass("content");
 			},
@@ -346,19 +366,20 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 			},
 
 			showBanner: function () {
-				main.find(".left-bar").addClass("show-banner");
+				main.addClass("show-banner");
+				hideMenu();
 			},
 
 			hideBanner: function () {
-				main.find(".left-bar").removeClass("show-banner");
+				main.removeClass("show-banner");
 			},
 
 			setBanner: function (html) {
 				main.find(".banner").html(html);
 			},
 
-			setTitle: function (title) {
-				main.find(".banner").html(title.replace(/-/g, "<i class='sub caret right icon'></i>"));
+			setTitle: function () {
+				main.find(".banner").html(Array.prototype.slice.apply(arguments).join("<i class='sub caret right icon'></i>"));
 			}
 		};
 

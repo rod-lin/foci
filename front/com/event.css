@@ -21,11 +21,25 @@
 
 	text-align: left;
 
+	border-radius: 3px !important;
+
+	box-shadow:
+		0 0 1px rgba(0, 0, 0, 0.1),
+		0 0 10px rgba(0, 0, 0, 0.05) !important;
+
 	transition: opacity 0.3s;
 }
 
 .com-event .image {
 	cursor: pointer;
+	max-height: 23em;
+	overflow: hidden;
+}
+
+.com-event .image img{
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
 }
 
 .com-event .description {

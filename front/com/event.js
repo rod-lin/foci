@@ -336,7 +336,7 @@ define([
 		config = $.extend({}, lim_config, config);
 
 		var main = $(" \
-			<div class='com-eqview ui large modal'> \
+			<div class='com-eqview ui small modal'> \
 				<div style='position: relative; border-radius: 3px; overflow: hidden'> \
 					<div class='cover'></div> \
 					<div class='cover-edit'>Change cover</div> \

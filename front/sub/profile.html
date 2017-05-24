@@ -309,7 +309,7 @@
 			var init = function (info, is_self) {
 				var tbar = env.get("tbar");
 
-				tbar.setTitle("Profile - " + info.dname);
+				tbar.setTitle("Profile", info.dname);
 
 				var left_bar = main.find(".left-bar");
 				var right_bar = main.find(".right-bar");
@@ -381,7 +381,7 @@
 					"partic": {
 						name: lang.msg("$front.sub.profile.participated").capital(),
 						onShow: function (show) {
-							tbar.setTitle("Profile - " + info.dname + " - Participated");
+							tbar.setTitle("Profile", info.dname, "Participated");
 							eventTabOnShow("partic", false, undefined, show);
 						}
 					},
@@ -389,7 +389,7 @@
 					"org": {
 						name: lang.msg("$front.sub.profile.organized").capital(),
 						onShow: function (show) {
-							tbar.setTitle("Profile - " + info.dname + " - Organized");
+							tbar.setTitle("Profile", info.dname, "Organized");
 							eventTabOnShow("org", false, undefined, show);
 						}
 					}
@@ -829,7 +829,7 @@
 					tabs["draft"] = {
 						name: lang.msg("$front.sub.profile.draft").capital(),
 						onShow: function (show) {
-							tbar.setTitle("Profile - " + info.dname + " - Draft");
+							tbar.setTitle("Profile", info.dname, "Draft");
 							eventTabOnShow("draft", true, function (info) {
 								loadDraft(info);
 								tb.to("new");
@@ -845,7 +845,7 @@
 						onShow: function (show) {
 							updateAllPos();
 
-							tbar.setTitle("Profile - " + info.dname + " - New");
+							tbar.setTitle("Profile", info.dname, "New");
 
 							login.session(function (session) {
 								if (hasDraft()) {
