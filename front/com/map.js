@@ -57,19 +57,23 @@ define([ "com/util" ], function (util) {
 					map.centerAndZoom("杭州", 12);
 				},
 
-				set: function (lng, lat, zoom) {
+				mark: function (lng, lat) {
 					if (cur_marker) map.removeOverlay(cur_marker);
 
 					var p = new BMap.Point(lng, lat);
 					cur_marker = new BMap.Marker(p);
 					cur_loc = p;
 
-					map.centerAndZoom(p, zoom || 12);
 					map.addOverlay(cur_marker);
 
 					locToName(lng, lat, function(addr) {
 						if (config.onClick) config.onClick(lng, lat, addr);
 					});
+				},
+
+				set: function (lng, lat, zoom) {
+					map.centerAndZoom(new BMap.Point(lng, lat), zoom || 12);
+					ret.mark(lng, lat);
 				},
 
 				clear: function () {
@@ -88,7 +92,7 @@ define([ "com/util" ], function (util) {
 
 			map.addEventListener("click", function(e) {
 				if (!config.canMark) return;
-				ret.set(e.point.lng, e.point.lat);
+				ret.mark(e.point.lng, e.point.lat);
 			});
 
 			if (init) init(ret);

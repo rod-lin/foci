@@ -15,6 +15,7 @@ module.exports = {
 		"core.word.file": "file",
 		"core.word.search_keyword": "search keyword",
 		"core.word.search_result": "search result",
+		"core.word.reg_form": "register form",
 
 		"core.word.event": "event",
 

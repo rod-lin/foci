@@ -47,7 +47,8 @@ define(function () {
 			"position": "fixed",
 			"top": "9px",
 			"z-index": "1000000",
-			"width": "100%"
+			"width": "100%",
+			"pointer-events": "none"
 		});
 
 		msg.children("div")
@@ -58,6 +59,7 @@ define(function () {
 		
 		msg.find(".message")
 			.css("cursor", "pointer")
+			.css("pointer-events", "auto")
 			.transition("scale")
 			.html(util.mfilt(str))
 			.click(hide);

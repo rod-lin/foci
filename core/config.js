@@ -30,7 +30,7 @@ var conf = module.exports = {
 				}
 			],
 
-			session_timeout: 1000 * 60 * 12 // 12 min
+			session_timeout: 1000 * 60 * 60 // 60 min
 		},
 
 		event: {
@@ -39,6 +39,7 @@ var conf = module.exports = {
 			location: 1024,
 
 			keyword: 128,
+			rform: 2048,
 
 			max_search_results: 16
 		}

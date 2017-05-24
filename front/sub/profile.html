@@ -269,6 +269,8 @@
 						<div class="ui compact black inline message loc-selected" style="min-width: 50%; max-width: 95%;"></div>
 					</div>
 				</div>
+				<div class="page page-apply" style="text-align: center;">
+				</div>
 				<div class="page page-pub" style="text-align: center;">
 					<div class="protocol">
 						<style>
@@ -551,7 +553,7 @@
 							subtitle: "When and where",
 
 							page: main.find(".page.page-loc"),
-							next: "pub",
+							next: "apply",
 
 							onInit: function (info) {
 								fields.lng = info.loclng;
@@ -564,14 +566,14 @@
 										map.embed(new_tab.find(".ev-content .page-loc .map"), function (map) {
 											bmap = map;
 
-											// steps["loc"].onShow = function () {
-											// 	bmap.init(); // init position
+											steps["loc"].onShow = function () {
+												bmap.init(); // init position
 
-											// 	if (fields.lng && fields.lat)
-											// 		bmap.set(fields.lng, fields.lat);
-											// 	else
-											// 		bmap.clear();
-											// }
+												if (fields.lng && fields.lat)
+													bmap.set(fields.lng, fields.lat);
+												else
+													bmap.clear();
+											}
 
 										}, {
 											onClick: function (lng, lat, addr) { // called everytime a position is selected
@@ -611,6 +613,15 @@
 									});
 								}
 							}
+						},
+
+						apply: {
+							title: "Applicants",
+							icon: "user outline",
+							subtitle: "Register forms",
+
+							page: main.find(".page.page-apply"),
+							next: "pub",
 						},
 
 						pub: {

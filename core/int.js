@@ -305,6 +305,10 @@ encop.event = async (env, usr, query) => {
 			var args = util.checkArg(query, event.Event.format.search, true);
 			return await event.search(args);
 
+		case "rform":
+			var args = util.checkArg(query, { euid: "int", type: "string" });
+			return await event.getRegForm(args.euid, args.type);
+
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}

@@ -38,7 +38,15 @@ var Event = function (euid, owner /* uuid */) {
 	this.end = null;
 
 	// null for unlimited
+	//			    staff partic
 	this.expect = [ null, null ];
+
+	// register form
+	//			   staff partic
+	this.rform = {
+		staff: null,
+		partic: null
+	};
 
 	this.favtag = [];
 
@@ -100,6 +108,11 @@ Event.prototype.isDraft = function () {
 	return this.state === 0;
 };
 
+Event.prototype.getRegForm = function (type) {
+	var form = this.rform || {};
+	return form[type];
+};
+
 Event.format = {};
 
 Event.format.info = {
@@ -137,6 +150,9 @@ Event.format.info = {
 			return [ expect[0], expect[1] ];
 		}
 	},
+
+	"rform.staff": util.checkArg.lenlim(config.lim.event.rform, "$core.too_long($core.word.reg_form)"),
+	"rform.partic": util.checkArg.lenlim(config.lim.event.rform, "$core.too_long($core.word.reg_form)"),
 
 	$overall: obj => {
 		if (obj.start && obj.end && obj.end <= obj.start)
@@ -338,6 +354,16 @@ exports.search = async (conf, state) => {
 	res.forEach(ev => ret.push(new Event(ev).getInfo()));
 
 	return ret;
+};
+
+exports.getRegForm = async (euid, type) => {
+	if (type != "partic" && type != "staff")
+		throw new err.Exc("$core.illegal_reg_type");
+
+	var col = await db.col("event");
+	var ev = await exports.euid(euid);
+
+	return ev.getRegForm(type);
 };
 
 // register as pertipants
