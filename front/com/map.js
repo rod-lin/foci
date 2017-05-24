@@ -151,6 +151,7 @@ define([ "com/util" ], function (util) {
 				init_lng: config.init_lng,
 				init_lat: config.init_lat,
 				canMark: !config.view,
+				initPos: !config.view,
 
 				onClick: function (lng, lat, addr) {
 					msg.removeClass("red").addClass("blue");
