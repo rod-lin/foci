@@ -164,6 +164,8 @@
 	background: none;
 	outline: none;
 
+	vertical-align: middle;
+
 	transition: color 0.2s;
 }
 
