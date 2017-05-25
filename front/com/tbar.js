@@ -42,8 +42,8 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				<div class="menu-view"> \
 					<div class="menu-cont"> \
 						<i class="cancel icon"></i> \
-						<span class="menu-link">HOME</span> \
-						<span class="menu-link">PLAZA</span> \
+						<a class="menu-link" href="#">HOME</a> \
+						<a class="menu-link">PLAZA</a> \
 					</div> \
 				</div> \
 				<div class="banner-view"> \
@@ -51,9 +51,9 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				</div> \
 				<div class="right-bar"> \
 					<div class="avatar"></div> \
-					<div class="ui black icon button login-btn"> \
+					<button class="ui black icon button login-btn"> \
 						<i class="sign in icon"></i> \
-					</div> \
+					</button> \
 					<div class="ui popup transition hidden"> \
 						<div class="cont"> \
 							<div class="pop-avatar"><div><i class="setting icon"></i></div></div> \
@@ -92,6 +92,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 			main.find(".menu-btn").click(showMenu);
 			main.find(".menu-cont .cancel.icon").click(hideMenu);
+			main.find(".menu-cont .menu-link").click(hideMenu);
 		})();
 
 		main.find(".filter-tag").dropdown({

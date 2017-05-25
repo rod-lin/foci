@@ -56,7 +56,7 @@ define(function () {
 					ret += msg.substring(beg, res.index) + def[res[1]];
 					beg = i;
 				} else {
-					err("cannot find id '" + res[1] + "'' in the definitions");
+					err("cannot find id '" + res[1] + "' in the definitions");
 					// TODO: error
 				}
 			} else {

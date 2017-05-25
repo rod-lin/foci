@@ -13,46 +13,59 @@
 	pointer-events: none;
 }
 
-.com-event .event {
+.com-event .com-event-single {
 	position: absolute;
 	
 	top: 0;
 	left: 0;
 
 	text-align: left;
+	overflow: visible;
 
 	border-radius: 3px !important;
 
 	box-shadow:
-		0 0 1px rgba(0, 0, 0, 0.1),
-		0 0 10px rgba(0, 0, 0, 0.05) !important;
+		0 0 2px rgba(0, 0, 0, 0.3) !important;
 
 	transition: opacity 0.3s;
 }
 
-.com-event .image {
+.com-event-single .cover {
 	cursor: pointer;
-	max-height: 23em;
+	height: 12em;
 	overflow: hidden;
-}
 
-.com-event .image img{
+	border-radius: 3px 3px 0 0;
+
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 50% 50%;
 }
 
-.com-event .description {
-	cursor: pointer;
-	word-wrap: break-word;
+.com-event-single .title {
+	color: #595959 !important;
 }
 
-.com-event .flow-loader {
+.com-event-single .title:hover {
+	color: #404040 !important;
+}
+
+.com-event-single .description {
+	cursor: pointer;
+	word-wrap: break-word;
+	color: #999999 !important;
+}
+
+.com-event-single .description:hover {
+	color: #808080 !important;
+}
+
+.com-event-single .flow-loader {
 	padding-top: 1em;
 	padding-bottom: 2em;
 }
 
-.com-event .flow-loader .prompt {
+.com-event-single .flow-loader .prompt {
 	text-align: center;
 	color: #CCCCCC;
 	font-weight: bold;

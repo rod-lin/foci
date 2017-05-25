@@ -503,12 +503,15 @@
 									.addClass("vcenter");
 
 								fields.cover = info.cover;
+								fields.favtag = info.favtag;
 
 								event.setDom(event_tmp, {
 									title: lang.msg("$front.sub.profile.template"),
-									descr: lang.msg("$front.sub.profile.click_pic_to_change"),
+									descr: lang.msg("$front.sub.profile.custom_event_prompt"),
 									cover: info.cover
 								}, {
+									editTag: true,
+
 									onCoverClick: function (dom) {
 										upload.init(function (file) {
 											if (file) {
@@ -516,6 +519,10 @@
 												dom.changeCover(file);
 											}
 										});
+									},
+
+									onTagChange: function (tags) {
+										fields.favtag = tags;
 									}
 								});
 
@@ -525,7 +532,7 @@
 							onCheck: function (cb) {
 								if (fields.cover) {
 									uploadChanges({
-										cover: fields.cover
+										cover: fields.cover,
 									}, function (suc) {
 										if (suc) {
 											new_tab.find(".cover-step").addClass("completed");
@@ -544,6 +551,10 @@
 										}
 									});
 								}
+
+								uploadChanges({
+									favtag: fields.favtag,
+								}, function (suc) {});
 							}
 						},
 

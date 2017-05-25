@@ -142,6 +142,7 @@
 	cursor: pointer;
 	margin-left: 1em;
 	font-size: 0.8em;
+	color: white;
 }
 
 .com-tbar .search-box .prompt {

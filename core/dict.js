@@ -83,7 +83,7 @@ module.exports = {
 		"front.sub.profile.no_selected": "you haven't selected any $1",
 		"front.sub.profile.sure_to_leave": "are you sure to leave",
 		"front.sub.profile.publish_event": "publish your event now for everyone!",
-		"front.sub.profile.click_pic_to_change": "click the picture to change cover",
+		"front.sub.profile.custom_event_prompt": "click the picture to change cover and the add button below to add tags",
 		"front.sub.profile.you_can_go_tab_to_view": "you can now go to the '$1' tab to view your event",
 		"front.sub.profile.illegal_uuid": "illegal user id",
 		"front.sub.profile.save_draft": "draft saved",

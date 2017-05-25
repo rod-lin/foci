@@ -209,6 +209,10 @@ define(function () {
 		return this[0].toUpperCase() + this.substr(1);
 	};
 
+	util.random = function (a, b) {
+		return (Math.random() * (b - a)) + a;
+	};
+
 	util.blur = function (obj, r) {
 		obj = $(obj);
 		r = r || 5;

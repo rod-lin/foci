@@ -1,22 +1,33 @@
+.com-tagbox {
+	color: #666666;
+	padding-top: 0.3em;
+}
+
 .com-tagbox .tag {
 	display: inline-block;
-	padding: 0.5em 0.7em;
-	margin: 0 0.4em 0.4em 0;
+	padding: 0.6rem 0.8rem;
+	margin: 0 0.3rem 0.3rem 0;
 
-	font-size: 0.7em;
+	font-size: 0.7rem;
 	line-height: 0.9rem;
 
-	background: #95A5A6;
-	color: white;
+	background: white;
 
-	border: 1px solid #7F8C8D;
+	font-family: Lato;
+
+	border: 1px solid rgba(0, 0, 0, 0.1);
 	border-radius: 3px;
 
 	cursor: default;
 
 	white-space: nowrap;
+	cursor: pointer;
 
-	transition: background 0.3s;
+	transition: border-color 0.2s;
+}
+
+.com-tagbox .tag:hover {
+	border-color: rgba(0, 0, 0, 0.3);
 }
 
 .com-tagbox .addtag {
@@ -41,13 +52,14 @@
 }
 
 .com-tagbox .tag:hover {
-	background: #A0B2B3;
 }
 
 .com-tagbox.edit .addtag {
 	display: inline-block;
+	color: #999999;
 }
 
 .com-tagbox.edit .deltag {
 	display: inline;
+	color: #999999;
 }

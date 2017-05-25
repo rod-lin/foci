@@ -88,7 +88,7 @@
 	color: #E7E7E7;
 
 	left: 10%;
-	margin-top: -4em;
+	margin-top: -6em;
 
 	border-radius: 50%;
 
@@ -118,8 +118,7 @@
 
 	max-width: 90%;
 
-	margin: 1.5em 0 0 0;
-	padding: 0.3em;
+	margin: 1.2em 0 0 0;
 
 	white-space: nowrap;
 	overflow: hidden;
@@ -129,29 +128,8 @@
 
 .com-eqview .rating {
 	display: inline-block;
-	margin: 3em 0 0 0;
-	font-size: 2em;
+	margin: 0.5rem 0;
 	vertical-align: top;
-}
-
-.com-eqview .rating>span {
-	padding: 0.2em 0.5em;
-
-	font-weight: bold;
-	font-family: Ubuntu;
-
-	background: #27AE60;
-	color: #F3F3F3;
-	
-	border-radius: 4px;
-	box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
-
-	cursor: pointer;
-	transition: background 0.3s;
-}
-
-.com-eqview .rating>span:hover {
-	background: #2ECC71;
 }
 
 .com-eqview .detail {
@@ -299,11 +277,6 @@
 		margin-top: 0.5em;
 	}
 
-	.com-eqview .rating {
-		margin-top: 1.1em;
-		font-size: 1.5em;
-	}
-
 	.com-eqview .cont {
 		font-size: 1em;
 		padding-left: 3em;
@@ -316,11 +289,5 @@
 		font-size: 1em;
 		padding-left: 2em;
 		padding-right: 2em;
-	}
-
-	.com-eqview .rating {
-		display: block;
-		margin-top: 0;
-		font-size: 1.5em;
 	}
 }

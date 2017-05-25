@@ -19,7 +19,7 @@ define([ "com/util" ], function (util) {
 			</div> \
 		");
 
-		progress.progress({ percent: 0 });
+		progress.progress({ percent: 0, total: 100 });
 		progress.css({
 			"position": "fixed",
 			"z-index": "10000",
@@ -31,7 +31,7 @@ define([ "com/util" ], function (util) {
 		});
 
 		function incProg() {
-			progress.progress("increment");
+			progress.progress("increment", util.random(10, 30));
 		}
 
 		function completeProg() {
@@ -66,8 +66,8 @@ define([ "com/util" ], function (util) {
 				type: "GET",
 				url: url,
 				success: function (dat) { suc(dat); },
-				error: function (req, err) {
-					util.emsg("$front.com.parts.fail_get_url(" + url + "," + err + ")");
+				error: function (req, exc) {
+					util.emsg("$front.com.parts.fail_get_url(" + url + "," + exc + ")");
 					err();
 				}
 			});

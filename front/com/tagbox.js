@@ -7,7 +7,7 @@ define([], function () {
 	foci.loadCSS("com/tagbox.css");
 
 	function genTag(name) {
-		var tag = $("<div class='tag' data-value='" + name + "'>" + name + "<i class='deltag cancel icon'></i></div>");
+		var tag = $("<div class='tag' data-value='" + name + "'>" + name.toUpperCase() + "<i class='deltag cancel icon'></i></div>");
 		return tag;
 	}
 
@@ -15,6 +15,7 @@ define([], function () {
 		cont = $(cont);
 		config = $.extend({
 			init: []
+			// onChange
 		}, config);
 
 		var main = $(" \
@@ -44,6 +45,8 @@ define([], function () {
 			if (cur.length == tags.length) {
 				addtag.addClass("disabled");
 			}
+
+			if (config.onChange) config.onChange(cur);
 		}
 
 		function delTag(name) {
@@ -53,6 +56,8 @@ define([], function () {
 			tag_dom[name].remove();
 
 			addtag.removeClass("disabled");
+
+			if (config.onChange) config.onChange(cur);
 		}
 
 		function delAll() {
@@ -66,7 +71,8 @@ define([], function () {
 		}
 
 		function tagOnClick() {
-			delTag($(this).attr("data-value"));
+			if (main.hasClass("edit"))
+				delTag($(this).attr("data-value"));
 		}
 
 		for (var i = 0; i < tags.length; i++) {
@@ -114,6 +120,8 @@ define([], function () {
 			for (var i = 0; i < init.length; i++) {
 				main.find(".addtag").before(tag_dom[cur[i]]);
 			}
+			
+			if (config.onChange) config.onChange(cur);
 		};
 
 		ret.openEdit = function () {

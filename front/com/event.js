@@ -4,8 +4,9 @@
 define([
 	"com/xfilt", "com/waterfall", "com/util",
 	"com/avatar", "com/env", "com/upload",
-	"com/login", "com/map", "com/tagbox"
-], function (xfilt, waterfall, util, avatar, env, upload, login, map, tagbox) {
+	"com/login", "com/map", "com/tagbox",
+	"com/rating"
+], function (xfilt, waterfall, util, avatar, env, upload, login, map, tagbox, rating) {
 	var $ = jQuery;
 	foci.loadCSS("com/event.css");
 	foci.loadCSS("com/eqview.css");
@@ -34,17 +35,17 @@ define([
 	}
 
 	function eventTemplate() {
-		var main = $('<div class="ui card event" style="overflow: hidden;"> \
+		var main = $('<div class="com-event-single ui card event"> \
 			<div class="ui loader"></div> \
-			<div class="image"> \
-				<img class="cover"> \
-			</div> \
+			<div class="cover"></div> \
 			<div class="content"> \
 				<a class="header title"></a> \
 				<div class="meta"> \
 					<span class="date"></span> \
 				</div> \
 				<div class="description"></div> \
+			</div> \
+			<div class="extra content favtag"> \
 			</div> \
 			<div class="extra content"> \
 				<a> \
@@ -79,6 +80,8 @@ define([
 		ret.partic = info.partic ? info.partic.length : 0;
 		ret.rating = info.rating ? info.rating : "nop";
 
+		ret.favtag = info.favtag ? info.favtag : [];
+
 		ret.org = info.org || [];
 
 		ret.location = function (cb) {
@@ -103,11 +106,27 @@ define([
 
 		var parsed = parseInfo(info, config);
 
-		dom.find(".cover").attr("src", parsed.cover);
+		dom.find(".cover").css("background-image", "url('" + parsed.cover + "')");
 		dom.find(".title").html(parsed.title);
 		dom.find(".date").html(parsed.date);
 		dom.find(".description").html(parsed.descr);
 		dom.find(".partic").html(parsed.partic);
+
+		if (parsed.favtag.length || config.editTag) {
+			dom.find(".favtag").css("display", "").html("");
+
+			env.favtag(function (tags) {
+				var box = tagbox.init(dom.find(".favtag"), tags, { onChange: config.onTagChange })
+				
+				box.set(parsed.favtag);
+			
+				if (config.editTag) {
+					box.openEdit();
+				}
+			});
+		} else {
+			dom.find(".favtag").css("display", "none");
+		}
 
 		var dom_util = {
 			changeCover: function (cover) {
@@ -152,7 +171,7 @@ define([
 		function genEvent(info) {
 			var main = eventTemplate();
 
-			main.find(".image, .header, .description").click(function () {
+			main.find(".cover, .header, .description").click(function () {
 				config.view(info);
 			});
 
@@ -169,12 +188,9 @@ define([
 			// 	}
 			// });
 
+			main.css("opacity", "0.4");
+
 			main.find(".cover").ready(function () {
-				if (!loaded) {
-					wf.update();
-					main.css("opacity", "0.4");
-				}
-			}).on("load", function () {
 				loaded = true;
 				wf.update();
 				main.find(".loader").removeClass("active");
@@ -342,7 +358,8 @@ define([
 					<div class='cover-edit'>Change cover</div> \
 					<div class='logo-cont'> \
 						<div class='logo'><div>Change logo</div></div> \
-						<div class='title'></div><div class='rating'><span></span></div><br> \
+						<div class='title'></div><br> \
+						<div class='rating'></div><br> \
 						<div class='detail'><i class='map outline icon'></i><span class='location'></span></div> \
 						<div class='detail'><i class='calendar outline icon'></i><span class='time'></span></div> \
 					</div> \
@@ -356,7 +373,7 @@ define([
 					<div class='cont'> \
 						<div class='descr'> \
 						</div> \
-						<div class='tagbox'></div> \
+						<div class='tagbox' style='margin-top: 0;'></div> \
 						<!--div class='ui horizontal divider'>organizer</div> \
 						<div class='orgs'> \
 						</div--> \
@@ -367,6 +384,8 @@ define([
 		");
 
 		var tgbox = null;
+
+		var rat = rating.init(main.find(".rating"));
 
 		if (info.euid) {
 			main.find(".more").click(function () {
@@ -387,7 +406,7 @@ define([
 			main.find(".logo").css("background-image", "url('" + parsed.logo + "')");
 
 			main.find(".title").html(parsed.title);
-			main.find(".rating>span").html(parsed.rating);
+			rat.set(parsed.rating || 0.0);
 
 			main.find(".time").html(parsed.date);
 
