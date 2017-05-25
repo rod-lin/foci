@@ -155,6 +155,7 @@
 
 .com-tbar .search-box .menu-btn {
 	height: 2.7em;
+	padding: 0;
 	padding-left: 1em;
 	padding-right: 1.2em;
 
@@ -163,8 +164,6 @@
 	border: 0;
 	background: none;
 	outline: none;
-
-	vertical-align: middle;
 
 	transition: color 0.2s;
 }
