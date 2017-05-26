@@ -37,7 +37,7 @@ define([
 	function eventTemplate() {
 		var main = $('<div class="com-event-single ui card event"> \
 			<div class="ui loader"></div> \
-			<div class="cover"></div> \
+			<div class="cover-cont"><img class="cover"></img></div> \
 			<div class="content"> \
 				<a class="header title"></a> \
 				<div class="meta"> \
@@ -106,7 +106,29 @@ define([
 
 		var parsed = parseInfo(info, config);
 
-		dom.find(".cover").css("background-image", "url('" + parsed.cover + "')");
+		dom.find(".cover").attr("src", parsed.cover).ready(function () {
+			dom.find(".cover-cont").ready(function () {
+				var cont = dom.find(".cover-cont");
+				var cover = dom.find(".cover");
+
+				var r1 = cover.width() / cover.height();
+				var r2 = cont.width() / cont.height();
+
+				if (r1 > r2) {
+					cover.css({
+						"height": "100%",
+						"left": (-(r1 - r2) / 2 * 100) + "%"
+					});
+				} else {
+					// alert((-(1 / r1 - 1 / r2) / 2 * 100));
+					cover.css({
+						"width": "100%",
+						"top": (-(1 / r1 - 1 / r2) / 2 * 100) + "%"
+					});
+				}
+			});
+		});
+
 		dom.find(".title").html(parsed.title);
 		dom.find(".date").html(parsed.date);
 		dom.find(".description").html(parsed.descr);
@@ -188,9 +210,14 @@ define([
 			// 	}
 			// });
 
-			main.css("opacity", "0.4");
+			// main.css("opacity", "0.4");
 
 			main.find(".cover").ready(function () {
+				if (!loaded) {
+					wf.update();
+					main.css("opacity", "0.4");
+				}
+			}).on("load", function () {
 				loaded = true;
 				wf.update();
 				main.find(".loader").removeClass("active");
