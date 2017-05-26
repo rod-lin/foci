@@ -60,12 +60,12 @@
 	color: #808080 !important;
 }
 
-.com-event-single .flow-loader {
+.com-event .flow-loader {
 	padding-top: 1em;
 	padding-bottom: 2em;
 }
 
-.com-event-single .flow-loader .prompt {
+.com-event .flow-loader .prompt {
 	text-align: center;
 	color: #CCCCCC;
 	font-weight: bold;
