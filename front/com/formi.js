@@ -326,6 +326,8 @@ define([ "com/util" ], function (util) {
 			gen.restore(config.uid);
 		});
 
+		var submitted = false;
+
 		main.find(".submit").click(function () {
 			var res = gen.check();
 			var next = function (suc) {
@@ -339,6 +341,7 @@ define([ "com/util" ], function (util) {
 			main.find(".submit").addClass("loading");
 
 			if (res.suc) {
+				submitted = true;
 				if (config.submit) config.submit(res.dat, next);
 				else next(true);
 			}
@@ -356,7 +359,10 @@ define([ "com/util" ], function (util) {
 		main.modal({
 			onHide: function () {
 				main.find(".restore").popup("hide");
-				main.find(".save").click();
+				if (!submitted) {
+					main.find(".save").click();
+					if (config.cancel) config.cancel();
+				}
 			}
 		});
 		main.modal("show");

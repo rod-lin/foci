@@ -51,7 +51,9 @@ define([ "com/util" ], function (util) {
 			main.find(".preview-cont").css("display", "");
 			main.find(".preview")
 				.attr("src", foci.download(selected))
-				.on("load", function () {
+				.ready(function () {
+					main.modal("refresh");
+				}).on("load", function () {
 					main.modal("refresh");
 				});
 

@@ -535,7 +535,10 @@
 							if (dat) {
 								formi.modal(util.json(dat), {
 									uid: "apply." + euid + "." + type,
-									submit: next
+									submit: next,
+									cancel: function () {
+										cb(false);
+									}
 								});
 							} else {
 								next(null, function () {});
