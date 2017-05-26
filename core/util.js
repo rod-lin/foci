@@ -150,9 +150,21 @@ var checkArg = (args, req, opt) => {
 checkArg.lenlim = (len, sth) => {
 	return {
 		type: "string",
-		lim: (val) => {
+		lim: val => {
 			if (val.length > len)
 				throw new err.Exc(sth || "$core.too_long($core.word.string)");
+			return val;
+		}
+	};
+};
+
+// positive number
+checkArg.posint = (max, sth) => {
+	return {
+		type: "int",
+		lim: val => {
+			if (val < 0 || (max && val > max))
+				throw new err.Exc(sth || "$core.out_of_range(integer)");
 			return val;
 		}
 	};

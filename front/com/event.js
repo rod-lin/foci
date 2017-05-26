@@ -49,7 +49,7 @@ define([
 			</div> \
 			<div class="extra content"> \
 				<a> \
-					<i class="user icon"></i><span class="partic"></span> \
+					<i class="user icon"></i><span class="apply_num"></span> \
 				</a> \
 				<i class="right floated star icon" style="margin: 0;" data-content="focus"></i> \
 			</div> \
@@ -77,7 +77,7 @@ define([
 
 		ret.date = genDate(info.start, info.end);
 		
-		ret.partic = info.partic ? info.partic.length : 0;
+		ret.apply_num = info.apply_num;
 		ret.rating = info.rating ? info.rating : "nop";
 
 		ret.favtag = info.favtag ? info.favtag : [];
@@ -106,7 +106,7 @@ define([
 
 		var parsed = parseInfo(info, config);
 
-		dom.find(".cover").attr("src", parsed.cover).ready(function () {
+		dom.find(".cover").attr("src", parsed.cover).on("load", function () {
 			dom.find(".cover-cont").ready(function () {
 				var cont = dom.find(".cover-cont");
 				var cover = dom.find(".cover");
@@ -117,13 +117,15 @@ define([
 				if (r1 > r2) {
 					cover.css({
 						"height": "100%",
-						"left": (-(r1 - r2) / 2 * 100) + "%"
+						"width": "auto",
+						"left": -(Math.abs(r1 - r2) / r2 / 2 * 100) + "%"
 					});
 				} else {
 					// alert((-(1 / r1 - 1 / r2) / 2 * 100));
 					cover.css({
 						"width": "100%",
-						"top": (-(1 / r1 - 1 / r2) / 2 * 100) + "%"
+						"height": "auto",
+						"top": -(Math.abs(1 / r1 - 1 / r2) / (1 / r2) / 2 * 100) + "%"
 					});
 				}
 			});
@@ -132,7 +134,7 @@ define([
 		dom.find(".title").html(parsed.title);
 		dom.find(".date").html(parsed.date);
 		dom.find(".description").html(parsed.descr);
-		dom.find(".partic").html(parsed.partic);
+		dom.find(".apply_num").html(parsed.apply_num);
 
 		if (parsed.favtag.length || config.editTag) {
 			dom.find(".favtag").css("display", "").html("");
@@ -380,33 +382,31 @@ define([
 
 		var main = $(" \
 			<div class='com-eqview ui small modal'> \
-				<div style='position: relative; border-radius: 3px; overflow: hidden'> \
-					<div class='cover'></div> \
-					<div class='cover-edit'>Change cover</div> \
-					<div class='logo-cont'> \
-						<div class='logo'><div>Change logo</div></div> \
-						<div class='title'></div><br> \
-						<div class='rating'></div><br> \
-						<div class='detail'><i class='map outline icon'></i><span class='location'></span></div> \
-						<div class='detail'><i class='calendar outline icon'></i><span class='time'></span></div> \
-					</div> \
-					<div class='back not-owner'> \
-						<div class='util close ui icon button'> \
-							<i class='close icon'></i> \
-						</div><div class='util setting ui icon button'> \
-							<i class='setting-btn setting icon'></i> \
-						</div> \
-					</div> \
-					<div class='cont'> \
-						<div class='descr'> \
-						</div> \
-						<div class='tagbox' style='margin-top: 0;'></div> \
-						<!--div class='ui horizontal divider'>organizer</div> \
-						<div class='orgs'> \
-						</div--> \
-					</div> \
-					<button class='ui button more' style='width: 100%; border-radius: 0; height: 4rem; opacity: 0.7;'>MORE</button> \
+				<div class='cover' style='border-radius: 3px 3px 0 0;'></div> \
+				<div class='cover-edit'>Change cover</div> \
+				<div class='logo-cont'> \
+					<div class='logo'><div>Change logo</div></div> \
+					<div class='title'></div><br> \
+					<div class='rating'></div><br> \
+					<div class='detail'><i class='map outline icon'></i><span class='location'></span></div> \
+					<div class='detail'><i class='calendar outline icon'></i><span class='time'></span></div> \
 				</div> \
+				<div class='back not-owner'> \
+					<div class='util close ui icon button'> \
+						<i class='close icon'></i> \
+					</div><div class='util setting ui icon button'> \
+						<i class='setting-btn setting icon'></i> \
+					</div> \
+				</div> \
+				<div class='cont'> \
+					<div class='descr'> \
+					</div> \
+					<div class='tagbox' style='margin-top: 0;'></div> \
+					<!--div class='ui horizontal divider'>organizer</div> \
+					<div class='orgs'> \
+					</div--> \
+				</div> \
+				<button class='ui button more' style='width: 100%; border-radius: 0 0 3px 3px; height: 4rem; opacity: 0.7;'>MORE</button> \
 			</div> \
 		");
 

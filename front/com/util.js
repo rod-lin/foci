@@ -69,6 +69,18 @@ define(function () {
 		$("body").append(msg);
 	};
 
+	util.json = function (str) {
+		var ret = null;
+
+		try {
+			ret = JSON.parse(str);
+		} catch (e) {
+			util.emsg("$def.illegal_json");
+		}
+
+		return ret;
+	};
+
 	util.listen = function (dob) {
 		var proc = setInterval(function () {
 			if (dob()) clearInterval(proc);
@@ -130,6 +142,11 @@ define(function () {
 				cb(ret);
 			}
 		}).modal("show");
+	};
+
+	// success or failed
+	util.suc = function (suc, msg) {
+		util.emsg((suc ? "success: " : "failed: ") + msg, "success");
 	};
 
 	util.kcount = function (obj) {

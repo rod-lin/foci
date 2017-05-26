@@ -181,7 +181,7 @@
 		text-align: left;
 	}
 
-	#sub-event .cont .i-wanna-be {
+	#sub-event .cont .apply-prompt {
 		color: #262626;
 		opacity: 0.5;
 		font-size: 1.5em;
@@ -216,6 +216,13 @@
 	#sub-event .cont .box.btn {
 		padding-left: 0;
 		padding-right: 0;
+		transition: background 0.3s;
+	}
+
+	#sub-event .cont .box.btn.disabled {
+		color: #D9D9D9 !important;
+		background: #B3B3B3 !important;
+		pointer-events: none;
 	}
 
 	@media only screen and (max-width: 720px) {
@@ -262,7 +269,7 @@
 					<img class="com-util-cont-fill" src="img/paragraph.png"></img>
 				</div>
 			</div>
-			<div class="box" style="margin-top: 1rem;">
+			<div class="box" style="margin-top: 1rem; overflow: hidden;">
 				<div class="blurring dimmable bmap-box">
 					<div class="ui dimmer">
 						<div class="content">
@@ -306,6 +313,10 @@
 					}
 				}
 
+				.ui.active.loader+span {
+					opacity: 0;
+				}
+
 			</style>
 
 			<div class="row">
@@ -320,13 +331,15 @@
 					</div>
 				</div><div class="col col-3 col-mid-full box-set">
 					<div class="box pad">
-						<div class="i-wanna-be">Apply for</div>
+						<div class="apply-prompt">Apply for</div>
 					</div>
-					<div class="box pad btn" style=" margin-top: 0.2rem; background: #3498DB; color: white;">
-						Staff
+					<div class="box pad apply-staff btn" style=" margin-top: 0.2rem; background: #3498DB; color: white;">
+						<div class="ui inverted loader"></div>
+						<span>Staff</span>
 					</div>
-					<div class="box pad btn" style="margin-top: 0.2rem; background: #2ECC71; color: white;">
-						Participant
+					<div class="box pad apply-partic btn" style="margin-top: 0.2rem; background: #2ECC71; color: white;">
+						<div class="ui inverted loader"></div>
+						<span>Participant</span>
 					</div>
 				</div>
 			</div>
@@ -360,11 +373,10 @@
 	function init(main, args, show, cont) {
 		require([
 			"com/env", "com/util", "com/event",
-			"com/xfilt", "com/pages", "com/tab",
-			"com/login", "com/event", "com/upload",
+			"com/xfilt", "com/login", "com/event",
 			"com/map", "com/lang", "com/avatar",
-			"com/colstat"
-		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang, avatar, colstat) {
+			"com/colstat", "com/formi"
+		], function (env, util, event, xfilt, login, event, map, lang, avatar, colstat, formi) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
 				return;
@@ -488,6 +500,78 @@
 						fill.remove();
 					});
 				}
+
+				function getRForm(session, type, cb) {
+					foci.encop(session, {
+						int: "event",
+						action: "rform",
+						euid: euid,
+						type: type
+					}, cb);
+				}
+
+				function apply(session, type, cb) {
+					getRForm(session, type, function (suc, dat) {
+						if (suc) {
+							var next = function (form, hide_form) {
+								foci.encop(session, {
+									int: "event",
+									action: "apply",
+									euid: euid,
+									type: type,
+									form: form
+								}, function (suc, dat) {
+									if (suc) {
+										util.suc(true, "Your application has been sent");
+									} else {
+										util.emsg(dat);
+									}
+
+									cb(suc);
+									hide_form(suc);
+								});
+							};
+
+							if (dat) {
+								formi.modal(util.json(dat), {
+									uid: "apply." + euid + "." + type,
+									submit: next
+								});
+							} else {
+								next(null, function () {});
+							}
+						} else {
+							util.emsg(dat);
+							if (cb) cb(false);
+						}
+					});
+				}
+
+				function afterApp() {
+					main.find(".apply-prompt").html("Thank you");
+					main.find(".apply-staff").addClass("disabled");
+					main.find(".apply-partic").addClass("disabled");
+				}
+
+				login.session(function (session) {	
+					main.find(".apply-staff").click(function () {
+						main.find(".apply-staff .loader").addClass("active");
+
+						apply(session, "staff", function (suc) {
+							main.find(".apply-staff" + " .loader").removeClass("active");
+							if (suc) afterApp();
+						});
+					});
+
+					main.find(".apply-partic").click(function () {
+						main.find(".apply-partic .loader").addClass("active");
+						
+						apply(session, "partic", function (suc) {
+							main.find(".apply-partic" + " .loader").removeClass("active");
+							if (suc) afterApp();
+						});
+					});
+				});
 			};
 
 			foci.get("/event/info", { euid: euid }, function (suc, dat) {

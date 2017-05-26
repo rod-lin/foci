@@ -34,7 +34,7 @@ app.get("/user/login", int.user.login);
 app.get("/user/csid", int.user.csid);
 app.get("/user/info", int.user.info);
 app.get("/user/org", int.user.org);
-app.get("/user/partic", int.user.partic);
+app.get("/user/applied", int.user.applied);
 app.get("/user/encop", int.user.encop);
 
 app.get("/event/info", int.event.info);

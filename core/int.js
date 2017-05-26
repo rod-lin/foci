@@ -150,14 +150,14 @@ _user.org = util.route(async env => {
 	env.qsuc(ret);
 });
 
-_user.partic = util.route(async env => {
+_user.applied = util.route(async env => {
 	var args = util.checkArg(env.query, {
 		"uuid": "int",
 		"skip": { type: "int", opt: true },
 		"lim": { type: "int", opt: true }
 	});
 	
-	var ret = await event.getPartic(args.uuid, args.skip, args.lim);
+	var ret = await event.getApplied(args.uuid, args.skip, args.lim);
 	env.qsuc(ret);
 });
 
@@ -279,9 +279,9 @@ encop.event = async (env, usr, query) => {
 			var args = util.checkArg(query, { euid: "int" });
 			return await event.isOwner(args.euid, usr.getUUID());
 
-		case "reg":
-			var args = util.checkArg(query, { euid: "int", type: "string" });
-			return await event.register(args.euid, usr.getUUID(), args.type);
+		case "apply":
+			var args = util.checkArg(query, { euid: "int", type: "string", form: { type: "object", opt: true } });
+			return await event.apply(args.euid, usr.getUUID(), args.type, args.form);
 
 		case "draft":
 			var args = util.checkArg(query, {
@@ -307,7 +307,7 @@ encop.event = async (env, usr, query) => {
 
 		case "rform":
 			var args = util.checkArg(query, { euid: "int", type: "string" });
-			return await event.getRegForm(args.euid, args.type);
+			return await event.getAppForm(args.euid, args.type);
 
 		default:
 			throw new err.Exc("$core.action_not_exist");

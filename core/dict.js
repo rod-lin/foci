@@ -15,7 +15,7 @@ module.exports = {
 		"core.word.file": "file",
 		"core.word.search_keyword": "search keyword",
 		"core.word.search_result": "search result",
-		"core.word.reg_form": "register form",
+		"core.word.app_form": "application form",
 
 		"core.word.event": "event",
 
@@ -37,9 +37,10 @@ module.exports = {
 		"core.too_many": "too many $1s",
 		"core.not_exist": "no such $1",
 		"core.not_event_owner": "you're not the owner of this event",
-		"core.illegal_reg_type": "illegal type of registration",
-		"core.partic_full": "no more places for participants",
-		"core.dup_partic": "duplicated particiants",
+
+		"core.illegal_app_type": "illegal type of application",
+		"core.app_full": "application is full",
+		"core.dup_app": "duplicated applications",
 		"core.event_not_draft": "event not a draft",
 
 		"core.dict_not_exist": "the dictionary for $1 does not exist",
@@ -49,6 +50,8 @@ module.exports = {
 		"core.int_not_exist": "no such interface",
 		"core.action_not_exist": "no such action",
 		"core.max_event_count": "you cannot created too many events due to your level",
+
+		"core.out_of_range": "$1 out of range",
 
 		"core.dup_user_name": "duplicated user login name",
 		"core.wrong_user_passwd": "wrong user name or password",
@@ -65,7 +68,7 @@ module.exports = {
 		"front.sub.profile.anonymous": "anonymous",
 		"front.sub.profile.no_descr": "no description",
 		"front.sub.profile.no_more_result": "no more results",
-		"front.sub.profile.participated": "participated",
+		"front.sub.profile.applied": "applied",
 		"front.sub.profile.organized": "organized",
 		"front.sub.profile.draft": "draft",
 		"front.sub.profile.new": "new",

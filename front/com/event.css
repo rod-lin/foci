@@ -46,6 +46,7 @@
 
 .com-event-single .cover {
 	position: relative;
+	width: 100%;
 }
 
 .com-event-single .title {

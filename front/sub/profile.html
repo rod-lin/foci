@@ -123,13 +123,6 @@
 	</div>
 	<div class="right-bar">
 		<div class="main-tab"></div>
-		<!-- <div class="menu">
-			<div class="item active partic-btn">Participating</div><div class="item org-btn">Organized</div>
-		</div>
-		<div class="tab">
-			<div class="partic-event active"></div>
-			<div class="org-event active"></div>
-		</div> -->
 	</div>
 
 	<style>
@@ -378,11 +371,11 @@
 				}
 
 				var tabs = {
-					"partic": {
-						name: lang.msg("$front.sub.profile.participated").capital(),
+					"applied": {
+						name: lang.msg("$front.sub.profile.applied").capital(),
 						onShow: function (show) {
-							tbar.setTitle("Profile", info.dname, "Participated");
-							eventTabOnShow("partic", false, undefined, show);
+							tbar.setTitle("Profile", info.dname, "Applied");
+							eventTabOnShow("applied", false, undefined, show);
 						}
 					},
 
@@ -901,7 +894,7 @@
 				if (is_self)
 					tb.getTab("new").html(new_tab);
 
-				tb.to("partic");
+				tb.to("applied");
 
 				// util.scroll(main, function (n) {
 				// 	if (n > 0) {

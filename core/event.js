@@ -39,14 +39,15 @@ var Event = function (euid, owner /* uuid */) {
 
 	// null for unlimited
 	//			    staff partic
-	this.expect = [ null, null ];
+	// this.expect = [ null, null ];
 
-	// register form
-	//			   staff partic
-	this.rform = {
-		staff: null,
-		partic: null
-	};
+	this.apply_staff_form = null;
+	this.apply_staff_lim = null;
+	this.apply_staff = [];
+
+	this.apply_partic_form = null;
+	this.apply_partic_lim = null
+	this.apply_partic = [];
 
 	this.favtag = [];
 
@@ -82,35 +83,49 @@ Event.prototype.getInfo = function () {
 		start: this.start ? this.start.getTime() : null,
 		end: this.end ? this.end.getTime() : null,
 
+		apply_num: this.countApp("staff") + this.countApp("partic"),
 		rating: this.rating,
 
-		favtag: this.favtag,
-		expect: this.expect,
-
-		staff: this.staff,
-		partic: this.partic
+		favtag: this.favtag
 	};
 };
 
-Event.prototype.countPeople = function (type) {
-	return this[type].length;
-};
-
-Event.prototype.getExpect = function (which) {
-	return this.expect[which];
-};
-
-Event.prototype.hasPeople = function (uuid) {
-	return this.partic.indexOf(uuid) != -1 || this.staff.indexOf(uuid) != -1;
-};
+// Event.prototype.getExpect = function (which) {
+// 	return this.expect[which];
+// };
 
 Event.prototype.isDraft = function () {
 	return this.state === 0;
 };
 
-Event.prototype.getRegForm = function (type) {
-	var form = this.rform || {};
-	return form[type];
+Event.prototype.hasApp = function (uuid) {
+	var staff = this.apply_staff;
+
+	for (var i = 0; i < staff.length; i++) {
+		if (staff[i].uuid == uuid)
+			return true;
+	}
+
+	var partic = this.apply_partic;
+
+	for (var i = 0; i < partic.length; i++) {
+		if (partic[i].uuid == uuid)
+			return true;
+	}
+
+	return false;
+};
+
+Event.prototype.getAppForm = function (type) {
+	return this["apply_" + type + "_form"];
+};
+
+Event.prototype.getAppLimit = function (type) {
+	return this["apply_" + type + "_lim"];
+};
+
+Event.prototype.countApp = function (type) {
+	return this["apply_" + type].length;
 };
 
 Event.format = {};
@@ -142,17 +157,26 @@ Event.format.info = {
 	end: { type: "int", lim: time => new Date(time) },
 	favtag: { type: "json", lim: tags => user.checkTag(tags) },
 
-	expect: {
-		type: "json", lim: expect => {
-			if (expect[0] < 0 || expect[1] < 0)
-				throw new err.Exc("$core.illegal_expect_partic");
-		
-			return [ expect[0], expect[1] ];
+	apply_staff_lim: {
+		type: "int",
+		lim: val => {
+			if (val != null && val < 0)
+				throw new err.Exc(sth || "$core.out_of_range(staff limit)");
+			return val;
 		}
 	},
 
-	"rform.staff": util.checkArg.lenlim(config.lim.event.rform, "$core.too_long($core.word.reg_form)"),
-	"rform.partic": util.checkArg.lenlim(config.lim.event.rform, "$core.too_long($core.word.reg_form)"),
+	apply_partic_lim: {
+		type: "int",
+		lim: val => {
+			if (val != null && val < 0)
+				throw new err.Exc(sth || "$core.out_of_range(participant limit)");
+			return val;
+		}
+	},
+
+	apply_staff_form: util.checkArg.lenlim(config.lim.event.rform, "$core.too_long($core.word.app_form)"),
+	apply_partic_form: util.checkArg.lenlim(config.lim.event.rform, "$core.too_long($core.word.app_form)"),
 
 	$overall: obj => {
 		if (obj.start && obj.end && obj.end <= obj.start)
@@ -195,7 +219,7 @@ Event.query = {
 	check_owner: (euid, uuid) => ({ "euid": euid, "org.0": uuid }),
 
 	org: uuid => ({ "org": uuid, "state": { $gte: 1 } }),
-	partic: uuid => ({ "partic": uuid, "state": { $gte: 1 } }),
+	applied: uuid => ({ $or: [ { "apply_staff.uuid": uuid }, { "apply_partic.uuid": uuid } ], "state": { $gte: 1 } }),
 	draft: uuid => ({ "org": uuid, "state": 0 }),
 
 	has_favtag: tags => ({ "favtag": { $in: tags }, "state": { $gte: 1 } }),
@@ -216,19 +240,19 @@ Event.query = {
 	after: date => ({ start: { $gte: date }, "state": { $gte: 1 } }),
 	before: date => ({ end: { $lte: date }, "state": { $gte: 1 } }),
 
-	// register for participant, next = last_index + 1, use with set.reg
-	reg: (euid, next) => {
+	// apply
+	apply_check: (euid, type, max) => {
 		var q = { "euid": euid, "state": { $gte: 1 } };
-		q["test." + next] = { $exists: 0 };
+		q["apply_" + type + "." + (max - 1)] = { $exists: 0 };
 		return q;
 	}
 };
 
 Event.set = {
 	info: info => ({ $set: info }),
-	reg: (euid, uuid, type) => {
+	apply: (euid, uuid, type, form) => {
 		var q = {};
-		q[type] = uuid;
+		q["apply_" + type] = { uuid: uuid, form: form };
 		return { $push: q };
 	},
 
@@ -300,13 +324,13 @@ exports.getOrganized = async (uuid, skip, lim) => {
 	return ret;
 };
 
-// events participated by a user
-exports.getPartic = async (uuid, skip, lim) => {
+// events applied by a user
+exports.getApplied = async (uuid, skip, lim) => {
 	skip = skip || 0;
 	lim = lim || config.lim.event.max_search_results;
 
 	var col = await db.col("event");
-	var arr = await col.find(Event.query.partic(uuid)).skip(skip).limit(lim).toArray();
+	var arr = await col.find(Event.query.applied(uuid)).skip(skip).limit(lim).toArray();
 	var ret = [];
 
 	arr.forEach(function (ev) {
@@ -356,36 +380,38 @@ exports.search = async (conf, state) => {
 	return ret;
 };
 
-exports.getRegForm = async (euid, type) => {
+exports.getAppForm = async (euid, type) => {
 	if (type != "partic" && type != "staff")
-		throw new err.Exc("$core.illegal_reg_type");
+		throw new err.Exc("$core.illegal_app_type");
 
 	var col = await db.col("event");
 	var ev = await exports.euid(euid);
 
-	return ev.getRegForm(type);
+	return ev.getAppForm(type);
 };
 
-// register as pertipants
-exports.register = async (euid, uuid, type) => {
+// apply for partic or staff
+exports.apply = async (euid, uuid, type, form) => {
 	if (type != "partic" && type != "staff")
-		throw new err.Exc("$core.illegal_reg_type");
+		throw new err.Exc("$core.illegal_app_type");
+
+	form = form || null;
 
 	var ev = await exports.euid(euid);
-	var next = ev.countPeople("partic");
-	var expect = ev.getExpect(1);
+	var max = ev.getAppLimit(type);
+	var cur = ev.countApp(type);
 
-	if (expect != null && next >= expect)
-		throw new err.Exc("$core.partic_full");
+	if (cur >= max)
+		throw new err.Exc("$core.app_full");
 
-	if (ev.hasPeople(uuid))
-		throw new err.Exc("$core.dup_partic");
+	if (ev.hasApp(uuid))
+		throw new err.Exc("$core.dup_app");
 
 	var col = await db.col("event");
-	var ret = await col.findOneAndUpdate(Event.query.reg(euid, next), Event.set.reg(euid, uuid, "partic"));
+	var ret = await col.findOneAndUpdate(Event.query.apply_check(euid, max), Event.set.apply(euid, uuid, type, form));
 
 	if (!ret)
-		throw new err.Exc("$impossible(operation conflict)");
+		throw new err.Exc("$core.app_full");
 
 	return;
 };

@@ -1,2 +1,2 @@
 * { outline: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
-button { padding: 0; }
+button { padding: 0; user-select: none; -moz-user-select: none; }
