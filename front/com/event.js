@@ -100,6 +100,31 @@ define([
 		return ret;
 	}
 
+	function updateDomPos(dom) {
+		var cont = dom.find(".cover-cont");
+		var cover = dom.find(".cover");
+
+		var r1 = cover.width() / cover.height();
+		var r2 = cont.width() / cont.height();
+
+		if (r1 > r2) {
+			cover.css({
+				"height": "100%",
+				"width": "auto",
+				"top": "0",
+				"left": -(Math.abs(r1 - r2) / r2 / 2 * 100) + "%"
+			});
+		} else {
+			// alert((-(1 / r1 - 1 / r2) / 2 * 100));
+			cover.css({
+				"width": "100%",
+				"height": "auto",
+				"left": "0",
+				"top": -(Math.abs(1 / r1 - 1 / r2) / (1 / r2) / 2 * 100) + "%"
+			});
+		}
+	}
+
 	function setDom(dom, info, config) {
 		config = config || {};
 		dom = $(dom);
@@ -107,28 +132,7 @@ define([
 		var parsed = parseInfo(info, config);
 
 		dom.find(".cover").attr("src", parsed.cover).on("load", function () {
-			dom.find(".cover-cont").ready(function () {
-				var cont = dom.find(".cover-cont");
-				var cover = dom.find(".cover");
-
-				var r1 = cover.width() / cover.height();
-				var r2 = cont.width() / cont.height();
-
-				if (r1 > r2) {
-					cover.css({
-						"height": "100%",
-						"width": "auto",
-						"left": -(Math.abs(r1 - r2) / r2 / 2 * 100) + "%"
-					});
-				} else {
-					// alert((-(1 / r1 - 1 / r2) / 2 * 100));
-					cover.css({
-						"width": "100%",
-						"height": "auto",
-						"top": -(Math.abs(1 / r1 - 1 / r2) / (1 / r2) / 2 * 100) + "%"
-					});
-				}
-			});
+			updateDomPos(dom);
 		});
 
 		dom.find(".title").html(parsed.title);
