@@ -255,7 +255,7 @@
 					<input class="ev-title no-style" placeholder="Title">
 					<textarea class="ev-descr no-style" placeholder="Description"></textarea>
 				</div>
-				<div class="page page-cover" style="text-align: center;"></div>
+				<div class="page page-cover" style="text-align: center; overflow: auto;"></div>
 				<div class="page page-loc">
 					<div class="map" style="height: 100%;"></div>
 					<div style="text-align: center; position: absolute; top: 0; width: 100%; margin-top: 0.6rem; pointer-events: none;">
@@ -492,8 +492,15 @@
 									.css("display", "inline-block")
 									.css("text-align", "left")
 									.css("max-width", "90%")
-									.css("max-height", "90%")
-									.addClass("vcenter");
+									.addClass("vcenter noext");
+
+								// event_tmp.ready(function () {
+								// 	var pg = main.find(".page.page-cover");
+
+								// 	if (pg.height() < event_tmp.height()) {
+								// 		vcent.reset(event_tmp);
+								// 	}
+								// });
 
 								fields.cover = info.cover;
 								fields.favtag = info.favtag;
