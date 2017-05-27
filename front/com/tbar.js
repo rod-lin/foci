@@ -50,7 +50,8 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 					<div class="banner"><i class="diamond icon"></i></div> \
 				</div> \
 				<div class="right-bar"> \
-					<div class="avatar"></div> \
+					<div class="avatar"> \
+					</div> \
 					<button class="ui black icon button login-btn"> \
 						<i class="sign in icon"></i> \
 					</button> \
@@ -222,7 +223,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 			main.find(".login-btn").addClass("loading");
 			login.init(function (dat) {
 				updateAvatar();
-				main.find(".login-btn").removeClass("loading");
+				// main.find(".login-btn").removeClass("loading");
 			});
 		});
 
@@ -275,7 +276,8 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				function update() {
 					var url = info.avatar ? foci.download(info.avatar) : [ "img/deficon.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/matt.jpg" ].choose();
 					ava.css("background-image", "url(\'" + url + "\')");
-					main.find(".popup .pop-avatar").css("background-image", "url(\'" + url + "\')")
+					main.find(".popup .pop-avatar").css("background-image", "url(\'" + url + "\')");
+					return url;
 				}
 
 				main.find(".rating")
@@ -290,9 +292,9 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 					});
 				});
 
-				update();
+				var url = update();
 
-				ava.ready(function () {
+				util.img(url, function () {
 					main.find(".login-btn").removeClass("loading");
 					showAvatar();
 					// main.find(".right-bar").prepend(ava);

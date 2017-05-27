@@ -386,31 +386,33 @@ define([
 
 		var main = $(" \
 			<div class='com-eqview ui small modal'> \
-				<div class='cover' style='border-radius: 3px 3px 0 0;'></div> \
-				<div class='cover-edit'>Change cover</div> \
-				<div class='logo-cont'> \
-					<div class='logo'><div>Change logo</div></div> \
-					<div class='title'></div><br> \
-					<div class='rating'></div><br> \
-					<div class='detail'><i class='map outline icon'></i><span class='location'></span></div> \
-					<div class='detail'><i class='calendar outline icon'></i><span class='time'></span></div> \
-				</div> \
-				<div class='back not-owner'> \
-					<div class='util close ui icon button'> \
-						<i class='close icon'></i> \
-					</div><div class='util setting ui icon button'> \
-						<i class='setting-btn setting icon'></i> \
+				<div style='position: relative;'> \
+					<div class='cover' style='border-radius: 3px 3px 0 0;'></div> \
+					<div class='cover-edit'>Change cover</div> \
+					<div class='logo-cont'> \
+						<div class='logo'><div>Change logo</div></div> \
+						<div class='title'></div><br> \
+						<div class='rating'></div><br> \
+						<div class='detail'><i class='map outline icon'></i><span class='location'></span></div> \
+						<div class='detail'><i class='calendar outline icon'></i><span class='time'></span></div> \
 					</div> \
-				</div> \
-				<div class='cont'> \
-					<div class='descr'> \
+					<div class='back not-owner'> \
+						<div class='util close ui icon button'> \
+							<i class='close icon'></i> \
+						</div><div class='util setting ui icon button'> \
+							<i class='setting-btn setting icon'></i> \
+						</div> \
 					</div> \
-					<div class='tagbox' style='margin-top: 0;'></div> \
-					<!--div class='ui horizontal divider'>organizer</div> \
-					<div class='orgs'> \
-					</div--> \
+					<div class='cont'> \
+						<div class='descr'> \
+						</div> \
+						<div class='tagbox' style='margin-top: 0;'></div> \
+						<!--div class='ui horizontal divider'>organizer</div> \
+						<div class='orgs'> \
+						</div--> \
+					</div> \
+					<button class='ui button more' style='width: 100%; border-radius: 0 0 3px 3px; height: 4rem; opacity: 0.7;'>MORE</button> \
 				</div> \
-				<button class='ui button more' style='width: 100%; border-radius: 0 0 3px 3px; height: 4rem; opacity: 0.7;'>MORE</button> \
 			</div> \
 		");
 

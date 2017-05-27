@@ -241,5 +241,13 @@ define(function () {
 		});
 	};
 
+	util.img = function (url, cb) {
+		var img = new Image();
+		img.src = url;
+		$(img).on("load", function () {
+			cb(img);	
+		});
+	};
+
 	return util;
 });
