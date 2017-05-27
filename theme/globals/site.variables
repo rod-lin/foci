@@ -7,4 +7,4 @@
 @defaultBorderRadius: 3px;
 @floatingShadow: 0 0 2px rgba(0, 0, 0, 0.1);
 
-#loaderLineWidth: 0.1rem;
+@loaderLineWidth: 0.15em;

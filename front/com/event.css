@@ -30,7 +30,8 @@
 	transition: opacity 0.3s;
 }
 
-.com-event-single .cover-cont {
+.com-event-single .cover {
+	position: relative;
 	cursor: pointer;
 
 	width: 100%;
@@ -42,12 +43,14 @@
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 50% 50%;
+
+	transition: opacity 0.3s;
 }
 
-.com-event-single .cover {
+/* .com-event-single .cover {
 	position: relative;
 	width: 100%;
-}
+} */
 
 .com-event-single .title {
 	color: #595959 !important;

@@ -1,0 +1,11 @@
+.com-progress {
+	border-radius: 0 !important;
+	
+	width: 100%;
+
+	top: 0 !important;
+	
+	opacity: 0;
+	
+	transition: opacity 0.3s;
+}

@@ -5,8 +5,12 @@ define([
 	"com/xfilt", "com/waterfall", "com/util",
 	"com/avatar", "com/env", "com/upload",
 	"com/login", "com/map", "com/tagbox",
-	"com/rating"
-], function (xfilt, waterfall, util, avatar, env, upload, login, map, tagbox, rating) {
+	"com/rating", "com/progress"
+], function (
+	xfilt, waterfall, util, avatar,
+	env, upload, login, map, tagbox,
+	rating, progress
+) {
 	var $ = jQuery;
 	foci.loadCSS("com/event.css");
 	foci.loadCSS("com/eqview.css");
@@ -36,8 +40,7 @@ define([
 
 	function eventTemplate() {
 		var main = $('<div class="com-event-single ui card event"> \
-			<div class="ui loader"></div> \
-			<div class="cover-cont"><img class="cover"></img></div> \
+			<div class="cover"><div class="ui loader"></div></div> \
 			<div class="content"> \
 				<a class="header title"></a> \
 				<div class="meta"> \
@@ -131,8 +134,12 @@ define([
 
 		var parsed = parseInfo(info, config);
 
-		dom.find(".cover").attr("src", parsed.cover).on("load", function () {
-			updateDomPos(dom);
+		// dom.find(".cover").attr("src", parsed.cover).on("load", function () {
+		// 	updateDomPos(dom);
+		// });
+
+		util.bgimg(dom.find(".cover"), parsed.cover, function () {
+			if (config.onCoverLoad) config.onCoverLoad();
 		});
 
 		dom.find(".title").html(parsed.title);
@@ -203,37 +210,36 @@ define([
 				config.view(info);
 			});
 
-			main.css("opacity", "0");
+			var cover = main.find(".cover");
+			var prog = progress.init(cover, { height: 3, color: "grey" });
+
+			main.css("opacity", "0.4");
 			main.css("pointer-events", "none");
-			main.find(".loader").addClass("active");
+			// main.find(".loader").addClass("active");
 
-			var loaded = false;
+			cover.css("opacity", "0");
 
-			// main.ready(function () {
-			// 	if (!loaded) {
-			// 		// wf.update();
-			// 		// main.css("opacity", "0.2");
-			// 	}
-			// });
+			prog.show();
+			var incprog = setInterval(function () {
+				prog.sinc();
+			}, 300);
 
-			// main.css("opacity", "0.4");
-
-			main.find(".cover").ready(function () {
-				if (!loaded) {
+			setDom(main, info, $.extend({}, config, {
+				onCoverLoad: function () {
 					wf.update();
-					main.css("opacity", "0.4");
-				}
-			}).on("load", function () {
-				loaded = true;
-				wf.update();
-				main.find(".loader").removeClass("active");
-				setTimeout(function () {
+
+					// main.find(".loader").removeClass("active");
 					main.css("opacity", "1");
 					main.css("pointer-events", "");
-				}, 200);
-			});
 
-			setDom(main, info, config);
+					// setTimeout(function () {
+					cover.css("opacity", "1");
+					clearInterval(incprog);
+					prog.complete();
+					setTimeout(prog.hide, 500);
+					// }, 0);
+				}
+			}));
 
 			return main;
 		}
@@ -368,11 +374,11 @@ define([
 				fetch_lock = true;
 				
 				mod.fetch(function () {
-					com.toBottom(4); // to avoid duplicated loadings
+					// com.toBottom(4); // to avoid duplicated loadings
 					fetch_lock = false;
 				});
 
-				com.toBottom();
+				// com.toBottom();
 			});
 		}
 

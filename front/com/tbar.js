@@ -71,6 +71,10 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 		';
 
 		main = $(main);
+		main.css("opacity", "0");
+		main.ready(function () {
+			main.css("opacity", "");
+		});
 
 		var showMenu, hideMenu;
 
@@ -223,7 +227,8 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 			main.find(".login-btn").addClass("loading");
 			login.init(function (dat) {
 				updateAvatar();
-				// main.find(".login-btn").removeClass("loading");
+				if (!dat)
+					main.find(".login-btn").removeClass("loading");
 			});
 		});
 

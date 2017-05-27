@@ -2,7 +2,7 @@
 
 "use strict";
 
-define([ "com/util" ], function (util) {
+define([ "com/util", "com/progress" ], function (util, progress) {
 	var $ = jQuery;
 	foci.loadCSS("com/parts.css");
 
@@ -13,51 +13,7 @@ define([ "com/util" ], function (util) {
 		}, config);
 
 		var main = $("<div class='com-parts'></div>");
-		var progress = $(" \
-			<div class='ui top attached indicating progress'> \
-				<div class='bar'></div> \
-			</div> \
-		");
-
-		progress.progress({ percent: 0, total: 100 });
-		progress.css({
-			"position": "fixed",
-			"z-index": "10000",
-			"border-radius": "0",
-			"width": "100%",
-			"opacity": "0",
-			"transition": "opacity 0.3s",
-			"height": "2px"
-		});
-
-		function incProg() {
-			progress.progress("increment", util.random(10, 30));
-		}
-
-		function completeProg() {
-			progress.progress("complete");
-		}
-
-		function showProg() {
-			progress.progress("reset");
-			progress.css("opacity", "1");
-		}
-
-		function hideProg() {
-			progress.css("opacity", "0");
-
-			setTimeout(function () {
-				progress.progress("reset");
-			}, 300);
-		}
-
-		function errProg() {
-			progress
-				.progress("complete")
-				.progress("set error");
-		}
-
-		$("body").append(progress);
+		var prog = progress.init("body", { top: true, position: "fixed" });
 
 		var cache = {};
 
@@ -76,18 +32,18 @@ define([ "com/util" ], function (util) {
 		function load(name, cb, args) {
 			var next = function (text) {
 				// var loader = $("<div class='ui active loader'></div>");
-				incProg();
+				prog.inc();
 
 				var show = function (suc) {
 					setTimeout(function () {
 						main.removeClass("hide");
 
 						if (suc) {
-							completeProg();
-							setTimeout(hideProg, 300);
+							prog.complete();
+							setTimeout(prog.hide, 1000);
 						} else {
-							errProg();
-							setTimeout(hideProg, 2000);
+							prog.err();
+							setTimeout(prog.hide, 2000);
 						}
 
 						// loader.remove();
@@ -100,10 +56,10 @@ define([ "com/util" ], function (util) {
 
 				cont.scrollTop(0);
 
-				incProg();
+				prog.inc();
 
 				part.ready(function () {
-					incProg();
+					prog.inc();
 					if (window.init) {
 						window.init(part, args, show, cont);
 					}
@@ -111,7 +67,7 @@ define([ "com/util" ], function (util) {
 			};
 
 			main.addClass("hide");
-			showProg();
+			prog.show();
 
 			if (cache.hasOwnProperty(name)) {
 				next(cache[name]);
@@ -119,7 +75,7 @@ define([ "com/util" ], function (util) {
 				var url = config.base + "/" + name + ".html";
 				fetch(url, next, function () {
 					if (cb) cb(false);
-					errProg();
+					prog.err();
 				});
 			}
 		}
