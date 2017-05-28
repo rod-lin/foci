@@ -246,7 +246,7 @@ define([
 			main.css("pointer-events", "none");
 			// main.find(".loader").addClass("active");
 
-			cover.css("opacity", "0");
+			// cover.css("opacity", "0");
 
 			main.ready(function () {
 				main.css("opacity", "1");
@@ -266,7 +266,7 @@ define([
 					main.css("pointer-events", "");
 
 					// setTimeout(function () {
-					cover.css("opacity", "1");
+					// cover.css("opacity", "1");
 					clearInterval(incprog);
 					prog.complete();
 					setTimeout(prog.hide, 500);
