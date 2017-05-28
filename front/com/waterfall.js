@@ -58,6 +58,10 @@ define(function () {
 
 			left = (cont_width - count * width - (count - 1) * gap) / 2;
 
+			// if (child.length <= count && count != 1) {
+			// 	left = 2 * gap;
+			// }
+
 			var ret = {
 				left: left
 			};

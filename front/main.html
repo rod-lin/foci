@@ -275,8 +275,8 @@
 					var ev = event.init("#search>#search-cont", {
 						onUpdate: function (pos) {},
 						fetch: {
-							fetch: function (skip, cb) {
-								foci.get("/event/search", $.extend({ skip: skip }, cur_query), cb);
+							fetch: function (skip, sortby, cb) {
+								foci.get("/event/search", $.extend({ skip: skip }, cur_query, sortby), cb);
 							},
 
 							cont: "#search",
@@ -301,9 +301,11 @@
 
 							$("#search").scrollTop(0);
 							cur_query = query;
-							// alert("fetch");
+
+							ev.hide();
 							ev.fetch(function () {
 								cb();
+								ev.show();
 							});
 						});
 					}

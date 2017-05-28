@@ -50,11 +50,13 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 					<div class="banner"><i class="diamond icon"></i></div> \
 				</div> \
 				<div class="right-bar"> \
-					<div class="avatar"> \
+					<div class="avatar-box"> \
+						<div class="avatar"></div> \
+						<button class="login-btn"> \
+							<div class="ui small loader"></div> \
+							<i class="sign in icon"></i> \
+						</button> \
 					</div> \
-					<button class="ui black icon button login-btn"> \
-						<i class="sign in icon"></i> \
-					</button> \
 					<div class="ui popup transition hidden"> \
 						<div class="cont"> \
 							<div class="pop-avatar"><div><i class="setting icon"></i></div></div> \
@@ -82,6 +84,8 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 			var proc;
 
 			showMenu = function () {
+				hideSearchResult();
+
 				main.addClass("show-menu");
 				main.removeClass("show-banner");
 				main.css("overflow", "hidden");
@@ -133,6 +137,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 		function clearTag() {
 			tag_selected = {};
+			main.find(".filter-btn").removeClass("active");
 			main.find(".filter-tag .scrolling.menu .tag div").removeClass("blue").addClass("grey");
 		}
 
@@ -146,6 +151,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 			tag.attr("data-value", name);
 			tag.append(tag_dname.hasOwnProperty(name) ? tag_dname[name] : name);
 			tag.click(function () {
+				main.find(".filter-btn").addClass("active");
 				tag_selected[name] = !tag_selected[name];
 				tag.find("div").toggleClass("grey").toggleClass("blue");
 			});
@@ -187,6 +193,10 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 		main.find(".prompt").keydown(search);
 
+		function hideSearchResult() {
+			main.find(".search").search("hide results");
+		}
+
 		main.find(".search").search({
 			apiSettings: {
 				url: "/event/search?kw={query}",
@@ -224,11 +234,11 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 		/*** login ***/
 		main.find(".login-btn").click(function () {
 			hideAvatar();
-			main.find(".login-btn").addClass("loading");
+			main.find(".login-btn .loader").addClass("active");
 			login.init(function (dat) {
 				updateAvatar();
 				if (!dat)
-					main.find(".login-btn").removeClass("loading");
+					main.find(".login-btn .loader").removeClass("active");
 			});
 		});
 
@@ -300,7 +310,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				var url = update();
 
 				util.img(url, function () {
-					main.find(".login-btn").removeClass("loading");
+					main.find(".login-btn .loader").removeClass("active");
 					showAvatar();
 					// main.find(".right-bar").prepend(ava);
 				});
@@ -374,6 +384,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 			},
 
 			showBanner: function () {
+				hideSearchResult();
 				main.addClass("show-banner");
 				hideMenu();
 			},

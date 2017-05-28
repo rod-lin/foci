@@ -1,0 +1,70 @@
+/* sort panel */
+
+"use strict";
+
+define([ "com/util" ], function (util) {
+	foci.loadCSS("com/sortby.css");
+
+	function init(cont, cond, config) {
+		cont = $(cont);
+		config = $.extend({}, config);
+
+		var main = $("<div class='com-sortby'></div>");
+
+		var sortby = {};
+
+		function genCond(name, conf) {
+			conf.name = conf.name || name;
+			conf.init = conf.init || 1;
+
+			function dir(n) {
+				return n == 1 ? "up" : "down";
+			}
+
+			var cond = $("<div class='cond'><i class='caret " + dir(conf.init) + " icon'></i>" + conf.name + "</div>");
+
+			cond.click(function () {
+				if (sortby.hasOwnProperty(name) && sortby[name]) {
+					if (sortby[name] == conf.init) {
+						sortby[name] = -sortby[name];
+					} else {
+						cond.removeClass("selected");
+						delete sortby[name];
+					}
+				} else {
+					sortby[name] = conf.init;
+					cond.addClass("selected");
+				}
+
+				cond.find(".icon").removeClass("up").removeClass("down").addClass(dir(sortby[name] || conf.init));
+
+				if (config.onClick) config.onClick(sortby);
+			});
+
+			return cond;
+		}
+
+		for (var k in cond) {
+			if (cond.hasOwnProperty(k)) {
+				main.append(genCond(k, cond[k]));
+			}
+		}
+
+		cont.append(main);
+
+		var ret = {
+			get: function () {
+				return sortby;
+			},
+
+			clear: function () {
+				sortby = {};
+				main.find(".cond").removeClass("selected");
+			}
+		};
+
+		return ret;
+	}
+
+	return { init: init };
+});

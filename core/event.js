@@ -49,6 +49,8 @@ var Event = function (euid, owner /* uuid */) {
 	this.apply_partic_lim = null
 	this.apply_partic = [];
 
+	this.apply_num = 0;
+
 	this.favtag = [];
 
 	this.rating = null;
@@ -83,7 +85,7 @@ Event.prototype.getInfo = function () {
 		start: this.start ? this.start.getTime() : null,
 		end: this.end ? this.end.getTime() : null,
 
-		apply_num: this.countApp("staff") + this.countApp("partic"),
+		apply_num: this.apply_num,
 		rating: this.rating,
 
 		favtag: this.favtag
@@ -126,6 +128,10 @@ Event.prototype.getAppLimit = function (type) {
 
 Event.prototype.countApp = function (type) {
 	return this["apply_" + type].length;
+};
+
+Event.prototype.isOrg = function (uuid) {
+	return this.org.indexOf(uuid) != -1;
 };
 
 Event.format = {};
@@ -184,24 +190,42 @@ Event.format.info = {
 	}
 };
 
-Event.format.search = {
-	favtag: { type: "json", lim: tags => user.checkTag(tags) },
-	kw: util.checkArg.lenlim(config.lim.event.keyword, "$core.too_long($core.word.search_keyword)"),
+Event.format.lim = {
+	sort_create: {
+		type: "int", lim: n => {
+			if (n !== 1 && n !== -1)
+				throw new err.Exc("$core.illegal($core.word.sortby)");
+			return n;
+		}, opt: true
+	},
 
-	after: { type: "int", lim: time => new Date(time) },
-	before: { type: "int", lim: time => new Date(time) },
+	sort_pop: {
+		type: "int", lim: n => {
+			if (n !== 1 && n !== -1)
+				throw new err.Exc("$core.illegal($core.word.sortby)");
+			return n;
+		}, opt: true
+	},
 
-	skip: { type: "int" },
-	n: {
+	skip: { type: "int", opt: true },
+	lim: {
 		type: "int", lim: n => {
 			if (n > config.lim.event.max_search_results) {
 				throw new err.Exc("$core.too_many($core.word.search_result)");
 			}
 
 			return n;
-		}
+		}, opt: true
 	}
 };
+
+Event.format.search = {
+	favtag: { type: "json", lim: tags => user.checkTag(tags) },
+	kw: util.checkArg.lenlim(config.lim.event.keyword, "$core.too_long($core.word.search_keyword)"),
+
+	after: { type: "int", lim: time => new Date(time) },
+	before: { type: "int", lim: time => new Date(time) }
+}.extend(Event.format.lim);
 
 Event.query = {
 	euid: (euid, state) => ({ "euid": euid, "state": { $gte: (state == undefined ? 1 : state) } /* published state */ }),
@@ -253,7 +277,7 @@ Event.set = {
 	apply: (euid, uuid, type, form) => {
 		var q = {};
 		q["apply_" + type] = { uuid: uuid, form: form };
-		return { $push: q };
+		return { $push: q, $inc: { apply_num: 1 } };
 	},
 
 	publish: () => ({ $set: { state: 1 } })
@@ -308,13 +332,37 @@ exports.setInfo = async (euid, uuid, info) => {
 	await col.updateOne(Event.query.euid(euid, 0), Event.set.info(info));
 };
 
-// events organized by a certain user(in event info)
-exports.getOrganized = async (uuid, skip, lim) => {
-	skip = skip || 0;
-	lim = lim || config.lim.event.max_search_results;
+function formatStdLim(conf) {
+	var query = {};
+
+	var sortby = {
+		created: 1
+	};
+
+	if (conf.sort_create) {
+		sortby.created = -conf.sort_create;
+	}
+
+	if (conf.sort_pop) {
+		if (!conf.sort_create) delete sortby.created;
+		sortby.apply_num = conf.sort_pop;
+	}
+
+	query.sortby = sortby;
+	query.lim = conf.lim || config.lim.event.max_search_results;
+	query.skip = conf.skip || 0;
+
+	return query;
+}
+
+async function getEventGroup(query, conf) {
+	var lim = formatStdLim(conf);
 
 	var col = await db.col("event");
-	var arr = await col.find(Event.query.org(uuid)).skip(skip).limit(lim).toArray();
+	var arr = await col.find(query)
+						.sort(lim.sortby)
+						.skip(lim.skip)
+						.limit(lim.lim).toArray();
 	var ret = [];
 
 	arr.forEach(function (ev) {
@@ -322,41 +370,25 @@ exports.getOrganized = async (uuid, skip, lim) => {
 	});
 
 	return ret;
+}
+
+// events organized by a certain user(in event info)
+exports.getOrganized = async (uuid, conf) => {
+	return await getEventGroup(Event.query.org(uuid), conf);
 };
 
 // events applied by a user
-exports.getApplied = async (uuid, skip, lim) => {
-	skip = skip || 0;
-	lim = lim || config.lim.event.max_search_results;
-
-	var col = await db.col("event");
-	var arr = await col.find(Event.query.applied(uuid)).skip(skip).limit(lim).toArray();
-	var ret = [];
-
-	arr.forEach(function (ev) {
-		ret.push(new Event(ev).getInfo());
-	});
-
-	return ret;
+exports.getApplied = async (uuid, conf) => {
+	return await getEventGroup(Event.query.applied(uuid), conf);
 };
 
-exports.getDraft = async (uuid, skip, lim) => {
-	skip = skip || 0;
-	lim = lim || config.lim.event.max_search_results;
-
-	var col = await db.col("event");
-	var arr = await col.find(Event.query.draft(uuid)).skip(skip).limit(lim).toArray();
-	var ret = [];
-
-	arr.forEach(function (ev) {
-		ret.push(new Event(ev).getInfo());
-	});
-
-	return ret;
+exports.getDraft = async (uuid, conf) => {
+	return await getEventGroup(Event.query.draft(uuid), conf);
 };
 
 exports.search = async (conf, state) => {
 	state = state || 1;
+
 	var query = { "state": { $gte: 1 } };
 
 	if (conf.favtag) query.extend(Event.query.has_favtag(conf.favtag));
@@ -364,15 +396,16 @@ exports.search = async (conf, state) => {
 	if (conf.after) query.extend(Event.query.after(conf.after));
 	if (conf.before) query.extend(Event.query.after(conf.before));
 
-	var maxn = conf.n || config.lim.event.max_search_results;
-	var skip = conf.skip || 0;
-
 	var col = await db.col("event");
 
-	var found = col.find(query);
-	var count = await found.count();
-
-	var res = await found.skip(skip).limit(maxn).toArray();
+	var lim = formatStdLim(conf);
+	var res = await
+		col.find(query)
+			.sort(lim.sortby)
+			.skip(lim.skip)
+			.limit(lim.lim)
+			.toArray();
+	
 	var ret = [];
 
 	res.forEach(ev => ret.push(new Event(ev).getInfo()));
@@ -400,6 +433,9 @@ exports.apply = async (euid, uuid, type, form) => {
 	var ev = await exports.euid(euid);
 	var max = ev.getAppLimit(type);
 	var cur = ev.countApp(type);
+
+	if (ev.isOrg(uuid) && !config.debug)
+		throw new err.Exc("$core.app_own_event");
 
 	if (cur >= max)
 		throw new err.Exc("$core.app_full");

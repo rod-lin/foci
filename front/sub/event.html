@@ -168,7 +168,8 @@
 
 		background: white;
 		border-radius: 3px;
-		box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+		/*box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);*/
+		border: 1px solid rgba(0, 0, 0, 0.1);
 		overflow: hidden;
 
 		transition: opacity 0.3s;
@@ -550,19 +551,24 @@
 					});
 				}
 
-				function afterApp() {
-					main.find(".apply-prompt").html("Thank you");
+				function disableApp(msg) {
+					main.find(".apply-prompt").html(msg || "Thank you");
 					main.find(".apply-staff").addClass("disabled");
 					main.find(".apply-partic").addClass("disabled");
 				}
 
-				login.session(function (session) {	
+				login.session(function (session) {
+					if (!session) {
+						disableApp("Login first");
+						return;
+					}
+
 					main.find(".apply-staff").click(function () {
 						main.find(".apply-staff .loader").addClass("active");
 
 						apply(session, "staff", function (suc) {
 							main.find(".apply-staff" + " .loader").removeClass("active");
-							if (suc) afterApp();
+							if (suc) disableApp();
 						});
 					});
 
@@ -571,7 +577,7 @@
 						
 						apply(session, "partic", function (suc) {
 							main.find(".apply-partic" + " .loader").removeClass("active");
-							if (suc) afterApp();
+							if (suc) disableApp();
 						});
 					});
 				});

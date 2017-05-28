@@ -349,13 +349,17 @@
 						ev_list[name] = event.init(tb.getTab(name), {
 							view: view,
 							fetch: {
-								fetch: function (skip, cb) {
+								fetch: function (skip, sortby, cb) {
 									if (enc) {
 										login.session(function (session) {
-											foci.encop(session, { int: "event", action: name, skip: skip }, cb);
+											foci.encop(session, $.extend({
+												int: "event",
+												action: name,
+												skip: skip
+											}, sortby), cb);
 										});
 									} else {
-										foci.get("/user/" + name, { uuid: info.uuid, skip: skip }, cb);
+										foci.get("/user/" + name, $.extend({ uuid: info.uuid, skip: skip }, sortby), cb);
 									}
 								},
 

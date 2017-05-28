@@ -13,6 +13,8 @@
 	pointer-events: none;
 }
 
+.com-event .sortby {}
+
 .com-event .com-event-single {
 	position: absolute;
 	
@@ -24,8 +26,9 @@
 
 	border-radius: 3px !important;
 
-	box-shadow:
-		0 0 2px rgba(0, 0, 0, 0.3) !important;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+
+	box-shadow: none !important;
 
 	transition: opacity 0.3s;
 }

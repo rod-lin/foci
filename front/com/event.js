@@ -5,11 +5,11 @@ define([
 	"com/xfilt", "com/waterfall", "com/util",
 	"com/avatar", "com/env", "com/upload",
 	"com/login", "com/map", "com/tagbox",
-	"com/rating", "com/progress"
+	"com/rating", "com/progress", "com/sortby"
 ], function (
 	xfilt, waterfall, util, avatar,
 	env, upload, login, map, tagbox,
-	rating, progress
+	rating, progress, sortby
 ) {
 	var $ = jQuery;
 	foci.loadCSS("com/event.css");
@@ -187,7 +187,9 @@ define([
 				qview(info, null, mod);
 			},
 
-			loader_only_on_buffer: false // only show loader when buffering(not on the beginning)
+			loader_only_on_buffer: false, // only show loader when buffering(not on the beginning)
+
+			gap: 20,
 
 			// fetch: {
 			//     fetch: function (skip, cb(suc, dat)),
@@ -196,10 +198,37 @@ define([
 			// }
 		}, config);
 
-		var main = $("<div class='com-event'></div>");
+		var main = $("<div class='com-event'><div class='sortby'></div></div>");
+
+		var sort = sortby.init(
+			main.find(".sortby"),
+			{
+				"sort_create": {
+					name: "create",
+					init: -1
+				},
+				
+				"sort_pop": {
+					name: "popularity",
+					init: -1
+				}
+			},
+			{
+				onClick: function (cond) {
+					mod.refetch(cond);
+				}
+			});
+
+		main.find(".sortby").css("padding-top", config.gap + "px");
 
 		/* init waterfall */
-		var wf = waterfall.init(main, { onUpdate: config.onUpdate });
+		var wf = waterfall.init(main, {
+			gap: config.gap,
+			onUpdate: function (pos) {
+				main.find(".sortby").css("padding-left", pos.left + "px");
+				if (config.onUpdate) config.onUpdate(pos);
+			}
+		});
 
 		cont.append(main);
 
@@ -345,7 +374,7 @@ define([
 			if (edom.length || !config.loader_only_on_buffer)
 				bar.setLoader();
 
-			config.fetch.fetch(fetch_skip, function (suc, dat) {
+			config.fetch.fetch(fetch_skip, sort.get(), function (suc, dat) {
 				if (suc) {
 					fetch_skip += dat.length;
 					for (var i = 0; i < dat.length; i++)
@@ -365,6 +394,13 @@ define([
 				}
 
 				if (cb) cb(suc);
+			});
+		};
+
+		mod.refetch = function (sortby) {
+			clearFetch();
+			mod.clear(function () {
+				mod.fetch();
 			});
 		};
 

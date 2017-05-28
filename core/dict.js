@@ -25,6 +25,7 @@ module.exports = {
 		"core.word.intro": "self introduction",
 		"core.word.school": "school name",
 		"core.word.tag": "tag",
+		"core.word.sortby": "sort condition",
 
 		"core.word.sid": "session id",
 		"core.word.string": "string",
@@ -41,6 +42,8 @@ module.exports = {
 		"core.illegal_app_type": "illegal type of application",
 		"core.app_full": "application is full",
 		"core.dup_app": "duplicated applications",
+		"core.app_own_event": "you can't apply for your own event",
+
 		"core.event_not_draft": "event not a draft",
 
 		"core.dict_not_exist": "the dictionary for $1 does not exist",

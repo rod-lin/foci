@@ -140,24 +140,20 @@ _user.info = util.route(async env => {
 });
 
 _user.org = util.route(async env => {
-	var args = util.checkArg(env.query, {
-		"uuid": "int",
-		"skip": { type: "int", opt: true },
-		"lim": { type: "int", opt: true }
-	});
+	var args = util.checkArg(env.query, {}.extend(event.Event.format.lim).extend({
+		"uuid": "int"
+	}));
 
-	var ret = await event.getOrganized(args.uuid, args.skip, args.lim);
+	var ret = await event.getOrganized(args.uuid, args);
 	env.qsuc(ret);
 });
 
 _user.applied = util.route(async env => {
-	var args = util.checkArg(env.query, {
-		"uuid": "int",
-		"skip": { type: "int", opt: true },
-		"lim": { type: "int", opt: true }
-	});
+	var args = util.checkArg(env.query, {}.extend(event.Event.format.lim).extend({
+		"uuid": "int"
+	}));
 	
-	var ret = await event.getApplied(args.uuid, args.skip, args.lim);
+	var ret = await event.getApplied(args.uuid, args);
 	env.qsuc(ret);
 });
 
@@ -284,12 +280,8 @@ encop.event = async (env, usr, query) => {
 			return await event.apply(args.euid, usr.getUUID(), args.type, args.form);
 
 		case "draft":
-			var args = util.checkArg(query, {
-				"skip": { type: "int", opt: true },
-				"lim": { type: "int", opt: true }
-			});
-
-			return await event.getDraft(usr.getUUID(), args.skip, args.lim);
+			var args = util.checkArg(query, event.Event.format.lim);
+			return await event.getDraft(usr.getUUID(), args);
 
 		case "setinfo":
 			// format and check limit

@@ -1,0 +1,39 @@
+
+.com-sortby {
+	display: inline-block;
+
+	color: #808080;
+
+	opacity: 0.9;
+
+	border-radius: 3px;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.com-sortby .cond {
+	display: inline-block;
+	padding: 0.4rem 0.6rem;
+	background: #FDFDFD;
+
+	cursor: pointer;
+
+	border-right: 1px solid rgba(0, 0, 0, 0.15);
+
+	transition: background 0.2s;
+}
+
+.com-sortby .cond:hover {
+	background: #F8F8F8;
+}
+
+.com-sortby .cond:active {
+	background: #E6E6E6;
+}
+
+.com-sortby .cond.selected {
+	background: #F3F3F3;
+}
+
+.com-sortby .cond:last-child {
+	border: none;
+}
