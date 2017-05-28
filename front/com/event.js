@@ -242,11 +242,15 @@ define([
 			var cover = main.find(".cover");
 			var prog = progress.init(cover, { height: 3, color: "grey" });
 
-			main.css("opacity", "0.4");
+			main.css("opacity", "0");
 			main.css("pointer-events", "none");
 			// main.find(".loader").addClass("active");
 
 			cover.css("opacity", "0");
+
+			main.ready(function () {
+				main.css("opacity", "0.4");
+			});
 
 			prog.show();
 			var incprog = setInterval(function () {
