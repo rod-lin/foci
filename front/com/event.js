@@ -249,7 +249,9 @@ define([
 			// cover.css("opacity", "0");
 
 			main.ready(function () {
-				main.css("opacity", "1");
+				setTimeout(function () {
+					main.css("opacity", "1");
+				}, 300);
 			});
 
 			prog.show();
@@ -261,16 +263,11 @@ define([
 				onCoverLoad: function () {
 					wf.update();
 
-					// main.find(".loader").removeClass("active");
-					// main.css("opacity", "1");
 					main.css("pointer-events", "");
 
-					// setTimeout(function () {
-					// cover.css("opacity", "1");
 					clearInterval(incprog);
 					prog.complete();
 					setTimeout(prog.hide, 500);
-					// }, 0);
 				}
 			}));
 
