@@ -249,7 +249,7 @@ define([
 			cover.css("opacity", "0");
 
 			main.ready(function () {
-				main.css("opacity", "0.4");
+				main.css("opacity", "1");
 			});
 
 			prog.show();
@@ -262,7 +262,7 @@ define([
 					wf.update();
 
 					// main.find(".loader").removeClass("active");
-					main.css("opacity", "1");
+					// main.css("opacity", "1");
 					main.css("pointer-events", "");
 
 					// setTimeout(function () {
