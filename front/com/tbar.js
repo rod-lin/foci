@@ -399,6 +399,9 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 			setTitle: function () {
 				main.find(".banner").html(Array.prototype.slice.apply(arguments).join("<i class='sub caret right icon'></i>"));
+
+				// ret.showBanner();
+				// setTimeout(ret.hideBanner, 3000);
 			}
 		};
 

@@ -54,6 +54,8 @@ define([ "com/util" ], function (util) {
 		//     type, name, [ placeholder, value, label ]
 		// }
 	
+		obj = obj || { block: [] };
+
 		var fields = {};
 
 		function genInput(input) {
@@ -373,6 +375,7 @@ define([ "com/util" ], function (util) {
 	}
 
 	return {
+		genForm: genForm,
 		modal: modal
 	};
 });

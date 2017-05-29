@@ -126,6 +126,10 @@ Event.prototype.getAppLimit = function (type) {
 	return this["apply_" + type + "_lim"];
 };
 
+Event.prototype.getAppList = function (type) {
+	return this["apply_" + type];
+};
+
 Event.prototype.countApp = function (type) {
 	return this["apply_" + type].length;
 };
@@ -453,10 +457,9 @@ exports.apply = async (euid, uuid, type, form) => {
 };
 
 exports.publish = async (euid, uuid) => {
-	var col = await db.col("event");
-
 	await exports.checkOwner(euid, uuid);
 
+	var col = await db.col("event");
 	var ev = await exports.euid(euid, 0);
 
 	if (!ev.isDraft())
@@ -465,4 +468,17 @@ exports.publish = async (euid, uuid) => {
 	await col.findOneAndUpdate(Event.query.euid(euid, 0), Event.set.publish());
 
 	return;
+};
+
+// application list
+exports.getAppList = async (euid, uuid, type) => {
+	if (type != "partic" && type != "staff")
+		throw new err.Exc("$core.illegal_app_type");
+
+	await exports.checkOwner(euid, uuid);
+
+	var col = await db.col("event");
+	var ev = await exports.euid(euid);
+
+	return ev.getAppList(type);
 };

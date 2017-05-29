@@ -72,6 +72,8 @@ define(function () {
 	util.json = function (str) {
 		var ret = null;
 
+		if (!str) return null;
+
 		try {
 			ret = JSON.parse(str);
 		} catch (e) {
@@ -252,7 +254,7 @@ define(function () {
 	util.bgimg = function (obj, url, load) {
 		util.img(url, function (img) {
 			$(obj).css("background-image", "url('" + url + "')").ready(function () {
-				load(img);
+				if (load) load(img);
 			});
 		});
 	};

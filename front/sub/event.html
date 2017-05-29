@@ -334,6 +334,10 @@
 					<div class="box pad">
 						<div class="apply-prompt">Apply for</div>
 					</div>
+					<div class="box pad apply-appcent btn" style=" margin-top: 0.2rem; background: #34495E; color: white; display: none;">
+						<div class="ui inverted loader"></div>
+						<span>Application center</span>
+					</div>
 					<div class="box pad apply-staff btn" style=" margin-top: 0.2rem; background: #3498DB; color: white;">
 						<div class="ui inverted loader"></div>
 						<span>Staff</span>
@@ -551,8 +555,12 @@
 					});
 				}
 
+				function setAppPrompt(msg) {
+					main.find(".apply-prompt").html(msg);
+				}
+
 				function disableApp(msg) {
-					main.find(".apply-prompt").html(msg || "Thank you");
+					setAppPrompt(msg || "Thank you");
 					main.find(".apply-staff").addClass("disabled");
 					main.find(".apply-partic").addClass("disabled");
 				}
@@ -563,23 +571,35 @@
 						return;
 					}
 
-					main.find(".apply-staff").click(function () {
-						main.find(".apply-staff .loader").addClass("active");
+					var uuid = session.getUUID();
 
-						apply(session, "staff", function (suc) {
-							main.find(".apply-staff" + " .loader").removeClass("active");
-							if (suc) disableApp();
+					if (info.org.indexOf(uuid) != -1) {
+						setAppPrompt("As an owner");
+						main.find(".apply-staff").remove();
+						main.find(".apply-partic").remove();
+				
+						main.find(".apply-appcent").css("display", "").click(function () {
+							util.jump("#appcent/" + euid);
 						});
-					});
+					} else {
+						main.find(".apply-staff").click(function () {
+							main.find(".apply-staff .loader").addClass("active");
 
-					main.find(".apply-partic").click(function () {
-						main.find(".apply-partic .loader").addClass("active");
-						
-						apply(session, "partic", function (suc) {
-							main.find(".apply-partic" + " .loader").removeClass("active");
-							if (suc) disableApp();
+							apply(session, "staff", function (suc) {
+								main.find(".apply-staff" + " .loader").removeClass("active");
+								if (suc) disableApp();
+							});
 						});
-					});
+
+						main.find(".apply-partic").click(function () {
+							main.find(".apply-partic .loader").addClass("active");
+							
+							apply(session, "partic", function (suc) {
+								main.find(".apply-partic" + " .loader").removeClass("active");
+								if (suc) disableApp();
+							});
+						});
+					}
 				});
 			};
 

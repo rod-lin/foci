@@ -301,6 +301,19 @@ encop.event = async (env, usr, query) => {
 			var args = util.checkArg(query, { euid: "int", type: "string" });
 			return await event.getAppForm(args.euid, args.type);
 
+		case "getapp":
+			var args = util.checkArg(query, { euid: "int", type: { type: "string", opt: true } });
+			if (!args.type)
+				return {
+					staff: await event.getAppList(args.euid, usr.getUUID(), "staff"),
+					staff_form: await event.getAppForm(args.euid, "staff"),
+					
+					partic: await event.getAppList(args.euid, usr.getUUID(), "partic"),
+					partic_form: await event.getAppForm(args.euid, "partic")
+				};
+			else
+				return await event.getAppList(args.euid, usr.getUUID(), args.type);
+
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}

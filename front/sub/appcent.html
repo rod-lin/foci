@@ -1,0 +1,368 @@
+
+<style>
+
+	#sub-appcent .left-panel {
+		position: fixed;
+
+		z-index: 1;
+
+		left: 0;
+
+		height: 100%;
+		width: 20em;
+
+		background: rgba(253, 253, 253, 0.7);
+		border-right: 1px solid rgba(0, 0, 0, 0.1);
+
+		text-align: center;
+	}
+
+	#sub-appcent .left-panel .logo {
+		display: inline-block;
+
+		width: 7em;
+		height: 7em;
+		border-radius: 50%;
+
+		margin-top: 3em;
+
+		background-image: url("img/tmp4.jpg");
+
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: 50% 50%;
+	
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+	}
+
+	#sub-appcent .left-panel .tab-set {
+		margin-top: 3em;
+		width: 100%;
+	}
+
+	.ui.steps .step.active {
+		border-radius: 0 !important;
+	}
+
+	.ui.steps .step.active .title {
+		color: rgba(0, 0, 0, .87) !important;
+	}
+
+	#sub-appcent .tabs {
+		position: absolute;
+
+		top: 0;
+		left: 20em;
+
+		height: 100%;
+	}
+
+	#sub-appcent .tabs .tab {
+		position: absolute;
+
+		width: 100%;
+		height: 100%;
+
+		overflow: auto;
+		opacity: 0;
+		visibility: hidden;
+
+		transition: opacity 0.3s;
+	}
+
+	#sub-appcent .tabs .tab.show {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	#sub-appcent .tabs .tab .no-more {
+		display: none;
+	}
+
+	#sub-appcent .tabs .empty .no-more {
+		display: block;
+		width: 100%;
+		
+		text-align: center;
+		color: #CCCCCC;
+		font-weight: bold;
+
+		padding: 1rem;
+	}
+
+	#sub-appcent .tabs .empty table {
+		border: 0 !important;
+	}
+
+	#sub-appcent .tabs .user-name {
+		display: inline-block;
+		margin-left: 0.5rem;
+		font-weight: bold;
+	}
+
+	@media only screen and (max-width: 640px) {
+		#sub-appcent .left-panel {
+			width: 5rem;
+			font-size: 50%;
+		}
+
+		#sub-appcent .tab-set .step {
+			font-size: 120%;
+		}
+
+		#sub-appcent .tab-set .step .icon {
+			margin-bottom: 0.4em;
+		}
+
+		#sub-appcent .tabs {
+			left: 5em;
+		}
+	}
+
+</style>
+
+<div id="sub-appcent">
+	<div class="left-panel">
+		<div class="logo"></div>
+		<div class="tab-set">
+			<div class="ui vertical steps" style="width: 100%; border-radius: 0; border-width: 1px 0 1px 0;">
+				<div class="step link">
+					<i class="hand paper icon"></i>
+					<div class="content">
+						<div class="title">Staff</div>
+					</div>
+				</div>
+				<div class="step link">
+					<i class="users icon"></i>
+					<div class="content">
+						<div class="title">Participant</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="tabs">
+		<div class="tab">
+			<table class="ui celled padded unstackable table" style="border-radius: 0; border-width: 0 0 1px 0;">
+				<thead>
+					<tr>
+						<th class="single line">User</th>
+						<th class="single line">Rating</th>
+						<th class="single line">Apply for</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<div class="no-more">no application</div>
+		</div>
+
+		<div class="tab">
+			<table class="ui celled padded unstackable table" style="border-radius: 0; border-width: 0 0 1px 0;">
+				<thead>
+					<tr>
+						<th class="single line">User</th>
+						<th class="single line">Rating</th>
+						<th class="single line">Apply for</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<div class="no-more">no application</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	
+	function init(main, args, show, cont) {
+		require([
+			"com/env", "com/util", "com/event",
+			"com/xfilt", "com/login", "com/event",
+			"com/map", "com/lang", "com/avatar",
+			"com/formi", "com/rating"
+		], function (env, util, event, xfilt, login, event, map, lang, avatar, formi, rating) {
+			if (!args || !args.length) {
+				util.emsg("$front.sub.event.no_euid");
+				return;
+			}
+
+			var euid = parseInt(args[0]);
+
+			if (isNaN(euid)) {
+				util.emsg("$front.sub.event.illegal_euid");
+				return;
+			}
+
+			var tbar = env.get("tbar");
+
+			tbar.setTitle("Application center");
+
+			login.session(function (session) {
+				if (!session) return;
+
+				var left_panel = main.find(".left-panel");
+
+				var tab = (function () {
+					var ret = {};
+					var tabset = left_panel.find(".tab-set");
+
+					tabset.find(".step").click(function () {
+						tabset.find(".step.active").removeClass("active");
+						var n = $(this).addClass("active").index();
+						ret.show(n);
+					});
+
+					ret.show = function (n) {
+						main.find(".tabs .tab.show").removeClass("show");
+						$(main.find(".tabs .tab")[n]).addClass("show");
+					};
+
+					ret.get = function (n) {
+						return $(main.find(".tabs .tab")[n]);
+					};
+
+					$(tabset.find(".step")[0]).click();
+
+					return ret;
+				})();
+
+				var table = (function () {
+					var ret = {};
+
+					ret.setHeader = function (tab, titles) {
+						var head = "";
+
+						for (var i = 0; i < titles.length; i++) {
+							head += "<th class='single line'>" + titles[i] + "</th>";
+						}
+
+						tab.find("thead tr").html(head);
+					};
+
+					ret.addItem = function (tab, dat) {
+						var item = $("<tr></tr>");
+
+						for (var i = 0; i < dat.length; i++) {
+							item.append($("<td class='single line'></td>").append(dat[i]));
+						}
+						
+						tab.find("tbody").append(item);
+
+						return;
+					};
+			
+					return ret;
+				})();
+
+				function render(ev, app) {
+					// left panel
+					var parse = event.parseInfo(ev);
+					util.bgimg(left_panel.find(".logo"), parse.logo);
+
+					// tabs
+					var staff_tab = tab.get(0).find("table");
+					var partic_tab = tab.get(1).find("table");
+
+					var staff_form = formi.genForm(util.json(app.staff_form));
+					var partic_form = formi.genForm(util.json(app.partic_form));
+
+					function headerList(fields) {
+						var init = [ "User", "Rating", "Apply for" ];
+
+						for (var k in fields) {
+							if (fields.hasOwnProperty(k)) {
+								init.push(k);
+							}
+						}
+
+						return init;
+					}
+
+					function genItem(list /* list generated by headerList */, app, type) {
+						var user = $("<div></div>");
+						var rattd = $("<div></div>");
+
+						var item = [
+							user, rattd, (type == "staff" ? "Staff" : "Participant")
+						];
+
+						var form = app.form;
+
+						for (var i = 3; i < list.length; i++) {
+							if (form && form.hasOwnProperty(list[i])) {
+								item.push(form[list[i]]);
+							} else {
+								item.push("N/A");
+							}
+						}
+
+						foci.get("/user/info", { uuid: app.uuid }, function (suc, dat) {
+							if (suc) {
+								var ava = avatar.init(user, dat, { size: "3em", popdir: "right center" });
+								var rat = rating.init(rattd, dat.rating[0]);
+								
+								user.append("<div class='user-name'>" + dat.dname + "</div>");
+							} else {
+								util.emsg(dat);
+							}
+						});
+
+						return item;
+					}
+
+					var staff_hlist = headerList(staff_form.fields);
+					var partic_hlist = headerList(partic_form.fields);
+
+					table.setHeader(staff_tab, staff_hlist);
+					table.setHeader(partic_tab, partic_hlist);
+
+					for (var i = 0; i < app.staff.length; i++) {
+						var item = genItem(staff_hlist, app.staff[i], "staff");
+						table.addItem(staff_tab, item);
+					}
+
+					if (!app.staff.length) {
+						staff_tab.parent().addClass("empty");
+					}
+
+					for (var i = 0; i < app.partic.length; i++) {
+						var item = genItem(partic_hlist, app.partic[i], "partic");
+						table.addItem(partic_tab, item);
+					}
+
+					if (!app.partic.length) {
+						partic_tab.parent().addClass("empty");
+					}
+
+					show(true);
+				}
+			
+				$(window).resize(function () {
+					main.children(".tabs").width(main.width() - main.children(".left-panel").width());
+				}).resize();
+			
+				foci.get("/event/info", { euid: euid }, function (suc, dat) {
+					if (suc) {
+						foci.encop(session, {
+							int: "event",
+							action: "getapp",
+							euid: euid
+						}, function (suc, app) {
+							if (suc) {
+								render(dat, app);		
+							} else {
+								util.emsg(app);
+							}
+						});
+					} else {
+						util.emsg(dat);
+					}
+				});
+			});
+		});
+	}
+
+</script>
