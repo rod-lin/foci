@@ -10,7 +10,7 @@ define([ "com/xfilt", "com/util" ], function (xfilt, util) {
 		cont = $(cont);
 		config = $.extend({
 			size: "1.5em",
-			popdir: "top center"
+			popdir: "top center",
 		}, config);
 
 		info = info || {};
@@ -20,14 +20,13 @@ define([ "com/xfilt", "com/util" ], function (xfilt, util) {
 		var ava = $(" \
 			<div class='com-avatar'> \
 				<div class='avatar' style='background-image: url(\"" + url + "\"); height: " + config.size + "; width: " + config.size + ";'></div> \
-				<div class='ui popup transition hidden' style='z-index: 3;'> \
-					<div class='dname'>" + xfilt(info.dname ? info.dname : "anonymous") + "</div> \
-				</div> \
 			</div> \
 		");
 
+		var avacont = $("<div class='dname'>" + xfilt(info.dname ? info.dname : "anonymous") + "</div>");
+
 		ava.popup({
-			popup: ava.find(".popup"),
+			html: avacont,
 			position: config.popdir,
 			hoverable: true
 		});

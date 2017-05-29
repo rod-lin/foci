@@ -36,7 +36,7 @@ define([ "com/util", "com/progress" ], function (util, progress) {
 
 				var show = function (suc) {
 					setTimeout(function () {
-						main.removeClass("hide");
+						main.addClass("show");
 
 						if (suc) {
 							prog.complete();
@@ -66,7 +66,7 @@ define([ "com/util", "com/progress" ], function (util, progress) {
 				});
 			};
 
-			main.addClass("hide");
+			// main.addClass("hide");
 			prog.show();
 
 			if (cache.hasOwnProperty(name)) {

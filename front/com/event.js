@@ -198,7 +198,7 @@ define([
 			// }
 		}, config);
 
-		var main = $("<div class='com-event'><div class='sortby'></div></div>");
+		var main = $("<div class='com-event'><div class='sortby' style='opacity: 0;'></div></div>");
 
 		var sort = sortby.init(
 			main.find(".sortby"),
@@ -218,6 +218,10 @@ define([
 					mod.refetch(cond);
 				}
 			});
+
+		main.ready(function () {
+			main.find(".sortby").css("opacity", "");
+		});
 
 		main.find(".sortby").css("padding-top", config.gap + "px");
 
