@@ -66,7 +66,7 @@ define([ "com/util", "com/progress" ], function (util, progress) {
 				});
 			};
 
-			// main.addClass("hide");
+			main.removeClass("show");
 			prog.show();
 
 			if (cache.hasOwnProperty(name)) {
