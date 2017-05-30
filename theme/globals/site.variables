@@ -2,16 +2,16 @@
      User Global Variables
 *******************************/
 
-@borderColor               : rgba(0, 0, 0, 0.1);
-@solidBorderColor          : rgba(0, 0, 0, 0.1);
+@solidBorderColor          : rgba(0, 0, 0, 0.08);
 @defaultBorderRadius       : 3px;
-@floatingShadow            : 0 0 2px rgba(0, 0, 0, 0.1);
+
+@floatingShadow            : 0 8px 18px rgba(0, 0, 0, 0.05);
 
 @loaderLineWidth           : 0.15em;
 
-@borderColor               : rgba(0, 0, 0, 0.1);
-@strongBorderColor         : rgba(0, 0, 0, 0.22);
-@internalBorderColor       : rgba(0, 0, 0, 0.1);
-@selectedBorderColor       : rgba(0, 0, 0, 0.35);
-@strongSelectedBorderColor : rgba(0, 0, 0, 0.5);
-@disabledBorderColor       : rgba(0, 0, 0, 0.5);
+@borderColor               : rgba(0, 0, 0, 0.08);
+@strongBorderColor         : rgba(0, 0, 0, 0.12);
+@internalBorderColor       : rgba(0, 0, 0, 0.08);
+@selectedBorderColor       : rgba(0, 0, 0, 0.1);
+@strongSelectedBorderColor : rgba(0, 0, 0, 0.2);
+@disabledBorderColor       : rgba(0, 0, 0, 0.2);

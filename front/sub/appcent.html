@@ -12,7 +12,7 @@
 		width: 20em;
 
 		background: rgba(253, 253, 253, 0.7);
-		border-right: 1px solid rgba(0, 0, 0, 0.1);
+		border-right: 1px solid rgba(0, 0, 0, 0.08);
 
 		text-align: center;
 	}
@@ -114,7 +114,7 @@
 
 		opacity: 0;
 
-		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+		border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 
 		transition: margin-top 0.2s, opacity 0.2s 0.2s;
 	}
@@ -244,7 +244,10 @@
 			tbar.setTitle("Application center");
 
 			login.session(function (session) {
-				if (!session) return;
+				if (!session) {
+					show(false);
+					return;
+				}
 
 				var left_panel = main.find(".left-panel");
 

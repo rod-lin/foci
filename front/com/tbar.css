@@ -26,7 +26,7 @@
 
 	background: white;
 
-	border: 1px solid rgba(0, 0, 0, 0.1);
+	border: 1px solid rgba(0, 0, 0, 0.08);
 	border-width: 0 0 1px 0;
 
 	opacity: 1;
@@ -199,12 +199,16 @@
 }
 
 .com-tbar .right-bar .avatar-box {
-	border: 1px solid rgba(0, 0, 0, 0.1);
+	border: 1px solid rgba(0, 0, 0, 0.08);
 	border-width: 0 0 0 1px;
 
 	height: 100%;
 	width: 4.7rem;
 	text-align: center;
+}
+
+.com-tbar .logged .avatar-box {
+	border-width: 0;
 }
 
 .com-tbar .login-btn {
@@ -270,7 +274,7 @@
 
 	background-color: white;
 
-	box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 
 	/* TODO */
 	transition: box-shadow 0.5s;

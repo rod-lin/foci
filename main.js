@@ -80,6 +80,8 @@ app.use("/semantic", express.static("semantic/dist"));
 
 app.use("/main", express.static("front/main.html"));
 
+app.get("/", function (req, res) { res.redirect("/main"); });
+
 var server = app.listen(config.port, function () {
 	var host = server.address().address;
 	var port = server.address().port;
