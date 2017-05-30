@@ -432,6 +432,8 @@
 					}
 
 					function setStatus(dom, status) {
+						dom.removeClass("positive negative pending");
+
 						switch (status) {
 							case "accept":
 								dom.addClass("positive");

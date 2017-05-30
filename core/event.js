@@ -277,8 +277,10 @@ Event.query = {
 
 	applicant: (euid, uuid, type) => {
 		var q = { "euid": euid };
+		
+		q["apply_" + type + ".$.status"] = { $exists: 0 };
 		q["apply_" + type + ".uuid"] = uuid;
-		q["apply_" + type + ".status"] = { $exists: 0 };
+
 		return q;
 	}
 };
