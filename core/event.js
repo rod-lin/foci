@@ -273,6 +273,13 @@ Event.query = {
 		var q = { "euid": euid, "state": { $gte: 1 } };
 		q["apply_" + type + "." + (max - 1)] = { $exists: 0 };
 		return q;
+	},
+
+	applicant: (euid, uuid, type) => {
+		var q = { "euid": euid };
+		q["apply_" + type + ".uuid"] = uuid;
+		q["apply_" + type + ".status"] = { $exists: 0 };
+		return q;
 	}
 };
 
@@ -284,7 +291,9 @@ Event.set = {
 		return { $push: q, $inc: { apply_num: 1 } };
 	},
 
-	publish: () => ({ $set: { state: 1 } })
+	publish: () => ({ $set: { state: 1 } }),
+
+	status: (euid, status) => ({ $set: { "apply_staff.$.status": status } })
 };
 
 exports.euid = async (euid, state) => {
@@ -481,4 +490,20 @@ exports.getAppList = async (euid, uuid, type) => {
 	var ev = await exports.euid(euid);
 
 	return ev.getAppList(type);
+};
+
+exports.changeAppStatus = async (euid, uuids, type, status) => {
+	if (type != "partic" && type != "staff")
+		throw new err.Exc("$core.illegal_app_type");
+
+	if (status != "accept" && status != "decline")
+		throw new err.Exc("$core.illegal_app_status");
+
+	var col = await db.col("event");
+
+	for (var i = 0; i < uuids.length; i++) {
+		await col.updateOne(Event.query.applicant(euid, uuids[i], type), Event.set.status(euid, status));
+	}
+
+	return;
 };

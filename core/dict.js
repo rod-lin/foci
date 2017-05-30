@@ -40,6 +40,7 @@ module.exports = {
 		"core.not_event_owner": "you're not the owner of this event",
 
 		"core.illegal_app_type": "illegal type of application",
+		"core.illegal_app_status": "illegal application status",
 		"core.app_full": "application is full",
 		"core.dup_app": "duplicated applications",
 		"core.app_own_event": "you can't apply for your own event",

@@ -314,6 +314,16 @@ encop.event = async (env, usr, query) => {
 			else
 				return await event.getAppList(args.euid, usr.getUUID(), args.type);
 
+		case "appstatus":
+			var args = util.checkArg(query, { euid: "int", type: "string", uuids: "json", status: "string" });
+
+			if (!(args.uuids instanceof Array))
+				throw err.Exc("$core.expect_argument_type(uuids,array)");
+
+			await event.changeAppStatus(args.euid, args.uuids, args.type, args.status);
+
+			return;
+
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}
