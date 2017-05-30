@@ -13,10 +13,14 @@
 	width: 100%;
 }
 
+.com-login .field {
+	margin: 0 !important;
+}
+
 .com-login .form {
 	z-index: 1;
 	display: inline-block;
-	padding: 1em 3em 3em 3em;
+	padding: 1em 2em 2em 2em;
 	background: #F8F8F8;
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 
@@ -32,7 +36,7 @@
 	cursor: pointer;
 
 	margin-top: -3em;
-	margin-bottom: 1em;
+	margin-bottom: 1rem;
 	border-radius: 50%;
 
 	background-repeat: no-repeat;
@@ -44,4 +48,12 @@
 
 .com-login .field {
 	width: 15em;
+}
+
+.com-login .vercode-field {
+	display: none;
+}
+
+.com-login .show-reg .vercode-field {
+	display: block;
 }

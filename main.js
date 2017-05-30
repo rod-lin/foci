@@ -29,6 +29,9 @@ app.get("/auth", int.auth);
 app.get("/favtag", int.favtag);
 app.get("/dict", int.dict);
 
+app.get("/smsg/vercode", int.smsg.vercode);
+app.get("/smsg/verify", int.smsg.verify);
+
 app.get("/user/new", int.user.new);
 app.get("/user/login", int.user.login);
 app.get("/user/csid", int.user.csid);

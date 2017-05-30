@@ -71,6 +71,11 @@ var conf = module.exports = {
 			loclng: 120.159236,
 			loclat: 30.273407
 		}
+	},
+
+	smsg: {
+		appkey: "",
+		appsec: ""
 	}
 };
 

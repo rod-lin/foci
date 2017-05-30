@@ -9,6 +9,7 @@ var user = require("./user");
 var util = require("./util");
 var file = require("./file");
 var dict = require("./dict");
+var smsg = require("./smsg");
 var event = require("./event");
 var config = require("./config");
 
@@ -31,6 +32,32 @@ exports.dict = util.route(async env => {
 	env.qsuc(dict[args.lang]);
 });
 
+var _smsg = {};
+
+_smsg.vercode = util.route(async env => {
+	var args = util.checkArg(env.query, { "phone": "string" });
+
+	if (args.phone.length !== 11)
+		throw new err.Exc("$core.smsg.wrong_phone_format");
+
+	var code = await smsg.sendCode(args.phone);
+
+	env.qsuc();
+});
+
+_smsg.verify = util.route(async env => {
+	var args = util.checkArg(env.query, { "phone": "string", "code": "string" });
+
+	if (args.phone.length !== 11)
+		throw new err.Exc("$core.smsg.wrong_phone_format");
+
+	if (await smsg.verify(agrs.phone, args.code)) {
+		env.qsuc();
+	} else {
+		throw new err.Exc("$core.smsg.failed_verify");
+	}
+});
+
 var _user = {};
 var _pub = {};
 
@@ -38,9 +65,13 @@ _user.new = util.route(async env => {
 	var args = util.checkArg(env.query, {
 		// "dname": "string",
 		"lname": "string",
+		"vercode": "string",
 		"pkey": "string",
 		"penc": "string"
 	});
+
+	if (!await smsg.verify(args.lname, args.vercode))
+		throw new err.Exc("$core.smsg.failed_verify");
 
 	var passwd = auth.rsa.dec(args.penc, args.pkey);
 	var res = await user.newUser(args.lname, args.lname, passwd);
@@ -193,6 +224,7 @@ _file.download = util.route(async env => {
 	env.raw(ret.cont);
 });
 
+exports.smsg = _smsg;
 exports.user = _user;
 exports.event = _event;
 exports.file = _file;

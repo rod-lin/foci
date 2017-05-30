@@ -1,0 +1,5 @@
+var smsg = require("./core/smsg");
+
+smsg.sendCode("18267159452").then(function (suc) {
+	console.log(suc);
+});

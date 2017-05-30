@@ -229,7 +229,12 @@ define([
 		var wf = waterfall.init(main, {
 			gap: config.gap,
 			onUpdate: function (pos) {
-				main.find(".sortby").css("padding-left", pos.left + "px");
+				if (wf.count()) {
+					main.find(".sortby").css("padding-left", (pos.left || 20) + "px").css("display", "");
+				} else {
+					main.find(".sortby").css("display", "none");
+				}
+
 				if (config.onUpdate) config.onUpdate(pos);
 			}
 		});

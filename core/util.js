@@ -63,6 +63,12 @@ exports.md5 = (cont, format) => {
 	return sum.digest(format);
 };
 
+exports.sha1 = (cont, format) => {
+	var sum = crypto.createHash("sha1");
+	sum.update(cont);
+	return sum.digest(format);
+};
+
 var checkArg = (args, req, opt) => {
 	var ret = {};
 
@@ -172,4 +178,4 @@ checkArg.posint = (max, sth) => {
 
 exports.checkArg = checkArg;
 
-exports.stamp = () => (new Date()).getTime();
+exports.stamp = type => (new Date()).getTime() / (type == "unix" ? 1000 : 1);

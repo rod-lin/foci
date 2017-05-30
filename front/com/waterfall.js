@@ -48,6 +48,7 @@ define(function () {
 			if (child.length) width = child[0].width();
 			else {
 				cont.css("height", gap);
+				if (config.onUpdate) config.onUpdate({ left: 0 });
 				return;
 			}
 
@@ -160,6 +161,10 @@ define(function () {
 				intact = false;
 				child = [];
 				cont.html("");
+			},
+
+			count: function () {
+				return child.length
 			}
 		};
 	}

@@ -155,7 +155,7 @@ window.foci = {};
 		localStorage.removeItem(key);
 	};
 
-	foci.newUser = function (lname, passwd, cb) {
+	foci.newUser = function (lname, vercode, passwd, cb) {
 		sendAsync(server + "/auth", {}, function (suc, dat) {
 			if (!suc) return cb(false, "$def.network_error");
 			if (!dat.suc) return cb(false, dat.msg);
@@ -164,6 +164,7 @@ window.foci = {};
 
 			sendAsync(server + "/user/new", {
 				lname: lname,
+				vercode: vercode,
 				pkey: pub,
 				penc: foci.rsaenc(passwd, pub)
 			}, function (suc, dat) {

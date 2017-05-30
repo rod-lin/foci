@@ -140,7 +140,8 @@ define(function () {
 		"def.no_session": "no session stored",
 		"def.failed_parse_form": "failed to parse form",
 		"def.illegal_json": "illegal JSON format",
-		"def.missing_n_field": "missing $1 field(s)"
+		"def.missing_n_field": "missing $1 field(s)",
+		"def.register_suc": "you can login now"
 	};
 
 	function msg(msg) {
