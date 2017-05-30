@@ -82,29 +82,35 @@ define([ "com/util", "com/progress" ], function (util, progress) {
 
 		var hashchange = function () {
 			var hash = window.location.hash.slice(1);
+			var args;
+			var name = "";
+
+			if (hash.length) {
+				var split = hash.split("/");
+				name = split[0];
+				args = split.slice(1);
+			} else args = [ "" ];
 
 			if (config.onJump) {
-				config.onJump(!!hash.length);
+				if (config.onJump(name, args) === true)
+					return; // no need to jump
 			}
 
 			if (!hash.length) return;
 
-			var split = hash.split("/");
-			var name = split[0];
-			var args = split.slice(1);
-
 			load(name, null, args);
 		};
 
-		if (window.location.hash != undefined) {
-			hashchange();
+		if (window.location.hash !== undefined) {
+			util.nextTick(hashchange);
 			$(window).on("hashchange", hashchange);
 		}
 
 		cont.append(main);
 
 		return {
-			load: load
+			load: load,
+			refresh: hashchange
 		};
 	}
 

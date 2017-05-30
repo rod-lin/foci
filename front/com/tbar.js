@@ -43,7 +43,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 					<div class="menu-cont"> \
 						<i class="cancel icon"></i> \
 						<a class="menu-link" href="#">HOME</a> \
-						<a class="menu-link">PLAZA</a> \
+						<a class="menu-link" href="#search">PLAZA</a> \
 					</div> \
 				</div> \
 				<div class="banner-view"> \
@@ -175,15 +175,12 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 		var search = function (e, kw) {
 			if (!e || e.keyCode == 13) {
 				main.find(".prompt").blur();
-				main.find(".search-box").addClass("loading");
 
 				if (onsearch) {
 					kw = kw || main.find(".prompt").val();
 					onsearch({
 						kw: kw,
 						favtag: getTag()
-					}, function () {
-						main.find(".search-box").removeClass("loading");
 					});
 
 					clearTag();
@@ -402,6 +399,14 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 				// ret.showBanner();
 				// setTimeout(ret.hideBanner, 3000);
+			},
+
+			showSearchLoad: function () {
+				main.find(".search-box").addClass("loading");
+			},
+
+			hideSearchLoad: function () {
+				main.find(".search-box").removeClass("loading");
 			}
 		};
 

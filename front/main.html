@@ -120,72 +120,7 @@
 					// map.init();
 					// console.log(lang.expand("hola"));
 
-					// formi.modal({
-					// 	name: "Staff Register",
-					// 	block: [
-					// 		{
-					// 			name: "Basic info",
-					// 			field: [
-					// 				[
-					// 					{
-					// 						name: "lala",
-					// 						input: {
-					// 							type: "text",
-					// 							name: "first_name",
-					// 							placeholder: "First name"
-					// 						}
-					// 					},
-
-					// 					{
-					// 						name: "lolo",
-					// 						input: {
-					// 							type: "text",
-					// 							name: "last_name",
-					// 							placeholder: "Last name"
-					// 						}
-					// 					}
-					// 				],
-
-					// 				{
-					// 					sub: [
-					// 						{
-					// 							input: {
-					// 								type: "check",
-					// 								name: "ischild",
-					// 								label: "I'm a child"
-					// 							}
-					// 						}
-					// 					]
-					// 				}
-					// 			]
-					// 		},
-
-					// 		{
-					// 			name: "Contact",
-					// 			field: [
-					// 				{
-					// 					name: "Phone",
-					// 					input: {
-					// 						name: "phone",
-					// 						type: "text"
-					// 					}
-					// 				},
-
-					// 				{
-					// 					name: "Other",
-					// 					input: {
-					// 						name: "other",
-					// 						type: "textarea"
-					// 					}
-					// 				}
-					// 			]
-					// 		}
-					// 	]
-					// });
-
 					var bar = tbar.init();
-
-					env.store("tbar", bar);
 
 					bar.menu(function () {
 						if (!window.location.hash) {
@@ -247,20 +182,39 @@
 						},
 					}, { init: "cover" });
 
-					var orig = null;
-
 					var pt = parts.init("#part", {
-						onJump: function (notmain) {
+						onJump: function (name, args) {
 							bar.hideBanner();
 							$("body").addClass("padding-tbar");
 
-							if (notmain) {
-								bar.delSimple();
-								$("#main-loader").removeClass("active");
-								orig = pg.cur();
-								pg.to("part");
-							} else {
-								pg.to(orig || "cover");
+							// alert(args[0]);
+
+							switch (name) {
+								case "":
+									pg.to("cover");
+									break;
+
+								case "search":
+									// format: #search/<kw>/tag1,tag2,tag3
+									var query = { kw: "" };
+
+									if (args[0]) {
+										query.kw = args[0];
+									}
+
+									if (args[1]) {
+										query.favtag = args[1].split(",");
+									}
+
+									console.log(query);
+
+									research(query);
+									return true;
+
+								default:
+									bar.delSimple();
+									$("#main-loader").removeClass("active");
+									pg.to("part");
 							}
 						}
 					});
@@ -285,15 +239,18 @@
 						loader_only_on_buffer: true
 					});
 
+					env.store("tbar", bar);
+					env.store("part", pt);
+
 					bar.search(function (query, cb) {
-						research(query, cb);
+						// research(query, cb);
+						util.jump("#search/" + query.kw + "/" + (query.favtag ? query.favtag.join(",") : ""));
 					});
 
 					// re-search
-					function research(query, cb) {
-						util.jump("#");
-						orig = "search";
+					function research(query) {
 						pg.to("search");
+						bar.showSearchLoad();
 
 						ev.clear(function () {
 							bar.setTitle("Search results", query.kw);
@@ -303,7 +260,7 @@
 
 							ev.hide();
 							ev.fetch(function () {
-								cb();
+								bar.hideSearchLoad();
 								ev.show();
 							});
 						});

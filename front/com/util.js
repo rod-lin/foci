@@ -22,6 +22,10 @@ define(function () {
 
 	util.jump = function (url) {
 		window.location = url;
+	};	
+
+	util.refresh = function () {
+		require("com/env").get("part").refresh();
 	};
 
 	util.emsg = function (str, style) {
