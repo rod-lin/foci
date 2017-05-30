@@ -472,17 +472,17 @@
 						return ret;
 					}
 
-					function showOption(rtab, n) {
-						rtab.find(".option-bar")
+					function showOption(par, n) {
+						par.find(".option-bar")
 							.addClass("show")
 							.find(".option-selnum").html(n);
 
-						rtab.children("table").css("margin-top", rtab.find(".option-bar").outerHeight());
+						par.children("table").css("margin-top", par.find(".option-bar").outerHeight());
 					}
 
-					function hideOption(rtab) {
-						rtab.find(".option-bar").removeClass("show");
-						rtab.children("table").css("margin-top", "");
+					function hideOption(par) {
+						par.find(".option-bar").removeClass("show");
+						par.children("table").css("margin-top", "");
 					}
 
 					function checkAll(rtab) {
@@ -504,10 +504,10 @@
 
 						if (selected.length) {
 							// someone is selected
-							showOption(rtab, selected.length);
+							showOption(rtab.parent(), selected.length);
 						} else {
 							// empty selection
-							hideOption(rtab);
+							hideOption(rtab.parent());
 						}
 					}
 
@@ -562,7 +562,7 @@
 									table.updateHeader(rtab);
 
 									uncheckAll(rtab);
-									updateOption(rtab.parent());
+									updateOption(rtab);
 								} else {
 									util.emsg(dat);
 								}
@@ -624,7 +624,7 @@
 													checkAll(rtab);
 												}
 
-												updateOption(rtab.parent());
+												updateOption(rtab);
 											});
 										});
 									});
@@ -638,7 +638,7 @@
 									dom.click(function () {
 										item.select();
 										dom.toggleClass("selected");
-										updateOption(rtab.parent());
+										updateOption(rtab);
 									});
 								})();
 							}
