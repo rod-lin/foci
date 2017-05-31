@@ -66,11 +66,13 @@ module.exports = {
 		"core.expect_argument_type": "expecting argument '$1' of type $2",
 		"core.wrong_json_format": "wrong json format",
 
-		"core.smsg.failed_post": "failed to post",
+		"core.smsg.failed_get": "failed to reach smsg service",
+		"core.smsg.bad_res_format": "bad result format",
 		"core.smsg.failed_send_code": "failed to send code",
 		"core.smsg.wrong_phone_format": "wrong phone number format",
 		"core.smsg.failed_verify": "failed to verify code",
 		"core.smsg.no_appkey": "no app key or secret key",
+		"core.smsg.service_rej": "smsg service reject",
 
 		"front.com.parts.fail_get_url": "fail to get url $1: $2",
 		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",

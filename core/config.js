@@ -74,10 +74,27 @@ var conf = module.exports = {
 	},
 
 	smsg: {
-		appkey: "",
-		appsec: ""
+		vercode_len: 4,
+		timeout: 1000 * 120, // 2 mi
+
+		use: "ali", // ali or netease
+		ali: {
+			appkey: "",
+			appsec: "",
+			sign: "Foci活动管家",
+			template: {
+				reg_vercode: "SMS_69550019",
+			}
+		},
+
+		netease: {
+			appkey: "",
+			appsec: ""
+		}
 	}
 };
+
+conf.db.col.smsg = "smsg-" + conf.smsg.use;
 
 var fs = require("fs");
 

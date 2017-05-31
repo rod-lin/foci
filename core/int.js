@@ -40,23 +40,23 @@ _smsg.vercode = util.route(async env => {
 	if (args.phone.length !== 11)
 		throw new err.Exc("$core.smsg.wrong_phone_format");
 
-	var code = await smsg.sendCode(args.phone);
+	await smsg.sendCode(args.phone);
 
 	env.qsuc();
 });
 
-_smsg.verify = util.route(async env => {
-	var args = util.checkArg(env.query, { "phone": "string", "code": "string" });
+// _smsg.verify = util.route(async env => {
+// 	var args = util.checkArg(env.query, { "phone": "string", "code": "string" });
 
-	if (args.phone.length !== 11)
-		throw new err.Exc("$core.smsg.wrong_phone_format");
+// 	if (args.phone.length !== 11)
+// 		throw new err.Exc("$core.smsg.wrong_phone_format");
 
-	if (await smsg.verify(agrs.phone, args.code)) {
-		env.qsuc();
-	} else {
-		throw new err.Exc("$core.smsg.failed_verify");
-	}
-});
+// 	if (await smsg.verify(agrs.phone, args.code)) {
+// 		env.qsuc();
+// 	} else {
+// 		throw new err.Exc("$core.smsg.failed_verify");
+// 	}
+// });
 
 var _user = {};
 var _pub = {};
@@ -70,8 +70,7 @@ _user.new = util.route(async env => {
 		"penc": "string"
 	});
 
-	if (!await smsg.verify(args.lname, args.vercode))
-		throw new err.Exc("$core.smsg.failed_verify");
+	await smsg.verify(args.lname, args.vercode);
 
 	var passwd = auth.rsa.dec(args.penc, args.pkey);
 	var res = await user.newUser(args.lname, args.lname, passwd);

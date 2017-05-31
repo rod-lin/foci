@@ -112,7 +112,9 @@ define([ "com/util", "com/env" ], function (util, env) {
 				uname_input.focus();
 			}
 
-			main.modal("refresh");
+			// util.atimes(function () {
+			// 	main.modal("refresh");
+			// }, 5);
 		});
 
 		uname_input.keyup(function (e) {
