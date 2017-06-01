@@ -64,10 +64,15 @@ define([ "com/util", "com/env" ], function (util, env) {
 			var vercode = main.find(".vercode").val();
 			var passwd = passwd_input.val();
 
+			login_btn.addClass("loading");
+
 			foci.newUser(uname, vercode, passwd, function (suc, dat) {
+				login_btn.removeClass("loading");
+
 				if (suc) {
-					util.emsg("$def.register_suc");
+					util.emsg("$def.register_suc", "success");
 					main.find(".reg.button").click();
+					login_btn.click();
 				} else {
 					util.emsg(dat);
 				}
@@ -159,7 +164,7 @@ define([ "com/util", "com/env" ], function (util, env) {
 			if (!check()) return;
 
 			login_btn
-				.off("click")
+				.off("click", loginProc)
 				.addClass("loading");
 
 			var uname = uname_input.val();

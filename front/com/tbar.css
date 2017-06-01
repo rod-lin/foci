@@ -274,7 +274,7 @@
 
 	background-color: white;
 
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+	border: 1px solid rgba(0, 0, 0, 0.08);
 
 	/* TODO */
 	transition: box-shadow 0.5s;
@@ -286,14 +286,8 @@
 	width: 4em;
 	margin-bottom: 0.5em;
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
-	transition: box-shadow 0.5s;
-
-}
-
-.com-tbar .pop-avatar:hover {
-	box-shadow:
-		0 0 1px rgba(0, 0, 0, 0.3),
-		0 0 4em rgba(0, 0, 0, 0.5) inset;
+	
+	overflow: hidden;
 }
 
 .com-tbar .pop-avatar div {
@@ -303,6 +297,9 @@
 	line-height: 2.667em;
 	font-size: 1.5em;
 	text-align: center;
+
+	width: 100%;
+	background: rgba(0, 0, 0, 0.3);
 
 	transition: opacity 0.5s;
 }

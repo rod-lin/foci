@@ -25,7 +25,7 @@ var Event = function (euid, owner /* uuid */) {
 	this.logo = null;
 	this.cover = null;
 
-	this.title = config.def.event.title;
+	this.title = "";
 	this.descr = "";
 
 	this.detail = null;
@@ -141,7 +141,14 @@ Event.prototype.isOrg = function (uuid) {
 Event.format = {};
 
 Event.format.info = {
-	title: util.checkArg.lenlim(config.lim.event.title, "$core.too_long($core.word.title)"),
+	title: {
+		type: "string", lim: title => {
+			if (title.length > config.lim.event.title)
+				throw new err.Exc("$core.too_long($core.word.title)");
+			return title.replace(/\n/g, "");
+		}
+	},
+	
 	descr: util.checkArg.lenlim(config.lim.event.descr, "$core.too_long($core.word.descr)"),
 
 	loclng: "number",

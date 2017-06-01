@@ -5,11 +5,12 @@ define([
 	"com/xfilt", "com/waterfall", "com/util",
 	"com/avatar", "com/env", "com/upload",
 	"com/login", "com/map", "com/tagbox",
-	"com/rating", "com/progress", "com/sortby"
+	"com/rating", "com/progress", "com/sortby",
+	"com/editable"
 ], function (
 	xfilt, waterfall, util, avatar,
 	env, upload, login, map, tagbox,
-	rating, progress, sortby
+	rating, progress, sortby, editable
 ) {
 	var $ = jQuery;
 	foci.loadCSS("com/event.css");
@@ -70,11 +71,11 @@ define([
 
 		var ret = {};
 
-		ret.cover = info.cover ? foci.download(info.cover) : [ "img/tmp1.jpg", "img/tmp2.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/tmp5.jpg" ].choose();
-		ret.logo = info.logo ? foci.download(info.logo) : "img/deficon.jpg";
+		ret.cover = info.cover ? foci.download(info.cover) : "img/def/cover.jpg"; // [ "img/tmp1.jpg", "img/tmp2.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/tmp5.jpg" ].choose();
+		ret.logo = info.logo ? foci.download(info.logo) : "img/def/logo.jpg";
 		
-		ret.descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len)) : "(no description)";
-		ret.title = info.title ? xfilt(util.short(info.title, config.max_title_len)) : "(untitled)";
+		ret.descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len), { ignore_nl: config.ignore_nl }) : "(no description)";
+		ret.title = info.title ? xfilt(util.short(info.title, config.max_title_len), { ignore_nl: config.ignore_nl }) : "(untitled)";
 		
 		ret.detail = info.detail ? xfilt(util.short(info.title, config.max_detail_len)) : "(no detail)";
 
@@ -129,7 +130,7 @@ define([
 	}
 
 	function setDom(dom, info, config) {
-		config = config || {};
+		config = $.extend({ ignore_nl: true }, config);
 		dom = $(dom);
 
 		var parsed = parseInfo(info, config);
@@ -585,45 +586,45 @@ define([
 				}
 			});
 
-			function editText(com, cb) {
-				com = $(com);
-				var editor = $("<textarea class='editor-text'></textarea>");
+			// function editText(com, cb) {
+			// 	com = $(com);
+			// 	var editor = $("<textarea class='editor-text'></textarea>");
 
-				editor.val(com.html());
+			// 	editor.val(com.html());
 			
-				function updatePos() {
-					var ofs = com.offset();
-					var mofs = main.offset();
+			// 	function updatePos() {
+			// 		var ofs = com.offset();
+			// 		var mofs = main.offset();
 
-					editor.css({
-						position: "absolute",
-						top: (ofs.top - mofs.top) + "px",
-						left: (ofs.left - mofs.left) + "px",
-						height: com.outerHeight(),
-						width: com.outerWidth(),
-						"font-size": com.css("font-size"),
-						"font-family": com.css("font-family"),
-						"font-weight": com.css("font-weight"),
-						"line-height": com.css("line-height")
-					});
-				}
+			// 		editor.css({
+			// 			position: "absolute",
+			// 			top: (ofs.top - mofs.top) + "px",
+			// 			left: (ofs.left - mofs.left) + "px",
+			// 			height: com.outerHeight(),
+			// 			width: com.outerWidth(),
+			// 			"font-size": com.css("font-size"),
+			// 			"font-family": com.css("font-family"),
+			// 			"font-weight": com.css("font-weight"),
+			// 			"line-height": com.css("line-height")
+			// 		});
+			// 	}
 
-				updatePos()
+			// 	updatePos()
 
-				main.append(editor);
-				editor.focus();
+			// 	main.append(editor);
+			// 	editor.focus();
 
-				$(window).on("resize", updatePos);
+			// 	$(window).on("resize", updatePos);
 
-				editor.blur(function () {
-					var val = editor.val();
+			// 	editor.blur(function () {
+			// 		var val = editor.val();
 
-					$(window).off("resize", updatePos);
-					editor.remove();
+			// 		$(window).off("resize", updatePos);
+			// 		editor.remove();
 					
-					if (cb) cb(val);
-				});
-			}
+			// 		if (cb) cb(val);
+			// 	});
+			// }
 
 			var exc_state = false;
 			function exclude(cb) {
@@ -634,63 +635,67 @@ define([
 
 			var changes;
 
-			function editable(elem, type, field, cb) {
+			function edit(elem, type, field, cb) {
 				elem = $(elem);
-				elem.click(function () {
-					if (!main.hasClass("setting")) return;
 
-					exclude(function (unlock) {
-						switch (type) {
-							case "text":
-								editText(elem, function (cont) {
-									changes[field] = cont;
-									if (cb) cb(cont);
-									unlock();
-								});
-								break;
+				if (type == "text") {
+					// editable component
+					var mod = editable.init(elem, function (cont) {
+						changes[field] = cont;
+						if (cb) cb(cont);
+					}, {
+						border: true, enable: false, type: "textarea",
+						onEdit: function () {
+							if (exc_state) return false;
+							else exc_state = true; // lock
+						},
 
-							case "image":
-								upload.init(function (file) {
-									if (file) {
-										changes[field] = file;
-										if (cb) cb(file);
-									}
-									
-									unlock();
-								});
-								break;
+						onBlur: function () {
+							exc_state = false;
+						},
+
+						text: function () {
+							return changes[field] || info[field];
 						}
 					});
-				});
+				} else {
+					elem.click(function () {
+						if (!main.hasClass("setting")) return;
+
+						exclude(function (unlock) {
+							upload.init(function (file) {
+								if (file) {
+									changes[field] = file;
+									if (cb) cb(file);
+								}
+								
+								unlock();
+							});
+						});
+					});
+				}
 			}
 
 			/*** editable fields ***/
-			editable(main.find(".title"), "text", "title", function (cont) {
-				main.find(".title").html(cont);
+
+			edit(main.find(".title"), "text", "title", function (cont) {
+				main.find(".title").html(xfilt(cont));
 			});
 
-			editable(main.find(".descr"), "text", "descr", function (cont) {
-				main.find(".descr").html(cont);
+			edit(main.find(".descr"), "text", "descr", function (cont) {
+				main.find(".descr").html(xfilt(cont));
 			});
 
-			editable(main.find(".cover-edit"), "image", "cover", function (cont) {
+			edit(main.find(".cover-edit"), "image", "cover", function (cont) {
 				main.find(".cover").css("background-image", "url('" + foci.download(cont) + "')");
 			});
 
-			editable(main.find(".logo"), "image", "logo", function (cont) {
+			edit(main.find(".logo"), "image", "logo", function (cont) {
 				main.find(".logo").css("background-image", "url('" + foci.download(cont) + "')");
 			});
 
 			env.favtag(function (tags) {
 				tgbox = tagbox.init(main.find(".tagbox"), tags || []);
-
-				// if (tags) {
-				// 	for (var i = 0; i < tags.length; i++) {
-				// 		main.find(".tagadd-btn .menu").append(" \
-				// 			<div class='item t-" + tags[i] + "' data-value='" + tags[i] + "'>" + tags[i] + " \
-				// 		</div>");
-				// 	}
-				// }
 			});
 
 			/*** editable fields ***/
@@ -699,8 +704,9 @@ define([
 				offproc();
 
 				changes = {};
-
 				setting_open = true;
+
+				main.find(".title, .descr, .location, .time").addClass("enabled");
 
 				main.addClass("setting");
 
@@ -766,6 +772,8 @@ define([
 
 			function closeSetting() {
 				offproc();
+
+				main.find(".title, .descr, .location, .time").removeClass("enabled");
 
 				main.find(".back .util .setting-btn")
 					.removeClass("checkmark");

@@ -78,7 +78,7 @@ module.exports = {
 		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",
 
 		"front.sub.profile.anonymous": "anonymous",
-		"front.sub.profile.no_descr": "no description",
+		"front.sub.profile.no_intro": "no introduction",
 		"front.sub.profile.no_more_result": "no more results",
 		"front.sub.profile.applied": "applied",
 		"front.sub.profile.organized": "organized",

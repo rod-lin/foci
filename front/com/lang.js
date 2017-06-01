@@ -141,7 +141,7 @@ define(function () {
 		"def.failed_parse_form": "failed to parse form",
 		"def.illegal_json": "illegal JSON format",
 		"def.missing_n_field": "missing $1 field(s)",
-		"def.register_suc": "you can login now"
+		"def.register_suc": "success, automatically login now"
 	};
 
 	function msg(msg) {

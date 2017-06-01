@@ -286,7 +286,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				var rating = info.rating ? Math.round(info.rating[0]) : "0";
 
 				function update() {
-					var url = info.avatar ? foci.download(info.avatar) : [ "img/deficon.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/matt.jpg" ].choose();
+					var url = info.avatar ? foci.download(info.avatar) : "img/def/avatar.jpg";
 					ava.css("background-image", "url(\'" + url + "\')");
 					main.find(".popup .pop-avatar").css("background-image", "url(\'" + url + "\')");
 					return url;

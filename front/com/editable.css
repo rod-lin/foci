@@ -1,0 +1,23 @@
+.com-editable.enabled {
+	border: 2px dotted transparent;
+	border-radius: 3px;
+	transition: border-color 0.3s;
+	cursor: pointer;
+}
+
+.com-editable.enabled.explicit,
+.com-editable.enabled:hover {
+	border-color: rgba(0, 0, 0, 0.5);
+}
+
+.com-editable.enabled+.com-editbox {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	outline: none;
+	resize: none;
+
+	position: absolute;
+	border: 2px dotted rgba(0, 0, 0, 0.7);
+	border-radius: 3px;
+}

@@ -111,7 +111,7 @@ define([], function () {
 			delAll();
 		};
 
-		ret.set = function (init) {
+		ret.set = function (init, noev) {
 			changed = true;
 
 			delAll();
@@ -121,7 +121,7 @@ define([], function () {
 				main.find(".addtag").before(tag_dom[cur[i]]);
 			}
 			
-			if (config.onChange) config.onChange(cur);
+			if (!noev && config.onChange) config.onChange(cur);
 		};
 
 		ret.openEdit = function () {

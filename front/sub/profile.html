@@ -18,6 +18,26 @@
 		overflow: auto;
 	}
 
+	#sub-profile .left-bar .setting-btn {
+		display: none;
+	}
+
+	#sub-profile.logged .left-bar .setting-btn {
+		display: block;
+
+		position: absolute;
+		right: 0.7rem;
+		top: 0.7rem;
+		font-size: 1.3em;
+		opacity: 0.6;
+
+		cursor: pointer;
+	}
+
+	#sub-profile .left-bar .setting-btn:hover {
+		opacity: 0.8;
+	}
+
 	#sub-profile .left-bar .avatar {
 		display: inline-block;
 
@@ -26,6 +46,7 @@
 		margin-top: 4em;
 
 		border-radius: 50%;
+		overflow: hidden;
 
 		background-image: url("img/matt.jpg");
 
@@ -40,11 +61,44 @@
 		background: rgba(0, 0, 0, 0.2);
 	}
 
+	#sub-profile .left-bar .avatar div {
+		display: none;
+	}
+
+	#sub-profile.logged .left-bar .avatar div {
+		display: block;
+
+		color: #F3F3F3;
+		font-weight: bold;
+		opacity: 0;
+		line-height: 9rem;
+		font-size: 1.5em;
+		text-align: center;
+
+		width: 100%;
+
+		cursor: pointer;
+		background: rgba(0, 0, 0, 0.3);
+
+		transition: opacity 0.5s;
+	}
+
+	#sub-profile.logged .left-bar .avatar.explicit div,
+	#sub-profile.logged .left-bar .avatar:hover div {
+		opacity: 1;
+	}
+
 	#sub-profile .left-bar .dname {
-		margin: 1rem 0 0 0;
+		display: inline-block;
 
 		font-size: 2em;
 		font-weight: bold;
+
+		padding: 0.3rem 0.7rem;
+		margin: 1rem 0 0 0;
+
+		max-width: 100%;
+		word-wrap: break-word;
 
 		color: #262626;
 	}
@@ -53,10 +107,27 @@
 		margin: 0.5rem 0 0 0;
 	}
 
-	#sub-profile .left-bar .descr {
-		margin: 1rem 0 2rem 0;
-		padding: 0 1rem;
+	#sub-profile .left-bar .intro {
+		display: inline-block;
+
+		margin: 0.5rem 0 0.5rem 0;
+		padding: 1rem 1rem;
+
+		max-width: 100%;
+		word-wrap: break-word;
+
 		color: #999999;
+	}
+
+	#sub-profile .left-bar .favtag {
+		margin-top: 2rem;
+		width: 100%;
+	}
+
+	#sub-profile .left-bar .favtag-prompt {
+		color: #CCCCCC;
+		font-weight: bold;
+		margin-bottom: 0.5rem;
 	}
 
 	#sub-profile .right-bar {
@@ -87,11 +158,10 @@
 
 <div id="sub-profile">
 	<div class="left-bar">
-		<div class="avatar empty"></div>
-		<div class="dname"></div>
-		<div class="ui rating" data-max-rating="5"></div>
-		<div class="descr"></div>
-		<div class="ui horizontal divider">Some Data</div>
+		<div class="avatar empty"><div><i class="fitted setting icon"></i></div></div><br>
+		<div class="dname"></div><br>
+		<div class="ui rating" data-max-rating="5"></div><br>
+		<div class="intro"></div><br>
 		<div class="ui grey statistic">
 			<div class="value follows">
 				--
@@ -108,14 +178,10 @@
 				Followers
 			</div>
 		</div><br>
-		<div class="ui grey statistic">
-			<div class="value participated">
-				--
-			</div>
-			<div class="label">
-				Participated
-			</div>
+		<div class="favtag">
+			<div class="favtag-prompt">Interested in</div>
 		</div>
+		<div class="setting-btn"><i class="setting icon"></i></div>
 	</div>
 	<div class="right-bar">
 		<div class="main-tab"></div>
@@ -293,8 +359,9 @@
 			"com/env", "com/util", "com/event",
 			"com/xfilt", "com/pages", "com/tab",
 			"com/login", "com/event", "com/upload",
-			"com/map", "com/lang"
-		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang) {
+			"com/map", "com/lang", "com/editable",
+			"com/tagbox"
+		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang, editable, tagbox) {
 			var init = function (info, is_self) {
 				var tbar = env.get("tbar");
 
@@ -306,26 +373,49 @@
 				var m = lang.msg;
 
 				left_bar.find(".dname").html(util.fill());
-				left_bar.find(".descr").html(util.fill());
+				left_bar.find(".intro").html(util.fill());
 
 				left_bar.find(".follows").html("--");
 				left_bar.find(".followers").html("--");
-				left_bar.find(".participated").html("--");
 
 				left_bar.find(".rating").rating("disable").rating("set rating", 0);
 
 				function setDom(info) {
-					var avatar = info.avatar ? foci.download(info.avatar) : [ "img/matt.jpg", "img/stevie.jpg", "img/elliot.jpg" ].choose();
+					var avatar = info.avatar ? foci.download(info.avatar) : "img/def/avatar.jpg";
 					var dname = info.dname ? xfilt(util.short(info.dname, 12)) : lang.msg("$front.sub.profile.anonymous");
-					var descr = info.descr ? xfilt(util.short(info.descr, 128)) : lang.msg("($front.sub.profile.no_descr)");
-
+					var intro = info.intro ? xfilt(util.short(info.intro, 128)) : lang.msg("($front.sub.profile.no_intro)");
+					var favtag = info.favtag ? info.favtag : [];
 					var rating = info.rating ? (info.rating[0] + info.rating[1]) / 2 : 0;
 
 					left_bar.find(".rating").rating("set rating", 0);
 
 					left_bar.find(".dname").html(dname);
-					left_bar.find(".descr").html(descr);
+					left_bar.find(".intro").html(intro);
 					left_bar.find(".avatar").css("background-image", "url('" + avatar + "')").removeClass("empty");
+				
+					env.favtag(function (tags) {
+						var tgbox = tagbox.init(left_bar.find(".favtag"), tags, {
+							init: favtag,
+							onChange: function (tags) {
+								login.session(function (session) {
+									foci.encop(session, {
+										int: "info",
+										action: "set",
+										favtag: tags
+									}, function (suc, dat) {
+										if (suc) {
+											tgbox.set(tags, true);
+										} else {
+											util.emsg(dat);
+										}
+									});
+								});
+							}
+						});
+
+						if (is_self)
+							tgbox.openEdit();
+					});
 				}
 
 				var ev_list = {};
@@ -903,13 +993,52 @@
 
 				tb.to("applied");
 
-				// util.scroll(main, function (n) {
-				// 	if (n > 0) {
-				// 		tbar.showBanner();
-				// 	} else {
-				// 		tbar.hideBanner();
-				// 	}
-				// });
+				// profile editable
+				if (is_self) {
+					main.addClass("logged");
+
+					function setInfo(name, val) {
+						var query = { int: "info", action: "set" };
+						query[name] = val;
+
+						login.session(function (session) {
+							foci.encop(session, query, function (suc, dat) {
+								if (suc) {
+									info[name] = val;
+									setDom(info);
+								} else {
+									util.emsg(dat);
+								}
+							});
+						});
+					}
+
+					editable.init(left_bar.find(".dname"), function (text) {
+						setInfo("dname", text);
+					}, { text: function () { return info.dname; } });
+
+					editable.init(left_bar.find(".intro"), function (text) {
+						setInfo("intro", text);
+					}, { text: function () { return info.intro; } });
+
+					left_bar.find(".avatar").click(function () {
+						upload.init(function (file) {
+							if (file) {
+								setInfo("avatar", file);
+							}
+						});
+					});
+
+					left_bar.find(".setting-btn").click(function () {
+						if (left_bar.find(".com-editable").hasClass("explicit")) {
+							left_bar.find(".com-editable, .avatar").removeClass("explicit");
+						} else {
+							left_bar.find(".com-editable, .avatar").addClass("explicit");
+						}
+
+						$(this).find("i").toggleClass("setting checkmark");
+					});
+				}
 
 				var display_mode = "normal";
 

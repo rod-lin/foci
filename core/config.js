@@ -79,8 +79,8 @@ var conf = module.exports = {
 
 		use: "ali", // ali or netease
 		ali: {
-			appkey: "",
-			appsec: "",
+			appkey: "23885780",
+			appsec: "762b4711cadae2b72826f039add11197",
 			sign: "Foci活动管家",
 			template: {
 				reg_vercode: "SMS_69550019",
