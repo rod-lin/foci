@@ -9,7 +9,6 @@ define([ "com/util" ], function (util) {
 		obj = $(obj);
 		config = $.extend({
 			type: "input",
-			border: false,
 			explicit: false,
 			enable: true
 		}, config);
@@ -68,9 +67,6 @@ define([ "com/util" ], function (util) {
 					edit.remove();
 				})
 			});
-
-		if (config.border)
-			obj.addClass("always-border");
 
 		var ret = {};
 

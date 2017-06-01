@@ -644,7 +644,7 @@ define([
 						changes[field] = cont;
 						if (cb) cb(cont);
 					}, {
-						border: true, enable: false, type: "textarea",
+						explicit: true, enable: false, type: "textarea",
 						onEdit: function () {
 							if (exc_state) return false;
 							else exc_state = true; // lock
