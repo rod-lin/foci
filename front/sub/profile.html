@@ -1,3 +1,81 @@
+<div id="sub-profile">
+	<div class="left-bar">
+		<div class="avatar empty"><div><i class="fitted setting icon"></i></div></div><br>
+		<div class="dname"></div><br>
+		<div class="ui rating" data-max-rating="5"></div><br>
+		<div class="intro"></div><br>
+		<!-- <div class="ui grey statistic">
+			<div class="value follows">
+				--
+			</div>
+			<div class="label">
+				Follows
+			</div>
+		</div>
+		<div class="ui grey statistic">
+			<div class="value followers">
+				--
+			</div>
+			<div class="label">
+				Followers
+			</div>
+		</div><br> -->
+		<div class="favtag">
+			<div class="favtag-prompt">Interested in</div>
+		</div>
+		<div class="setting-btn"><i class="setting icon"></i></div>
+	</div>
+	<div class="right-bar">
+		<div class="main-tab"></div>
+	</div>
+
+	<div class="new-event-draft" style="display: none;">
+		<div class="new-event">
+			<div class="ev-step">
+				<div class="ui vertical fluid steps"></div>
+			</div>
+			<div class="ev-content">
+				<!-- <div id="sub-profile-map" class="map"></div> -->
+				<div class="page page-info active">
+					<input class="ev-title no-style" placeholder="Title">
+					<textarea class="ev-descr no-style" placeholder="Description"></textarea>
+				</div>
+				<div class="page page-cover" style="text-align: center; overflow: auto;"></div>
+				<div class="page page-loc">
+					<div class="map" style="height: 100%;"></div>
+					<div style="text-align: center; position: absolute; top: 0; width: 100%; margin-top: 0.6rem; pointer-events: none;">
+						<div class="ui compact black inline message loc-selected" style="min-width: 50%; max-width: 95%;"></div>
+					</div>
+				</div>
+				<div class="page page-apply" style="text-align: center;">
+				</div>
+				<div class="page page-pub" style="text-align: center;">
+					<div class="protocol">
+						<style>
+							
+							#sub-profile .new-event .ev-content .page-pub .protocol {
+								padding: 0 2rem;
+								height: 100%;
+							}
+
+							#sub-profile .new-event .ev-content .page-pub .protocol .prompt {
+								font-size: 2em;
+								margin-bottom: 1rem;
+								margin-top: -5rem;
+							}
+
+						</style>
+						<div class="vcenter" style="display: inline-block;">
+							<div class="prompt"></div>
+							<div class="ui primary button publish-btn">Publish!</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 <style>
 	#sub-profile {
 		height: 100%;
@@ -120,13 +198,16 @@
 	}
 
 	#sub-profile .left-bar .favtag {
-		margin-top: 2rem;
+		position: absolute;
+		bottom: 1rem;
+		left: 0;
 		width: 100%;
+	
+		padding: 0 3rem;
 	}
 
 	#sub-profile .left-bar .favtag-prompt {
 		color: #CCCCCC;
-		font-weight: bold;
 		margin-bottom: 0.5rem;
 	}
 
@@ -154,204 +235,119 @@
 			border-top: 1px solid rgba(0, 0, 0, 0.08);
 		}
 	}
-</style>
 
-<div id="sub-profile">
-	<div class="left-bar">
-		<div class="avatar empty"><div><i class="fitted setting icon"></i></div></div><br>
-		<div class="dname"></div><br>
-		<div class="ui rating" data-max-rating="5"></div><br>
-		<div class="intro"></div><br>
-		<div class="ui grey statistic">
-			<div class="value follows">
-				--
-			</div>
-			<div class="label">
-				Follows
-			</div>
-		</div>
-		<div class="ui grey statistic">
-			<div class="value followers">
-				--
-			</div>
-			<div class="label">
-				Followers
-			</div>
-		</div><br>
-		<div class="favtag">
-			<div class="favtag-prompt">Interested in</div>
-		</div>
-		<div class="setting-btn"><i class="setting icon"></i></div>
-	</div>
-	<div class="right-bar">
-		<div class="main-tab"></div>
-	</div>
+	#sub-profile .new-event .ev-content {
+		position: absolute;
+		width: 70%;
 
-	<style>
-		
-		#sub-profile .new-event {
-		}
+		top: 0;
+		left: 30%;
 
+		border: 1px solid rgba(0, 0, 0, 0.08);
+		border-width: 0 0 0 1px;
+	}
+
+	#sub-profile .new-event .ev-step {
+		position: absolute;
+		width: 30%;
+
+		top: 0;
+		left: 0;
+	}
+
+	#sub-profile .new-event .no-style {
+		margin: 0;
+		padding: 0;
+		background: 0;
+		outline: none;
+		border: 0;
+		resize: none;
+		border-radius: 0;
+	}
+
+	#sub-profile .new-event .ev-title {
+		width: 100%;
+		padding: 2rem;
+		background: white;
+		color: #252525;
+
+		font-size: 2em;
+		font-weight: bold;
+
+		border: 1px solid rgba(0, 0, 0, 0.08);
+		border-width: 0 0 1px 0;
+	}
+
+	#sub-profile .new-event .ev-descr {
+		width: 100%;
+		padding: 2rem;
+		background: white;
+		color: #252525;
+
+		min-height: 10em;
+
+		font-size: 1.5em;
+	}
+
+	#sub-profile .new-event .ui.steps {
+		border-width: 0 0 1px 0 !important;
+		border-radius: 0 !important;
+	}
+
+	#sub-profile .new-event .ui.steps .step {
+		border-radius: 0 !important;
+	}
+
+	#sub-profile .new-event .ev-content .page {
+		display: none;
+	}
+
+	#sub-profile .new-event .ev-content .page.active {
+		display: block;
+	}
+
+	#sub-profile .new-event .ev-content .warning {
+		background: #FFF6F6;
+		color: #9F3A38;
+	}
+
+	.ui.steps .step.active .title {
+		color: rgba(0, 0, 0, .87) !important;
+	}
+
+	@media only screen and (max-width: 640px) {
 		#sub-profile .new-event .ev-content {
-			position: absolute;
-			width: 70%;
-
-			top: 0;
-			left: 30%;
-
-			border: 1px solid rgba(0, 0, 0, 0.08);
-			border-width: 0 0 0 1px;
+			left: 20%;
+			width: 80%;
 		}
 
 		#sub-profile .new-event .ev-step {
-			position: absolute;
-			width: 30%;
-
-			top: 0;
-			left: 0;
+			width: 20%;
 		}
 
-		#sub-profile .new-event .no-style {
-			margin: 0;
-			padding: 0;
-			background: 0;
-			outline: none;
-			border: 0;
-			resize: none;
-			border-radius: 0;
-		}
-
-		#sub-profile .new-event .ev-title {
-			width: 100%;
-			padding: 2rem;
-			background: white;
-			color: #252525;
-
-			font-size: 2em;
-			font-weight: bold;
-
-			border: 1px solid rgba(0, 0, 0, 0.08);
-			border-width: 0 0 1px 0;
-		}
-
-		#sub-profile .new-event .ev-descr {
-			width: 100%;
-			padding: 2rem;
-			background: white;
-			color: #252525;
-
-			min-height: 10em;
-
-			font-size: 1.5em;
-		}
-
-		#sub-profile .new-event .ui.steps {
-			border-width: 0 0 1px 0 !important;
-			border-radius: 0 !important;
-		}
-
-		#sub-profile .new-event .ui.steps .step {
-			border-radius: 0 !important;
-		}
-
-		#sub-profile .new-event .ev-content .page {
+		#sub-profile .new-event .ev-step .description {
 			display: none;
 		}
 
-		#sub-profile .new-event .ev-content .page.active {
-			display: block;
+		#sub-profile .new-event .ev-title {
+			padding: 1.4rem;
+			font-size: 1.5em;
 		}
 
-		#sub-profile .new-event .ev-content .warning {
-			background: #FFF6F6;
-			color: #9F3A38;
+		#sub-profile .new-event .ev-descr {
+			padding: 1.4rem;
+			font-size: 1.2em;
 		}
 
-		.ui.steps .step.active .title {
-			color: rgba(0, 0, 0, .87) !important;
+		#sub-profile .new-event .ev-step .step {
+			font-size: 0.7em;
 		}
 
-		@media only screen and (max-width: 640px) {
-			#sub-profile .new-event .ev-content {
-				left: 20%;
-				width: 80%;
-			}
-
-			#sub-profile .new-event .ev-step {
-				width: 20%;
-			}
-
-			#sub-profile .new-event .ev-step .description {
-				display: none;
-			}
-
-			#sub-profile .new-event .ev-title {
-				padding: 1.4rem;
-				font-size: 1.5em;
-			}
-
-			#sub-profile .new-event .ev-descr {
-				padding: 1.4rem;
-				font-size: 1.2em;
-			}
-
-			#sub-profile .new-event .ev-step .step {
-				font-size: 0.7em;
-			}
-
-			#sub-profile .new-event .ev-step .step .icon {
-				margin-bottom: 0.1em;
-			}
+		#sub-profile .new-event .ev-step .step .icon {
+			margin-bottom: 0.1em;
 		}
-
-	</style>
-
-	<div class="new-event-draft" style="display: none;">
-		<div class="new-event">
-			<div class="ev-step">
-				<div class="ui vertical fluid steps"></div>
-			</div>
-			<div class="ev-content">
-				<!-- <div id="sub-profile-map" class="map"></div> -->
-				<div class="page page-info active">
-					<input class="ev-title no-style" placeholder="Title">
-					<textarea class="ev-descr no-style" placeholder="Description"></textarea>
-				</div>
-				<div class="page page-cover" style="text-align: center; overflow: auto;"></div>
-				<div class="page page-loc">
-					<div class="map" style="height: 100%;"></div>
-					<div style="text-align: center; position: absolute; top: 0; width: 100%; margin-top: 0.6rem; pointer-events: none;">
-						<div class="ui compact black inline message loc-selected" style="min-width: 50%; max-width: 95%;"></div>
-					</div>
-				</div>
-				<div class="page page-apply" style="text-align: center;">
-				</div>
-				<div class="page page-pub" style="text-align: center;">
-					<div class="protocol">
-						<style>
-							
-							#sub-profile .new-event .ev-content .page-pub .protocol {
-								padding: 0 2rem;
-								height: 100%;
-							}
-
-							#sub-profile .new-event .ev-content .page-pub .protocol .prompt {
-								font-size: 2em;
-								margin-bottom: 1rem;
-								margin-top: -5rem;
-							}
-
-						</style>
-						<div class="vcenter" style="display: inline-block;">
-							<div class="prompt"></div>
-							<div class="ui primary button publish-btn">Publish!</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+	}
+</style>
 
 <script>
 	function init(main, args, show, cont) {
@@ -380,6 +376,8 @@
 
 				left_bar.find(".rating").rating("disable").rating("set rating", 0);
 
+				var tgbox = null;
+
 				function setDom(info) {
 					var avatar = info.avatar ? foci.download(info.avatar) : "img/def/avatar.jpg";
 					var dname = info.dname ? xfilt(util.short(info.dname, 12)) : lang.msg("$front.sub.profile.anonymous");
@@ -393,29 +391,34 @@
 					left_bar.find(".intro").html(intro);
 					left_bar.find(".avatar").css("background-image", "url('" + avatar + "')").removeClass("empty");
 				
-					env.favtag(function (tags) {
-						var tgbox = tagbox.init(left_bar.find(".favtag"), tags, {
-							init: favtag,
-							onChange: function (tags) {
-								login.session(function (session) {
-									foci.encop(session, {
-										int: "info",
-										action: "set",
-										favtag: tags
-									}, function (suc, dat) {
-										if (suc) {
-											tgbox.set(tags, true);
-										} else {
-											util.emsg(dat);
-										}
+					if (!tgbox) {
+						env.favtag(function (tags) {
+							tgbox = tagbox.init(left_bar.find(".favtag"), tags, {
+								init: favtag,
+								onChange: function (tags) {
+									login.session(function (session) {
+										foci.encop(session, {
+											int: "info",
+											action: "set",
+											favtag: tags
+										}, function (suc, dat) {
+											if (suc) {
+												info.favtag = tags;
+												setDom(info);
+											} else {
+												util.emsg(dat);
+											}
+										});
 									});
-								});
-							}
-						});
+								}
+							});
 
-						if (is_self)
-							tgbox.openEdit();
-					});
+							if (is_self)
+								tgbox.openEdit();
+						});
+					} else {
+						tgbox.set(favtag, true);
+					}
 				}
 
 				var ev_list = {};
@@ -1063,6 +1066,8 @@
 						tb.flow(false);
 					}
 
+					left_bar.outerHeight(main.height());
+
 					updateNewEventPos();
 				}
 
@@ -1070,7 +1075,9 @@
 					updateAllPos();
 				});
 
-				$(window).resize();
+				main.ready(function () {
+					$(window).resize();
+				});
 
 				setDom(info);
 

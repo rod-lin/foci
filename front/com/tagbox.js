@@ -31,7 +31,7 @@ define([], function () {
 		cont.append(main);
 
 		var ret = {};
-		var cur = config.init;
+		var cur = [];
 		var tag_dom = {};
 
 		var menu = main.find(".menu");
@@ -39,6 +39,7 @@ define([], function () {
 
 		function addTag(name) {
 			if (cur.indexOf(name) != -1) return;
+
 			cur.push(name);
 			main.find(".addtag").before(tag_dom[name].click(tagOnClick));
 
@@ -80,10 +81,6 @@ define([], function () {
 			tag_dom[tags[i]] = genTag(tags[i]).click(tagOnClick);
 		}
 
-		for (var i = 0; i < cur.length; i++) {
-			main.find(".addtag").before(tag_dom[cur[i]]);
-		}
-
 		addtag.dropdown({
 			onShow: function () {
 				for (var i = 0; i < tags.length; i++) {
@@ -119,6 +116,11 @@ define([], function () {
 			cur = init;
 			for (var i = 0; i < init.length; i++) {
 				main.find(".addtag").before(tag_dom[cur[i]]);
+				tag_dom[cur[i]].click(tagOnClick);
+			}
+
+			if (cur.length == tags.length) {
+				addtag.addClass("disabled");
 			}
 			
 			if (!noev && config.onChange) config.onChange(cur);
@@ -140,6 +142,8 @@ define([], function () {
 		ret.cur = function () {
 			return cur;
 		};
+
+		ret.set(config.init, true);
 
 		return ret;
 	}

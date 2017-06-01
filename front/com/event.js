@@ -166,7 +166,8 @@ define([
 
 		var dom_util = {
 			changeCover: function (cover) {
-				dom.find(".cover").attr("src", foci.download(parsed.cover));
+				parsed.cover = foci.download(cover);
+				util.bgimg(dom.find(".cover"), parsed.cover);
 			}
 		};
 
@@ -332,6 +333,8 @@ define([
 			for (var i = 0; i < edom.length; i++) {
 				setDom(edom[i], events[i], config);
 			}
+
+			wf.update();
 		};
 
 		function bottomBar() {

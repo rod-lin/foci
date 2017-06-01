@@ -358,11 +358,11 @@ function formatStdLim(conf) {
 	var query = {};
 
 	var sortby = {
-		created: 1
+		created: -1
 	};
 
 	if (conf.sort_create) {
-		sortby.created = -conf.sort_create;
+		sortby.created = conf.sort_create;
 	}
 
 	if (conf.sort_pop) {

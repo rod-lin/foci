@@ -31,7 +31,7 @@
 	display: block;
 
 	max-height: 40vh;
-	max-width: 60vw;
+	max-width: 70vw;
 
 	border-radius: 3px;
 	box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
@@ -39,4 +39,14 @@
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 50% 50%;
+}
+
+@media only screen and (max-width: 640px) {
+	.com-upload .form {
+		padding: 0.5em;
+	}
+
+	.com-upload .field {
+		margin-bottom: 0.5em !important;
+	}
 }
