@@ -3,6 +3,7 @@
 "use strict";
 
 var db = require("./db");
+var pm = require("./pm");
 var err = require("./err");
 var auth = require("./auth");
 var user = require("./user");
@@ -354,6 +355,33 @@ encop.event = async (env, usr, query) => {
 			await event.changeAppStatus(args.euid, args.uuids, args.type, args.status);
 
 			return;
+
+		default:
+			throw new err.Exc("$core.action_not_exist");
+	}
+};
+
+encop.pm = async (env, usr, query) => {
+	switch (query.action) {
+		case "send":
+			var args = util.checkArg(query, {
+				sendee: "int",
+				text: util.checkArg.lenlim(config.lim.pm.text, "$core.too_long($core.word.descr)")
+			});
+
+			await pm.send(usr.getUUID(), args.sendee, args.text);
+
+			return;
+
+		case "getall":
+			return await pm.getAll(usr.getUUID());
+
+		case "getconv":
+			var args = util.checkArg(query, { sender: "int" });
+			return await pm.getConv(usr.getUUID(), args.sender);
+
+		case "update":
+			return await pm.getUpdate(usr.getUUID(), true);
 
 		default:
 			throw new err.Exc("$core.action_not_exist");

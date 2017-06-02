@@ -1,0 +1,111 @@
+
+.com-pm-qview {
+	position: relative;
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+.com-pm-qview .msg-box {
+	position: relative;
+
+	width: 20em;
+	height: 15em;
+	overflow: auto;
+
+	background: white;
+}
+
+.com-pm-qview .bottom-bar {
+	width: 100%;
+	height: 3rem;
+	border-top: 1px solid rgba(0, 0, 0, 0.08);
+	padding-top: 1px;
+}
+
+.com-pm-qview .prompt {
+	display: none;
+}
+
+.com-pm-qview .empty .prompt {
+	display: block;
+
+	color: #CCCCCC;
+	font-weight: bold;
+	text-align: center;
+	padding: 1rem 0;
+}
+
+.com-pm-qview .msg {
+	display: -webkit-flex;
+	display: flex;
+
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+
+	opacity: 1;
+
+	padding: 0.7rem 1rem;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+	text-align: left;
+
+	cursor: pointer;
+
+	transition: opacity 0.3s;
+
+	justify-content: space-between;
+}
+
+.com-pm-qview .msg:hover {
+	opacity: 0.7;
+}
+
+.com-pm-qview .msg .ellip {
+	position: relative;
+	font-size: 1.5em;
+	float: right;
+
+	opacity: 0;
+	transition: opacity 0.3s;
+}
+
+.com-pm-qview .msg:hover .ellip {
+	opacity: 0.5;
+}
+
+.com-pm-qview .sender-avatar {
+	width: 3em;
+	height: 3em;
+
+	border-radius: 50%;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+}
+
+.com-pm-qview .brief-info {
+	display: inline-block;
+	margin-left: 1rem;
+
+	overflow: hidden;
+
+	-webkit-box-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+}
+
+.com-pm-qview .sender-name {
+	font-weight: bold;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.com-pm-qview .msg-cont {
+	color: #CCCCCC;
+	overflow: hidden;
+	white-space: nowrap;
+
+	text-overflow: ellipsis;
+}

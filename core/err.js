@@ -10,6 +10,7 @@ exports.assert = assert.ok;
 exports.Exc = function (msg, exc) {
 	this.toString = () => msg;
 	this.exc = exc;
+	this.stack = new Error().stack;
 };
 
 exports.Exc.prototype = {};

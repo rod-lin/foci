@@ -2,7 +2,7 @@
 
 "use strict";
 
-define([ "com/xfilt", "com/util" ], function (xfilt, util) {
+define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 	var $ = jQuery;
 	foci.loadCSS("com/avatar.css");
 
@@ -13,13 +13,11 @@ define([ "com/xfilt", "com/util" ], function (xfilt, util) {
 			popdir: "top center",
 		}, config);
 
-		info = info || {};
-
-		var url = info.avatar ? foci.download(info.avatar) : [ "img/deficon.jpg", "img/matt.jpg", "img/stevie.jpg", "img/elliot.jpg" ].choose();
+		info = login.parseInfo(info || {});
 
 		var ava = $(" \
 			<div class='com-avatar'> \
-				<div class='avatar' style='background-image: url(\"" + url + "\"); height: " + config.size + "; width: " + config.size + ";'></div> \
+				<div class='avatar' style='background-image: url(\"" + info.avatar + "\"); height: " + config.size + "; width: " + config.size + ";'></div> \
 			</div> \
 		");
 

@@ -48,6 +48,8 @@ exports.route = (handler) => async (req, res) => {
 				util.log(e, exports.style.yellow("EXCEPTION"));
 				if (e.exc) {
 					util.log(e.exc.stack, exports.style.yellow("ERROR"));
+				} else {
+					util.log(e.stack, exports.style.blue("STACK"));
 				}
 			} else {
 				env.qerr("$core.internal_err");

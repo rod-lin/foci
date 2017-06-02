@@ -241,12 +241,16 @@
 	display: inline-block;
 }
 
-.com-tbar .popup {
+.com-tbar .pm-popup {
+	padding: 0 !important;
+}
+
+.com-tbar .avatar-popup {
 	padding: 0 !important;
 	text-align: center;
 }
 
-.com-tbar .popup .cont {
+.com-tbar .avatar-popup .cont {
 	padding: 1em;
 }
 
@@ -289,7 +293,7 @@
 	color: white;
 	border-radius: 50%;
 
-	box-shadow: 0 0 2px #E74C3C;
+	box-shadow: 0 0 1px #E74C3C;
 }
 
 .com-tbar .avatar-util:hover {

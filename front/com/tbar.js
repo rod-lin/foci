@@ -1,7 +1,10 @@
 /* top bar */
 "use strict";
 
-define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], function (login, xfilt, util, env, upload) {
+define([
+	"com/login", "com/xfilt", "com/util",
+	"com/env", "com/upload", "com/pm"
+], function (login, xfilt, util, env, upload, pm) {
 	var $ = jQuery;
 	foci.loadCSS("com/tbar.css");
 
@@ -55,10 +58,11 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 							<div class="avatar-util new-event-btn" style="font-size: 95%;" data-tooltip="new event" data-variation="basic" data-position="left center"> \
 								<i class="fitted write icon"></i> \
 							</div> \
-							<div class="avatar-util pm-btn unread" data-tooltip="personal message" data-variation="basic" data-position="left center"> \
+							<div class="avatar-util pm-btn unread"> \
 								<i class="fitted comments outline icon"></i> \
 								<div class="reddot"></div> \
 							</div> \
+							<div class="pm-popup ui popup transition hidden"></div> \
 						</div> \
 						<div class="avatar"></div> \
 						<button class="login-btn"> \
@@ -66,7 +70,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 							<i class="sign in icon" style="font-size: 1.3em;"></i> \
 						</button> \
 					</div> \
-					<div class="ui popup transition hidden"> \
+					<div class="avatar-popup ui popup transition hidden"> \
 						<div class="cont"> \
 							<div class="pop-avatar"><div><i class="setting icon"></i></div></div> \
 							<div class="pop-title header"></div> \
@@ -89,6 +93,17 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 		main.find(".new-event-btn").click(function () { util.jump("#profile//new"); });
 		// main.find(".pm-btn").click(function () { util.jump("#profile//new"); });
+
+		main.find(".pm-btn").popup({
+			popup: main.find(".pm-popup"),
+			position: "bottom left",
+			on: "click",
+			onShow: function () {
+				pmview.init();
+			}
+		});
+
+		var pmview = pm.qview(main.find(".pm-popup"));
 
 		var showMenu, hideMenu;
 
@@ -253,7 +268,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 
 		var ava = main.find(".avatar");
 		ava.popup({
-			popup: main.find(".popup"),
+			popup: main.find(".avatar-popup"),
 			position: "bottom right",
 			hoverable: true
 		});
@@ -267,7 +282,7 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 			main.find(".right-bar").removeClass("logged");
 		}
 
-		main.find(".popup .pop-avatar")
+		main.find(".avatar-popup .pop-avatar")
 			.click(function () {
 				upload.init(function (file) {
 					if (file) {
@@ -292,24 +307,20 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 		var old_info = null;
 		function updateAvatar(file) {
 			function refresh(info) {
-				info = info || {};
-
-				var dname = info.dname ? xfilt(info.dname) : "anonymous";
-				var rating = info.rating ? Math.round(info.rating[0]) : "0";
+				info = login.parseInfo(info || {});
 
 				function update() {
-					var url = info.avatar ? foci.download(info.avatar) : "img/def/avatar.jpg";
-					ava.css("background-image", "url(\'" + url + "\')");
-					main.find(".popup .pop-avatar").css("background-image", "url(\'" + url + "\')");
-					return url;
+					ava.css("background-image", "url(\'" + info.avatar + "\')");
+					main.find(".avatar-popup .pop-avatar").css("background-image", "url(\'" + info.avatar + "\')");
+					return info.avatar;
 				}
 
 				main.find(".rating")
-					.attr("data-rating", rating.toString())
+					.attr("data-rating", info.rating.toString())
 					.rating("disable");
 				
-				main.find(".popup .pop-title").html(dname);
-				main.find(".popup .logout").click(function () {
+				main.find(".avatar-popup .pop-title").html(info.dname);
+				main.find(".avatar-popup .logout").click(function () {
 					// ava.addClass("loading");
 					env.logout(function () {
 						updateAvatar();

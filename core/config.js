@@ -42,6 +42,10 @@ var conf = module.exports = {
 			rform: 2048,
 
 			max_search_results: 16
+		},
+
+		pm: {
+			text: 256
 		}
 	},
 

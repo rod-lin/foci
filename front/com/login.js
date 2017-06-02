@@ -2,11 +2,40 @@
 
 "user strict";
 
-define([ "com/util", "com/env" ], function (util, env) {
+define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, xfilt, lang) {
 	var $ = jQuery;
 	foci.loadCSS("com/login.css");
 
+	var all_cb = [];
+	var opened = false;
+
+	function resolveAllCallback(session) {
+		for (var i = 0; i < all_cb.length; i++) {
+			all_cb[i](session);
+		}
+
+		all_cb = [];
+	}
+
+	function parseInfo(info, config) {
+		config = $.extend({}, config);
+
+		var parsed = $.extend({}, info);
+
+		parsed.avatar = info.avatar ? foci.download(info.avatar) : "img/def/avatar.jpg";
+		parsed.dname = info.dname ? xfilt(util.short(info.dname, 12)) : lang.msg("$front.sub.profile.anonymous");
+		parsed.intro = info.intro ? xfilt(util.short(info.intro, 128)) : lang.msg("($front.sub.profile.no_intro)");
+		parsed.favtag = info.favtag ? info.favtag : [];
+		parsed.rating = info.rating ? (info.rating[0] + info.rating[1]) / 2 : 0;
+
+		return parsed;
+	}
+
 	function init(cb) {
+		if (cb) all_cb.push(cb);
+
+		if (opened) return;
+
 		var main = $(" \
 			<div class='ui basic modal com-login'> \
 				<div class='exdim'></div> \
@@ -179,7 +208,7 @@ define([ "com/util", "com/env" ], function (util, env) {
 					main.modal("hide");
 					env.session(dat);
 					finished = true;
-					if (cb) cb(dat);
+					resolveAllCallback(dat);
 				} else {
 					// login_btn.html(fail);
 					util.emsg(dat);
@@ -198,10 +227,12 @@ define([ "com/util", "com/env" ], function (util, env) {
 		main.modal({
 			allowMultiple: true,
 			onHidden: function () {
-				if (!finished && cb) cb(null);
+				if (!finished) resolveAllCallback(null);
+				opened = false;
 			}
 		});
 
+		opened = true;
 		main.modal("show");
 
 		main.find(".exdim").click(function () {
@@ -211,6 +242,7 @@ define([ "com/util", "com/env" ], function (util, env) {
 
 	return {
 		init: init,
+		parseInfo: parseInfo,
 		session: function (cb) {
 			if (!env.session()) {
 				this.init(cb);

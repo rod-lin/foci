@@ -411,9 +411,11 @@
 						foci.get("/user/info", { uuid: app.uuid }, function (suc, dat) {
 							if (suc) {
 								var ava = avatar.init(user.find(".avatar"), dat, { size: "3em", popdir: "top left" });
-								
+							
+								dat = login.parseInfo(dat);
+							
 								user.find(".trivial").append("<div class='user-name'>" + dat.dname + "</div>");
-								var rat = rating.init(user.find(".trivial"), dat.rating[0]);
+								var rat = rating.init(user.find(".trivial"), dat.rating);
 
 								if (cb) cb();
 							} else {

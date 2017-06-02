@@ -22,6 +22,7 @@
 		</div><br> -->
 		<div class="ui divider"></div>
 		<div class="favtag">
+			<div class="favtag-prompt"></div>
 		</div>
 		<div class="setting-btn"><i class="setting icon"></i></div>
 	</div>
@@ -204,7 +205,7 @@
 
 	#sub-profile .left-bar .favtag-prompt {
 		color: #CCCCCC;
-		margin-bottom: 0.5rem;
+		font-weight: bold;
 	}
 
 	#sub-profile .right-bar {
@@ -380,23 +381,20 @@
 				var tgbox = null;
 
 				function setDom(info) {
-					var avatar = info.avatar ? foci.download(info.avatar) : "img/def/avatar.jpg";
-					var dname = info.dname ? xfilt(util.short(info.dname, 12)) : lang.msg("$front.sub.profile.anonymous");
-					var intro = info.intro ? xfilt(util.short(info.intro, 128)) : lang.msg("($front.sub.profile.no_intro)");
-					var favtag = info.favtag ? info.favtag : [];
-					var rating = info.rating ? (info.rating[0] + info.rating[1]) / 2 : 0;
+					var parsed = login.parseInfo(info);
 
 					left_bar.find(".rating").rating("set rating", 0);
 
-					left_bar.find(".dname").html(dname);
-					left_bar.find(".intro").html(intro);
-					left_bar.find(".avatar").css("background-image", "url('" + avatar + "')").removeClass("empty");
+					left_bar.find(".dname").html(parsed.dname);
+					left_bar.find(".intro").html(parsed.intro);
+					left_bar.find(".avatar").css("background-image", "url('" + parsed.avatar + "')").removeClass("empty");
 				
 					if (!tgbox) {
 						env.favtag(function (tags) {
 							tgbox = tagbox.init(left_bar.find(".favtag"), tags, {
-								init: favtag,
+								init: parsed.favtag,
 								onChange: function (tags) {
+									updateAllPos();
 									login.session(function (session) {
 										foci.encop(session, {
 											int: "info",
@@ -418,7 +416,13 @@
 								tgbox.openEdit();
 						});
 					} else {
-						tgbox.set(favtag, true);
+						tgbox.set(parsed.favtag, true);
+					}
+
+					if (!parsed.favtag.length && !is_self) {
+						left_bar.find(".favtag-prompt").html("no interest");
+					} else {
+						left_bar.find(".favtag-prompt").html("");
 					}
 				}
 
