@@ -459,7 +459,7 @@ exports.apply = async (euid, uuid, type, form) => {
 	if (ev.isOrg(uuid) && !config.debug)
 		throw new err.Exc("$core.app_own_event");
 
-	if (cur >= max)
+	if (max && cur >= max)
 		throw new err.Exc("$core.app_full");
 
 	if (ev.hasApp(uuid))
