@@ -74,6 +74,9 @@ module.exports = {
 		"core.smsg.no_appkey": "no app key or secret key",
 		"core.smsg.service_rej": "smsg service reject",
 
+		"core.pm.no_sender": "no sender",
+		"core.pm.no_msg": "no message",
+
 		"front.com.parts.fail_get_url": "fail to get url $1: $2",
 		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",
 

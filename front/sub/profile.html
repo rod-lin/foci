@@ -20,8 +20,8 @@
 				Followers
 			</div>
 		</div><br> -->
+		<div class="ui divider"></div>
 		<div class="favtag">
-			<div class="favtag-prompt">Interested in</div>
 		</div>
 		<div class="setting-btn"><i class="setting icon"></i></div>
 	</div>
@@ -198,12 +198,8 @@
 	}
 
 	#sub-profile .left-bar .favtag {
-		position: absolute;
-		bottom: 1rem;
-		left: 0;
 		width: 100%;
-	
-		padding: 0 3rem;
+		padding-top: 1rem;
 	}
 
 	#sub-profile .left-bar .favtag-prompt {
@@ -228,6 +224,11 @@
 			width: 100%;
 			padding-bottom: 2rem;
 			border-width: 0 0 1px 0;
+		}
+
+		#sub-profile .left-bar .favtag {
+			padding-right: 1rem;
+			padding-left: 1rem;
 		}
 
 		#sub-profile .right-bar {
@@ -358,7 +359,7 @@
 			"com/map", "com/lang", "com/editable",
 			"com/tagbox"
 		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang, editable, tagbox) {
-			var init = function (info, is_self) {
+			var init = function (info, is_self, init_page) {
 				var tbar = env.get("tbar");
 
 				tbar.setTitle("Profile", info.dname);
@@ -1077,6 +1078,10 @@
 
 				main.ready(function () {
 					$(window).resize();
+					
+					if (init_page && tb.has(init_page)) {
+						tb.to(init_page);
+					}
 				});
 
 				setDom(info);
@@ -1094,7 +1099,7 @@
 					foci.get("/user/info", { uuid: uuid }, function (suc, dat) {
 						if (suc) {
 							env.user(function (cur) {
-								init(dat, cur && cur.uuid == dat.uuid);
+								init(dat, cur && cur.uuid == dat.uuid, args[1]);
 							});
 						} else {
 							util.emsg(dat);
@@ -1103,21 +1108,13 @@
 					});
 				}
 			} else {
-				if (!env.session()) {
-					login.init(function (ses) {
-						if (ses)
-							env.user(function (info) { init(info, true); });
-						else
-							show(false);
-					});
-				} else {
-					env.user(function (info) {
-						if (info)
-							init(info, true);
-						else
-							show(false);
-					});
-				}
+				login.session(function (session) {
+					if (session) {
+						env.user(function (info) { init(info, true, args[1]); });
+					} else {
+						show(false);
+					}
+				});
 			}
 		});
 	}

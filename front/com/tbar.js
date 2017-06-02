@@ -51,6 +51,15 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 				</div> \
 				<div class="right-bar"> \
 					<div class="avatar-box"> \
+						<div class="avatar-util-box"> \
+							<div class="avatar-util new-event-btn" style="font-size: 95%;" data-tooltip="new event" data-variation="basic" data-position="left center"> \
+								<i class="fitted write icon"></i> \
+							</div> \
+							<div class="avatar-util pm-btn unread" data-tooltip="personal message" data-variation="basic" data-position="left center"> \
+								<i class="fitted comments outline icon"></i> \
+								<div class="reddot"></div> \
+							</div> \
+						</div> \
 						<div class="avatar"></div> \
 						<button class="login-btn"> \
 							<div class="ui small loader"></div> \
@@ -77,6 +86,9 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 		main.ready(function () {
 			main.css("opacity", "");
 		});
+
+		main.find(".new-event-btn").click(function () { util.jump("#profile//new"); });
+		// main.find(".pm-btn").click(function () { util.jump("#profile//new"); });
 
 		var showMenu, hideMenu;
 
@@ -419,6 +431,14 @@ define([ "com/login", "com/xfilt", "com/util", "com/env", "com/upload" ], functi
 			setTimeout(function () {
 				main.removeClass("hide");
 			}, 200);
+		});
+
+		util.media(640, function () {
+			// mobile
+			main.find(".new-event-btn, .pm-btn").attr("data-position", "left center");
+		}, function () {
+			// desktop
+			main.find(".new-event-btn, .pm-btn").attr("data-position", "bottom center");
 		});
 
 		instance.push(ret);

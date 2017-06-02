@@ -103,12 +103,12 @@ define(function () {
 	};
 
 	util.media = function (max_width, cb, exit) {
-		$(window).on("resize", function () {
+		$(window).resize(function () {
 			if ($(window).width() <= max_width)
 				cb();
 			else
 				exit();
-		});
+		}).resize();
 	};
 
 	util.ask = function (msg, cb) {

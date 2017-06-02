@@ -39,6 +39,8 @@ var User = function (uuid, dname, lname, passwd) {
 		tot: [ 0, 0 ],
 		log: []
 	};
+
+	this.pm = {};
 };
 
 exports.User = User;

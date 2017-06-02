@@ -131,6 +131,10 @@ define(function () {
 			}
 		};
 
+		ret.has = function (name) {
+			return items.hasOwnProperty(name);
+		};
+
 		ret.displayHeight = function () {
 			return cont.parent().innerHeight() - menu.outerHeight();
 		};
