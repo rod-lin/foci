@@ -55,16 +55,14 @@ define([
 				<div class="right-bar"> \
 					<div class="avatar-box"> \
 						<div class="avatar-util-box"> \
-							<div class="avatar-util new-event-btn" style="font-size: 95%;" data-tooltip="new event" data-variation="basic" data-position="left center"> \
+							<div class="avatar-util new-event-btn" data-tooltip="new event" data-variation="basic" data-position="left center"> \
 								<i class="fitted write icon"></i> \
-							</div> \
-							<div class="avatar-util pm-btn unread"> \
+							</div><div class="avatar-util pm-btn unread"> \
 								<i class="fitted comments outline icon"></i> \
 								<div class="reddot"></div> \
 							</div> \
 							<div class="pm-popup ui popup transition hidden"></div> \
-						</div> \
-						<div class="avatar"></div> \
+						</div><div class="avatar"></div> \
 						<button class="login-btn"> \
 							<div class="ui small loader"></div> \
 							<i class="sign in icon" style="font-size: 1.3em;"></i> \
@@ -98,10 +96,18 @@ define([
 			popup: main.find(".pm-popup"),
 			position: "bottom left",
 			on: "click",
+			lastResort: true,
 			onShow: function () {
 				pmview.init();
 			}
 		});
+
+		function toggleAvatarUtil(dir) {
+			main.find(".avatar-util").transition({
+				animation: "scale " + (dir || ""),
+				interval: 200
+			});
+		}
 
 		var pmview = pm.qview(main.find(".pm-popup"));
 
@@ -266,11 +272,17 @@ define([
 			});
 		});
 
+		var is_mobile = false;
+
 		var ava = main.find(".avatar");
 		ava.popup({
 			popup: main.find(".avatar-popup"),
 			position: "bottom right",
 			hoverable: true
+		}).click(function () {
+			if (is_mobile) {
+				toggleAvatarUtil();
+			}
 		});
 
 		function showAvatar() {
@@ -442,14 +454,22 @@ define([
 			setTimeout(function () {
 				main.removeClass("hide");
 			}, 200);
+		
+			if (is_mobile) {
+				setTimeout(function () {
+					toggleAvatarUtil("out");
+				}, 1000);
+			}
 		});
 
 		util.media(640, function () {
 			// mobile
 			main.find(".new-event-btn, .pm-btn").attr("data-position", "left center");
+			is_mobile = true;
 		}, function () {
 			// desktop
 			main.find(".new-event-btn, .pm-btn").attr("data-position", "bottom center");
+			is_mobile = false;
 		});
 
 		instance.push(ret);

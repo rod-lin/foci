@@ -109,3 +109,15 @@
 
 	text-overflow: ellipsis;
 }
+
+@media only screen and (max-width: 640px) {
+	.com-pm-qview .msg-box {
+		width: 18em;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	.com-pm-qview .msg-box {
+		width: 16em;
+	}
+}
