@@ -107,9 +107,7 @@ User.query = {
 		return {
 			$or: [
 				{ "dname": { $regex: reg } },
-				{ "lname": { $regex: reg } },
-				{ "intro": { $regex: reg } },
-				{ "school": { $regex: reg } }
+				{ "lname": { $regex: reg } }
 			]
 		};
 	},
@@ -256,4 +254,10 @@ exports.checkTag = (tags) => {
 	});
 
 	return ntags;
+};
+
+exports.search = async (kw) => {
+	var col = await db.col("user");
+	var res = await col.find(User.query.fuzzy(kw)).limit(config.lim.user.max_search_results).toArray();
+	return res;
 };

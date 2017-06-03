@@ -1,0 +1,159 @@
+.com-pm-chatbox {
+}
+
+.com-pm-chatbox .cont {
+	position: relative;
+}
+
+.com-pm-chatbox .header {
+	display: -webkit-flex;
+	display: flex;
+
+	align-items: center;
+
+	padding: 1rem;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-pm-chatbox .msg-box .msg-bar .msg-avatar,
+.com-pm-chatbox .header .sendee-avatar {
+	height: 4rem;
+	width: 4rem;
+	border-radius: 50%;
+
+	border: 1px solid rgba(0, 0, 0, 0.08);
+
+	background-image: url("/img/matt.jpg");
+
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+}
+
+.com-pm-chatbox .header .sendee-info {
+	margin-left: 0.7rem;
+	width: 60%;
+}
+
+.com-pm-chatbox .header .sendee-info .sendee-name {
+	font-weight: bold;
+	margin-bottom: 0.5rem;
+}
+
+.com-pm-chatbox .header .sendee-info .sendee-intro {
+	color: #CCCCCC;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.com-pm-chatbox .msg-box {
+	height: 25rem;
+	padding-top: 1rem;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.com-pm-chatbox .msg-box .msg-bar {
+	width: 100%;
+	text-align: left;
+	padding: 0 1rem 1rem 1rem;
+
+	box-sizing: border-box;
+}
+
+.com-pm-chatbox .msg-box .msg-bar.self {
+	text-align: right;
+}
+
+.com-pm-chatbox .msg-box .msg-bar .msg-avatar {
+	display: inline-block;
+	height: 3rem;
+	width: 3rem;
+
+	vertical-align: top;
+}
+
+.com-pm-chatbox .msg-box .msg-bar.self .msg-avatar {
+	display: none;
+}
+
+.com-pm-chatbox .msg-box .msg-bar .msg-cont {
+	display: inline-block;
+	margin-left: 0.5rem;
+	width: 70%;
+}
+
+.com-pm-chatbox .msg-box .msg-bar .msg-cont .sender {
+	color: #CCCCCC;
+	margin-bottom: 0.3rem;
+}
+
+.com-pm-chatbox .msg-box .msg-bar .msg-cont .msg {
+	display: inline-block;
+
+	margin-top: 0.2rem;
+	padding: 0.8rem 1rem;
+	border-radius: 3px;
+
+	max-width: 100%;
+
+	line-height: 130%;
+
+	background: white;
+	color: #404040;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+
+	word-wrap: break-word;
+}
+
+.com-pm-chatbox .msg-box .msg-bar.self .msg-cont .msg {
+	background: #3498DB;
+	color: white;
+	border: 1px solid #2A7CB3;
+}
+
+.com-pm-chatbox .input-area {
+	height: 12em;
+	width: 100%;
+
+	padding: 1rem 7rem 1rem 1rem;
+
+	border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-pm-chatbox .input-area .btn-area {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	margin: 0 !important;
+
+	padding: 1rem;
+	width: 7rem;
+}
+
+.com-pm-chatbox .input-area .btn-area .button {
+	margin-top: 0.5rem;
+	width: 100%;
+}
+
+.com-pm-chatbox .input-area .input {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	outline: none;
+	resize: none;
+	background: white;
+
+	width: 100%;
+	height: 100%;
+
+	font-size: 1.2rem;
+	line-height: 120%;
+}
+
+@media only screen and (max-width: 640px) {
+	.com-pm-chatbox .msg-box {
+		height: 20em;
+	}
+}

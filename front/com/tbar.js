@@ -54,10 +54,10 @@ define([
 				</div> \
 				<div class="right-bar"> \
 					<div class="avatar-box"> \
-						<div class="avatar-util-box"> \
-							<div class="avatar-util new-event-btn" data-tooltip="new event" data-variation="basic" data-position="left center"> \
+						<div class="avatar-util-box expand"> \
+							<div class="avatar-util new-event-btn"> \
 								<i class="fitted write icon"></i> \
-							</div><div class="avatar-util pm-btn unread"> \
+							</div><div class="avatar-util pm-btn"> \
 								<i class="fitted comments outline icon"></i> \
 								<div class="reddot"></div> \
 							</div> \
@@ -75,8 +75,8 @@ define([
 							<div class="ui star mini rating bottom right" data-rating="4" data-max-rating="5"></div> \
 						</div> \
 						<div class="ui two bottom attached buttons"> \
-							<div class="ui button profile">Profile</div> \
-							<div class="ui button logout">Logout</div> \
+							<div class="ui basic button profile">Profile</div> \
+							<div class="ui basic button logout">Logout</div> \
 						</div> \
 					</div> \
 				</div> \
@@ -89,7 +89,12 @@ define([
 			main.css("opacity", "");
 		});
 
-		main.find(".new-event-btn").click(function () { util.jump("#profile//new"); });
+		main.find(".new-event-btn")
+			.click(function () { util.jump("#profile//new"); })
+			.popup({
+				content: "new event"
+			});
+
 		// main.find(".pm-btn").click(function () { util.jump("#profile//new"); });
 
 		main.find(".pm-btn").popup({
@@ -98,7 +103,7 @@ define([
 			on: "click",
 			lastResort: true,
 			onShow: function () {
-				pmview.init();
+				main.find(".pm-btn").removeClass("unread");
 			}
 		});
 
@@ -279,11 +284,12 @@ define([
 			popup: main.find(".avatar-popup"),
 			position: "bottom right",
 			hoverable: true
-		}).click(function () {
-			if (is_mobile) {
-				toggleAvatarUtil();
-			}
-		});
+		})
+		// .click(function () {
+		// 	if (is_mobile) {
+		// 		toggleAvatarUtil();
+		// 	}
+		// });
 
 		function showAvatar() {
 			main.find(".right-bar").addClass("logged");
@@ -419,10 +425,12 @@ define([
 				hideSearchResult();
 				main.addClass("show-banner");
 				hideMenu();
+				main.find(".avatar-util-box").removeClass("expand");
 			},
 
 			hideBanner: function () {
 				main.removeClass("show-banner");
+				main.find(".avatar-util-box").addClass("expand");
 			},
 
 			setBanner: function (html) {
@@ -455,20 +463,27 @@ define([
 				main.removeClass("hide");
 			}, 200);
 		
-			if (is_mobile) {
-				setTimeout(function () {
-					toggleAvatarUtil("out");
-				}, 1000);
-			}
+			pmview.init(function (unread) {
+				if (unread)
+					main.find(".pm-btn").addClass("unread");
+				else
+					main.find(".pm-btn").removeClass("unread");
+			});
+
+			// if (is_mobile) {
+			// 	setTimeout(function () {
+			// 		toggleAvatarUtil("out");
+			// 	}, 1000);
+			// }
 		});
 
 		util.media(640, function () {
 			// mobile
-			main.find(".new-event-btn, .pm-btn").attr("data-position", "left center");
+			main.find(".new-event-btn").attr("data-position", "top center");
 			is_mobile = true;
 		}, function () {
 			// desktop
-			main.find(".new-event-btn, .pm-btn").attr("data-position", "bottom center");
+			main.find(".new-event-btn").attr("data-position", "bottom center");
 			is_mobile = false;
 		});
 

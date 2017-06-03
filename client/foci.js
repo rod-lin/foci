@@ -246,6 +246,7 @@ window.foci = {};
 		}, function (suc, dat) {
 			if (!suc) return cb(false, "$def.network_error");
 			if (!dat.suc) return cb(false, dat.msg);
+			// console.log(foci.aesdec(dat.res, sid));
 			return cb(true, JSON.parse(foci.aesdec(dat.res, sid)));
 		});
 	};

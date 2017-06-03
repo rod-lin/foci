@@ -39,13 +39,15 @@ define(function () {
 		");
 
 		var hide = function () {
-			msg.transition("scale");
+			msg.transition("scale out");
 			clearTimeout(proc);
 
 			setTimeout(function () {
 				msg.remove();
 			}, 5000);
 		};
+
+		$("body").append(msg);
 
 		msg.css({
 			"position": "fixed",
@@ -64,13 +66,11 @@ define(function () {
 		msg.find(".message")
 			.css("cursor", "pointer")
 			.css("pointer-events", "auto")
-			.transition("scale")
+			.transition("scale in")
 			.html(util.mfilt(str))
 			.click(hide);
 
 		var proc = setTimeout(hide, 5000);
-		
-		$("body").append(msg);
 	};
 
 	util.json = function (str) {
@@ -183,6 +183,10 @@ define(function () {
 				cb(scroll);
 			}
 		});
+	};
+
+	util.bottom = function (elem) {
+		elem.scrollTop(elem.prop("scrollHeight") - elem.height());
 	};
 
 	// cb(n) if scroll down

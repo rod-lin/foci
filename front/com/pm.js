@@ -2,6 +2,266 @@
 
 define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 	foci.loadCSS("com/pm.css");
+	foci.loadCSS("com/chatbox.css");
+
+	function parseConv(me, all) {
+		var ret = {};
+
+		for (var i = 0; i < all.length; i++) {
+			var k;
+
+			if (all[i].sender == me) {
+				k = all[i].sendee;
+			} else {
+				k = all[i].sender;
+			}
+
+			if (!ret[k])
+				ret[k] = [ all[i] ];
+			else
+				ret[k].push(all[i]);
+		}
+
+		return ret;
+	}
+
+	function chatbox(sendee, config) {
+		config = $.extend({}, config)
+
+		var main = $(" \
+			<div class='com-pm-chatbox ui small modal'> \
+				<div class='cont'> \
+					<div class='header'> \
+						<div class='sendee-avatar'></div> \
+						<div class='sendee-info'> \
+							<div class='sendee-name'>Rodlin</div> \
+							<div class='sendee-intro'>My heart is in the work</div> \
+						</div> \
+					</div> \
+					<div class='msg-box'> \
+						<div class='ui loader active'></div> \
+						<div class='history'></div> \
+						<!--div class='msg-bar'> \
+							<div class='msg-avatar'></div> \
+							<div class='msg-cont'> \
+								<div class='sender'>Rod</div> \
+								<div class='msg'>Hi, nice to meet you my friend</div><br> \
+								<div class='msg'>My name is Rord</div><br> \
+							</div> \
+						</div> \
+						<div class='msg-bar self'> \
+							<div class='msg-avatar'></div> \
+							<div class='msg-cont'> \
+								<div class='sender'>Rod</div> \
+								<div class='msg'>Nice to meet you too, I'm Rod</div><br> \
+							</div> \
+						</div> \
+						<div class='msg-bar'> \
+							<div class='msg-avatar'></div> \
+							<div class='msg-cont'> \
+								<div class='sender'>Rod</div> \
+								<div class='msg'>Ah ha!</div><br> \
+								<div class='msg'>You are Rod!</div><br> \
+							</div> \
+						</div--> \
+					</div> \
+					<div class='input-area'> \
+						<textarea class='input'></textarea> \
+						<div class='btn-area'> \
+							<button class='send-btn ui blue basic button'>send</button> \
+							<button class='back-btn ui basic button'>back</button> \
+						</div> \
+					</div> \
+				</div> \
+			</div> \
+		");
+
+		var sendee_info = null;
+
+		function getSendee(cb) {
+			if (sendee_info) {
+				cb(sendee_info);
+				return;
+			}
+
+			foci.get("/user/info", { uuid: sendee }, function (suc, dat) {
+				if (suc) {
+					sendee_info = dat = login.parseInfo(dat);
+					util.bgimg(main.find(".header .sendee-avatar"), dat.avatar);
+					main.find(".header .sendee-name").html(dat.dname);
+					main.find(".header .sendee-info").html(dat.info);
+					if (cb) cb(dat);
+				} else {
+					util.emsg(dat);
+					if (cb) cb(login.parseInfo({}));
+				}
+			});
+		}
+
+		getSendee();
+
+		function genMsg(sender, text) {
+			var msg = $(" \
+				<div class='msg-bar'> \
+					<div class='msg-avatar'></div> \
+					<div class='msg-cont'> \
+						<div class='sender'></div> \
+					</div> \
+				</div> \
+			");
+
+			if (text instanceof Array) {
+				// console.log(text);
+				for (var i = 0; i < text.length; i++) {
+					msg.find(".msg-cont").append("<div class='msg'>" + xfilt(text[i]) + "</div><br>");
+				}
+			} else {
+				msg.find(".msg-cont").append("<div class='msg'>" + xfilt(text) + "</div>");
+			}
+
+			if (sender) {
+				getSendee(function (sendee) {
+					msg.find(".sender").html(sendee.dname);
+					util.bgimg(msg.find(".msg-avatar"), sendee.avatar);
+				});
+			} else {
+				// self
+				msg.find(".sender").html("me");
+				msg.addClass("self");
+			}
+
+			return msg;
+		}
+
+		function loadHistory(cb) {
+			login.session(function (session) {
+				if (!session) {
+					if (cb) cb(false);
+					return;
+				}
+
+				foci.encop(session, {
+					int: "pm",
+					action: "getconv",
+					sender: sendee
+				}, function (suc, dat) {
+					main.find(".msg-box>.loader").removeClass("active");
+					if (suc) {
+						var self_uuid = session.getUUID();
+						for (var i = 0; i < dat.length; i++) {
+							main.find(".history").append(genMsg(
+								(dat[i].sender == self_uuid ? null : dat[i].sender),
+								dat[i].msg
+							));
+						}
+					} else {
+						util.emsg(dat);
+					}
+
+					if (cb) cb(suc);
+				});
+			});
+		}
+
+		function send() {
+			login.session(function (session) {
+				if (!session) return;
+
+				var msg = main.find(".input").val();
+				main.find(".input").val("");
+
+				if (!msg) return;
+
+				var msgdom = genMsg(null, msg);
+				main.find(".msg-box")
+					.append(msgdom)
+					.ready(function () {
+						util.bottom(main.find(".msg-box"));
+					});
+
+				foci.encop(session, {
+					int: "pm",
+					action: "send",
+					sendee: sendee,
+					text: msg
+				}, function (suc, dat) {
+					if (suc) {
+						// TODO
+					} else {
+						util.emsg(dat);
+					}
+				});
+			});
+		}
+
+		var update_proc = null;
+		var exit = false;
+		function checkUpdate() {
+			login.session(function (session) {
+				if (!session) return;
+
+				foci.encop(session, {
+					int: "pm",
+					action: "updatel",
+					sender: sendee
+				}, function (suc, dat) {
+					if (suc) {
+						var self_uuid = session.getUUID();
+
+						if (dat.length) {
+							var texts = [];
+
+							for (var i = 0; i < dat.length; i++) {
+								texts.push(dat[i].msg);
+							}
+
+							// update in bunch
+							main.find(".msg-box").append(genMsg(dat[0].sender, texts));
+
+							main.find(".msg-box").ready(function () {
+								util.bottom(main.find(".msg-box"));
+							});
+						}
+					} else {
+						util.emsg(dat);
+					}
+
+					if (!exit)
+						update_proc = setTimeout(checkUpdate, 1000);
+				});
+			});
+		}
+
+		loadHistory(function () {
+			util.bottom(main.find(".msg-box"));
+		});
+
+		checkUpdate();
+
+		main.modal({
+			onHide: function () {
+				clearTimeout(update_proc);
+				exit = true;
+			}
+		});
+		main.modal("show");
+
+		main.find(".send-btn").click(send);
+		main.find(".back-btn").click(function () {
+			main.modal("hide");
+		});
+
+		main.find(".input").keydown(function (e) {
+			if (e && e.which == 13 && !e.ctrlKey) {
+				send();
+				if (e.preventDefault) e.preventDefault();
+			}
+		});
+
+		var ret = {};
+
+		return ret;
+	}
 
 	function qview(cont, config) {
 		cont = $(cont);
@@ -38,8 +298,8 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 			main.find(".prompt").html(msg);
 		}
 
-		function genMsg(sender /* uuid */, msg) {
-			var main = $(" \
+		function genMsg(sender /* uuid */, text) {
+			var msg = $(" \
 				<div class='msg'> \
 					<div class='sender-avatar'><div class='ui loader active'></div></div> \
 					<div class='brief-info'> \
@@ -51,7 +311,7 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 			");
 
 			foci.get("/user/info", { uuid: sender }, function (suc, dat) {
-				main.find(".loader").removeClass("active");
+				msg.find(".loader").removeClass("active");
 
 				if (suc) {
 					dat = login.parseInfo(dat);
@@ -60,12 +320,16 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 					dat = login.parseInfo({});
 				}
 
-				util.bgimg(main.find(".sender-avatar"), dat.avatar);
-				main.find(".sender-name").html(dat.dname);
-				main.find(".msg-cont").html(msg);
+				util.bgimg(msg.find(".sender-avatar"), dat.avatar);
+				msg.find(".sender-name").html(dat.dname);
+				msg.find(".msg-cont").html(text);
+
+				msg.click(function () {
+					chatbox(sender);
+				});
 			});
 
-			return main;
+			return msg;
 		}
 
 		function getFirstMsg(dat) {
@@ -92,7 +356,7 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 		var ret = {};
 		var has_view_all = false;
 
-		ret.refresh = function () {
+		ret.refresh = function (cb) {
 			main.find(".msg-box-cont").html("");
 
 			login.session(function (session) {
@@ -105,14 +369,19 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 					main.find(".main-loader").removeClass("active");
 
 					if (suc) {
-						if (dat) {
+						console.log(dat);
+						if (dat.length) {
+							// console.log(parseConv(session.getUUID(), dat));
+							dat = getFirstMsg(parseConv(session.getUUID(), dat));
+
 							main.find(".msg-box").removeClass("empty");
-							
-							if (has_view_all)
-								dat = getFirstMsg(dat);
+							var self_uuid = session.getUUID();
 
 							for (var i = 0; i < dat.length; i++) {
-								main.find(".msg-box-cont").append(genMsg(dat[i].sender, dat[i].msg));
+								main.find(".msg-box-cont").append(genMsg(
+									dat[i].sender == self_uuid ? dat[i].sendee : dat[i].sender,
+									dat[i].msg
+								));
 							}
 						} else {
 							main.find(".msg-box").addClass("empty");
@@ -121,21 +390,24 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 					} else {
 						util.emsg(dat);
 					}
+
+					if (cb) cb(suc && dat.length);
 				});
 			});
 		};
 
 		var has_init = false;
-		ret.init = function () {
+		ret.init = function (cb) {
 			if (has_init) return;
 			has_init = true;
-			ret.refresh();
+			ret.refresh(cb);
 		};
 
 		return ret;
 	}
 
 	return {
+		chatbox: chatbox,
 		qview: qview
 	};
 });

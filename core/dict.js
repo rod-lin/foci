@@ -30,6 +30,8 @@ module.exports = {
 		"core.word.sid": "session id",
 		"core.word.string": "string",
 
+		"core.word.msg": "message",
+
 		"core.internal_err": "internal error",
 		"core.fail_upload": "fail to upload file",
 		"core.too_long": "$1 too long",
@@ -75,6 +77,7 @@ module.exports = {
 		"core.smsg.service_rej": "smsg service reject",
 
 		"core.pm.no_sender": "no sender",
+		"core.pm.no_sendee": "no sendee",
 		"core.pm.no_msg": "no message",
 
 		"front.com.parts.fail_get_url": "fail to get url $1: $2",

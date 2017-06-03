@@ -24,7 +24,10 @@
 		<div class="favtag">
 			<div class="favtag-prompt"></div>
 		</div>
-		<div class="setting-btn"><i class="setting icon"></i></div>
+		<div class="profile-util-box">
+			<div class="profile-util no-login-only chat-btn"><i class="fitted comments outline icon"></i></div>
+			<div class="profile-util login-only setting-btn"><i class="fitted setting icon"></i></div>
+		</div>
 	</div>
 	<div class="right-bar">
 		<div class="main-tab"></div>
@@ -97,11 +100,15 @@
 		overflow: auto;
 	}
 
-	#sub-profile .left-bar .setting-btn {
+	#sub-profile:not(.logged) .left-bar .login-only {
 		display: none;
 	}
 
-	#sub-profile.logged .left-bar .setting-btn {
+	#sub-profile.logged .left-bar .no-login-only {
+		display: none;
+	}
+
+	#sub-profile .left-bar .profile-util-box {
 		display: block;
 
 		position: absolute;
@@ -113,8 +120,9 @@
 		cursor: pointer;
 	}
 
-	#sub-profile .left-bar .setting-btn:hover {
-		opacity: 0.8;
+	#sub-profile .left-bar .profile-util {
+		display: inline-block;
+		margin-left: 0.5rem;
 	}
 
 	#sub-profile .left-bar .avatar {
@@ -358,8 +366,8 @@
 			"com/xfilt", "com/pages", "com/tab",
 			"com/login", "com/event", "com/upload",
 			"com/map", "com/lang", "com/editable",
-			"com/tagbox"
-		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang, editable, tagbox) {
+			"com/tagbox", "com/pm"
+		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang, editable, tagbox, pm) {
 			var init = function (info, is_self, init_page) {
 				var tbar = env.get("tbar");
 
@@ -1048,6 +1056,13 @@
 					});
 				}
 
+				if (!is_self)
+					left_bar.find(".chat-btn").click(function () {
+						login.session(function (session) {
+							pm.chatbox(uuid);
+						});
+					});
+
 				var display_mode = "normal";
 
 				function updateNewEventPos() {
@@ -1071,7 +1086,7 @@
 						tb.flow(false);
 					}
 
-					left_bar.outerHeight(main.height());
+					left_bar.css("min-height", main.height() + "px");
 
 					updateNewEventPos();
 				}

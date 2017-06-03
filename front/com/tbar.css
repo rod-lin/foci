@@ -246,8 +246,12 @@
 }
 
 .com-tbar .avatar-popup {
-	padding: 0 !important;
+	padding: 1px !important;
 	text-align: center;
+}
+
+.com-tbar .avatar-popup .buttons {
+	border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 .com-tbar .avatar-popup .cont {
@@ -281,7 +285,7 @@
 	cursor: pointer;
 }
 
-.com-tbar .avatar-util.unread .reddot {
+.com-tbar .avatar-util .reddot {
 	position: absolute;
 
 	width: 10px;
@@ -293,7 +297,15 @@
 	color: white;
 	border-radius: 50%;
 
+	opacity: 0;
+
 	box-shadow: 0 0 1px #E74C3C;
+
+	transition: opacity 0.3s;
+}
+
+.com-tbar .avatar-util.unread .reddot {
+	opacity: 1;
 }
 
 .com-tbar .avatar-util:hover {
@@ -441,13 +453,18 @@
 		margin-top: 0;
 		margin-right: 0;
 
+		z-index: 2;
+
 		box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 	}
 
 	.com-tbar .logged .avatar-util-box {
 		padding-right: 0;
+		padding-left: 4rem;
+
 		height: auto;
 		line-height: normal;
+		z-index: 1;
 	}
 
 	.com-tbar .logged .avatar-util {
@@ -460,34 +477,49 @@
 
 		text-align: center;
 
-		height: auto;
-
-		margin-right: 0;
 		vertical-align: top;
-		margin-right: 1rem;
+		margin-right: -3rem;
 
-		font-size: 1.1rem;
+		font-size: 1.3rem;
 
-		width: 2.8rem;
-		height: 2.8rem;
-		background: black;
+		width: 3.4rem;
+		height: 3.4rem;
+		background: #404040;
 		color: white;
 		border-radius: 50%;
 
-		box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+		pointer-events: none;
+
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+	
+		transition: margin-right 0.3s, opacity 0.3s, background 0.3s;
 	}
 
 	.com-tbar .logged .avatar-util i {
 		-webkit-box-flex: 1;
 		-ms-flex: 1;
 		flex: 1;
-		margin-top: -3px;
+		margin-top: -2px;
 	}
 
 	.com-tbar .logged .avatar-util .reddot {
 		height: 12px;
 		width: 12px;
 		right: 0;
+		opacity: 0;
+	}
+
+	.com-tbar .logged .avatar-util-box.expand .avatar-util,
+	.com-tbar .logged .avatar-util-box:hover .avatar-util {
+		margin-right: 1rem;
+		opacity: 1;
+		background: #191919;
+		pointer-events: auto;
+	}
+
+	.com-tbar .logged .avatar-util-box.expand .avatar-util.unread .reddot,
+	.com-tbar .logged .avatar-util-box:hover .avatar-util.unread .reddot {
+		opacity: 1;
 	}
 
 	.com-tbar .login-btn {

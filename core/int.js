@@ -124,6 +124,8 @@ _user.csid = util.route(async env => {
 		<other args>
 	}
  */
+var T_NEED_HANG = {};
+
 _user.encop = util.route(async env => {
 	var args = util.checkArg(env.query, { "uuid": "int", "enc": "string" });
 
@@ -143,13 +145,17 @@ _user.encop = util.route(async env => {
 	if (!encop.hasOwnProperty(query.int))
 		throw new err.Exc("$core.int_not_exist");
 
+	var next = function (res) {
+		res = JSON.stringify(res);
+		res = auth.aes.enc(res, sid);
+		env.qsuc(res);
+	};
+
 	var proc = encop[query.int];
-	var res = await proc(env, res.usr, query);
+	var res = await proc(env, res.usr, query, next);
 
-	res = JSON.stringify(res);
-	res = auth.aes.enc(res, sid);
-
-	env.qsuc(res);
+	if (res !== T_NEED_HANG)
+		next(res);
 });
 
 /*
@@ -256,6 +262,10 @@ encop.user = async (env, usr, query) => {
 			await user.logout(usr.getUUID());
 			return;
 
+		case "search":
+			var args = util.checkArg(query, { kw: "string" });
+			return await user.search(args.kw);
+
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}
@@ -361,12 +371,12 @@ encop.event = async (env, usr, query) => {
 	}
 };
 
-encop.pm = async (env, usr, query) => {
+encop.pm = async (env, usr, query, next) => {
 	switch (query.action) {
 		case "send":
 			var args = util.checkArg(query, {
 				sendee: "int",
-				text: util.checkArg.lenlim(config.lim.pm.text, "$core.too_long($core.word.descr)")
+				text: util.checkArg.lenlim(config.lim.pm.text, "$core.too_long($core.word.msg)")
 			});
 
 			await pm.send(usr.getUUID(), args.sendee, args.text);
@@ -381,7 +391,15 @@ encop.pm = async (env, usr, query) => {
 			return await pm.getConv(usr.getUUID(), args.sender);
 
 		case "update":
-			return await pm.getUpdate(usr.getUUID(), true);
+			var args = util.checkArg(query, { sender: { type: "int", opt: true } });
+			return await pm.getUpdate(usr.getUUID(), args.sender, true);
+
+		case "updatel":
+			var args = util.checkArg(query, { sender: { type: "int", opt: true } });
+			pm.getUpdateHang(usr.getUUID(), args.sender, true, next);
+
+			// hang up
+			return T_NEED_HANG;
 
 		default:
 			throw new err.Exc("$core.action_not_exist");
