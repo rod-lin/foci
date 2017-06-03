@@ -34,36 +34,13 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 					<div class='header'> \
 						<div class='sendee-avatar'></div> \
 						<div class='sendee-info'> \
-							<div class='sendee-name'>Rodlin</div> \
-							<div class='sendee-intro'>My heart is in the work</div> \
+							<div class='sendee-name'></div> \
+							<div class='sendee-intro'></div> \
 						</div> \
 					</div> \
 					<div class='msg-box'> \
 						<div class='ui loader active'></div> \
 						<div class='history'></div> \
-						<!--div class='msg-bar'> \
-							<div class='msg-avatar'></div> \
-							<div class='msg-cont'> \
-								<div class='sender'>Rod</div> \
-								<div class='msg'>Hi, nice to meet you my friend</div><br> \
-								<div class='msg'>My name is Rord</div><br> \
-							</div> \
-						</div> \
-						<div class='msg-bar self'> \
-							<div class='msg-avatar'></div> \
-							<div class='msg-cont'> \
-								<div class='sender'>Rod</div> \
-								<div class='msg'>Nice to meet you too, I'm Rod</div><br> \
-							</div> \
-						</div> \
-						<div class='msg-bar'> \
-							<div class='msg-avatar'></div> \
-							<div class='msg-cont'> \
-								<div class='sender'>Rod</div> \
-								<div class='msg'>Ah ha!</div><br> \
-								<div class='msg'>You are Rod!</div><br> \
-							</div> \
-						</div--> \
 					</div> \
 					<div class='input-area'> \
 						<textarea class='input'></textarea> \
