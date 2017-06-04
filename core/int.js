@@ -392,11 +392,11 @@ encop.pm = async (env, usr, query, next) => {
 
 		case "update":
 			var args = util.checkArg(query, { sender: { type: "int", opt: true } });
-			return await pm.getUpdate(usr.getUUID(), args.sender, true);
+			return await pm.getUpdate(usr.getUUID(), args.sender);
 
 		case "updatel":
 			var args = util.checkArg(query, { sender: { type: "int", opt: true } });
-			pm.getUpdateHang(usr.getUUID(), args.sender, true, next);
+			pm.getUpdateHang(usr.getUUID(), args.sender, next);
 
 			// hang up
 			return T_NEED_HANG;

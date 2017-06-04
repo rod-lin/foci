@@ -6,6 +6,10 @@ var db = require("./db");
 var err = require("./err");
 var util = require("./util");
 var user = require("./user");
+var lpoll = require("./lpoll");
+
+var tconv = (a, b) => a > b ? a + "." + b : b + "." + a;
+var ltok = (sender, sendee) => sender + "->" + sendee;
 
 var PMsg = function (config) {
 	err.assert(config.sender, "$core.pm.no_sender");
@@ -15,6 +19,8 @@ var PMsg = function (config) {
 	this.sender = config.sender;
 	this.sendee = config.sendee;
 	this.msg = config.msg;
+
+	this.conv = tconv(this.sender, this.sendee);
 
 	this.format = config.format || "text"; // text, html(need authoritation), markdown, etc.
 	this.date = config.date || new Date();
@@ -58,23 +64,6 @@ PMsg.set = {
 	// }
 };
 
-var hangup = {};
-
-function resolveHangup(sender, sendee, res) {
-	if (!hangup[sender]) return;
-
-	var nlst = [];
-
-	for (var i = 0; i < hangup[sender].length; i++) {
-		if (hangup[sender][i](sendee, res)) {
-			nlst.push(hangup[sender][i]);
-		}
-	}
-
-	// push back the unresolved ones
-	hangup[sender] = nlst;
-}
-
 // send text
 exports.send = async (sender, sendee, msg) => {
 	var nmsg = new PMsg({ sender: sender, sendee: sendee, msg: msg });
@@ -82,25 +71,25 @@ exports.send = async (sender, sendee, msg) => {
 	
 	await col.insertOne(nmsg);
 
-	resolveHangup(sender, sendee, [ nmsg ]);
+	lpoll.emit(ltok(sender, sendee), [ nmsg ]);
 
 	// await col.updateOne(user.User.query.uuid(sendee), PMsg.set.send(sender, nmsg));
 	// await col.updateOne(user.User.query.uuid(sendee), PMsg.set.push_update(nmsg));
 };
 
-exports.getUpdate = async (uuid, sender, unset) => {
+exports.getUpdate = async (uuid, sender) => {
 	var usr = await user.uuid(uuid);
 	
 	var col = await db.col("pm");
 	// console.log(PMsg.query.update(uuid, sender, usr.pm_update || 0));
 	var res = await col.find(PMsg.query.update(uuid, sender, usr.pm_update || 0)).sort({ date: -1 }).toArray();
 
-	if (unset) exports.removeUpdate(uuid);
+	exports.removeUpdate(uuid);
 
 	return res;
 };
 
-exports.getUpdateHang = async (uuid, sender, unset, next) => {
+exports.getUpdateHang = async (uuid, sender, next) => {
 	var usr = await user.uuid(uuid);
 	
 	var col = await db.col("pm");
@@ -108,16 +97,11 @@ exports.getUpdateHang = async (uuid, sender, unset, next) => {
 
 	if (res.length) {
 		next(res);
-		if (unset) exports.removeUpdate(uuid);
+		exports.removeUpdate(uuid);
 	} else {
-		if (!hangup[sender])
-			hangup[sender] = [];
-
-		hangup[sender].push(function (sendee, res) {
-			if (sendee == uuid) {
-				next(res);
-				if (unset) exports.removeUpdate(uuid);
-			} else return true; // unresolved
+		lpoll.reg(ltok(sender, uuid), function (res) {
+			next(res);
+			exports.removeUpdate(uuid);
 		});
 	}
 };

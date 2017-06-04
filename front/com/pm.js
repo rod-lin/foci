@@ -180,7 +180,8 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 				foci.encop(session, {
 					int: "pm",
 					action: "updatel",
-					sender: sendee
+					sender: sendee,
+					timeout: 15000,
 				}, function (suc, dat) {
 					if (suc) {
 						var self_uuid = session.getUUID();
@@ -188,7 +189,7 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 						if (dat.length) {
 							var texts = [];
 
-							for (var i = 0; i < dat.length; i++) {
+							for (var i = dat.length - 1; i >= 0; i--) {
 								texts.push(dat[i].msg);
 							}
 
@@ -346,7 +347,7 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 					main.find(".main-loader").removeClass("active");
 
 					if (suc) {
-						console.log(dat);
+						// console.log(dat);
 						if (dat.length) {
 							// console.log(parseConv(session.getUUID(), dat));
 							dat = getFirstMsg(parseConv(session.getUUID(), dat));
