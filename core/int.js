@@ -383,12 +383,12 @@ encop.pm = async (env, usr, query, next) => {
 
 			return;
 
-		case "getall":
-			return await pm.getAll(usr.getUUID());
+		case "gethead":
+			return await pm.getConvHead(usr.getUUID());
 
 		case "getconv":
 			var args = util.checkArg(query, { sender: "int" });
-			return await pm.getConv(usr.getUUID(), args.sender);
+			return await pm.getConvAll(usr.getUUID(), args.sender);
 
 		case "update":
 			var args = util.checkArg(query, { sender: { type: "int", opt: true } });

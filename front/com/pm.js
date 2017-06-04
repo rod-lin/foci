@@ -66,7 +66,7 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 					sendee_info = dat = login.parseInfo(dat);
 					util.bgimg(main.find(".header .sendee-avatar"), dat.avatar);
 					main.find(".header .sendee-name").html(dat.dname);
-					main.find(".header .sendee-info").html(dat.info);
+					main.find(".header .sendee-intro").html(dat.intro);
 					if (cb) cb(dat);
 				} else {
 					util.emsg(dat);
@@ -122,7 +122,7 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 					action: "getconv",
 					sender: sendee
 				}, function (suc, dat) {
-					main.find(".msg-box>.loader").removeClass("active");
+					main.find(".msg-box>.loader").removeClass("active").addClass("hidden");
 					if (suc) {
 						var self_uuid = session.getUUID();
 						for (var i = 0; i < dat.length; i++) {
@@ -315,11 +315,16 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 
 			for (var k in dat) {
 				if (dat.hasOwnProperty(k) && dat[k].length) {
-					ret.push(dat[k][dat[k].length - 1]);
+					ret.push(dat[k][0]);
 				}
 			}
 
 			return ret;
+		}
+
+		function init() {
+			has_view_all = false;
+			$(this).html("view all");
 		}
 
 		main.find(".view-all-btn").click(function () {
@@ -342,7 +347,7 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 
 				foci.encop(session, {
 					int: "pm",
-					action: has_view_all ? "getall" : "update"
+					action: has_view_all ? "gethead" : "update"
 				}, function (suc, dat) {
 					main.find(".main-loader").removeClass("active");
 
@@ -350,7 +355,9 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 						// console.log(dat);
 						if (dat.length) {
 							// console.log(parseConv(session.getUUID(), dat));
-							dat = getFirstMsg(parseConv(session.getUUID(), dat));
+							if (!has_view_all) {
+								dat = getFirstMsg(parseConv(session.getUUID(), dat));
+							}
 
 							main.find(".msg-box").removeClass("empty");
 							var self_uuid = session.getUUID();
@@ -374,10 +381,8 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 			});
 		};
 
-		var has_init = false;
 		ret.init = function (cb) {
-			if (has_init) return;
-			has_init = true;
+			init();
 			ret.refresh(cb);
 		};
 

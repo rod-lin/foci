@@ -353,7 +353,12 @@ define([
 					// main.find(".right-bar").prepend(ava);
 				});
 
-				pmview.refresh();
+				pmview.init(function (unread) {
+					if (unread)
+						main.find(".pm-btn").addClass("unread");
+					else
+						main.find(".pm-btn").removeClass("unread");
+				});
 
 				// vcent.update();
 			}
@@ -464,15 +469,6 @@ define([
 			setTimeout(function () {
 				main.removeClass("hide");
 			}, 200);
-		
-			if (env.session()) {
-				pmview.init(function (unread) {
-					if (unread)
-						main.find(".pm-btn").addClass("unread");
-					else
-						main.find(".pm-btn").removeClass("unread");
-				});
-			}
 
 			// if (is_mobile) {
 			// 	setTimeout(function () {

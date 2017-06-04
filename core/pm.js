@@ -47,9 +47,14 @@ PMsg.query = {
 		$or: [ { sender: uuid }, { sendee: uuid } ]
 	}),
 
-	conv: (uuid1, uuid2) => ({
-		$or: [ { sender: uuid1, sendee: uuid2 }, { sender: uuid2, sendee: uuid1 } ]
-	})
+	conv: (u1, u2) => ({ conv: tconv(u1, u2) }),
+
+	// get the first char log of every conversation
+	chat_list: uuid => [
+		{ $match: { $or: [ { sender: uuid }, { sendee: uuid } ] } },
+		{ $sort: { date: -1 } },
+		{ $group: { _id: "$conv", first: { $first: "$$ROOT" } } }
+	]
 };
 
 PMsg.set = {
@@ -113,14 +118,23 @@ exports.removeUpdate = async (uuid) => {
 	await col.updateOne(user.User.query.uuid(uuid), PMsg.set.set_update_stamp(new Date()));
 };
 
-exports.getAll = async (uuid) => {
+exports.getConvHead = async (uuid) => {
 	var col = await db.col("pm");
-	var res = await col.find(PMsg.query.all(uuid)).sort({ date: 1 }).toArray();
+	var res = await col.aggregate(PMsg.query.chat_list(uuid)).toArray();
+
+	for (var i = 0; i < res.length; i++) {
+		res[i] = res[i].first;
+	}
+
 	return res;
 };
 
-exports.getConv = async (uuid, sender) => {
+exports.getConvAll = async (uuid, sender) => {
 	var col = await db.col("pm");
-	var res = await col.find(PMsg.query.conv(uuid, sender)).sort({ date: 1 }).toArray();
+	
+	var res = await col.find(PMsg.query.conv(uuid, sender))
+					   .sort({ date: 1 })
+					   .toArray();
+	
 	return res;
 };

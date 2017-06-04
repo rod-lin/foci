@@ -31,13 +31,14 @@
 }
 
 .com-pm-chatbox .header .sendee-info {
-	margin-left: 0.7rem;
+	margin-left: 1rem;
 	width: 60%;
 }
 
 .com-pm-chatbox .header .sendee-info .sendee-name {
 	font-weight: bold;
 	margin-bottom: 0.5rem;
+	font-size: 1.2rem;
 }
 
 .com-pm-chatbox .header .sendee-info .sendee-intro {
@@ -64,6 +65,22 @@
 
 .com-pm-chatbox .msg-box .msg-bar.self {
 	text-align: right;
+}
+
+/* near messages */
+.com-pm-chatbox .msg-box .msg-bar:not(.self)+.msg-bar:not(.self),
+.com-pm-chatbox .msg-box .msg-bar.self+.msg-bar.self {
+	margin-top: -1rem;
+}
+
+.com-pm-chatbox .msg-box .msg-bar:not(.self)+.msg-bar:not(.self) .sender,
+.com-pm-chatbox .msg-box .msg-bar.self+.msg-bar.self .sender {
+	display: none;
+}
+
+.com-pm-chatbox .msg-box .msg-bar:not(.self)+.msg-bar:not(.self) .msg-avatar,
+.com-pm-chatbox .msg-box .msg-bar.self+.msg-bar.self .msg-avatar {
+	visibility: hidden;
 }
 
 .com-pm-chatbox .msg-box .msg-bar .msg-avatar {
@@ -103,6 +120,8 @@
 	background: white;
 	color: #404040;
 	border: 1px solid rgba(0, 0, 0, 0.08);
+
+	text-align: left;
 
 	word-wrap: break-word;
 }
