@@ -1,6 +1,6 @@
 /* personal message */
 
-define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
+define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, login, xfilt, lang) {
 	foci.loadCSS("com/pm.css");
 	foci.loadCSS("com/chatbox.css");
 
@@ -44,7 +44,7 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 					</div> \
 					<div class='input-area'> \
 						<textarea class='input'></textarea> \
-						<div class='btn-area'> \
+						<div class='btn-area ui vertical buttons'> \
 							<button class='send-btn ui blue basic button'>send</button> \
 							<button class='back-btn ui basic button'>back</button> \
 						</div> \
@@ -166,6 +166,8 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 						// TODO
 					} else {
 						util.emsg(dat);
+						msgdom.addClass("error");
+						msgdom.find(".sender").html(lang.msg(dat));
 					}
 				});
 			});
@@ -180,8 +182,7 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 				foci.encop(session, {
 					int: "pm",
 					action: "updatel",
-					sender: sendee,
-					timeout: 15000,
+					sender: sendee
 				}, function (suc, dat) {
 					if (suc) {
 						var self_uuid = session.getUUID();
@@ -201,7 +202,8 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 							});
 						}
 					} else {
-						util.emsg(dat);
+						if (dat != "$def.network_error")
+							util.emsg(dat);
 					}
 
 					if (!exit)
@@ -230,9 +232,25 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
 		});
 
 		main.find(".input").keydown(function (e) {
-			if (e && e.which == 13 && !e.ctrlKey) {
-				send();
-				if (e.preventDefault) e.preventDefault();
+			if (e && e.which == 13) {
+				if (!e.ctrlKey) {
+					send();
+					if (e.preventDefault) e.preventDefault();
+				} else {
+					var textarea = main.find(".input");
+					var orig = textarea.val();
+
+					if (textarea[0].selectionStart !== undefined) {
+						var orig_sele = textarea[0].selectionStart;
+						textarea[0].value = orig.substring(0, orig_sele) + "\n" +
+											orig.substring(textarea[0].selectionEnd);
+
+						textarea[0].selectionStart = textarea[0].selectionEnd = orig_sele + 1;
+					} else {
+						// TODO: buggy implementation
+						textarea.val(orig + "\n");
+					}
+				}
 			}
 		});
 
