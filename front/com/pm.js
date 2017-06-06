@@ -107,7 +107,41 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, log
 				msg.addClass("self");
 			}
 
+			msg.ready(function () {
+				msg.addClass("show");
+			});
+
 			return msg;
+		}
+
+		function formatDate(date) {
+			var cur = new Date();
+			var sub = cur - date;
+
+			var ud = 1000 * 60 * 60 * 24; // one day
+
+			var time = date.toLocaleTimeString();
+			var ret;
+
+			if (sub < ud) {
+				ret = time;
+			} else {
+				var day = cur.getDay();
+
+				if (sub < day * ud) {
+					// in this week
+					var pref = [ "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" ][date.getDay()];
+					ret = pref + " " + time;
+				} else {
+					ret = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + " " + time;
+				}
+			}
+
+			return "<div class='date'>" + ret + "</div>";
+		}
+
+		function needDate(prev, cur) {
+			return !prev || cur.date - prev.date > 1000 * 30;
 		}
 
 		function loadHistory(cb) {
@@ -126,11 +160,19 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, log
 					if (suc) {
 						var self_uuid = session.getUUID();
 						for (var i = 0; i < dat.length; i++) {
+							dat[i].date = new Date(dat[i].date);
+							
+							if (needDate(i ? dat[i - 1] : null, dat[i])) {
+								main.find(".history").append(formatDate(dat[i].date));
+							}
+
 							main.find(".history").append(genMsg(
 								(dat[i].sender == self_uuid ? null : dat[i].sender),
 								dat[i].msg
 							));
 						}
+
+						all_msg = dat.concat(all_msg);
 					} else {
 						util.emsg(dat);
 					}
@@ -148,8 +190,18 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, log
 				main.find(".input").val("");
 
 				if (!msg) return;
-
+				
 				var msgdom = genMsg(null, msg);
+		
+				var msgdat = { msg: msg, date: new Date() };
+				var prev = all_msg.length ? all_msg[all_msg.length - 1] : null;
+
+				if (needDate(prev, msgdat)) {
+					main.find(".msg-box").append(formatDate(msgdat.date));
+				}
+
+				all_msg.push(msgdat);
+
 				main.find(".msg-box")
 					.append(msgdom)
 					.ready(function () {
@@ -175,6 +227,9 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, log
 
 		var update_proc = null;
 		var exit = false;
+
+		var all_msg = [];
+
 		function checkUpdate() {
 			login.session(function (session) {
 				if (!session) return;
@@ -188,14 +243,18 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, log
 						var self_uuid = session.getUUID();
 
 						if (dat.length) {
-							var texts = [];
 
 							for (var i = dat.length - 1; i >= 0; i--) {
-								texts.push(dat[i].msg);
-							}
+								dat[i].date = new Date(dat[i].date);
+								var prev = i ? dat[i - 1] : (all_msg.length ? all_msg[all_msg.length - 1] : null);
 
-							// update in bunch
-							main.find(".msg-box").append(genMsg(dat[0].sender, texts));
+								if (needDate(prev, dat[i])) {
+									main.find(".msg-box").append(formatDate(dat[i].date));
+								}
+
+								all_msg.push(dat[i]);
+								main.find(".msg-box").append(genMsg(dat[0].sender, dat[i].msg));
+							}
 
 							main.find(".msg-box").ready(function () {
 								util.bottom(main.find(".msg-box"));
