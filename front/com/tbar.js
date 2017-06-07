@@ -26,7 +26,7 @@ define([
 						<div class="ui search fluid"> \
 							<div class="filter-tag fluid ui multiple dropdown"> \
 								<div class="ui fluid menu"> ' + /* tags add here! */ ' \
-									<div class="header"> \
+									<div class="header prompt"> \
 										<i class="tags icon"></i> \
 										Add tag \
 									</div> \
@@ -144,6 +144,7 @@ define([
 
 		main.find(".filter-tag").dropdown({
 			hideAdditions: true,
+			transition: "scale",
 
 			onShow: function () {
 				main.find(".filter-tag").css("pointer-events", "auto");

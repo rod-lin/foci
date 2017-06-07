@@ -209,6 +209,7 @@
 	#sub-profile .left-bar .favtag {
 		width: 100%;
 		padding-top: 1rem;
+		margin-bottom: 1rem;
 	}
 
 	#sub-profile .left-bar .favtag-prompt {
@@ -372,8 +373,13 @@
 			"com/xfilt", "com/pages", "com/tab",
 			"com/login", "com/event", "com/upload",
 			"com/map", "com/lang", "com/editable",
-			"com/tagbox", "com/pm"
-		], function (env, util, event, xfilt, pages, tab, login, event, upload, map, lang, editable, tagbox, pm) {
+			"com/tagbox", "com/pm", "com/tip"
+		], function (
+			env, util, event, xfilt,
+			pages, tab, login, event,
+			upload, map, lang, editable,
+			tagbox, pm, tip
+		) {
 			var init = function (info, is_self, init_page) {
 				var tbar = env.get("tbar");
 
@@ -1085,10 +1091,12 @@
 					if (!right_bar.offset().left) {
 						display_mode = "mobile";
 						right_bar.width(main.innerWidth());
+						left_bar.css("height", "");
 						tb.flow(true);
 					} else {
 						display_mode = "normal";
 						right_bar.width(main.innerWidth() - left_bar.outerWidth());
+						left_bar.css("height", main.innerHeight() + "px");
 						tb.flow(false);
 					}
 
@@ -1106,6 +1114,9 @@
 					
 					if (init_page && tb.has(init_page)) {
 						tb.to(init_page);
+					} else {
+						if (!is_self)
+							tip.init(main.find(".chat-btn"), "start chat here", "left center");
 					}
 				});
 
