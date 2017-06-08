@@ -325,6 +325,17 @@ exports.newEvent = async (uuid) => {
 	return nev;
 };
 
+exports.delEvent = async (euid, uuid) => {
+	var col = await db.col("event");
+
+	await exports.checkOwner(euid, uuid);
+
+	var ret = await col.findOneAndDelete(Event.query.euid(euid, 0));
+
+	if (!ret.value)
+		throw new err.Exc("$core.not_exist($core.word.event)");
+};
+
 // count how many times has a user created a event(after a certain date)
 // after is optional
 exports.countOwn = async (uuid, after) => {

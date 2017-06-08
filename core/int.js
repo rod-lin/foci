@@ -296,6 +296,11 @@ encop.event = async (env, usr, query) => {
 			var ev = await event.newEvent(usr.getUUID());
 			return ev.getEUID();
 
+		case "del":
+			var args = util.checkArg(query, { euid: "int" });
+			await event.delEvent(args.euid, usr.getUUID());
+			return;
+
 		case "publish":
 			var args = util.checkArg(query, { euid: "int" });
 

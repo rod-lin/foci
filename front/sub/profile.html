@@ -567,12 +567,33 @@
 							onCheck: function (cb) {
 								var suc = true;
 
-								if (!new_tab.find(".ev-title").val()) {
+								var has_title = !!new_tab.find(".ev-title").val();
+								var has_descr = !!new_tab.find(".ev-descr").val();
+
+								if (!has_title && !has_descr) {
+									login.session(function (session) {
+										foci.encop(session, {
+											int: "event",
+											action: "del",
+											euid: euid
+										}, function (suc, dat) {
+											if (suc) {
+												cb(true);
+											} else {
+												cb(false);
+												util.emsg(dat);
+											}
+										});
+									});
+									return;
+								}
+
+								if (!has_title) {
 									new_tab.find(".ev-title").addClass("warning");
 									suc = false;
 								}
 
-								if (!new_tab.find(".ev-descr").val()) {
+								if (!has_descr) {
 									new_tab.find(".ev-descr").addClass("warning");
 									suc = false;
 								}
