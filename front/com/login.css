@@ -21,8 +21,10 @@
 	z-index: 1;
 	display: inline-block;
 	padding: 1em 2em 2em 2em;
-	background: #F8F8F8;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+	background: rgb(251, 251, 251);
+
+	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+	border: 1px solid rgba(0, 0, 0, 0.08);
 
 	border-radius: 3px !important;
 }
