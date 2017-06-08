@@ -195,6 +195,8 @@
 									break;
 
 								case "search":
+									$("#main-loader").removeClass("active");
+
 									// format: #search/<kw>/tag1,tag2,tag3
 									var query = { kw: "" };
 

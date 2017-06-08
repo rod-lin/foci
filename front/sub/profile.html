@@ -527,7 +527,7 @@
 				
 				"use strict";
 
-				var loadDraft, clearDraft, hasDraft, saveDraft;
+				var loadDraft, clearDraft, hasDraft, saveDraft, deleteEmptyDraft;
 				var published;
 
 				function initDraft() {
@@ -536,6 +536,38 @@
 					var cur_step = "info";
 					var bmap = null;
 					var fields;
+					
+					function isEmptyDraft() {
+						for (var k in fields) {
+							if (fields.hasOwnProperty(k) && fields[k] &&
+								(fields[k].length === undefined || fields[k].length)) {
+								console.log(fields[k].length);
+								return false;
+							}
+						}
+
+						return true;
+					}
+
+					deleteEmptyDraft = function (cb) {
+						if (isEmptyDraft()) {
+							login.session(function (session) {
+								foci.encop(session, {
+									int: "event",
+									action: "del",
+									euid: euid
+								}, function (suc, dat) {
+									if (!suc) {
+										util.emsg(dat);
+									}
+
+									cb(true);
+								});
+							});
+						} else {
+							cb(false);
+						}
+					};
 
 					var steps = {
 						info: {
@@ -571,20 +603,7 @@
 								var has_descr = !!new_tab.find(".ev-descr").val();
 
 								if (!has_title && !has_descr) {
-									login.session(function (session) {
-										foci.encop(session, {
-											int: "event",
-											action: "del",
-											euid: euid
-										}, function (suc, dat) {
-											if (suc) {
-												cb(true);
-											} else {
-												cb(false);
-												util.emsg(dat);
-											}
-										});
-									});
+									cb(true);
 									return;
 								}
 
@@ -899,6 +918,7 @@
 						euid = null;
 						tb.getItem("new").off("click", nextStep);
 						tb.getItem("new").html(lang.msg("$front.sub.profile.new").capital());
+						fields = {};
 						// new_tab.find(".ev-step .step").off("click");
 					};
 
@@ -1020,14 +1040,21 @@
 						},
 
 						onChange: function (cb) {
-							saveDraft(function (suc) {
-								if (suc !== false) {
-									clearDraft();
-									if (!published)
-										util.emsg("$front.sub.profile.save_draft", "info");
-								}
+							deleteEmptyDraft(function (empty) {
+								if (!empty) {
+									saveDraft(function (suc, deleted) {
+										if (suc !== false) {
+											clearDraft();
+											if (!published && !deleted)
+												util.emsg("$front.sub.profile.save_draft", "info");
+										}
 
-								cb(suc); // if suc == true, change the tab
+										cb(suc); // if suc == true, change the tab
+									});
+								} else {
+									clearDraft();
+									cb(true);
+								}
 							});
 							
 							return false;

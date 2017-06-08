@@ -64,7 +64,7 @@ exports.rsa = {
 		var key = cached[pub];
 
 		if (!key)
-			throw new err.Exc("$core.not_exist($word.rsakey)");
+			throw new err.Exc("$core.not_exist($core.word.rsakey)");
 
 		var dat = key.decrypt(enc, "binary");
 

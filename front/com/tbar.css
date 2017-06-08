@@ -205,11 +205,18 @@
 	
 	top: 0;
 	right: 0;
+
+	transition: opacity 0.2s;
 }
 
 .com-tbar .right-bar .avatar-box {
 	height: 100%;
 	text-align: center;
+}
+
+.com-tbar.show-menu .right-bar {
+	opacity: 0;
+	pointer-events: none;
 }
 
 .com-tbar .logged .avatar-box {
@@ -219,7 +226,7 @@
 	height: 100%;
 	width: 4.7em;
 
-	background: white;
+	background: transparent;
 
 	border: none;
 
@@ -227,7 +234,7 @@
 	margin-right: 0;
 
 	opacity: 1;
-	transition: opacity 0.3s;
+	transition: opacity 0.3s, white 0.3s;
 }
 
 .com-tbar .login-btn .loader.active+.icon {
@@ -454,6 +461,11 @@
 		-webkit-box-align: center;
 		-ms-flex-align: center;
 		align-items: center;
+	}
+
+	.com-tbar.show-menu .right-bar {
+		opacity: 1;
+		pointer-events: auto;
 	}
 
 	.com-tbar .avatar {
