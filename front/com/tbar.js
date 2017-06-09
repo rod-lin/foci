@@ -26,7 +26,7 @@ define([
 						<div class="ui search fluid"> \
 							<div class="filter-tag fluid ui multiple dropdown"> \
 								<div class="ui fluid menu"> ' + /* tags add here! */ ' \
-									<div class="header prompt"> \
+									<div class="header"> \
 										<i class="tags icon"></i> \
 										Add tag \
 									</div> \
