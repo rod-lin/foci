@@ -57,11 +57,15 @@ define([
 						<div class="avatar-util-box expand"> \
 							<div class="avatar-util new-event-btn"> \
 								<i class="fitted write icon"></i> \
+							</div><div class="avatar-util notice-btn"> \
+								<i class="fitted alarm outline icon" style="font-size: 95%;"></i> \
+								<div class="reddot"></div> \
 							</div><div class="avatar-util pm-btn"> \
 								<i class="fitted comments outline icon"></i> \
 								<div class="reddot"></div> \
 							</div> \
 							<div class="pm-popup ui popup transition hidden"></div> \
+							<div class="notice-popup ui popup transition hidden"></div> \
 						</div><div class="avatar"></div> \
 						<button class="login-btn"> \
 							<div class="ui small loader"></div> \
@@ -104,6 +108,16 @@ define([
 			lastResort: true,
 			onShow: function () {
 				main.find(".pm-btn").removeClass("unread");
+			}
+		});
+
+		main.find(".notice-btn").popup({
+			popup: main.find(".notice-popup"),
+			position: "bottom left",
+			on: "click",
+			lastResort: true,
+			onShow: function () {
+				main.find(".notice-btn").removeClass("unread");
 			}
 		});
 

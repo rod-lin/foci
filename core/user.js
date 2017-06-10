@@ -35,6 +35,8 @@ var User = function (uuid, dname, lname, passwd) {
 	this.intro = "";
 	this.school = "";
 
+	this.notice = {};
+
 	this.rating = {
 		tot: [ 0, 0 ],
 		log: []
@@ -261,3 +263,13 @@ exports.search = async (kw) => {
 	var res = await col.find(User.query.fuzzy(kw)).limit(config.lim.user.max_search_results).toArray();
 	return res;
 };
+
+/* notice */
+
+/*
+	type: "event": event notice, "system": system notice 
+	sender: euid or system senders("helper", "welcome")
+	
+	msg: message text
+	format: message format
+ */

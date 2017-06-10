@@ -161,6 +161,8 @@
 .com-tbar .search-box .prompt {
 	border-radius: 3px !important;
 
+	width: 14em;
+
 	opacity: 1;
 	font-family: Ubuntu !important;
 
