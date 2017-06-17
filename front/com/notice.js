@@ -212,6 +212,9 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 							main.find(".nt-box").append(genPreview(parsed.preview[i], parsed.dat[i]));
 						}
 
+						if (!parsed.preview.length)
+							main.find(".nt-box").html("<div class='prompt'>no notice</div>");
+
 						main.find(".nt-view .loader").removeClass("active");
 					} else {
 						util.emsg(dat);

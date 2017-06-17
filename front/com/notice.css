@@ -96,6 +96,14 @@
 	flex: 1;
 }
 
+.com-notice .nt-box .prompt {
+	display: block;
+	color: #CCCCCC;
+	font-weight: bold;
+	text-align: center;
+	padding: 1rem 0;
+}
+
 .com-notice .nt-all .sender-name,
 .com-notice .nt-box .sender-name {
 	text-align: left;
