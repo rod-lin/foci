@@ -1,5 +1,8 @@
 "use strict";
 
+var fs = require("fs");
+var http = require("http");
+var https = require("https");
 var express = require("express");
 
 var db = require("./core/db");
@@ -88,9 +91,31 @@ app.use("/main", express.static("front/main.html"));
 
 app.get("/", function (req, res) { res.redirect("/main"); });
 
-var server = app.listen(config.port, function () {
-	var host = server.address().address;
-	var port = server.address().port;
+var serv = http.createServer(app);
+serv.listen(config.port, function () {
+	var host = serv.address().address;
+	var port = serv.address().port;
 
-	util.log("listening at " + host + ":" + port);
+	util.log("listening at http://" + host + ":" + port);
 });
+
+/* https */
+
+if (config.ssl.enabled) {
+	try {
+		var priv = fs.readFileSync(config.ssl.privkey, "UTF-8");
+		var cert = fs.readFileSync(config.ssl.certif, "UTF-8");
+
+		var cred = { key: priv, cert: cert };
+		var sslserv = https.createServer(cred, app);
+
+		sslserv.listen(config.ssl.port, function () {
+			var host = sslserv.address().address;
+			var port = sslserv.address().port;
+
+			util.log("listening at https://" + host + ":" + port);
+		});
+	} catch (e) {
+		util.log("failed to enable https: " + e.toString(), util.style.yellow("ERROR"));
+	}
+}	

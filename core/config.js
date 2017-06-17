@@ -3,6 +3,13 @@
 var conf = module.exports = {
 	port: 3138,
 
+	ssl: {
+		port: 3142,
+		enabled: false,
+		privkey: "ssl/priv.pem",
+		certif: "ssl/cert.crt"
+	},
+
 	debug: true,
 
 	file: {
