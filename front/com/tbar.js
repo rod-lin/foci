@@ -138,11 +138,6 @@ define([
 		var pmview = pm.qview(main.find(".pm-popup"));
 		var ntview = notice.init(main.find(".notice-popup"));
 
-		ntview.hasUpdate(function (has) {
-			if (has)
-				main.find(".notice-btn").addClass("unread");
-		});
-
 		var showMenu, hideMenu;
 
 		(function () {
@@ -386,6 +381,11 @@ define([
 						main.find(".pm-btn").addClass("unread");
 					else
 						main.find(".pm-btn").removeClass("unread");
+				});
+
+				ntview.hasUpdate(function (has) {
+					if (has)
+						main.find(".notice-btn").addClass("unread");
 				});
 
 				// vcent.update();
