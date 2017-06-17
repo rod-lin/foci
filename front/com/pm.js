@@ -115,29 +115,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, log
 		}
 
 		function formatDate(date) {
-			var cur = new Date();
-			var sub = cur - date;
-
-			var ud = 1000 * 60 * 60 * 24; // one day
-
-			var time = date.toLocaleTimeString();
-			var ret;
-
-			if (sub < ud) {
-				ret = time;
-			} else {
-				var day = cur.getDay();
-
-				if (sub < day * ud) {
-					// in this week
-					var pref = [ "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" ][date.getDay()];
-					ret = pref + " " + time;
-				} else {
-					ret = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + " " + time;
-				}
-			}
-
-			return "<div class='date'>" + ret + "</div>";
+			return "<div class='date'>" + util.localDate(date) + "</div>";
 		}
 
 		function needDate(prev, cur) {
@@ -325,16 +303,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, log
 		var main = $(" \
 			<div class='com-pm-qview'> \
 				<div class='msg-box'> \
-					<div class='msg-box-cont'> \
-						<div class='msg'> \
-							<div class='sender-avatar'></div> \
-							<div class='brief-info'> \
-								<div class='sender-name'>Rodlin</div> \
-								<div class='msg-cont'>Hello, my friend</div> \
-							</div> \
-							<div class='ellip'><i class='fitted ellipsis horizontal icon'></i></div> \
-						</div> \
-					</div> \
+					<div class='msg-box-cont'></div> \
 					<div class='prompt'></div> \
 					<div class='main-loader ui loader active'></div> \
 				</div> \

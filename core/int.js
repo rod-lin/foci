@@ -13,6 +13,7 @@ var dict = require("./dict");
 var smsg = require("./smsg");
 var event = require("./event");
 var config = require("./config");
+var notice = require("./notice");
 
 var Env = require("./env").Env;
 
@@ -197,9 +198,9 @@ _user.applied = util.route(async env => {
 var _event = {};
 
 _event.info = util.route(async env => {
-	var args = util.checkArg(env.query, { "euid": "number" });
+	var args = util.checkArg(env.query, { "euid": "number", "only": { type: "object", opt: true } });
 	var ev = await event.euid(args.euid);
-	env.qsuc(ev.getInfo());
+	env.qsuc(ev.getInfo(args.only));
 });
 
 _event.search = util.route(async env => {
@@ -405,6 +406,23 @@ encop.pm = async (env, usr, query, next) => {
 
 			// hang up
 			return T_NEED_HANG;
+
+		default:
+			throw new err.Exc("$core.action_not_exist");
+	}
+};
+
+encop.notice = async (env, usr, query, next) => {
+	switch (query.action) {
+		case "pull":
+			return await notice.pull(usr.getUUID());
+
+		case "info":
+			var args = util.checkArg(query, { type: "string", sender: "string" });
+			return await notice.info(args.type, args.sender);
+
+		case "update":
+			return await notice.update(usr.getUUID());
 
 		default:
 			throw new err.Exc("$core.action_not_exist");

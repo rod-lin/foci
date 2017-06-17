@@ -263,13 +263,3 @@ exports.search = async (kw) => {
 	var res = await col.find(User.query.fuzzy(kw)).limit(config.lim.user.max_search_results).toArray();
 	return res;
 };
-
-/* notice */
-
-/*
-	type: "event": event notice, "system": system notice 
-	sender: euid or system senders("helper", "welcome")
-	
-	msg: message text
-	format: message format
- */

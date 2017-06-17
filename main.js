@@ -9,6 +9,7 @@ var user = require("./core/user");
 var util = require("./core/util");
 var file = require("./core/file");
 var config = require("./core/config");
+var notice = require("./core/notice");
 
 var int = require("./core/int");
 
@@ -47,7 +48,9 @@ app.post("/file/upload", int.file.upload);
 app.get("/file/download", int.file.download);
 /* official api */
 
-app.get("/test", util.route(async env => {}));
+app.get("/test", util.route(async env => {
+	await notice.push(23, 55, "Deadpool is coming!", "event");
+}));
 
 app.get("/test/enc", util.route(async env => {
 	var args = util.checkArg(env.query, { "dat": "string" });

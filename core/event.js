@@ -63,8 +63,8 @@ exports.Event = Event;
 Event.prototype = {};
 Event.prototype.getEUID = function () { return this.euid };
 
-Event.prototype.getInfo = function () {
-	return {
+Event.prototype.getInfo = function (only) {
+	var all = {
 		euid: this.euid,
 
 		title: this.title,
@@ -90,6 +90,20 @@ Event.prototype.getInfo = function () {
 
 		favtag: this.favtag
 	};
+
+	if (only) {
+		var ret = {};
+
+		for (var k in only) {
+			if (only.hasOwnProperty(k) && all.hasOwnProperty(k)) {
+				ret[k] = all[k];
+			}
+		}
+
+		return ret;
+	} else {
+		return all;
+	}
 };
 
 // Event.prototype.getExpect = function (which) {
@@ -116,6 +130,14 @@ Event.prototype.hasApp = function (uuid) {
 	}
 
 	return false;
+};
+
+Event.prototype.getLogo = function () {
+	return this.logo;
+};
+
+Event.prototype.getTitle = function () {
+	return this.title;
 };
 
 Event.prototype.getAppForm = function (type) {

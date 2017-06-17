@@ -57,7 +57,7 @@
 }
 
 .com-pm-qview .msg:hover {
-	background: #FAFAFA;
+	background: rgba(252, 252, 252, 1);
 }
 
 .com-pm-qview .msg .ellip {
@@ -78,7 +78,8 @@
 	height: 3em;
 
 	border-radius: 50%;
-	border: 1px solid rgba(0, 0, 0, 0.08);
+
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
 
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -106,7 +107,6 @@
 	color: #CCCCCC;
 	overflow: hidden;
 	white-space: nowrap;
-
 	text-overflow: ellipsis;
 }
 

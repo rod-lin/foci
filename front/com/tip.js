@@ -10,12 +10,17 @@ define([], function () {
 		cont.popup({
 			content: text,
 			position: position,
-			on: "click"
+			on: "click",
+			onHide: function () {
+				setTimeout(function () {
+					cont.popup("destroy");
+				}, 500);
+			}
 		});
 
 		setTimeout(function () {
 			cont.popup("show");
-		}, 1000);
+		}, 500);
 
 		var ret = {};
 

@@ -259,6 +259,7 @@
 	display: inline-block;
 }
 
+.com-tbar .notice-popup,
 .com-tbar .pm-popup {
 	padding: 0 !important;
 }

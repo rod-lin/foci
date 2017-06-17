@@ -1,0 +1,280 @@
+.com-notice {
+	width: 20rem;
+
+	position: relative;
+	z-index: 3;
+}
+
+.com-notice>.buttons {
+	width: 100%;
+	height: 3rem;
+	padding: 0 1px 0 1px;
+	border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-notice .nt-view {
+	position: relative;
+	width: 100%;
+	height: 16rem;
+	overflow: hidden;
+}
+
+.com-notice .nt-all,
+.com-notice .nt-box {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+
+	overflow: auto;
+
+	top: 0; left: 0;
+
+	transition: left 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.com-notice .nt-all {
+	left: 100%;
+}
+
+.com-notice.view-all .nt-all {
+	left: 0;
+}
+
+.com-notice.view-all .nt-box {
+	left: -100%;
+}
+
+.com-notice .nt-box .nt-item {
+	display: -webkit-flex;
+	display: flex;
+
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+
+	width: 100%;
+
+	padding: 0.7rem 1rem;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+	background: transparent;
+
+	cursor: pointer;
+
+	transition: background 0.3s;
+}
+
+.com-notice .nt-box .nt-item:hover {
+	background: rgba(252, 252, 252, 1);
+}
+
+.com-notice .nt-all .sender-logo,
+.com-notice .nt-box .sender-logo {
+	display: inline-block;
+
+	height: 3rem;
+	width: 3rem;
+	border-radius: 5px;
+
+	background-color: rgba(245, 245, 245, 1);
+
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+}
+
+.com-notice .nt-box .nt-preview {
+	display: inline-block;
+
+	text-align: left;
+	margin-left: 1rem;
+
+	overflow: hidden;
+
+	-webkit-box-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+}
+
+.com-notice .nt-all .sender-name,
+.com-notice .nt-box .sender-name {
+	text-align: left;
+	font-weight: bold;
+	
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.com-notice .nt-box .sender-msg {
+	text-align: left;
+	color: #CCCCCC;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+/* notice all */
+
+.com-notice .nt-all .nt-tbar {
+	display: -webkit-flex;
+	display: flex;
+
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+
+	padding: 0.7rem 1rem;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-notice .nt-all .nt-tbar .back-btn {
+	cursor: pointer;
+	opacity: 0.5;
+}
+
+.com-notice .nt-all .nt-tbar .back-btn:hover {
+	opacity: 0.7;
+}
+
+.com-notice .nt-all .nt-tbar .sender-logo {
+	margin-left: 1rem;
+}
+
+.com-notice .nt-all .nt-tbar .sender-name {
+	display: inline-block;
+	overflow: hidden;
+	margin-left: 1rem;
+
+	-webkit-box-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+}
+
+.com-notice .nt-all .hist-msg {
+	text-align: left;
+	padding: 0.7rem 1rem;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+	cursor: pointer;
+
+	transition: background 0.3s;
+}
+
+.com-notice .nt-all .hist-msg:hover {
+	background: rgba(252, 252, 252, 1);
+}
+
+.com-notice .nt-all .hist-msg .msg {
+	text-align: left;
+	color: #CCCCCC;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.com-notice .nt-all .hist-msg .header {
+	display: -webkit-flex;
+	display: flex;
+
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+
+	justify-content: space-between;
+
+	overflow: hidden;
+}
+
+.com-notice .nt-all .hist-msg .title {
+	display: inline-block;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+
+	overflow: hidden;
+	-webkit-box-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+}
+
+.com-notice .nt-all .hist-msg .date {
+	display: inline-block;
+	padding-left: 1rem;
+	color: #CCCCCC;
+	float: right;
+}
+
+@media only screen and (max-width: 640px) {
+	.com-notice {
+		width: 18em;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	.com-notice {
+		width: 16em;
+	}
+}
+
+/*** notice view ***/
+
+.com-notice-view {
+	color: rgba(20, 20, 20, 1);
+}
+
+.com-notice-view .nt-header {
+	display: -webkit-flex;
+	display: flex;
+
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+
+	padding: 3rem;
+	padding-bottom: 0;
+}
+
+.com-notice-view .nt-header .logo {
+	display: inline-block;
+	
+	height: 5rem;
+	width: 5rem;
+
+	border-radius: 5px;
+
+	background-color: rgba(245, 245, 245, 1);
+
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+}
+
+.com-notice-view .nt-header .detail {
+	display: inline-block;
+	margin-left: 1rem;
+
+	overflow: hidden;
+	-webkit-box-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+}
+
+.com-notice-view .nt-header .title {
+	font-weight: bold;
+	font-size: 2rem;
+
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.com-notice-view .nt-header .date {
+	margin-top: 1rem;
+	color: #CCCCCC;
+}
+
+.com-notice-view .cont {
+	font-size: 1.3rem;
+
+	padding: 3rem;
+	line-height: 1.3;
+}

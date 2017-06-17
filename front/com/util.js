@@ -232,6 +232,10 @@ define(function () {
 		return this[Math.floor(Math.random() * this.length)];
 	};
 
+	Array.prototype.last = function () {
+		return this[this.length - 1];
+	};
+
 	String.prototype.capital = function () {
 		return this[0].toUpperCase() + this.substr(1);
 	};
@@ -265,6 +269,32 @@ define(function () {
 				if (load) load(img);
 			});
 		});
+	};
+
+	util.localDate = function (date) {
+		var cur = new Date();
+		var sub = cur - date;
+
+		var ud = 1000 * 60 * 60 * 24; // one day
+
+		var time = date.toLocaleTimeString();
+		var ret;
+
+		if (sub < ud) {
+			ret = time;
+		} else {
+			var day = cur.getDay();
+
+			if (sub < day * ud) {
+				// in this week
+				var pref = [ "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" ][date.getDay()];
+				ret = pref + " " + time;
+			} else {
+				ret = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + " " + time;
+			}
+		}
+
+		return ret;
 	};
 
 	return util;

@@ -80,6 +80,9 @@ module.exports = {
 		"core.pm.no_sendee": "no sendee",
 		"core.pm.no_msg": "no message",
 
+		"core.notice.event_notice": "Event Notice: $1",
+		"core.notice.untitled": "(untitled)",
+
 		"front.com.parts.fail_get_url": "fail to get url $1: $2",
 		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",
 

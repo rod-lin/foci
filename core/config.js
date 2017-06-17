@@ -96,6 +96,14 @@ var conf = module.exports = {
 			appkey: "",
 			appsec: ""
 		}
+	},
+
+	// system sender
+	notice: {
+		system: {
+			// url relative to the front dir
+			"helper": { logo: "/img/def/helper.jpg", name: "Foci Helper" }
+		}
 	}
 };
 

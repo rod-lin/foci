@@ -3,8 +3,9 @@
 
 define([
 	"com/login", "com/xfilt", "com/util",
-	"com/env", "com/upload", "com/pm"
-], function (login, xfilt, util, env, upload, pm) {
+	"com/env", "com/upload", "com/pm",
+	"com/notice"
+], function (login, xfilt, util, env, upload, pm, notice) {
 	var $ = jQuery;
 	foci.loadCSS("com/tbar.css");
 
@@ -56,7 +57,7 @@ define([
 					<div class="avatar-box"> \
 						<div class="avatar-util-box expand"> \
 							<div class="avatar-util new-event-btn"> \
-								<i class="fitted write icon"></i> \
+								<i class="fitted flag outline icon"></i> \
 							</div><div class="avatar-util notice-btn"> \
 								<i class="fitted alarm outline icon" style="font-size: 95%;"></i> \
 								<div class="reddot"></div> \
@@ -113,11 +114,17 @@ define([
 
 		main.find(".notice-btn").popup({
 			popup: main.find(".notice-popup"),
-			position: "bottom left",
+			position: "bottom right",
 			on: "click",
 			lastResort: true,
+
 			onShow: function () {
 				main.find(".notice-btn").removeClass("unread");
+				ntview.refresh();
+			},
+
+			onHide: function () {
+				if (!ntview.canHide()) return false;
 			}
 		});
 
@@ -129,6 +136,12 @@ define([
 		}
 
 		var pmview = pm.qview(main.find(".pm-popup"));
+		var ntview = notice.init(main.find(".notice-popup"));
+
+		ntview.hasUpdate(function (has) {
+			if (has)
+				main.find(".notice-btn").addClass("unread");
+		});
 
 		var showMenu, hideMenu;
 

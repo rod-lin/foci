@@ -28,7 +28,6 @@ var PMsg = function (config) {
 
 exports.PMsg = PMsg;
 
-
 // $or: [ { sender: uuid1, sendee: uuid2 }, { sender: uuid2, sendee: uuid1 } ],
 
 PMsg.query = {
