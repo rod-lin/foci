@@ -21,9 +21,11 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 					</div> \
 					<textarea class='msg input-no-style' placeholder='Message'></textarea> \
 				</div> \
-				<div class='ui buttons' style='float: right; padding: 1rem;'> \
-					<button class='ui button cancel-btn'>Cancel</button> \
-					<button class='ui blue button send-btn'>Send</button> \
+				<div style='text-align: right;'> \
+					<div class='ui buttons' style='padding: 1rem;'> \
+						<button class='ui button cancel-btn'>Cancel</button> \
+						<button class='ui blue button send-btn'>Send</button> \
+					</div> \
 				</div> \
 			</div> \
 		");
@@ -105,9 +107,11 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 					</div> \
 				</div> \
 				<div class='cont'></div> \
-				<div class='ui right buttons' style='float: right; padding: 1rem;'> \
-					<button class='ui button'>Contact</button> \
-					<button class='ui green button yep-btn'>Yep</button> \
+				<div style='text-align: right;'> \
+					<div class='ui right buttons' style='float: right; padding: 1rem;'> \
+						<button class='ui button'>Contact</button> \
+						<button class='ui green button yep-btn'>Yep</button> \
+					</div> \
 				</div> \
 			</div> \
 		");
