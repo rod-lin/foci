@@ -363,11 +363,7 @@ encop.event = async (env, usr, query) => {
 				return await event.getAppList(args.euid, usr.getUUID(), args.type);
 
 		case "appstatus":
-			var args = util.checkArg(query, { euid: "int", type: "string", uuids: "json", status: "string" });
-
-			if (!(args.uuids instanceof Array))
-				throw err.Exc("$core.expect_argument_type(uuids,array)");
-
+			var args = util.checkArg(query, { euid: "int", type: "string", uuids: "array", status: "string" });
 			await event.changeAppStatus(args.euid, args.uuids, args.type, args.status);
 
 			return;
@@ -423,6 +419,21 @@ encop.notice = async (env, usr, query, next) => {
 
 		case "update":
 			return await notice.update(usr.getUUID());
+
+		case "updatel":
+			notice.updatel(usr.getUUID(), next);
+			return T_NEED_HANG;
+
+		case "send":
+			var args = util.checkArg(query, {
+				type: "string",
+				uuids: "array", euid: "int",
+				title: "string", msg: "string"
+			});
+
+			await notice.sendGroup(args.euid, usr.getUUID(), args.uuids, args);
+
+			return;
 
 		default:
 			throw new err.Exc("$core.action_not_exist");

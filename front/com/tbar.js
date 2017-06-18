@@ -383,9 +383,11 @@ define([
 						main.find(".pm-btn").removeClass("unread");
 				});
 
-				ntview.hasUpdate(function (has) {
-					if (has)
+				ntview.keepUpdate(function (has) {
+					if (has) {
 						main.find(".notice-btn").addClass("unread");
+						util.emsg("you have a new notice", "info");
+					}
 				});
 
 				// vcent.update();
@@ -488,7 +490,8 @@ define([
 			}
 		};
 
-		setInterval(ret.updateAvatar, 50);
+		ret.updateAvatar();
+		setInterval(ret.updateAvatar, 10000);
 
 		$("body").prepend(main);
 

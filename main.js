@@ -52,7 +52,7 @@ app.get("/file/download", int.file.download);
 /* official api */
 
 app.get("/test", util.route(async env => {
-	await notice.push(23, 55, "Deadpool is coming!", "event");
+	await notice.push(23, 55, { msg: "Deadpool is coming!", type: "event" });
 }));
 
 app.get("/test/enc", util.route(async env => {

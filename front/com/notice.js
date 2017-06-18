@@ -5,17 +5,103 @@
 define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, login, lang, xfilt) {
 	foci.loadCSS("com/notice.css");
 
+	// notice editor
+	function editor(config) {
+		config = $.extend({}, config);
+
+		var main = $(" \
+			<div class='com-notice-edit ui small modal'> \
+				<div style='padding: 3rem; padding-bottom: 0;'> \
+					<div class='top-prompt'>Hello</div> \
+					<div class='edit-header'> \
+						<div class='logo'></div> \
+						<div style='width: 100%; padding-left: 5rem;'> \
+							<input class='title-input input-no-style' placeholder='Title' /> \
+						</div> \
+					</div> \
+					<textarea class='msg input-no-style' placeholder='Message'></textarea> \
+				</div> \
+				<div class='ui buttons' style='float: right; padding: 1rem;'> \
+					<button class='ui button cancel-btn'>Cancel</button> \
+					<button class='ui blue button send-btn'>Send</button> \
+				</div> \
+			</div> \
+		");
+
+		if (config.logo)
+			util.bgimg(main.find(".logo"), config.logo);
+
+		if (config.prompt)
+			main.find(".top-prompt").html(config.prompt);
+
+		function ask() {
+			if (main.find(".title-input").val() || main.find(".msg").val())
+				util.ask("Are you sure to discard this message?", function (ans) {
+					can_hide = ans;
+
+					if (ans) {
+						main.modal("hide");
+					}
+				});
+			else {
+				can_hide = true;
+				main.modal("hide");
+			}
+		}
+
+		main.find(".title-input").keydown(function (e) {
+			if (e.which == 13)
+				util.nextTick(function () { main.find(".msg").focus(); });
+		});
+
+		main.find(".cancel-btn").click(ask);
+		main.find(".send-btn").click(function () {
+			if (config.onSend) {
+				main.find(".send-btn").addClass("loading");
+
+				config.onSend({
+					title: main.find(".title-input").val(),
+					msg: main.find(".msg").val()
+				}, function (suc) {
+					main.find(".send-btn").removeClass("loading");
+
+					if (suc) {
+						can_hide = true;
+						main.modal("hide");
+					}
+				});
+			}
+		});
+
+		var can_hide = false;
+
+		main
+			.modal({
+				onHide: function () {
+					if (!can_hide) {
+						ask();
+						return false;
+					}
+				}
+			})
+			.modal("show");
+
+		var ret = {};
+
+		return ret;
+	}
 
 	function modal(msg, config) {
 		config = $.extend({}, config);
 
 		var main = $(" \
-			<div class='com-notice-view ui small modal'>\
+			<div class='com-notice-view ui small modal'> \
 				<div class='nt-header'> \
 					<div class='logo'></div> \
 					<div class='detail'> \
 						<div class='title'></div> \
 						<div class='date'></div> \
+						<div class='sender'></div> \
 					</div> \
 				</div> \
 				<div class='cont'></div> \
@@ -27,7 +113,10 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 		");
 
 		util.bgimg(main.find(".nt-header .logo"), config.info.logo);
+
 		main.find(".nt-header .title").html(msg.title);
+
+		main.find(".nt-header .sender").html("by " + config.info.name);
 		main.find(".nt-header .date").html(util.localDate(new Date(msg.date)));
 		main.find(".cont").html(xfilt(msg.msg));
 
@@ -165,14 +254,14 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 								dat.logo = foci.download(dat.logo);
 						} else dat.logo = "/img/def/logo.jpg"
 
-						var name = lang.msg(dat.name);
+						dat.name = lang.msg(dat.name);
 
 						util.bgimg(item.find(".sender-logo"), dat.logo);
-						item.find(".sender-name").html(name);
+						item.find(".sender-name").html(dat.name);
 
 						item.click(function () {
 							util.bgimg(main.find(".nt-all .nt-tbar .sender-logo"), dat.logo);
-							main.find(".nt-all .nt-tbar .sender-name").html(name);
+							main.find(".nt-all .nt-tbar .sender-name").html(dat.name);
 
 							main.find(".nt-all .history").html("");
 
@@ -223,6 +312,24 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 			});
 		}
 
+		function keep(cb) {
+			login.session(function (session) {
+				if (!session) return;
+
+				foci.encop(session, {
+					int: "notice",
+					action: "updatel"
+				}, function (suc, dat) {
+					if (suc) cb(true);
+					else cb(false);
+
+					util.nextTick(function () {
+						keep(cb);
+					});
+				});
+			});
+		}
+
 		main.find(".refresh-btn").click(refresh);
 
 		cont.append(main);
@@ -231,6 +338,7 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 
 		ret.canHide = function () { return !no_hide; };
 		ret.refresh = refresh;
+
 		ret.hasUpdate = function (cb) {
 			login.session(function (session) {
 				if (!session) return;
@@ -249,8 +357,12 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 			});
 		};
 
+		ret.keepUpdate = function (cb) {
+			keep(cb);
+		};
+
 		return ret;
 	}
 
-	return { init: init, modal: modal };
+	return { init: init, editor };
 });

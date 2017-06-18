@@ -123,6 +123,26 @@ var checkArg = (args, req, opt) => {
 
 				break;
 
+			case "array":
+				if (typeof tmp !== "string") {
+					if (!(tmp instanceof Array))
+						throw new err.Exc("$core.expect_argument_type(" + k + ",array)");
+
+					break;
+				}
+
+				try {
+					// console.log(tmp);
+					tmp = JSON.parse(tmp);
+				} catch (e) {
+					throw new err.Exc("$core.wrong_json_format", e);
+				}
+
+				if (!(tmp instanceof Array))
+					throw new err.Exc("$core.expect_argument_type(" + k + ",array)");
+
+				break;
+
 			case "json":
 				if (typeof tmp !== "string")
 					break;

@@ -9,7 +9,7 @@ var user = require("./user");
 var lpoll = require("./lpoll");
 
 var tconv = (a, b) => a > b ? a + "." + b : b + "." + a;
-var ltok = (sender, sendee) => sender + "->" + sendee;
+var ltok = (sender, sendee) => "pm.conv." + sender + "->" + sendee;
 
 var PMsg = function (config) {
 	err.assert(config.sender, "$core.pm.no_sender");

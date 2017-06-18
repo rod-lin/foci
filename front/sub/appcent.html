@@ -222,8 +222,8 @@
 			"com/env", "com/util", "com/event",
 			"com/xfilt", "com/login", "com/event",
 			"com/map", "com/lang", "com/avatar",
-			"com/formi", "com/rating"
-		], function (env, util, event, xfilt, login, event, map, lang, avatar, formi, rating) {
+			"com/formi", "com/rating", "com/notice"
+		], function (env, util, event, xfilt, login, event, map, lang, avatar, formi, rating, notice) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
 				return;
@@ -609,7 +609,7 @@
 
 											var decline = $("<button class='option-btn ui basic negative icon button' style='box-shadow: none !important;'><i class='cancel icon'></i>Decline</button>");
 
-											var notice = $("<button class='option-btn ui basic blue icon button' style='box-shadow: none !important;'><i class='bell outline icon'></i>Notice</button>");
+											var ntbtn = $("<button class='option-btn ui basic blue icon button' style='box-shadow: none !important;'><i class='bell outline icon'></i>Notice</button>");
 
 											var opt = $("<div class='option-bar'> \
 												<span class='option-prompt'><span class='option-selnum'></span> application(s) selected</span> \
@@ -618,13 +618,65 @@
 											accept.click(function () { changeStatus($(this), rtab, type, "accept"); });
 											decline.click(function () { changeStatus($(this), rtab, type, "decline"); });
 
-											notice.click(function () {
+											ntbtn.click(function () {
+												var selected = rtab.find("tbody tr.selected");
 												var uuids = getSelectedUUID(rtab);
+												var names = [];
 
-												
+												for (var i = 0; i < selected.length; i++) {
+													names.push($(selected[i]).find(".user-name").html());
+												}
+
+												var prompt = "To ";
+
+												switch (names.length) {
+													case 0: prompt += "no one"; break;
+													case 1:
+														prompt += names[0];
+														break;
+
+													case 2:
+														prompt += names[0] + " and " + names[1];
+														break;
+
+													case 3:
+														prompt += names[0] + ", " + names[1] + " and " + names[2];
+														break;
+
+													default:
+														prompt += names[0] + ", " + names[1] + ", " + names[2] + " and " + (names.length - 3) + " other applicant(s)";
+														break;
+												}
+
+												notice.editor({
+													logo: parse.logo, prompt: prompt,
+													onSend: function (info, cb) {
+														login.session(function (session) {
+															foci.encop(session, {
+																int: "notice",
+																action: "send",
+																type: "event",
+																
+																euid: euid,
+																uuids: uuids,
+
+																title: info.title,
+																msg: info.msg
+															}, function (suc, dat) {
+																if (suc) {
+																	util.emsg("notice has been sent", "success");
+																} else {
+																	util.emsg(dat);
+																}
+
+																cb(suc);
+															});
+														});
+													}
+												});
 											});
 
-											opt.prepend(notice);
+											opt.prepend(ntbtn);
 											opt.prepend(decline);
 											opt.prepend(accept);
 

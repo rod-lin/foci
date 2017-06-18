@@ -7,6 +7,7 @@ var err = require("./err");
 var util = require("./util");
 var user = require("./user");
 var event = require("./event");
+var lpoll = require("./lpoll");
 var config = require("./config");
 
 /*
@@ -31,10 +32,12 @@ var config = require("./config");
 
  */
 
+var ltok = (event, id) => "notice." + event + "." + id;
+
 var Notice = function (config) {
-	err.assert(config.type, "$core.nt.no_type");
-	err.assert(config.sender, "$core.nt.no_sender");
-	err.assert(config.msg, "$core.nt.no_msg");
+	err.assert(config.type, "$core.notice.no_type");
+	err.assert(config.sender, "$core.notice.no_sender");
+	err.assert(config.msg, "$core.notice.no_msg");
 
 	this.type = config.type;
 
@@ -66,12 +69,14 @@ async function setUpdate(uuid, val) {
 	await col.updateOne(user.User.query.uuid(uuid), Notice.set.update(uuid, val));
 }
 
-exports.push = async (uuid, sender, msg, type) => {
-	var nnt = new Notice({ type: type || "system", sender: sender, msg: msg });
+exports.push = async (uuid, sender, info) => {
+	var nnt = new Notice(info);
 	var col = await db.col("user");
 
 	await col.updateOne(user.User.query.uuid(uuid), Notice.set.push(sender, nnt));
 	await setUpdate(uuid, true);
+
+	lpoll.emit(ltok("update", uuid));
 };
 
 exports.pull = async (uuid) => {
@@ -110,4 +115,30 @@ exports.info = async (type, sender) => {
 exports.update = async (uuid) => {
 	var usr = await user.uuid(uuid);
 	return !!usr.notice_update;
+};
+
+exports.updatel = async (uuid, next) => {
+	lpoll.reg(ltok("update", uuid), function () {
+		next(true);
+	});
+};
+
+exports.sendGroup = async (euid, sender, uuids, info) => {
+	/*
+		check:
+		1. sender is the owner
+		2. uuids are applicants to euid
+	 */
+
+	event.checkOwner(euid, sender);
+
+	for (var i = 0; i < uuids.length; i++) {
+		await event.checkApplicant(euid, uuids[i]);
+	}
+
+	info.sender = euid;
+
+	for (var i = 0; i < uuids.length; i++) {
+		await exports.push(uuids[i], sender, info);
+	}
 };

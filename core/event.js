@@ -19,6 +19,8 @@ var Event = function (euid, owner /* uuid */) {
 	this.org = [ owner ];
 	this.state = 0; // draft state
 
+	this.contact = owner; // contact user
+
 	// time created
 	this.created = new Date();
 
@@ -66,6 +68,8 @@ Event.prototype.getEUID = function () { return this.euid };
 Event.prototype.getInfo = function (only) {
 	var all = {
 		euid: this.euid,
+
+		contact: this.contact || this.org[0],
 
 		title: this.title,
 		descr: this.descr,
@@ -311,7 +315,12 @@ Event.query = {
 		q["apply_" + type + ".uuid"] = uuid;
 
 		return q;
-	}
+	},
+
+	is_applicant: (euid, uuid) => ({
+		euid: euid,
+		$or: [ { "apply_partic.uuid": uuid }, { "apply_staff.uuid": uuid } ]
+	})
 };
 
 Event.set = {
@@ -368,6 +377,13 @@ exports.countOwn = async (uuid, after) => {
 exports.isOwner = async (euid, uuid) => {
 	var col = await db.col("event");
 	return (await col.count(Event.query.check_owner(euid, uuid))) != 0;
+};
+
+// check participant/staff
+exports.checkApplicant = async (euid, uuid) => {
+	var col = await db.col("event");
+	if (!(await col.count(Event.query.is_applicant(euid, uuid))))
+		throw new err.Exc("$core.not_event_applicant");
 };
 
 exports.checkOwner = async (euid, uuid) => {

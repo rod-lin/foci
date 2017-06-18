@@ -270,14 +270,21 @@
 	font-weight: bold;
 	font-size: 2rem;
 
+	margin-bottom: 0.7rem;
+
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 
+.com-notice-view .nt-header .sender,
 .com-notice-view .nt-header .date {
-	margin-top: 1rem;
+	display: inline-block;
 	color: #CCCCCC;
+}
+
+.com-notice-view .nt-header .sender {
+	margin-left: 1rem;
 }
 
 .com-notice-view .cont {
@@ -285,4 +292,59 @@
 
 	padding: 3rem;
 	line-height: 1.3;
+}
+
+/*** notice edit ***/
+
+.com-notice-edit {}
+
+.com-notice-edit .logo {
+	display: inline-block;
+
+	float: left;
+
+	height: 4rem;
+	width: 4rem;
+	border-radius: 5px;
+
+	margin-right: 1rem;
+
+	background-color: rgba(245, 245, 245, 1);
+
+    vertical-align: middle;
+
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+}
+
+.com-notice-edit .edit-header {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+	padding-bottom: 1rem;
+}
+
+.com-notice-edit .title-input {
+	display: inline-block;
+	height: 4rem;
+	padding: 1rem;
+
+	font-size: 2rem;
+
+	font-weight: bold;
+
+	width: 100%;
+}
+
+.com-notice-edit .msg {
+	width: 100%;
+	height: 25rem;
+	padding-top: 1rem;
+
+	font-size: 1.3rem;
+	line-height: 1.6;
+}
+
+.com-notice-edit .top-prompt {
+	color: #CCCCCC;
+	margin-bottom: 1rem;
 }

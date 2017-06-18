@@ -4,7 +4,10 @@ var assert = require("assert");
 var util = require("./util");
 var Env = require("./env").Env;
 
-exports.assert = assert.ok;
+exports.assert = function (cond, msg) {
+	if (!cond)
+		throw new exports.Exc(msg || "$core.assert_failed");
+};
 
 // exception
 exports.Exc = function (msg, exc) {

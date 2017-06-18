@@ -33,6 +33,8 @@ module.exports = {
 		"core.word.msg": "message",
 
 		"core.internal_err": "internal error",
+		"core.assert_failed": "assertion failed",
+
 		"core.fail_upload": "fail to upload file",
 		"core.too_long": "$1 too long",
 		"core.illegal": "illegal $1",
@@ -40,6 +42,7 @@ module.exports = {
 		"core.too_many": "too many $1s",
 		"core.not_exist": "no such $1",
 		"core.not_event_owner": "you're not the owner of this event",
+		"core.not_event_applicant": "someone in the list is not an applicant",
 
 		"core.illegal_app_type": "illegal type of application",
 		"core.illegal_app_status": "illegal application status",
@@ -82,6 +85,10 @@ module.exports = {
 
 		"core.notice.event_notice": "Event Notice: $1",
 		"core.notice.untitled": "(untitled)",
+
+		"core.notice.no_type": "no notice type",
+		"core.notice.no_sender": "no notice sender",
+		"core.notice.no_msg": "no notice content",
 
 		"front.com.parts.fail_get_url": "fail to get url $1: $2",
 		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",

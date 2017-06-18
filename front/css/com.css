@@ -1,2 +1,12 @@
 * { outline: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
 button { padding: 0; user-select: none; -moz-user-select: none; }
+
+.input-no-style {
+	margin: 0;
+	padding: 0;
+	background: 0;
+	outline: none;
+	border: 0;
+	resize: none;
+	border-radius: 0;
+}
