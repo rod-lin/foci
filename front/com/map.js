@@ -5,8 +5,6 @@
 define([ "com/util" ], function (util) {
 	var $ = jQuery;
 	foci.loadCSS("com/map.css");
-	
-	require([ "https://api.map.baidu.com/getscript?v=2.0&ak=B4lBjPwv47t4CNlFiyY4siyy" ]);
 
 	var geoc = null;
 
