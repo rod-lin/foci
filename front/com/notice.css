@@ -283,8 +283,8 @@
 	color: #CCCCCC;
 }
 
-.com-notice-view .nt-header .sender {
-	margin-left: 1rem;
+.com-notice-view .nt-header .date {
+	margin-right: 1rem;
 }
 
 .com-notice-view .cont {
