@@ -12,14 +12,44 @@
 	opacity: 0.9;
 }
 
-.com-form .form .fields {
+.com-form .ui.form .fields {
 	margin-bottom: 0 !important;
 }
 
-.com-form .form .field {
+.com-form .ui.form .field {
 	margin-bottom: 1rem !important;
 }
 
-.com-form .form .header {
-	opacity: 0.3;
+.com-form .ui.form .header {
+	opacity: 0.5;
+}
+
+.com-form .ui.form .field label {
+	color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.com-form .ui.form .block {
+	margin-bottom: 1rem;
+}
+
+.com-form .ui.form .add-block-btn {
+	width: 100%;
+	height: 5rem;
+}
+
+.com-form .ui.form .field input {
+	height: 3rem;
+}
+
+.com-form .ui.form .add-group-btn {
+	width: 100%;
+	height: 3rem;
+}
+
+.com-form .ui.form .add-field-btn {
+	height: 3rem;
+}
+
+.com-form .ui.form .one.fields .field {
+	width: 100%;
 }

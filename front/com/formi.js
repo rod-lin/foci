@@ -36,7 +36,7 @@ JSON -> form with semantic-ui classes
 
  */
 
-define([ "com/util" ], function (util) {
+define([ "com/util", "com/editable" ], function (util, editable) {
 	var $ = jQuery;
 
 	foci.loadCSS("com/formi.css");
@@ -78,7 +78,11 @@ define([ "com/util" ], function (util) {
 			switch (input.type) {
 				case "textarea":
 				case "text":
-					ret = "<" + (input.type == "textarea" ? "textarea" : "input") + " name='" + input.name + "'";
+					if (input.type == "textarea") {
+						ret = "<textarea class='textarea-input' name='" + input.name + "'";
+					} else {
+						ret = "<input class='text-input' name='" + input.name + "'";
+					}
 
 					if (input.placeholder) {
 						ret += " placeholder='" + input.placeholder + "'";
@@ -97,7 +101,7 @@ define([ "com/util" ], function (util) {
 					break;
 
 				case "check":
-					ret = "<div class='ui checkbox'><input class='hidden' type='checkbox' name='" + input.name + "'>";
+					ret = "<div class='ui checkbox check-input'><input class='hidden' type='checkbox' name='" + input.name + "'>";
 					ret += "<label>" + (input.label || "") + "</label>";
 					ret += "</div>";
 
@@ -112,37 +116,33 @@ define([ "com/util" ], function (util) {
 		// {
 		//     name, [ sub or input ]
 		// }
-		function genField(field) {
-			var ret;
+		function genField(field, single) {
+			var ret, pref = "";
 
 			if (field instanceof Array) {
-				ret = "<div class='fields'>";
+				if (field.length > 0 && field.length <= 5) {
+					pref = [ "one", "two", "three", "four", "five" ][field.length - 1];
+				}
+
+				ret = "<div class='" + pref + " fields'>";
 
 				for (var i = 0; i < field.length; i++) {
-					ret += genField(field[i]);
+					ret += genField(field[i], true);
 				}
 
 				ret += "</div>";
 			} else {
-				ret = "<div class='field'>";
+				ret = (single ? "" : "<div class='one fields'>") + "<div class='field'>";
 
 				if (field.name) {
 					ret += "<label>" + field.name + "</label>";
 				}
 
-				if (field.sub) {
-					ret += "<div class='fields'>";
-				
-					for (var i = 0; i < field.sub.length; i++) {
-						ret += genField(field.sub[i]);
-					}
-
-					ret += "</div>";
-				} else if (field.input) {
+				if (field.input) {
 					ret += genInput(field.input);
 				}
 
-				ret += "</div>";
+				ret += "</div>" + (single ? "" : "</div>");
 			}
 
 			return ret;
@@ -153,13 +153,13 @@ define([ "com/util" ], function (util) {
 		//     name, field
 		// }
 		function genBlock(block) {
-			var ret = "<h3 class='ui dividing header'>" + block.name + "</h4>"
+			var ret = "<h3 class='ui dividing header'>" + block.name + "</h4><div class='block'>"
 	
 			for (var i = 0; i < block.field.length; i++) {
 				ret += genField(block.field[i]);
 			}
 
-			return ret;
+			return ret + "</div>";
 		}
 
 		if (!obj.block) return null;
@@ -180,6 +180,70 @@ define([ "com/util" ], function (util) {
 			dom: ret,
 			fields: fields
 		};
+	}
+
+	// parse JSON form from dom
+	function parseForm(dom) {
+		function parseInput(dom) {
+			var input = $(dom.children()[1]);
+
+			var ret = {
+				name: input.attr("name"),
+				placeholder: input.attr("placeholder")
+			};
+		
+			if (input.hasClass("text-input")) {
+				ret.type = "text";
+			} else if (input.hasClass("textarea-input")) {
+				ret.type = "textarea";
+			} else if (input.hasClass("check-input")) {
+				ret.type = "check";
+			} else ret.type = "text";
+
+			return ret;
+		}
+
+		function parseField(dom) {
+			var ret = [];
+
+			var field = dom.children(".field").not(".no-save");
+	
+			field.each(function (n, el) {
+				el = $(el);
+
+				ret.push({
+					name: el.children("label").html(),
+					input: parseInput(el)
+				});
+			});
+
+			return ret;
+		}
+
+		function parseBlock(dom) {
+			var ret = {};
+
+			ret.name = dom.prev(".header").html();
+			ret.field = [];
+
+			var fields = dom.children(".fields");
+
+			fields.each(function (n, el) {
+				ret.field.push(parseField($(el)));
+			});
+
+			return ret;
+		}
+
+		var blocks = dom.find(".block");
+
+		var ret = { block: [] };
+
+		blocks.each(function (n, el) {
+			ret.block.push(parseBlock($(el)));
+		});
+
+		return ret;
 	}
 
 	function initForm(cont, form, config) {
@@ -227,6 +291,7 @@ define([ "com/util" ], function (util) {
 		}
 	
 		var ret = {
+			dom: gen.dom,
 			fields: gen.fields
 		};
 
@@ -299,7 +364,7 @@ define([ "com/util" ], function (util) {
 			<div class='com-form ui small modal'> \
 				<div class='title'></div> \
 				<div class='form'></div> \
-				<div style='text-align: center; margin-top: 3rem;'> \
+				<div style='text-align: center; margin-top: 2rem;'> \
 					<div class='ui buttons'> \
 						<div class='ui white button restore' data-content='Click to restore the form'>restore</div> \
 						<div class='ui blue button save'>save</div> \
@@ -347,7 +412,7 @@ define([ "com/util" ], function (util) {
 
 		if (gen.hasSave(config.uid)) {
 			setTimeout(function () {
-				main.find(".restore").popup({ on: "manual" }).popup("show");
+				main.find(".restore").popup({ on: "click" }).popup("show");
 				setTimeout(function () {
 					main.find(".restore").popup("hide");
 				}, 8000);
@@ -367,11 +432,33 @@ define([ "com/util" ], function (util) {
 
 		var ret = {};
 
+		ret.openEdit = function () {
+			var form = gen.dom;
+		
+			var split = $("<div class='ui divider'></div>");
+			var addblock = $("<button class='ui basic button add-block-btn' type='button'><i class='add icon'></i>Add block</button>");
+			var addgroup = $("<button class='ui basic button add-group-btn' type='button'><i class='add icon'></i>Add group</button>");
+			var addfield = $("<div class='field no-save'><label>Add field</label><button class='ui basic icon button add-field-btn' type='button'><i class='add icon'></i></button></div>");
+
+			form.append(split).append(addblock);
+			form.find(".block").append(addgroup);
+			form.find(".fields").append(addfield);
+		};
+
+		ret.save = function () {
+			var form = parseForm(gen.dom);
+			
+			form.name = main.children(".title").html();
+			
+			return form;
+		};
+
 		return ret;
 	}
 
 	return {
 		genForm: genForm,
-		modal: modal
+		modal: modal,
+		parseForm: parseForm
 	};
 });
