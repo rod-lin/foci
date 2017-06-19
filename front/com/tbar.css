@@ -96,6 +96,11 @@
 	transition: top 0.2s;
 }
 
+.com-tbar .menu-view {
+	-webkit-user-select: none;
+	user-select: none;
+}
+
 .com-tbar.show-banner .left-bar {
 	top: -3.7em;
 }

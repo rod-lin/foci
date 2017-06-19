@@ -1,6 +1,6 @@
 /* personal message */
 
-define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, login, xfilt, lang) {
+define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], function (util, login, xfilt, lang, uh) {
 	foci.loadCSS("com/pm.css");
 	foci.loadCSS("com/chatbox.css");
 
@@ -137,6 +137,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, log
 					main.find(".msg-box>.loader").removeClass("active").addClass("hidden");
 					if (suc) {
 						var self_uuid = session.getUUID();
+
 						for (var i = 0; i < dat.length; i++) {
 							dat[i].date = new Date(dat[i].date);
 							
@@ -151,6 +152,10 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, log
 						}
 
 						all_msg = dat.concat(all_msg);
+
+						setTimeout(function () {
+							main.find(".msg-box").scrollTop(main.find(".history").height());
+						}, 300);
 					} else {
 						util.emsg(dat);
 					}
@@ -309,7 +314,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, log
 				</div> \
 				<div class='bottom-bar'> \
 					<div class='ui two bottom attached buttons' style='height: 100%;'> \
-						<button class='ui basic button'><i class='write icon'></i>new</button> \
+						<button class='ui basic button write-btn'><i class='write icon'></i>new</button> \
 						<button class='ui basic button view-all-btn'>view all</button> \
 					</div> \
 				</div> \
@@ -380,6 +385,15 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang" ], function (util, log
 			}
 
 			ret.refresh();
+		});
+
+		main.find(".write-btn").click(function () {
+			login.session(function (session) {
+				uh.modal([], function (uuid) {
+					if (uuid.length)
+						chatbox(uuid[0]);
+				}, { just_one: true, prompt: "User to chat", exclude: [ session.getUUID() ] });
+			});
 		});
 
 		var ret = {};

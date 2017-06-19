@@ -10,6 +10,7 @@ define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 		cont = $(cont);
 		config = $.extend({
 			size: "1.5em",
+			radius: "50%",
 			popdir: "top center",
 		}, config);
 
@@ -20,6 +21,8 @@ define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 				<div class='avatar' style='background-image: url(\"" + info.avatar + "\"); height: " + config.size + "; width: " + config.size + ";'></div> \
 			</div> \
 		");
+
+		ava.find(".avatar").css("border-radius", config.radius);
 
 		var avacont = $("<div class='dname'>" + xfilt(info.dname ? info.dname : "anonymous") + "</div>");
 
@@ -38,7 +41,7 @@ define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 
 		cont.append(ava);
 
-		return {};
+		return { dom: ava };
 	}
 
 	return {

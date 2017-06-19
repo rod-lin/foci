@@ -43,6 +43,7 @@ app.get("/user/info", int.user.info);
 app.get("/user/org", int.user.org);
 app.get("/user/applied", int.user.applied);
 app.get("/user/encop", int.user.encop);
+app.get("/user/search", int.user.search);
 
 app.get("/event/info", int.event.info);
 app.get("/event/search", int.event.search);

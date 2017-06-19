@@ -10,10 +10,6 @@ JSON -> form with semantic-ui classes
 	"name": "Staff Form",
 	"block": [
 		{
-			[
-
-			]
-
 			{
 				"name": "Name",
 				"sub": [

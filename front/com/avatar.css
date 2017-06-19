@@ -1,6 +1,7 @@
 .com-avatar {
 	display: inline-block;
 	vertical-align: middle;
+	position: relative;
 }
 
 .com-avatar .avatar {

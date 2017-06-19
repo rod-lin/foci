@@ -195,6 +195,11 @@ _user.applied = util.route(async env => {
 	env.qsuc(ret);
 });
 
+_user.search = util.route(async env => {
+	var args = util.checkArg(env.query, { kw: "string" });
+	env.qsuc(await user.search(args.kw));
+});
+
 var _event = {};
 
 _event.info = util.route(async env => {
@@ -262,10 +267,6 @@ encop.user = async (env, usr, query) => {
 		case "logout":
 			await user.logout(usr.getUUID());
 			return;
-
-		case "search":
-			var args = util.checkArg(query, { kw: "string" });
-			return await user.search(args.kw);
 
 		default:
 			throw new err.Exc("$core.action_not_exist");

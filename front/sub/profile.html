@@ -51,7 +51,52 @@
 						<div class="ui compact black inline message loc-selected" style="min-width: 50%; max-width: 95%;"></div>
 					</div>
 				</div>
-				<div class="page page-apply" style="text-align: center;">
+				<div class="page page-pay" style="text-align: center;">
+				</div>
+				<div class="page page-apply" style="text-align: left;">
+					<style>
+
+						#sub-profile .page.page-apply {
+							padding: 2rem;
+						}
+						
+						#sub-profile .page.page-apply .header,
+						#sub-profile .page.page-apply label {
+							color: rgba(100, 100, 100, 1) !important;
+						}
+
+						@media only screen and (max-width: 640px) {
+							#sub-profile .page.page-apply {
+								padding: 1rem;
+							}
+						}
+
+					</style>
+					<form class="ui form">
+						<h4 class="ui dividing header">Application Forms</h4>
+						<div class="fields">
+							<div class="field">
+								<label>Staff Form</label>
+								<button class="ui blue button" type="button">Create/Edit</button>
+							</div>
+							<div class="field">
+								<label>Participant Form</label>
+								<button class="ui green button" type="button">Create/Edit</button>
+							</div>
+						</div>
+
+						<h4 class="ui dividing header">Limitations</h4>
+						<div class="fields">
+							<div class="field">
+								<label>Max Staff</label>
+								<input type="text" placeholder="No limit in default">
+							</div>
+							<div class="field">
+								<label>Max Participant</label>
+								<input type="text" placeholder="No limit in default">
+							</div>
+						</div>
+					</form>
 				</div>
 				<div class="page page-pub" style="text-align: center;">
 					<div class="protocol">
@@ -712,7 +757,7 @@
 							subtitle: "When and where",
 
 							page: main.find(".page.page-loc"),
-							next: "apply",
+							next: "pay",
 
 							onInit: function (info) {
 								fields.lng = info.loclng;
@@ -772,6 +817,15 @@
 									});
 								}
 							}
+						},
+
+						pay: {
+							title: "Payment",
+							icon: "payment",
+							subtitle: "Payments method",
+
+							page: main.find(".page.page-pay"),
+							next: "apply",
 						},
 
 						apply: {

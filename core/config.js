@@ -38,7 +38,7 @@ var conf = module.exports = {
 			],
 
 			session_timeout: 1000 * 60 * 60, // 60 min
-			max_search_results: 16
+			max_search_results: 8
 		},
 
 		event: {

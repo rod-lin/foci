@@ -261,5 +261,10 @@ exports.checkTag = (tags) => {
 exports.search = async (kw) => {
 	var col = await db.col("user");
 	var res = await col.find(User.query.fuzzy(kw)).limit(config.lim.user.max_search_results).toArray();
+
+	for (var i = 0; i < res.length; i++) {
+		res[i] = new User(res[i]).getInfo();
+	}
+
 	return res;
 };

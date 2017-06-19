@@ -195,6 +195,7 @@
 
 .com-notice .nt-all .hist-msg .title {
 	display: inline-block;
+	
 	white-space: nowrap;
 	text-overflow: ellipsis;
 
