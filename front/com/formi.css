@@ -1,5 +1,5 @@
 .com-form {
-	padding: 3rem;
+	padding: 2rem;
 }
 
 .com-form .title {
@@ -7,7 +7,9 @@
 	font-weight: bold;
 
 	text-align: center;
-	margin-bottom: 3rem;
+	margin-bottom: 1rem;
+
+	padding: 1rem 0;
 
 	opacity: 0.9;
 }
@@ -24,8 +26,11 @@
 	opacity: 0.5;
 }
 
-.com-form .ui.form .field label {
+.com-form .ui.form .field>label {
 	color: rgba(0, 0, 0, 0.6) !important;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .com-form .ui.form .block {
@@ -37,8 +42,16 @@
 	height: 5rem;
 }
 
-.com-form .ui.form .field input {
+.com-form .ui.form .field {
+	position: relative;
+}
+
+.com-form .ui.form .field>input {
 	height: 3rem;
+}
+
+.com-form .ui.form label.no-edit {
+	border: 2px solid transparent;
 }
 
 .com-form .ui.form .add-group-btn {
@@ -48,8 +61,45 @@
 
 .com-form .ui.form .add-field-btn {
 	height: 3rem;
+	width: 100%;
 }
 
 .com-form .ui.form .one.fields .field {
 	width: 100%;
+}
+
+.com-form .ui.form .del-btn {
+	position: absolute;
+	
+	top: 0; right: 0;
+
+	margin: 0 !important;
+	padding: 0 0.5rem !important;
+
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 0 3px 3px 0 !important;
+
+	box-sizing: border-box;
+
+	text-align: center;
+}
+
+.com-form .ui.form .field .del-btn {
+	right: 0.5em;
+}
+
+.com-form .ui.form .no-save .del-btn {
+	display: none;
+}
+
+.com-form.on-edit .ui.form .header {
+	opacity: 1;
+}
+
+.com-form.on-edit .ui.form .header {
+	padding: 0.5rem;
+}
+
+.com-form.on-edit .ui.form .field>label {
+	padding: 0.5rem;
 }

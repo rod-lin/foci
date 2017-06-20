@@ -1,13 +1,13 @@
 .com-editable.enabled {
 	border: 2px dotted transparent;
 	border-radius: 3px;
-	transition: border-color 0.3s;
+	transition: border 0.3s;
 	cursor: pointer;
 }
 
 .com-editable.enabled.explicit,
 .com-editable.enabled:hover {
-	border-color: rgba(0, 0, 0, 0.5);
+	border: 2px dotted rgba(0, 0, 0, 0.5);
 }
 
 .com-editable.enabled+.com-editbox {
@@ -18,8 +18,10 @@
 	resize: none;
 
 	position: absolute;
-	border: 2px dotted rgba(0, 0, 0, 0.7);
-	border-radius: 3px;
+	border: 2px dotted rgba(0, 0, 0, 0.7) !important;
+	border-radius: 3px !important;
 
-	background: white;
+	box-sizing: border-box;
+
+	background: white !important;
 }

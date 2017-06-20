@@ -2,7 +2,7 @@
 
 "use strict";
 
-define([ "com/util" ], function (util) {
+define([ "com/util", "com/xfilt" ], function (util, xfilt) {
 	foci.loadCSS("com/editable.css");
 
 	function init(obj, onChange, config) {
@@ -15,10 +15,18 @@ define([ "com/util" ], function (util) {
 
 		var enable;
 
+		onChange = onChange || function (val, dom) {
+			dom.html(val);
+		};
+
+		// obj.parent().css("position", "relative");
+
 		obj
 			.addClass("com-editable")
 			.click(function () {
-				if (!enable && !obj.hasClass("enabled")) return;
+				var clicked = $(this);
+
+				if (!enable && !clicked.hasClass("enabled")) return;
 				if (config.onEdit && config.onEdit() === false) return;
 
 				var edit;
@@ -30,35 +38,35 @@ define([ "com/util" ], function (util) {
 				}
 
 				function pos() {
-					var ofs = obj.offset();
-					var pofs = obj.parent().offset();
+					var ofs = clicked.offset();
+					var pofs = clicked.parent().offset();
 
 					edit.css({
 						top: (ofs.top - pofs.top) + "px",
 						left: (ofs.left - pofs.left) + "px",
-						height: obj.outerHeight(),
-						width: obj.outerWidth(),
-						padding: obj.css("padding"),
-						"font-size": obj.css("font-size"),
-						"font-family": obj.css("font-family"),
-						"font-weight": obj.css("font-weight"),
-						"line-height": obj.css("line-height"),
-						"text-align": obj.css("text-align")
+						height: clicked.outerHeight(),
+						width: clicked.outerWidth(),
+						padding: clicked.css("padding"),
+						"font-size": clicked.css("font-size"),
+						"font-family": clicked.css("font-family"),
+						"font-weight": clicked.css("font-weight"),
+						"line-height": clicked.css("line-height"),
+						"text-align": clicked.css("text-align")
 					});
 				}
 
 				pos();
 
-				var text = config.text ? config.text() : obj.text();
+				var text = config.text ? config.text() : clicked.text();
 				edit.val(text);
 
 				$(window).resize(pos);
 
-				obj.after(edit);
+				clicked.after(edit);
 				edit.focus();
 				edit.blur(function () {
 					if (edit.val() != text) {
-						onChange(edit.val());
+						onChange(xfilt(edit.val()), clicked);
 					}
 
 					if (config.onBlur) config.onBlur();

@@ -1,0 +1,35 @@
+.com-popselect {
+	padding: 0 !important;
+	min-width: 10rem !important;
+}
+
+.com-popselect .option {
+	position: relative;
+
+	min-width: 100%;
+	padding: 1rem;
+
+	z-index: 3;
+
+	background: white;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+	cursor: pointer;
+
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+	transition: background 0.3s;
+}
+
+.com-popselect .option:hover {
+	background: rgba(240, 240, 240, 0.3);
+}
+
+.com-popselect .option:active {
+	background: rgba(240, 240, 240, 0.45);
+}
+
+.com-popselect .option:last-child {
+	border: none !important;
+}

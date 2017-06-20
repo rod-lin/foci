@@ -36,13 +36,121 @@ JSON -> form with semantic-ui classes
 
  */
 
-define([ "com/util", "com/editable" ], function (util, editable) {
+define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (util, editable, xfilt, popselect) {
 	var $ = jQuery;
 
 	foci.loadCSS("com/formi.css");
 
 	function warn(msg) {
 		console.log("formi: " + msg);
+	}
+
+	function genInput(name, input, colfields) {
+		var ret;
+
+		input.type = input.type || "text";
+		
+		if (!input.name) {
+			warn("unnamed input");
+			input.name = "unnamed";
+		} else if (colfields) {
+			if (colfields.hasOwnProperty(input.name)) {
+				warn("duplicated name '" + input.name + "'");
+			} else {
+				colfields[input.name] = { opt: !!input.opt, type: input.type, name: name };
+			}
+		}
+
+		if (input.type == "check" && !input.label) {
+			warn("checkbox with no label");
+			input.label = "unlabeled";
+		}
+
+		switch (input.type) {
+			case "textarea":
+			case "text":
+				if (input.type == "textarea") {
+					ret = "<textarea class='textarea-input' name='" + input.name + "'";
+				} else {
+					ret = "<input class='text-input' name='" + input.name + "'";
+				}
+
+				if (input.placeholder) {
+					ret += " placeholder='" + input.placeholder + "'";
+				}
+
+				if (input.value) {
+					ret += " value='" + input.value + "'";
+				}
+
+				ret += ">";
+
+				if (input.type == "textarea") {
+					ret += "</textarea>";
+				}
+
+				break;
+
+			case "check":
+				ret = "<div class='ui checkbox check-input'><input class='hidden' type='checkbox' name='" + input.name + "'>";
+				ret += "<label>" + (input.label || "") + "</label>";
+				ret += "</div>";
+
+				break;
+		}
+
+		return ret;
+	}
+
+	// a field can be an array or an object
+	// [ field, field, ... ]
+	// {
+	//     name, [ sub or input ]
+	// }
+	function genField(field, single, colfields) {
+		var ret, pref = "";
+
+		if (field instanceof Array) {
+			if (field.length > 0 && field.length <= 5) {
+				pref = [ "one", "two", "three", "four", "five" ][field.length - 1];
+			}
+
+			ret = "<div class='" + pref + " fields'>";
+
+			for (var i = 0; i < field.length; i++) {
+				ret += genField(field[i], true, colfields);
+			}
+
+			ret += "</div>";
+		} else {
+			ret = (single ? "" : "<div class='one fields'>") + "<div class='field'>";
+
+			if (field.name) {
+				ret += "<label>" + field.name + "</label>";
+			}
+
+			if (field.input) {
+				ret += genInput(field.name, field.input, colfields);
+			}
+
+			ret += "</div>" + (single ? "" : "</div>");
+		}
+
+		return ret;
+	}
+
+	// a block has to an object
+	// block: {
+	//     name, field
+	// }
+	function genBlock(block, colfields) {
+		var ret = "<h3 class='ui dividing header'>" + block.name + "</h4><div class='block'>"
+
+		for (var i = 0; i < block.field.length; i++) {
+			ret += genField(block.field[i], false, colfields);
+		}
+
+		return ret + "</div>";
 	}
 
 	function genForm(obj) {
@@ -54,120 +162,12 @@ define([ "com/util", "com/editable" ], function (util, editable) {
 
 		var fields = {};
 
-		function genInput(input) {
-			var ret;
-
-			input.type = input.type || "text";
-			
-			if (!input.name) {
-				warn("unnamed input");
-				input.name = "unnamed";
-			} else {
-				if (fields.hasOwnProperty(input.name)) {
-					warn("duplicated name '" + input.name + "'");
-				} else {
-					fields[input.name] = { opt: !!input.opt, type: input.type };
-				}
-			}
-
-			if (input.type == "check" && !input.label) {
-				warn("checkbox with no label");
-				input.label = "unlabeled";
-			}
-
-			switch (input.type) {
-				case "textarea":
-				case "text":
-					if (input.type == "textarea") {
-						ret = "<textarea class='textarea-input' name='" + input.name + "'";
-					} else {
-						ret = "<input class='text-input' name='" + input.name + "'";
-					}
-
-					if (input.placeholder) {
-						ret += " placeholder='" + input.placeholder + "'";
-					}
-
-					if (input.value) {
-						ret += " value='" + input.value + "'";
-					}
-
-					ret += ">";
-
-					if (input.type == "textarea") {
-						ret += "</textarea>";
-					}
-
-					break;
-
-				case "check":
-					ret = "<div class='ui checkbox check-input'><input class='hidden' type='checkbox' name='" + input.name + "'>";
-					ret += "<label>" + (input.label || "") + "</label>";
-					ret += "</div>";
-
-					break;
-			}
-
-			return ret;
-		}
-
-		// a field can be an array or an object
-		// [ field, field, ... ]
-		// {
-		//     name, [ sub or input ]
-		// }
-		function genField(field, single) {
-			var ret, pref = "";
-
-			if (field instanceof Array) {
-				if (field.length > 0 && field.length <= 5) {
-					pref = [ "one", "two", "three", "four", "five" ][field.length - 1];
-				}
-
-				ret = "<div class='" + pref + " fields'>";
-
-				for (var i = 0; i < field.length; i++) {
-					ret += genField(field[i], true);
-				}
-
-				ret += "</div>";
-			} else {
-				ret = (single ? "" : "<div class='one fields'>") + "<div class='field'>";
-
-				if (field.name) {
-					ret += "<label>" + field.name + "</label>";
-				}
-
-				if (field.input) {
-					ret += genInput(field.input);
-				}
-
-				ret += "</div>" + (single ? "" : "</div>");
-			}
-
-			return ret;
-		}
-
-		// a block has to an object
-		// block: {
-		//     name, field
-		// }
-		function genBlock(block) {
-			var ret = "<h3 class='ui dividing header'>" + block.name + "</h4><div class='block'>"
-	
-			for (var i = 0; i < block.field.length; i++) {
-				ret += genField(block.field[i]);
-			}
-
-			return ret + "</div>";
-		}
-
 		if (!obj.block) return null;
 
 		var ret = "<form class='ui form'>";
 
 		for (var i = 0; i < obj.block.length; i++) {
-			ret += genBlock(obj.block[i]);
+			ret += genBlock(obj.block[i], fields);
 		}
 
 		ret += "</form>";
@@ -198,6 +198,8 @@ define([ "com/util", "com/editable" ], function (util, editable) {
 				ret.type = "textarea";
 			} else if (input.hasClass("check-input")) {
 				ret.type = "check";
+				ret.label = input.children("label").html();
+				ret.name = input.children("input").attr("name");
 			} else ret.type = "text";
 
 			return ret;
@@ -316,7 +318,7 @@ define([ "com/util", "com/editable" ], function (util, editable) {
 							}
 						}
 					} else {
-						res.dat[k] = value;
+						res.dat[k] = { val: value, name: ret.fields[k].name };
 					}
 				}
 			}
@@ -332,7 +334,7 @@ define([ "com/util", "com/editable" ], function (util, editable) {
 			for (var k in fields) {
 				if (fields.hasOwnProperty(k) &&
 					ret.fields.hasOwnProperty(k)) {
-					ival(ret.fields[k], fields[k]);
+					ival(ret.fields[k], fields[k].val);
 				}
 			}
 		};
@@ -357,18 +359,20 @@ define([ "com/util", "com/editable" ], function (util, editable) {
 
 	function modal(form, config) {
 		config = $.extend({
-			uid: "no_uid"
+			uid: "no_uid",
+			auto_save: true,
+			leave_ask: true
 		}, config);
 
 		var main = $(" \
 			<div class='com-form ui small modal'> \
 				<div class='title'></div> \
 				<div class='form'></div> \
-				<div style='text-align: center; margin-top: 2rem;'> \
+				<div class='btn-set' style='text-align: center; margin-top: 2rem;'> \
 					<div class='ui buttons'> \
-						<div class='ui white button restore' data-content='Click to restore the form'>restore</div> \
-						<div class='ui blue button save'>save</div> \
-						<div class='ui green button submit'>submit</div> \
+						<div class='ui white button restore' data-content='Click to restore the form'>Restore</div> \
+						<div class='ui blue button save'>Save</div> \
+						<div class='ui green button submit'>Submit</div> \
 					</div> \
 				</div> \
 			</div> \
@@ -381,7 +385,7 @@ define([ "com/util", "com/editable" ], function (util, editable) {
 		main.find(".save").click(function () {
 			main.find(".restore").popup("hide");
 			gen.save(config.uid);
-			util.emsg("saved", "info");
+			util.emsg("form saved", "info");
 		});
 
 		main.find(".restore").click(function () {
@@ -401,9 +405,9 @@ define([ "com/util", "com/editable" ], function (util, editable) {
 				}
 			};
 
-			main.find(".submit").addClass("loading");
-
 			if (res.suc) {
+				main.find(".submit").addClass("loading");
+
 				submitted = true;
 				if (config.submit) config.submit(res.dat, next);
 				else next(true);
@@ -412,40 +416,206 @@ define([ "com/util", "com/editable" ], function (util, editable) {
 
 		if (gen.hasSave(config.uid)) {
 			setTimeout(function () {
-				main.find(".restore").popup({ on: "click" }).popup("show");
+				if (config.auto_save)
+					main.find(".restore").popup({ on: "click" }).popup("show");
+	
 				setTimeout(function () {
 					main.find(".restore").popup("hide");
 				}, 8000);
 			}, 1000);
 		}
 
+		var can_hide = false;
+
+		function askCancel() {
+			util.ask("Are you sure to cancel? Form content may be saved but the form(in edit mode) will not be saved", function (ans) {
+				can_hide = ans;
+				if (ans) main.modal("hide");
+			});
+		}
+
+		var exited = false;
+
 		main.modal({
 			onHide: function () {
+				if (!can_hide && config.leave_ask) {
+					askCancel();
+					return false;
+				}
+
+				if (exited) return;
+				exited = true;
+
 				main.find(".restore").popup("hide");
 				if (!submitted) {
-					main.find(".save").click();
+					if (config.auto_save)
+						main.find(".save").click();
 					if (config.cancel) config.cancel();
 				}
 			}
-		});
-		main.modal("show");
+		}).modal("show");
 
 		var ret = {};
 
-		ret.openEdit = function () {
+		ret.openEdit = function (onSave) {
 			var form = gen.dom;
+
+			main.addClass("on-edit");
+
+			var btnset = $(" \
+				<div class='ui buttons'> \
+					<div class='ui white button cancel-btn'>Cancel</div> \
+					<div class='ui blue button preview-btn'>Preview</div> \
+					<div class='ui green button save-btn'>Save</div> \
+				</div> \
+			");
 		
 			var split = $("<div class='ui divider'></div>");
 			var addblock = $("<button class='ui basic button add-block-btn' type='button'><i class='add icon'></i>Add block</button>");
-			var addgroup = $("<button class='ui basic button add-group-btn' type='button'><i class='add icon'></i>Add group</button>");
-			var addfield = $("<div class='field no-save'><label>Add field</label><button class='ui basic icon button add-field-btn' type='button'><i class='add icon'></i></button></div>");
+			var delbtn = $("<button class='ui icon button del-btn' type='button'><i class='cancel icon'></i></button>");
+
+			var uid = 0;
+
+			function nextUID() {
+				while (form
+						.find("input[name='input-" + uid + "']")
+						.add("textarea[name='input-" + uid + "']").length != 0) uid++;
+				return "input-" + uid;
+			}
+
+			main.find(".btn-set").html(btnset);
+
+			btnset.find(".cancel-btn").click(function () {
+				main.modal("hide");
+			});
+
+			btnset.find(".preview-btn").click(function () {
+				var nform = ret.genForm();
+
+				can_hide = true;
+			
+				main.modal("hide");
+				modal(nform, {
+					cancel: function () { main.modal("show"); can_hide = false; },
+					auto_save: false, leave_ask: false
+				});
+			});
+
+			btnset.find(".save-btn").click(function () {
+				if (onSave)
+					if (onSave(ret.genForm()) !== false)
+						main.modal("hide");
+			});
+
+			var editable_conf = { explicit: true };
+
+			function initField(field, group) {
+				util.nextTick(function () {
+					field.find("label").ready(function () {
+						field.append(delbtn.clone().css("height", field.find("label").outerHeight() + "px").click(function () {
+							if (group.children(".field").not(".no-save").length == 1) {
+								group.remove();
+							} else {
+								field.remove();
+							}
+						}));
+					});
+				});
+			}
+
+			function initGroup(group) {
+				var split = $("<div class='ui divider'></div>");
+				var addfield = $("<div class='field no-save'><label class='no-edit'>Add field</label><button class='ui basic icon button add-field-btn' type='button'><i class='add icon'></i></button></div>");
+				
+				group.append(addfield);
+				group.after(split);
+				editable.init(group.find(".field>label").not(".no-edit"), null, editable_conf);
+
+				group.find(".field").each(function (n, fl) {
+					initField($(fl), group);
+				});
+
+				function newField(type) {
+					if (group.find(".field").length >= 5) {
+						util.emsg("unable to add more fields");
+						return;
+					}
+
+					var f = $(genField({ name: "Field name", input: { type: type, name: nextUID() } }, true));
+					addfield.before(f);
+					editable.init(f.find("label").not(".no-edit"), null, editable_conf);
+
+					initField(f, group);
+
+					// f.find(".checkbox").checkbox();
+				}
+
+				popselect.init(addfield.find("button"), [
+					{
+						cont: "<i class='file text outline icon'></i> Text",
+						onSelect: function () {
+							newField("text");
+						}
+					},
+
+					{
+						cont: "<i class='align left icon'></i> Passage",
+						onSelect: function () {
+							newField("textarea");
+						}
+					},
+
+					{
+						cont: "<i class='checkmark box icon'></i> Checkbox",
+						onSelect: function () {
+							newField("check");
+						}
+					}
+				]);
+			}
+
+			function initBlock(block) {
+				var addgroup = $("<button class='ui basic button add-group-btn' type='button'><i class='add icon'></i>Add group</button>");
+				var header = block.prev(".header");
+
+				block.append(addgroup);
+				editable.init(header, null, editable_conf);
+
+				addgroup.click(function () {
+					var nfield = $(genField([ { name: "Field name", input: { type: "text", name: nextUID() } } ]));
+					addgroup.before(nfield);
+					initGroup(nfield);
+				});
+
+				block.find(".fields").each(function (n, gr) {
+					initGroup($(gr));
+				});
+
+				util.nextTick(function () {
+					header.ready(function () {
+						block.append(delbtn.clone().css("height", header.outerHeight() + "px").click(function () {
+							block.remove();
+							header.remove();
+						}));
+					});
+				});
+			}
 
 			form.append(split).append(addblock);
-			form.find(".block").append(addgroup);
-			form.find(".fields").append(addfield);
+			editable.init(main.children(".title"), null, editable_conf);
+
+			addblock.click(function () {
+				split.before(genBlock({ name: "New block", field: [] }));
+				initBlock(split.prev(".block"));
+			});
+
+			form.find(".block").each(function (n, bl) {
+				bl = $(bl);
+				initBlock(bl);
+			});
 		};
 
-		ret.save = function () {
+		ret.genForm = function () {
 			var form = parseForm(gen.dom);
 			
 			form.name = main.children(".title").html();
