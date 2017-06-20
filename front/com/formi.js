@@ -144,7 +144,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 	//     name, field
 	// }
 	function genBlock(block, colfields) {
-		var ret = "<h3 class='ui dividing header'>" + block.name + "</h4><div class='block'>"
+		var ret = "<div class='block'><h3 class='ui dividing header'>" + block.name + "</h4>"
 
 		for (var i = 0; i < block.field.length; i++) {
 			ret += genField(block.field[i], false, colfields);
@@ -198,7 +198,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				ret.type = "textarea";
 			} else if (input.hasClass("check-input")) {
 				ret.type = "check";
-				ret.label = input.children("label").html();
+				ret.label = input.children("label").text();
 				ret.name = input.children("input").attr("name");
 			} else ret.type = "text";
 
@@ -214,7 +214,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				el = $(el);
 
 				ret.push({
-					name: el.children("label").html(),
+					name: el.children("label").text(),
 					input: parseInput(el)
 				});
 			});
@@ -225,7 +225,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		function parseBlock(dom) {
 			var ret = {};
 
-			ret.name = dom.prev(".header").html();
+			ret.name = dom.children(".header").text();
 			ret.field = [];
 
 			var fields = dom.children(".fields");
@@ -401,6 +401,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				main.find(".submit").removeClass("loading");
 			
 				if (suc) {
+					can_hide = true;
 					main.modal("hide");
 				}
 			};
@@ -503,36 +504,38 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 			btnset.find(".save-btn").click(function () {
 				if (onSave)
-					if (onSave(ret.genForm()) !== false)
+					if (onSave(ret.genForm()) !== false) {
+						can_hide = true;
 						main.modal("hide");
+					}
 			});
 
 			var editable_conf = { explicit: true };
 
 			function initField(field, group) {
 				util.nextTick(function () {
-					field.find("label").ready(function () {
-						field.append(delbtn.clone().css("height", field.find("label").outerHeight() + "px").click(function () {
-							if (group.children(".field").not(".no-save").length == 1) {
-								group.remove();
-							} else {
-								field.remove();
-							}
-						}));
-					});
+					field.append(delbtn.clone().css("height", field.find("label").outerHeight() + "px").click(function () {
+						if (group.children(".field").not(".no-save").length == 1) {
+							group.remove();
+						} else {
+							field.remove();
+						}
+					}));
+
+					main.modal("refresh");
 				});
 			}
 
 			function initGroup(group) {
-				var split = $("<div class='ui divider'></div>");
+				// var split = $("<div class='ui divider'></div>");
 				var addfield = $("<div class='field no-save'><label class='no-edit'>Add field</label><button class='ui basic icon button add-field-btn' type='button'><i class='add icon'></i></button></div>");
 				
 				group.append(addfield);
-				group.after(split);
+				// group.after(split);
 				editable.init(group.find(".field>label").not(".no-edit"), null, editable_conf);
 
 				group.find(".field").each(function (n, fl) {
-					initField($(fl), group);
+					initField($(fl), group, split);
 				});
 
 				function newField(type) {
@@ -576,7 +579,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 			function initBlock(block) {
 				var addgroup = $("<button class='ui basic button add-group-btn' type='button'><i class='add icon'></i>Add group</button>");
-				var header = block.prev(".header");
+				var header = block.children(".header");
 
 				block.append(addgroup);
 				editable.init(header, null, editable_conf);
@@ -592,12 +595,15 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				});
 
 				util.nextTick(function () {
-					header.ready(function () {
-						block.append(delbtn.clone().css("height", header.outerHeight() + "px").click(function () {
-							block.remove();
-							header.remove();
-						}));
-					});
+					console.log(header.length);
+					console.log(header[0]);
+
+					block.append(delbtn.clone().css("height", header.outerHeight() + "px").click(function () {
+						block.remove();
+						header.remove();
+					}));
+
+					main.modal("refresh");
 				});
 			}
 
@@ -617,9 +623,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 		ret.genForm = function () {
 			var form = parseForm(gen.dom);
-			
-			form.name = main.children(".title").html();
-			
+			form.name = main.children(".title").text();
 			return form;
 		};
 

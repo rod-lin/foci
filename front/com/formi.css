@@ -19,7 +19,7 @@
 }
 
 .com-form .ui.form .field {
-	margin-bottom: 1rem !important;
+	margin-bottom: 0.5rem !important;
 }
 
 .com-form .ui.form .header {
@@ -31,6 +31,10 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.com-form .ui.form .header {
+	position: relative;
 }
 
 .com-form .ui.form .block {
@@ -78,6 +82,7 @@
 
 	border: 1px solid rgba(0, 0, 0, 0.1);
 	border-radius: 0 3px 3px 0 !important;
+	font-size: 1rem;
 
 	box-sizing: border-box;
 
@@ -86,6 +91,10 @@
 
 .com-form .ui.form .field .del-btn {
 	right: 0.5em;
+}
+
+.com-form .ui.form .header .del-btn {
+	top: -2px; right: -2px;
 }
 
 .com-form .ui.form .no-save .del-btn {

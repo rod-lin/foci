@@ -412,7 +412,7 @@
 
 						for (var i = init_header.length; i < list.length; i++) {
 							if (form && form.hasOwnProperty(list[i].iname)) {
-								item.push("<td>" + form[list[i].iname] + "</td>");
+								item.push("<td>" + form[list[i].iname].val + "</td>");
 							} else {
 								item.push("<td>N/A</td>");
 							}

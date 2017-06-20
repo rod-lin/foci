@@ -92,8 +92,39 @@ Event.prototype.getInfo = function (only) {
 		apply_num: this.apply_num,
 		rating: this.rating,
 
+		apply_staff_form: this.apply_staff_form,
+		apply_partic_form: this.apply_partic_form,
+
+		apply_staff_lim: this.apply_staff_lim,
+		apply_partic_lim: this.apply_partic_lim,
+
 		favtag: this.favtag
 	};
+
+	// only = only || {
+	// 	euid: true,
+
+	// 	title: true,
+	// 	descr: true,
+
+	// 	detail: true,
+
+	// 	loclng: true,
+	// 	loclat: true,
+
+	// 	logo: true,
+	// 	cover: true,
+
+	// 	org: true,
+		
+	// 	start: true,
+	// 	end: true,
+
+	// 	apply_num: true,
+	// 	rating: true,
+
+	// 	favtag: true
+	// };
 
 	if (only) {
 		var ret = {};

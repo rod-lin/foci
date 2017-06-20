@@ -16,7 +16,7 @@ define([ "com/util", "com/xfilt" ], function (util, xfilt) {
 		var enable;
 
 		onChange = onChange || function (val, dom) {
-			dom.html(val);
+			dom.html(xfilt(val));
 		};
 
 		// obj.parent().css("position", "relative");
@@ -66,7 +66,7 @@ define([ "com/util", "com/xfilt" ], function (util, xfilt) {
 				edit.focus();
 				edit.blur(function () {
 					if (edit.val() != text) {
-						onChange(xfilt(edit.val()), clicked);
+						onChange(edit.val(), clicked);
 					}
 
 					if (config.onBlur) config.onBlur();

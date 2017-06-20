@@ -77,11 +77,11 @@
 						<div class="fields">
 							<div class="field">
 								<label>Staff Form</label>
-								<button class="ui blue button" type="button">Create/Edit</button>
+								<button class="ui blue button create-staff-form" type="button">Create/Edit</button>
 							</div>
 							<div class="field">
 								<label>Participant Form</label>
-								<button class="ui green button" type="button">Create/Edit</button>
+								<button class="ui green button create-partic-form" type="button">Create/Edit</button>
 							</div>
 						</div>
 
@@ -89,11 +89,11 @@
 						<div class="fields">
 							<div class="field">
 								<label>Max Staff</label>
-								<input type="text" placeholder="No limit in default">
+								<input class="staff_limit" type="text" placeholder="No limit in default">
 							</div>
 							<div class="field">
 								<label>Max Participant</label>
-								<input type="text" placeholder="No limit in default">
+								<input class="partic_limit" type="text" placeholder="No limit in default">
 							</div>
 						</div>
 					</form>
@@ -408,12 +408,13 @@
 			"com/xfilt", "com/pages", "com/tab",
 			"com/login", "com/event", "com/upload",
 			"com/map", "com/lang", "com/editable",
-			"com/tagbox", "com/pm", "com/tip"
+			"com/tagbox", "com/pm", "com/tip",
+			"com/formi"
 		], function (
 			env, util, event, xfilt,
 			pages, tab, login, event,
 			upload, map, lang, editable,
-			tagbox, pm, tip
+			tagbox, pm, tip, formi
 		) {
 			var init = function (info, is_self, init_page) {
 				var tbar = env.get("tbar");
@@ -654,8 +655,8 @@
 
 								if (suc) {
 									uploadChanges({
-										title: new_tab.find(".ev-title").val(),
-										descr: new_tab.find(".ev-descr").val()
+										title: fields.title = new_tab.find(".ev-title").val(),
+										descr: fields.descr = new_tab.find(".ev-descr").val()
 									}, function (suc) {
 										if (suc) {
 											new_tab.find(".info-step").addClass("completed");
@@ -835,6 +836,103 @@
 
 							page: main.find(".page.page-apply"),
 							next: "pub",
+
+							onInit: function (info) {
+								// fields.apply_staff_form = info.apply_staff_form;
+								// fields.apply_partic_form = info.apply_partic_form;
+
+								info.apply_staff_form = util.json(info.apply_staff_form);
+								info.apply_partic_form = util.json(info.apply_partic_form);
+
+								// fields.apply_staff_lim = info.apply_staff_lim;
+								// fields.apply_partic_lim = info.apply_partic_lim;
+
+								if (info.apply_staff_lim) {
+									main.find(".staff_limit").val(info.apply_staff_lim);
+								}
+
+								if (info.apply_partic_lim) {
+									main.find(".partic_limit").val(info.apply_partic_lim);
+								}
+								
+								var def_form = { name: "New Form", block: [] };
+
+								main.find(".create-staff-form").off("click").click(function () {
+									var nform = formi.modal(fields.apply_staff_form || info.apply_staff_form || def_form);
+									nform.openEdit(function (saved) {
+										fields.apply_staff_form = saved;
+									});
+								});
+
+								main.find(".create-partic-form").off("click").click(function () {
+									var nform = formi.modal(fields.apply_partic_form || info.apply_partic_form || def_form);
+									nform.openEdit(function (saved) {
+										fields.apply_partic_form = saved;
+									});
+								});
+
+								return info.apply_staff_form && info.apply_partic_form;
+							},
+
+							onCheck: function (cb) {
+								var q = {};
+								var has_field = false;
+
+								if (fields.apply_staff_form) {
+									q.apply_staff_form = JSON.stringify(fields.apply_staff_form);
+									has_field = true;
+								}
+
+								if (fields.apply_partic_form) {
+									q.apply_partic_form = JSON.stringify(fields.apply_partic_form);
+									has_field = true;
+								}
+
+								var staff_limit = main.find(".staff_limit").val();
+								var partic_limit = main.find(".partic_limit").val();
+								var suc = true;
+
+								if (staff_limit) {
+									staff_limit = parseInt(staff_limit);
+									if (isNaN(staff_limit)) {
+										main.find(".staff_limit").parent().addClass("error");
+										util.emsg("not number");
+										suc = false;
+									} else {
+										fields.apply_staff_lim = q.apply_staff_lim = staff_limit;
+										has_field = true;
+									}
+								}
+
+								if (partic_limit) {
+									partic_limit = parseInt(partic_limit);
+									if (isNaN(partic_limit)) {
+										main.find(".partic_limit").parent().addClass("error");
+										util.emsg("not number");
+										suc = false;
+									} else {
+										fields.apply_partic_lim = q.apply_partic_lim = partic_limit;
+										has_field = true;
+									}
+								}
+
+								if (!suc) {
+									cb(false);
+									return;
+								}
+
+								if (has_field)
+									uploadChanges(q, function (suc) {
+										if (suc) {
+											new_tab.find(".apply-step").addClass("completed");
+											cb(true);
+										} else {
+											cb(false);
+										}
+									});
+								else
+									cb(true);
+							}
 						},
 
 						pub: {
