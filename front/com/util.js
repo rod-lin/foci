@@ -130,7 +130,7 @@ define(function () {
 			</div> \
 		');
 
-		var ret = true;
+		var ret = false;
 
 		main.modal({
 			closable: false,

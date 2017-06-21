@@ -144,7 +144,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 	//     name, field
 	// }
 	function genBlock(block, colfields) {
-		var ret = "<div class='block'><h3 class='ui dividing header'>" + block.name + "</h4>"
+		var ret = "<div class='block'><h3 class='ui header'>" + block.name + "</h4>"
 
 		for (var i = 0; i < block.field.length; i++) {
 			ret += genField(block.field[i], false, colfields);
@@ -526,6 +526,31 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				});
 			}
 
+			function askType(obj, cb) {
+				popselect.init(obj, [
+					{
+						cont: "<i class='file text outline icon'></i> Text",
+						onSelect: function () {
+							cb("text");
+						}
+					},
+
+					{
+						cont: "<i class='align left icon'></i> Passage",
+						onSelect: function () {
+							cb("textarea");
+						}
+					},
+
+					{
+						cont: "<i class='checkmark box icon'></i> Checkbox",
+						onSelect: function () {
+							cb("check");
+						}
+					}
+				]);
+			}
+
 			function initGroup(group) {
 				// var split = $("<div class='ui divider'></div>");
 				var addfield = $("<div class='field no-save'><label class='no-edit'>Add field</label><button class='ui basic icon button add-field-btn' type='button'><i class='add icon'></i></button></div>");
@@ -553,28 +578,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 					// f.find(".checkbox").checkbox();
 				}
 
-				popselect.init(addfield.find("button"), [
-					{
-						cont: "<i class='file text outline icon'></i> Text",
-						onSelect: function () {
-							newField("text");
-						}
-					},
-
-					{
-						cont: "<i class='align left icon'></i> Passage",
-						onSelect: function () {
-							newField("textarea");
-						}
-					},
-
-					{
-						cont: "<i class='checkmark box icon'></i> Checkbox",
-						onSelect: function () {
-							newField("check");
-						}
-					}
-				]);
+				askType(addfield.find("button"), newField);
 			}
 
 			function initBlock(block) {
@@ -584,8 +588,8 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				block.append(addgroup);
 				editable.init(header, null, editable_conf);
 
-				addgroup.click(function () {
-					var nfield = $(genField([ { name: "Field name", input: { type: "text", name: nextUID() } } ]));
+				askType(addgroup, function (type) {
+					var nfield = $(genField([ { name: "Field name", input: { type: type, name: nextUID() } } ]));
 					addgroup.before(nfield);
 					initGroup(nfield);
 				});

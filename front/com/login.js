@@ -209,6 +209,7 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 					env.session(dat);
 					finished = true;
 					resolveAllCallback(dat);
+					env.emit("loginchange");
 				} else {
 					// login_btn.html(fail);
 					util.emsg(dat);

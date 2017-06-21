@@ -88,9 +88,27 @@ define([ "com/util" ], function (util) {
 		});
 	}
 
+	var cbs = {};
+
+	function setOn(name, cb) {
+		if (!cbs.hasOwnProperty(name))
+			cbs[name] = [];
+
+		cbs[name].push(cb);
+	}
+
+	function emit(name, val) {
+		var lst = cbs[name];
+
+		if (lst)
+			for (var i = 0; i < lst.length; i++) {
+				lst[i](val);
+			}
+	}
+
 	var proc = setInterval(function () {
 		qlogin();
-	}, 1000);
+	}, 5000);
 
 	return {
 		init: init,
@@ -119,6 +137,14 @@ define([ "com/util" ], function (util) {
 			}
 
 			return undefined;
+		},
+
+		emit: function (event ,val) {
+			emit(event, val);
+		},
+
+		on: function (event, cb) {
+			setOn(event, cb);
 		}
 	};
 });

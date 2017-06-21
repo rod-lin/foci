@@ -55,7 +55,7 @@ define([
 				<a> \
 					<i class="user icon"></i><span class="apply_num"></span> \
 				</a> \
-				<i class="right floated star icon" style="margin: 0;" data-content="focus"></i> \
+				<div class="ext-btn-set"></div> \
 			</div> \
 		</div>');
 
@@ -71,7 +71,7 @@ define([
 
 		var ret = {};
 
-		ret.cover = info.cover ? foci.download(info.cover) : "img/def/cover.jpg"; // [ "img/tmp1.jpg", "img/tmp2.jpg", "img/tmp3.jpg", "img/tmp4.jpg", "img/tmp5.jpg" ].choose();
+		ret.cover = info.cover ? foci.download(info.cover) : "img/cover/" + Math.floor(Math.random() * 35 + 1) + ".jpg"; // [ "img/cover/1.jpg", "img/cover/2.jpg", "img/cover/3.jpg", "img/cover/4.jpg", "img/cover/5.jpg", "img/cover/6.jpg", "img/cover/7.jpg" ].choose();
 		ret.logo = info.logo ? foci.download(info.logo) : "img/def/logo.jpg";
 		
 		ret.descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len), { ignore_nl: config.ignore_nl }) : "(no description)";
@@ -176,6 +176,26 @@ define([
 			dom.find(".cover").click(function () {
 				config.onCoverClick(dom_util);
 			});
+		}
+
+		if (config.ext_button) {
+			dom.find(".ext-btn-set").html("");
+			for (var i = 0; i < config.ext_button.length; i++) {
+				var btn = config.ext_button[i];
+
+				/*
+					e.g. { class: "send outline", onClick: function }
+				 */
+
+				var extbtn = $("<i class='" + btn.class + " icon'></i>");
+				dom.find(".ext-btn-set").append(extbtn);
+
+				extbtn.click(function () {
+					if (btn.onClick) {
+						btn.onClick(info);
+					}
+				});
+			}
 		}
 	}
 

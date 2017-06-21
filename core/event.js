@@ -363,6 +363,7 @@ Event.set = {
 	},
 
 	publish: () => ({ $set: { state: 1 } }),
+	unpublish: () => ({ $set: { state: 0 } }),
 
 	status: (euid, status) => ({ $set: { "apply_staff.$.status": status } })
 };
@@ -392,10 +393,15 @@ exports.delEvent = async (euid, uuid) => {
 
 	await exports.checkOwner(euid, uuid);
 
-	var ret = await col.findOneAndDelete(Event.query.euid(euid, 0));
+	var found = await col.findOne(Event.query.euid(euid, 0));
 
-	if (!ret.value)
+	if (!found)
 		throw new err.Exc("$core.not_exist($core.word.event)");
+
+	if (found.state > 0)
+		throw new err.Exc("$core.cannot_delete_published");
+
+	await col.findOneAndDelete(Event.query.euid(euid, 0));
 };
 
 // count how many times has a user created a event(after a certain date)
@@ -564,8 +570,18 @@ exports.publish = async (euid, uuid) => {
 		throw new err.Exc("$core.event_not_draft");
 
 	await col.findOneAndUpdate(Event.query.euid(euid, 0), Event.set.publish());
+};
 
-	return;
+exports.unpublish = async (euid, uuid) => {
+	await exports.checkOwner(euid, uuid);
+
+	var col = await db.col("event");
+	var ev = await exports.euid(euid, 0);
+
+	if (ev.isDraft())
+		throw new err.Exc("$core.event_is_draft");
+
+	await col.findOneAndUpdate(Event.query.euid(euid, 0), Event.set.unpublish());
 };
 
 // application list

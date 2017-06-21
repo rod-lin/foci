@@ -492,6 +492,9 @@ define([
 
 		ret.updateAvatar();
 		setInterval(ret.updateAvatar, 10000);
+		env.on("loginchange", function () {
+			updateAvatar();
+		});
 
 		$("body").prepend(main);
 

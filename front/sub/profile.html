@@ -73,27 +73,31 @@
 
 					</style>
 					<form class="ui form">
-						<h4 class="ui dividing header">Application Forms</h4>
-						<div class="fields">
-							<div class="field">
-								<label>Staff Form</label>
-								<button class="ui blue button create-staff-form" type="button">Create/Edit</button>
-							</div>
-							<div class="field">
-								<label>Participant Form</label>
-								<button class="ui green button create-partic-form" type="button">Create/Edit</button>
+						<h3 class="ui top attached header">Application Forms</h3>
+						<div class="ui attached segment">
+							<div class="fields">
+								<div class="field">
+									<label>Staff Form</label>
+									<button class="ui blue button create-staff-form" type="button">Create/Edit</button>
+								</div>
+								<div class="field">
+									<label>Participant Form</label>
+									<button class="ui green button create-partic-form" type="button">Create/Edit</button>
+								</div>
 							</div>
 						</div>
 
-						<h4 class="ui dividing header">Limitations</h4>
-						<div class="fields">
-							<div class="field">
-								<label>Max Staff</label>
-								<input class="staff_limit" type="text" placeholder="No limit in default">
-							</div>
-							<div class="field">
-								<label>Max Participant</label>
-								<input class="partic_limit" type="text" placeholder="No limit in default">
+						<h3 class="ui top attached header">Limitations</h3>
+						<div class="ui attached segment">
+							<div class="fields">
+								<div class="field">
+									<label>Max Staff</label>
+									<input class="staff_limit" type="text" placeholder="No limit in default">
+								</div>
+								<div class="field">
+									<label>Max Participant</label>
+									<input class="partic_limit" type="text" placeholder="No limit in default">
+								</div>
 							</div>
 						</div>
 					</form>
@@ -117,6 +121,32 @@
 						<div class="vcenter" style="display: inline-block;">
 							<div class="prompt"></div>
 							<div class="ui primary button publish-btn">Publish!</div>
+						</div>
+					</div>
+				</div>
+				<div class="page page-other" style="text-align: left; padding: 2rem;">
+					<h3 class="ui top attached header">
+						Change event state
+					</h3>
+					<div class="ui attached segment">
+						<p>
+							<b>Delete this event</b><br>
+							ALL data will be lost. Only draft event can be deleted.<br>
+							If you want to delete a public event, please contact us for human assistance.
+						</p>
+						<div class="ui field">
+							<button class="ui red basic button delete-event-btn">Delete</button>
+							<button class="ui basic button">Help</button>
+						</div>
+					</div>
+					<div class="ui attached segment">
+						<p>
+							<b>Unpublish</b><br>
+							Change this event to draft state.<br>
+							All info will be saved, but other users will not be able to view this event.
+						</p>
+						<div class="ui field">
+							<button class="ui red basic button unpublish-btn">Unpublish</button>
 						</div>
 					</div>
 				</div>
@@ -484,7 +514,7 @@
 
 				var ev_list = {};
 
-				function eventTabOnShow(name, enc, view, cb) {
+				function eventTabOnShow(name, enc, view, config, cb) {
 					var next = function (suc) {
 						ev_list[name].update();
 						setTimeout(function () {
@@ -496,7 +526,7 @@
 					updateAllPos();
 
 					if (!ev_list[name]) {
-						ev_list[name] = event.init(tb.getTab(name), {
+						ev_list[name] = event.init(tb.getTab(name), $.extend({
 							view: view,
 							fetch: {
 								fetch: function (skip, sortby, cb) {
@@ -516,7 +546,7 @@
 								cont: cont,
 								no_more_prompt: lang.msg("$front.sub.profile.no_more_result")
 							}
-						});
+						}, config));
 					}
 
 					ev_list[name].clear(function () {
@@ -529,7 +559,7 @@
 						name: lang.msg("$front.sub.profile.applied").capital(),
 						onShow: function (show) {
 							tbar.setTitle("Profile", info.dname, "Applied");
-							eventTabOnShow("applied", false, undefined, show);
+							eventTabOnShow("applied", false, undefined, null, show);
 						}
 					},
 
@@ -537,7 +567,17 @@
 						name: lang.msg("$front.sub.profile.organized").capital(),
 						onShow: function (show) {
 							tbar.setTitle("Profile", info.dname, "Organized");
-							eventTabOnShow("org", false, undefined, show);
+							eventTabOnShow("org", false, undefined, {
+								ext_button: [
+									{
+										class: "setting",
+										onClick: function (info) {
+											loadDraft(info);
+											tb.to("new");
+										}
+									}
+								]
+							}, show);
 						}
 					}
 				};
@@ -572,6 +612,8 @@
 					var cur_step = "info";
 					var bmap = null;
 					var fields;
+
+					var deleted = false;
 					
 					function isEmptyDraft() {
 						for (var k in fields) {
@@ -585,20 +627,31 @@
 						return true;
 					}
 
-					deleteEmptyDraft = function (cb) {
-						if (isEmptyDraft()) {
-							login.session(function (session) {
-								foci.encop(session, {
-									int: "event",
-									action: "del",
-									euid: euid
-								}, function (suc, dat) {
-									if (!suc) {
-										util.emsg(dat);
-									}
+					function deleteEvent(euid, cb) {
+						login.session(function (session) {
+							foci.encop(session, {
+								int: "event",
+								action: "del",
+								euid: euid
+							}, function (suc, dat) {
+								if (!suc) {
+									util.emsg(dat);
+								}
 
-									cb(true);
-								});
+								if (cb) cb(suc);
+							});
+						});
+					};
+
+					deleteEmptyDraft = function (cb) {
+						if (deleted) {
+							cb(true);
+							return;
+						}
+
+						if (isEmptyDraft()) {
+							deleteEvent(euid, function () {
+								cb(true);
 							});
 						} else {
 							cb(false);
@@ -946,11 +999,51 @@
 								// reset publish message
 								setPublishMsg(lang.msg("$front.sub.profile.publish_event").capital());
 
-								
 								new_tab.find(".ev-content .protocol .publish-btn").removeClass("disabled");
 								published = false;
 								
 								return false;
+							}
+						},
+
+						other: {
+							title: "Other",
+							icon: "warning circle",
+							subtitle: "Deletion and state change",
+
+							page: main.find(".page.page-other"),
+
+							onInit: function (info) {
+								main.find(".delete-event-btn").off("click").click(function () {
+									util.ask("Are you sure to delete this event?", function (ans) {
+										if (ans) {
+											deleteEvent(euid, function (suc) {
+												if (suc) {
+													deleted = true;
+													util.emsg("event deleted");
+													tb.to("draft");
+												}	
+											});
+										}
+									});
+								});
+
+								main.find(".unpublish-btn").off("click").click(function () {
+									login.session(function (session) {
+										foci.encop(session, {
+											int: "event",
+											action: "unpublish",
+											euid: euid
+										}, function (suc, dat) {
+											if (suc) {
+												util.emsg("event unpublished", "info");
+												main.find(".unpublish-btn").addClass("disabled");
+											} else {
+												util.emsg(dat);
+											}
+										});
+									});
+								});
 							}
 						}
 					};
@@ -1058,8 +1151,10 @@
 
 					clearDraft = function () {
 						euid = null;
+						deleted = false;
 						tb.getItem("new").off("click", nextStep);
 						tb.getItem("new").html(lang.msg("$front.sub.profile.new").capital());
+						main.find(".unpublish-btn").removeClass("disabled");
 						fields = {};
 						// new_tab.find(".ev-step .step").off("click");
 					};
@@ -1125,6 +1220,7 @@
 								
 								if (suc) {
 									btn.addClass("disabled");
+									main.find(".unpublish-btn").removeClass("disabled");
 									published = true;
 									setPublishMsg(lang.msg("$front.sub.profile.success! $front.sub.profile.you_can_go_tab_to_view($front.sub.profile.organized)").capital());
 								} else {
@@ -1145,7 +1241,7 @@
 							eventTabOnShow("draft", true, function (info) {
 								loadDraft(info);
 								tb.to("new");
-							}, show);
+							}, null, show);
 						}
 					};
 

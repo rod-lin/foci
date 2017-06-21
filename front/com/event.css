@@ -56,6 +56,9 @@
 } */
 
 .com-event-single .title {
+	overflow: hidden;
+	text-overflow: ellipsis;
+
 	color: #595959 !important;
 }
 
@@ -67,6 +70,20 @@
 	cursor: pointer;
 	word-wrap: break-word;
 	color: #999999 !important;
+}
+
+.com-event-single .ext-btn-set {
+	float: right;
+	font-size: 1.1rem;
+}
+
+.com-event-single .ext-btn-set i {
+	margin: 0 0 0 5px !important;
+	cursor: pointer;
+}
+
+.com-event-single .ext-btn-set i:hover {
+	color: rgba(0, 0, 0, 0.30);
 }
 
 .com-event-single .description:hover {

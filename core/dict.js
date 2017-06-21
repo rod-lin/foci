@@ -18,6 +18,7 @@ module.exports = {
 		"core.word.app_form": "application form",
 
 		"core.word.event": "event",
+		"core.word.draft": "draft",
 
 		"core.word.user": "user",
 		"core.word.dname": "display name",
@@ -51,6 +52,8 @@ module.exports = {
 		"core.app_own_event": "you can't apply for your own event",
 
 		"core.event_not_draft": "event not a draft",
+		"core.event_is_draft": "event is not published",
+		"core.cannot_delete_published": "cannot delete published event",
 
 		"core.dict_not_exist": "the dictionary for $1 does not exist",
 		"core.wrong_login_format": "wrong login format",

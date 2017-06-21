@@ -14,6 +14,9 @@ var smsg = require("./smsg");
 var event = require("./event");
 var config = require("./config");
 var notice = require("./notice");
+var alipay = require("./alipay");
+
+// var moment = require("moment");
 
 var Env = require("./env").Env;
 
@@ -33,6 +36,26 @@ exports.dict = util.route(async env => {
 
 	env.qsuc(dict[args.lang]);
 });
+
+var _alipay = {};
+
+// _alipay.test = util.route(async env => {
+// 	env.qsuc(alipay.genQuery({
+// 		app_id: "2017061907523948",
+// 		method: "alipay.trade.page.pay",
+// 		format: "JSON",
+// 		charset: "utf-8",
+// 		timestamp: moment().format("YYYY-MM-DD HH:mm:ss"),
+// 		version: "1.0",
+// 		biz_content: JSON.stringify({
+// 			out_trade_no: "000123",
+// 			product_code: "FAST_INSTANT_TRADE_PAY",
+// 			total_amount: "0.11",
+// 			subject: "iPhone8",
+// 			body: "iPhone8"
+// 		})
+// 	}));
+// });
 
 var _smsg = {};
 
@@ -236,6 +259,7 @@ _file.download = util.route(async env => {
 	env.raw(ret.cont);
 });
 
+exports.alipay = _alipay;
 exports.smsg = _smsg;
 exports.user = _user;
 exports.event = _event;
@@ -318,6 +342,11 @@ encop.event = async (env, usr, query) => {
 
 			await event.publish(args.euid, uuid);
 
+			return;
+
+		case "unpublish":
+			var args = util.checkArg(query, { euid: "int" });
+			await event.unpublish(args.euid, usr.getUUID());
 			return;
 
 		case "own":

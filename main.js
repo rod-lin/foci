@@ -33,6 +33,8 @@ app.get("/auth", int.auth);
 app.get("/favtag", int.favtag);
 app.get("/dict", int.dict);
 
+// app.get("/alipay/test", int.alipay.test);
+
 app.get("/smsg/vercode", int.smsg.vercode);
 // app.get("/smsg/verify", int.smsg.verify);
 

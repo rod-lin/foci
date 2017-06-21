@@ -111,6 +111,13 @@ var conf = module.exports = {
 			// url relative to the front dir
 			"helper": { logo: "/img/def/helper.jpg", name: "Foci Helper" }
 		}
+	},
+
+	alipay: {
+		priv: "/home/rodlin/alipaykey/priv.pem",
+		pub: "/home/rodlin/alipaykey/pub.pem",
+
+		sign_type: [ "RSA-SHA256", "RSA2" ]
 	}
 };
 
