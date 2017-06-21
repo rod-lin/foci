@@ -33,11 +33,8 @@
 	text-overflow: ellipsis;
 }
 
-.com-form .ui.form .header {
-	position: relative;
-}
-
 .com-form .ui.form .block {
+	position: relative;
 	margin-bottom: 1rem;
 }
 

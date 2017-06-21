@@ -2,7 +2,7 @@
 
 "use strict";
 
-define([], function () {
+define([ "com/util" ], function (util) {
 	function init(cont, text, position, config) {
 		cont = $(cont);
 		config = $.extend({}, config);
@@ -11,6 +11,7 @@ define([], function () {
 			content: text,
 			position: position,
 			on: "click",
+			scrollContext: config.scroll,
 			onHide: function () {
 				setTimeout(function () {
 					cont.popup("destroy");
@@ -21,6 +22,15 @@ define([], function () {
 		setTimeout(function () {
 			cont.popup("show");
 		}, 500);
+
+		util.wheel(function () {
+			cont.popup("hide");
+		});
+
+		if (config.scroll)
+			$(config.scroll).scroll(function () {
+				cont.popup("hide");
+			});
 
 		var ret = {};
 

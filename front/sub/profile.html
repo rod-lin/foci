@@ -570,7 +570,7 @@
 							eventTabOnShow("org", false, undefined, {
 								ext_button: [
 									{
-										class: "setting",
+										class: "setting vuid-profile-org-event-setting",
 										onClick: function (info) {
 											loadDraft(info);
 											tb.to("new");
@@ -578,6 +578,12 @@
 									}
 								]
 							}, show);
+
+							setTimeout(function () {
+								tip.init(main.find(".vuid-profile-org-event-setting")[0], "Setting is here", "top center", {
+									scroll: $("#part")
+								});
+							}, 1000);
 						}
 					}
 				};

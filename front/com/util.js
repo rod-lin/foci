@@ -297,5 +297,10 @@ define(function () {
 		return ret;
 	};
 
+	// unreliable
+	util.wheel = function (cb) {
+		$(window).on("mousewheel DOMMouseScroll", cb);
+	};
+
 	return util;
 });

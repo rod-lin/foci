@@ -6,11 +6,12 @@ define([
 	"com/avatar", "com/env", "com/upload",
 	"com/login", "com/map", "com/tagbox",
 	"com/rating", "com/progress", "com/sortby",
-	"com/editable"
+	"com/editable", "com/tip"
 ], function (
 	xfilt, waterfall, util, avatar,
 	env, upload, login, map, tagbox,
-	rating, progress, sortby, editable
+	rating, progress, sortby, editable,
+	tip
 ) {
 	var $ = jQuery;
 	foci.loadCSS("com/event.css");
