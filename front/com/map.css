@@ -43,3 +43,73 @@
 	/*box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);*/
 	border: 1px solid rgba(0, 0, 0, 0.08);
 }
+
+.com-map-search .ui.search {
+	width: 100%;
+	margin: 0 0 0.8rem 0 !important;
+}
+
+.com-map-circle-marker {
+	position: absolute;
+
+	width: 2rem;
+	height: 2rem;
+	line-height: 2rem;
+	text-align: center;
+
+	color: white;
+
+	border-radius: 50%;
+	background: rgba(60, 60, 60, 1);
+
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
+	cursor: pointer;
+
+	transition: background 0.2s;
+}
+
+.com-map-circle-marker:hover {
+	background: rgba(80, 80, 80, 1);
+}
+
+.com-map-circle-marker.blue {
+	background: #3498DB;
+}
+
+.com-map-circle-marker.blue:hover {
+	background: #38A5ED;
+}
+
+.com-map-circle-marker.red {
+	background: #E74C3C;
+}
+
+.com-map-circle-marker.red:hover {
+	background: #FC5342;
+}
+
+.com-map-circle-marker.small {
+	width: 1rem;
+	height: 1rem;
+	line-height: 1rem;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+.com-map-option {
+	position: relative;
+	z-index: 3;
+
+	padding: 0.6rem 0.9rem;
+	background: rgba(256, 256, 256, 0);
+	cursor: pointer;
+
+	transition: background 0.3s;
+}
+
+.com-map-option:hover {
+	background: rgba(256, 256, 256, 0.2);
+}
+
+.com-map-option:active {
+	background: rgba(256, 256, 256, 0.4);
+}

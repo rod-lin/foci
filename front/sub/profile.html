@@ -36,7 +36,7 @@
 	<div class="new-event-draft" style="display: none;">
 		<div class="new-event">
 			<div class="ev-step">
-				<div class="ui vertical fluid steps"></div>
+				<div class="ui vertical fluid steps right-bar-left-step"></div>
 			</div>
 			<div class="ev-content">
 				<!-- <div id="sub-profile-map" class="map"></div> -->
@@ -45,32 +45,32 @@
 					<textarea class="ev-descr input-no-style" placeholder="Description"></textarea>
 				</div>
 				<div class="page page-cover" style="text-align: center; overflow: auto;"></div>
-				<div class="page page-loc">
+				<div class="page page-loc need-width">
 					<div class="map" style="height: 100%;"></div>
 					<div style="text-align: center; position: absolute; top: 0; width: 100%; margin-top: 0.6rem; pointer-events: none;">
-						<div class="ui compact black inline message loc-selected" style="min-width: 50%; max-width: 95%;"></div>
+						<div class="ui compact black inline message" style="min-width: 50%; max-width: 95%; pointer-events: auto;">
+
+							<style>
+								#sub-profile .loc-search-btn {
+									float: right;
+									display: inline-block;
+									cursor: pointer;
+								}
+							</style>
+							
+							<div class="loc-selected" style="display: inline-block;"></div>
+							<div class="loc-search-btn"><i class="search icon"></i></div>
+						</div>
 					</div>
 				</div>
 				<div class="page page-pay" style="text-align: center;">
 				</div>
-				<div class="page page-apply" style="text-align: left;">
+				<div class="page page-apply pad" style="text-align: left;">
 					<style>
-
-						#sub-profile .page.page-apply {
-							padding: 2rem;
-						}
-						
 						#sub-profile .page.page-apply .header,
 						#sub-profile .page.page-apply label {
 							color: rgba(100, 100, 100, 1) !important;
 						}
-
-						@media only screen and (max-width: 640px) {
-							#sub-profile .page.page-apply {
-								padding: 1rem;
-							}
-						}
-
 					</style>
 					<form class="ui form">
 						<h3 class="ui top attached header">Application Forms</h3>
@@ -102,6 +102,20 @@
 						</div>
 					</form>
 				</div>
+				<div class="page page-detail pad" style="text-align: left;">
+					<form class="ui form">
+						<h3 class="ui top attached header">Details</h3>
+						<div class="ui attached segment">
+							<div class="field">
+								<p>
+									<b>Trivial notice</b><br>
+									This notice will be shown on the event page
+								</p>
+								<textarea class="ev-detail"></textarea>
+							</div>
+						</div>
+					</form>
+				</div>
 				<div class="page page-pub" style="text-align: center;">
 					<div class="protocol">
 						<style>
@@ -124,7 +138,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="page page-other" style="text-align: left; padding: 2rem;">
+				<div class="page page-other pad" style="text-align: left;">
 					<h3 class="ui top attached header">
 						Change event state
 					</h3>
@@ -302,7 +316,7 @@
 		height: 100%;
 	}
 
-	@media only screen and (max-width: 640px) {
+	@media only screen and (max-width: 767px) {
 		#sub-profile .left-bar {
 			position: relative;
 			height: auto;
@@ -325,6 +339,10 @@
 		#sub-profile .right-bar {
 			margin-left: 0;
 			border-top: 1px solid rgba(0, 0, 0, 0.08);
+		}
+
+		#sub-profile .right-bar .right-bar-left-step {
+			overflow: auto;
 		}
 	}
 
@@ -366,8 +384,6 @@
 		background: white;
 		color: #252525;
 
-		min-height: 10em;
-
 		font-size: 1.5em;
 	}
 
@@ -378,14 +394,57 @@
 
 	#sub-profile .new-event .ui.steps .step {
 		border-radius: 0 !important;
+	
+		display: -webkit-flex !important;
+		display: flex !important;
+
+		-webkit-box-align: center;
+		-ms-flex-align: center;
+		align-items: center;
+	}
+
+	#sub-profile .new-event .ui.steps .step .icon {
+		display: inline-block;
+		width: 4rem;
+	}
+
+	#sub-profile .new-event .ui.steps .step .content {
+		flex: 1 !important;
+		overflow: hidden;
+	}
+
+	#sub-profile .new-event .ui.steps .step .content .title {
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	#sub-profile .new-event .ev-content .page {
 		display: none;
 	}
 
+	#sub-profile .new-event .ev-content .page.need-width {
+		display: block;
+		visibility: hidden;
+
+		position: absolute;
+		top: 0;
+		left: 0;
+
+		width: 100%;
+	}
+
+	#sub-profile .new-event .ev-content .page.pad {
+		padding: 2rem;
+	}
+
 	#sub-profile .new-event .ev-content .page.active {
 		display: block;
+	}
+
+	#sub-profile .new-event .ev-content .page.need-width.active {
+		visibility: visible;
+
+		position: static;
 	}
 
 	#sub-profile .new-event .ev-content .warning {
@@ -395,6 +454,12 @@
 
 	.ui.steps .step.active .title {
 		color: rgba(0, 0, 0, .87) !important;
+	}
+
+	@media only screen and (max-width: 960px) {
+		#sub-profile .new-event .ui.steps .step .content .description {
+			display: none;
+		}
 	}
 
 	@media only screen and (max-width: 640px) {
@@ -427,6 +492,10 @@
 
 		#sub-profile .new-event .ev-step .step .icon {
 			margin-bottom: 0.1em;
+		}
+
+		#sub-profile .new-event .ev-content .page.pad {
+			padding: 1rem;
 		}
 	}
 </style>
@@ -619,6 +688,8 @@
 					var bmap = null;
 					var fields;
 
+					var changed = {};
+
 					var deleted = false;
 					
 					function isEmptyDraft() {
@@ -684,9 +755,13 @@
 									tb.getItem("new").on("click", nextStep);
 								});
 
+								var change = function () {
+									changed.info = true;
+								};
+
 								// page 1
-								new_tab.find(".ev-title").val(fields.title);
-								new_tab.find(".ev-descr").val(fields.descr);
+								new_tab.find(".ev-title").val(fields.title).off("change").change(change);
+								new_tab.find(".ev-descr").val(fields.descr).off("change").change(change);
 
 								return fields.title && fields.descr;
 							},
@@ -713,17 +788,19 @@
 								}
 
 								if (suc) {
-									uploadChanges({
-										title: fields.title = new_tab.find(".ev-title").val(),
-										descr: fields.descr = new_tab.find(".ev-descr").val()
-									}, function (suc) {
-										if (suc) {
-											new_tab.find(".info-step").addClass("completed");
-											cb(true);
-										} else {
-											cb(false);
-										}
-									});
+									if (changed.info) {
+										uploadChanges({
+											title: fields.title = new_tab.find(".ev-title").val(),
+											descr: fields.descr = new_tab.find(".ev-descr").val()
+										}, function (suc) {
+											if (suc) {
+												new_tab.find(".info-step").addClass("completed");
+												cb(true);
+											} else {
+												cb(false);
+											}
+										});
+									} else cb(true);
 								} else cb(false);
 
 								return;
@@ -820,8 +897,20 @@
 							next: "pay",
 
 							onInit: function (info) {
-								fields.lng = info.loclng;
-								fields.lat = info.loclat;
+								function set(lng, lat) {
+									fields.lng = lng;
+									fields.lat = lat;
+								}
+
+								set(info.loclng, info.loclat);
+
+								new_tab.find(".loc-search-btn").off("click").click(function () {
+									map.search(function (lng, lat, addr) {
+										set(lng, lat);
+										new_tab.find(".loc-selected").html(addr);
+										bmap.set(lng, lat);
+									});
+								});
 
 								new_tab.find(".loc-selected").html("Select a location on the map");
 
@@ -831,20 +920,26 @@
 											bmap = map;
 
 											steps["loc"].onShow = function () {
-												bmap.init(); // init position
+												// bmap.init(); // init position
 
-												if (fields.lng && fields.lat)
+												if (fields.lng && fields.lat) {
 													bmap.set(fields.lng, fields.lat);
-												else
+												} else {
+													bmap.init();
 													bmap.clear();
+												}
 											}
-
 										}, {
 											onClick: function (lng, lat, addr) { // called everytime a position is selected
-												fields.lng = lng;
-												fields.lat = lat;
+												set(lng, lat);
 												new_tab.find(".loc-selected").html(addr);
 												// alert(lng + ", " + lat + ", " + addr);
+											},
+
+											onSelect: function (lng, lat, addr) {
+												set(lng, lat);
+												new_tab.find(".loc-selected").html(addr);
+												nextStep();
 											}
 										});
 									});
@@ -894,7 +989,7 @@
 							subtitle: "Register forms",
 
 							page: main.find(".page.page-apply"),
-							next: "pub",
+							next: "detail",
 
 							onInit: function (info) {
 								// fields.apply_staff_form = info.apply_staff_form;
@@ -991,6 +1086,42 @@
 									});
 								else
 									cb(true);
+							}
+						},
+
+						detail: {
+							title: "Detail",
+							icon: "announcement",
+							subtitle: "Detail notice",
+
+							page: main.find(".page.page-detail"),
+							next: "pub",
+
+							onInit: function (info) {
+								fields.detail = info.detail;
+								
+								new_tab.find(".ev-detail")
+									.val(info.detail)
+									.off("change").change(function () {
+										changed.detail = true;
+									});
+
+								return !!fields.detail;
+							},
+
+							onCheck: function (cb) {
+								if (changed.detail) {
+									uploadChanges({
+										detail: fields.detail = new_tab.find(".ev-detail").val()
+									}, function (suc) {
+										if (suc) {
+											new_tab.find(".detail-step").addClass("completed");
+											cb(true);
+										} else {
+											cb(false);
+										}
+									});
+								} else cb(true);
 							}
 						},
 
@@ -1158,6 +1289,8 @@
 					clearDraft = function () {
 						euid = null;
 						deleted = false;
+						changed = {};
+
 						tb.getItem("new").off("click", nextStep);
 						tb.getItem("new").html(lang.msg("$front.sub.profile.new").capital());
 						main.find(".unpublish-btn").removeClass("disabled");
@@ -1370,13 +1503,14 @@
 				var display_mode = "normal";
 
 				function updateNewEventPos() {
-					new_tab
-						.find(".ev-descr")
-						.css("height", tb.displayHeight() - new_tab.find(".ev-title").outerHeight() + "px");
+					new_tab.find(".ev-descr")
+						.css("box-sizing", "border-box")
+						.css("height", tb.displayHeight() - new_tab.find(".ev-title").outerHeight(true) - 3 /* TODO: temporary fix!! */ + "px");
 
-					new_tab
-						.find(".ev-content .page")
-						.css("height", tb.displayHeight());
+					new_tab.find(".ev-content .page")
+						.css("height", tb.displayHeight() + "px");
+
+					main.find(".right-bar-left-step").css("max-height", tb.displayHeight() + "px");
 				}
 
 				function updateAllPos() {

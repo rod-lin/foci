@@ -78,7 +78,7 @@ define([
 		ret.descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len), { ignore_nl: config.ignore_nl }) : "(no description)";
 		ret.title = info.title ? xfilt(util.short(info.title, config.max_title_len), { ignore_nl: config.ignore_nl }) : "(untitled)";
 		
-		ret.detail = info.detail ? xfilt(util.short(info.title, config.max_detail_len)) : "(no detail)";
+		ret.detail = info.detail ? xfilt(util.short(info.detail, config.max_detail_len)) : "(no detail)";
 
 		ret.date = genDate(info.start, info.end);
 		

@@ -207,6 +207,7 @@ Event.format.info = {
 	},
 	
 	descr: util.checkArg.lenlim(config.lim.event.descr, "$core.too_long($core.word.descr)"),
+	detail: util.checkArg.lenlim(config.lim.event.detail, "$core.too_long($core.word.detail)"),
 
 	loclng: "number",
 	loclat: "number",
