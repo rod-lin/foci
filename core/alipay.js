@@ -35,7 +35,11 @@ function sortParam(param, encode) {
 	return qstr;
 }
 
-var privkey = fs.readFileSync(config.alipay.priv).toString();
+try {
+	var privkey = fs.readFileSync(config.alipay.priv).toString();
+} catch (e) {
+	util.log("alipay disabled");
+}
 
 function signQuery(query) {
 	var sign = crypto.createSign(config.alipay.sign_type[0]);
