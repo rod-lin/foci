@@ -188,9 +188,14 @@
 						util.jump("#profile");
 					});
 
+					util.scrollTop("#search", function () {
+						bar.removeShadow();
+					});
+
 					util.scroll("#search, #part", function (n) {
 						if (n > 0) {
 							bar.showBanner();
+							bar.applyShadow();
 						} else {
 							bar.hideBanner();
 						}
@@ -202,7 +207,7 @@
 							page: "#search",
 							onShow: function () {
 								bar.setTitle("Search");
-								bar.delSimple();
+								bar.setStyle("shadowy");
 							}
 						},
 						
@@ -210,7 +215,7 @@
 							page: "#cover",
 							onShow: function () {
 								bar.setTitle("Foci");
-								bar.setSimple();
+								bar.setStyle("simple");
 							},
 
 							onLoad: function (show) {
@@ -231,7 +236,7 @@
 						"part": {
 							page: "#part",
 							onShow: function () {
-								bar.delSimple();
+								bar.setStyle("");
 							}
 						},
 					}, { init: "cover" });
@@ -268,18 +273,12 @@
 									return true;
 
 								default:
-									bar.delSimple();
+									bar.setStyle("");
 									$("#main-loader").removeClass("active");
 									pg.to("part");
 							}
 						}
 					});
-
-					/* test */
-					// pt.load("profile");
-					// bar.delSimple();
-					// pg.to("part");
-					/* test */
 
 					var ev = event.init("#search>#search-cont", {
 						onUpdate: function (pos) {},

@@ -572,6 +572,13 @@
 
 /* styles */
 
+/* shadowy */
+
+.com-tbar.shadowy.apply {
+	border-bottom: none;
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.23);
+}
+
 /* simple */
 
 .com-tbar.simple {

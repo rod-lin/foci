@@ -418,7 +418,7 @@
 				tbar.setTitle(parsed.title, parsed.date);
 
 				cover.ready(function () {
-					tbar.setSimple();
+					tbar.setStyle("simple");
 					$("body").removeClass("padding-tbar");
 					show(true);
 				});
@@ -616,7 +616,7 @@
 			main.find(".cover").click(function () {
 				main.find(".cover").addClass("hide");
 				setTimeout(function () {
-					tbar.delSimple();
+					tbar.setStyle("shadowy");
 					$("body").addClass("padding-tbar");
 
 					setTimeout(function () {

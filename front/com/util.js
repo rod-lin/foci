@@ -185,6 +185,14 @@ define(function () {
 		});
 	};
 
+	util.scrollTop = function (elem, cb) {
+		$(elem).scroll(function () {
+			if ($(elem).scrollTop() < 3) {
+				cb();
+			}
+		});
+	};
+
 	util.bottom = function (elem) {
 		elem.scrollTop(elem.prop("scrollHeight") - elem.height());
 	};
@@ -201,7 +209,7 @@ define(function () {
 			var now = $(this).scrollTop();
 
 			if (Math.abs(now - cur) > 20) {
-				cb(now - cur);
+				cb(now - cur, cur);
 			}
 
 			cur = now;

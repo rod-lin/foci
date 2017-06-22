@@ -131,6 +131,7 @@ define([ "com/util" ], function (util) {
 				name: "select",
 				onClick: function (lng, lat, addr) {
 					if (select) select(lng, lat, addr);
+					obj.popup("hide");
 				}
 			}
 		]))(point);

@@ -414,6 +414,8 @@ define([
 
 		var session = null;
 
+		var styles = [ "simple", "shadowy", "apply" ];
+
 		var ret = {
 			search: function (cb) {
 				onsearch = cb;
@@ -426,17 +428,41 @@ define([
 				}
 			},
 
-			setSimple: function () {
-				main.addClass("simple");
+			setStyle: function (style) {
+				for (var i = 0; i < styles.length; i++) {
+					main.removeClass(styles[i]);
+				}
+
+				main.addClass(style);
 			},
 
-			delSimple: function () {
-				main.removeClass("simple");
+			applyShadow: function () {
+				main.addClass("apply");
 			},
 
-			toggleSimple: function () {
-				main.toggleClass("simple");
+			removeShadow: function () {
+				main.removeClass("apply");
 			},
+
+			// setSimple: function () {
+			// 	main.addClass("simple");
+			// },
+
+			// delSimple: function () {
+			// 	main.removeClass("simple");
+			// },
+
+			// toggleSimple: function () {
+			// 	main.toggleClass("simple");
+			// },
+
+			// setShadowy: function () {
+			// 	main.addClass("shadowy");
+			// },
+
+			// delShadowy: function () {
+			// 	main.removeClass("shadowy");
+			// },
 
 			menu: function (cb) {
 				// main.find(".menu-btn").click(cb);
