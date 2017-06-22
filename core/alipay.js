@@ -2,6 +2,7 @@
 
 "use strict";
 
+var util = require("./util");
 var config = require("./config");
 
 var fs = require("fs");
