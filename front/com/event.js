@@ -42,7 +42,23 @@ define([
 
 	function eventTemplate() {
 		var main = $('<div class="com-event-single ui card event"> \
-			<div class="cover"><div class="ui loader"></div></div> \
+			<div class="cover"> \
+				<div class="ui loader"></div> \
+				<div class="status-shadow"> \
+					<div class="accept prompt"> \
+						<i class="check circle icon"></i> \
+						<span class=>Accepted</span> \
+					</div> \
+					<div class="decline prompt"> \
+						<i class="remove circle icon"></i> \
+						<span class=>Declined</span> \
+					</div> \
+					<div class="pending prompt"> \
+						<i class="ellipsis horizontal icon"></i> \
+						<span class=>Pending</span> \
+					</div> \
+				</div> \
+			</div> \
 			<div class="content"> \
 				<a class="header title"></a> \
 				<div class="meta"> \
@@ -148,6 +164,9 @@ define([
 		dom.find(".date").html(parsed.date);
 		dom.find(".description").html(parsed.descr);
 		dom.find(".apply_num").html(parsed.apply_num);
+
+		if (info.status)
+			dom.addClass(info.status);
 
 		if (parsed.favtag.length || config.editTag) {
 			dom.find(".favtag").css("display", "").html("");

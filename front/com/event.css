@@ -100,3 +100,71 @@
 	color: #CCCCCC;
 	font-weight: bold;
 }
+
+.com-event-single .status-shadow {
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%;
+	height: 100%;
+
+	color: white;
+
+	line-height: 12em;
+	text-align: center;
+
+	opacity: 0;
+	pointer-events: none;
+
+	transition: opacity 0.3s, background 0.3s;
+}
+
+.com-event-single .status-shadow .prompt .icon {
+	vertical-align: middle;
+	font-size: 3rem;
+	line-height: normal;
+}
+
+.com-event-single .status-shadow .prompt span {
+	font-weight: bold;
+}
+
+.com-event-single .status-shadow .prompt {
+	font-size: 1.5rem;
+	display: none;
+}
+
+.com-event-single.accept .status-shadow {
+	opacity: 1;
+	pointer-events: auto;
+	background: rgba(46, 204, 113, 0.7);
+}
+
+.com-event-single.accept .status-shadow .accept.prompt {
+	display: inline-block;
+}
+
+.com-event-single.decline .status-shadow {
+	opacity: 1;
+	pointer-events: auto;
+	background: rgba(231, 76, 60, 0.7);
+}
+
+.com-event-single.decline .status-shadow .decline.prompt {
+	display: inline-block;
+}
+
+.com-event-single.pending .status-shadow {
+	opacity: 1;
+	pointer-events: auto;
+	background: rgba(52, 152, 219, 0.7);
+}
+
+.com-event-single.pending .status-shadow .pending.prompt {
+	display: inline-block;
+}
+
+.com-event-single .status-shadow .status-prompt {
+	font-family: Ubuntu;
+	font-size: 1rem;
+	line-height: normal;
+}

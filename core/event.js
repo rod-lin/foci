@@ -312,7 +312,25 @@ Event.query = {
 	check_owner: (euid, uuid) => ({ "euid": euid, "org.0": uuid }),
 
 	org: uuid => ({ "org": uuid, "state": { $gte: 1 } }),
-	applied: uuid => ({ $or: [ { "apply_staff.uuid": uuid }, { "apply_partic.uuid": uuid } ], "state": { $gte: 1 } }),
+
+	applied: (uuid, status) => {
+		var q = {
+			$or: [
+				{ "apply_staff.uuid": uuid },
+				{ "apply_partic.uuid": uuid }
+			],
+
+			"state": { $gte: 1 }
+		};
+
+		if (status) {
+			q.$or[0]["apply_staff.status"] = status;
+			q.$or[1]["apply_partic.status"] = status;
+		}
+
+		return q;
+	},
+
 	draft: uuid => ({ "org": uuid, "state": 0 }),
 
 	has_favtag: tags => ({ "favtag": { $in: tags }, "state": { $gte: 1 } }),
@@ -359,7 +377,7 @@ Event.set = {
 	info: info => ({ $set: info }),
 	apply: (euid, uuid, type, form) => {
 		var q = {};
-		q["apply_" + type] = { uuid: uuid, form: form };
+		q["apply_" + type] = { uuid: uuid, form: form, status: "pending" };
 		return { $push: q, $inc: { apply_num: 1 } };
 	},
 
@@ -464,7 +482,7 @@ function formatStdLim(conf) {
 	return query;
 }
 
-async function getEventGroup(query, conf) {
+async function getEventGroup(query, conf, filter) {
 	var lim = formatStdLim(conf);
 
 	var col = await db.col("event");
@@ -475,7 +493,9 @@ async function getEventGroup(query, conf) {
 	var ret = [];
 
 	arr.forEach(function (ev) {
-		ret.push(new Event(ev).getInfo());
+		var ev = new Event(ev).getInfo();
+		if (filter) ev = filter(ev);
+		ret.push(ev);
 	});
 
 	return ret;
@@ -486,9 +506,29 @@ exports.getOrganized = async (uuid, conf) => {
 	return await getEventGroup(Event.query.org(uuid), conf);
 };
 
+/*
+	status of an application:
+		accept, decline, pending
+ */
+
 // events applied by a user
 exports.getApplied = async (uuid, conf) => {
-	return await getEventGroup(Event.query.applied(uuid), conf);
+	var accept = await getEventGroup(Event.query.applied(uuid, "accept"), conf, ev => {
+		ev.status = "accept";
+		return ev;
+	});
+
+	var reject = await getEventGroup(Event.query.applied(uuid, "decline"), conf, ev => {
+		ev.status = "decline";
+		return ev;
+	});
+
+	var pending = await getEventGroup(Event.query.applied(uuid, "pending"), conf, ev => {
+		ev.status = "pending";
+		return ev;
+	});
+
+	return accept.concat(reject).concat(pending);
 };
 
 exports.getDraft = async (uuid, conf) => {
