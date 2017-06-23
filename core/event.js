@@ -5,6 +5,7 @@ var err = require("./err");
 var uid = require("./uid");
 var util = require("./util");
 var user = require("./user");
+var tick = require("./tick");
 var config = require("./config");
 
 // event
@@ -598,7 +599,8 @@ exports.apply = async (euid, uuid, type, form) => {
 	if (!ret)
 		throw new err.Exc("$core.app_full");
 
-	return;
+	// apply success
+	tick.emit("foci.event-apply", euid, uuid, type);
 };
 
 exports.publish = async (euid, uuid) => {

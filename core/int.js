@@ -16,6 +16,8 @@ var config = require("./config");
 var notice = require("./notice");
 var alipay = require("./alipay");
 
+require("./binds");
+
 // var moment = require("moment");
 
 var Env = require("./env").Env;

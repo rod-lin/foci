@@ -182,6 +182,7 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 					for (var i = 0; i < dat[k].length; i++) {
 						dat[k][i].date = new Date(dat[k][i].date);
 						dat[k][i].title = lang.msg(dat[k][i].title || "$core.notice.untitled");
+						dat[k][i].msg = lang.msg(dat[k][i].msg);
 					}
 				}
 			}
