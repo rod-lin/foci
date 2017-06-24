@@ -35,12 +35,31 @@ define([ "com/util" ], function (util) {
 		});
 	}
 
+	function prevPorp(bmap, obj) {
+		obj = $(obj);
+
+		var down = function (ev) {
+			bmap.freezeMark();
+		};
+
+		var up = function (ev) {
+			util.nextTick(function () {
+				bmap.unfreezeMark();
+			});
+		};
+
+		// obj.mousedown(down).on("touchstart", down);
+		// obj.mouseup(up).on("touchend", up);
+	}
+
 	function createOverlay(bmap, marker, option, config) {
 		config = $.extend({}, config);
 
 		function cons(point) {
 			this.point = point;
 			var obj = this.obj = marker.clone();
+
+			obj.css("transition", "opacity 0.2s");
 
 			var popup = $("<div class='ui popup hidden' style='padding: 0;'></div>");
 			$("body").append(popup);
@@ -59,21 +78,16 @@ define([ "com/util" ], function (util) {
 					}
 				}
 
-			popup.mousedown(function () {
-				bmap.freezeMark();
-			});
-
-			popup.mouseup(function () {
-				util.nextTick(function () {
-					bmap.unfreezeMark();
-				});
-			});
+			prevPorp(bmap, popup);
 
 			obj.popup({
 				popup: popup,
 				on: "click",
 				variation: "inverted",
-				position: "top center"
+				position: "top center",
+
+				lastRetort: true,
+				exclusive: true
 			});
 		}
 
@@ -86,37 +100,45 @@ define([ "com/util" ], function (util) {
 		cons.prototype.initialize = function (map) {
 			this.map = map;
 			var obj = this.obj;
-		
-			var zindex = BMap.Overlay.getZIndex(this.point.lat);
-			// obj.css("z-index", zindex);
+			var that = this;
 
-			map.addEventListener("moving", function () {
+			// var zindex = BMap.Overlay.getZIndex(this.point.lat);
+			// obj.css("z-index", "9999");
+
+			function repos() {
 				if (obj.popup("is visible"))
 					obj.popup("reposition");
-			});
 
-			map.addEventListener("zoomstart", function () {
+				obj.css("opacity", 1);
+				that.draw();
+			}
+
+			function hide() {
 				obj.popup("hide");
+				obj.css("opacity", 0);
+			}
+
+			map.addEventListener("movestart", hide);
+
+			map.addEventListener("moving", repos);
+			map.addEventListener("moveend", repos);
+
+			map.addEventListener("zoomstart", hide);
+
+			map.addEventListener("zoomend", function () {
+				obj.css("opacity", 1);
 			});
 
-			obj.mousedown(function () {
-				if (config.onMouseDown)
-					config.onMouseDown(obj);
-			});
+			prevPorp(bmap, obj);
 
-			obj.mouseup(function (ev) {
-				if (config.onMouseUp)
-					config.onMouseUp(obj);
-			});
-
-			map.getPanes().floatPane.appendChild(obj[0]);
+			bmap.dom.append(obj);
+			// map.getPanes().floatPane.appendChild(obj[0]);
 		
 			return obj[0];
 		};
 
 		cons.prototype.draw = function () {
-			var pixel = this.map.pointToOverlayPixel(this.point);
-		
+			var pixel = this.map.pointToPixel(this.point);
 			this.obj.css("left", pixel.x - this.obj.outerWidth() / 2 + "px");
 			this.obj.css("top", pixel.y - this.obj.outerHeight() / 2 + "px");
 		};
@@ -148,7 +170,7 @@ define([ "com/util" ], function (util) {
 		}, config);
 		cont = $(cont);
 
-		var main = $("<div style='height: 100%;'></div>")
+		var main = $("<div style='position: relative; height: 100%;'></div>")
 		var loader = $("<div class='ui active loader'></div>");
 
 		cont.append(main);
@@ -167,6 +189,7 @@ define([ "com/util" ], function (util) {
 			map.clearOverlays();
 
 			var ret = {
+				dom: main,
 				raw: map,
 
 				cur: function () {
@@ -266,6 +289,8 @@ define([ "com/util" ], function (util) {
 		};
 
 		function search() {
+			main.find(".search.input .prompt").blur();
+
 			if (!bmap) {
 				util.emsg("still initializing...", "info");
 				return;
@@ -283,17 +308,7 @@ define([ "com/util" ], function (util) {
 					name: "select",
 					onClick: onSelectWrap
 				}
-			], {
-				onMouseDown: function () {
-					bmap.freezeMark();
-				},
-
-				onMouseUp: function () {
-					util.nextTick(function () {
-						bmap.unfreezeMark();
-					});
-				}
-			});
+			]);
 
 			var local = new BMap.LocalSearch(bmap.raw, {
 				// renderOptions: { map: bmap.raw },
@@ -346,7 +361,13 @@ define([ "com/util" ], function (util) {
 			main.modal("show");
 			main.find(".dimmer").removeClass("active");
 
-			initMap(main.find(".map"), function (map) { bmap = map; }, {
+			initMap(main.find(".map"), function (map) {
+				bmap = map;
+
+				bmap.raw.addEventListener("click", function () {
+					main.find(".search.input .prompt").blur();
+				});
+			}, {
 				init_lng: config.init_lng,
 				init_lat: config.init_lat,
 				// canMark: false,

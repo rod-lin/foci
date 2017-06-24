@@ -922,6 +922,8 @@
 											steps["loc"].onShow = function () {
 												// bmap.init(); // init position
 
+												tip.init(new_tab.find(".loc-search-btn"), "Click here to search!", "bottom center");
+
 												if (fields.lng && fields.lat) {
 													bmap.set(fields.lng, fields.lat);
 												} else {
