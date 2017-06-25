@@ -32,30 +32,30 @@
 
 			<style>
 				
-				#sub-event .cont .row {}
+				#sub-event>.cont .row {}
 
-				#sub-event .cont .col {
+				#sub-event>.cont .col {
 					display: inline-block;
 					vertical-align: top;
 					padding-right: 0.5rem;
 					margin-top: 1rem;
 				}
 
-				#sub-event .cont .col:last-child {
+				#sub-event>.cont .col:last-child {
 					padding-right: 0;
 					padding-left: 0.5rem;
 				}
 
-				#sub-event .cont .col-7 {
+				#sub-event>.cont .col-7 {
 					width: 70%;
 				}
 
-				#sub-event .cont .col-3 {
+				#sub-event>.cont .col-3 {
 					width: 30%;
 				}
 
 				@media only screen and (max-width: 720px) {
-					#sub-event .cont .col-mid-full {
+					#sub-event>.cont .col-mid-full {
 						padding: 0 !important;
 						width: 100%;
 					}
@@ -97,12 +97,12 @@
 			</div>
 
 			<div style="overflow: hidden; padding: 0 5% 3px 5%; width: 110%; margin-left: -5%;">
-				<div class="box pad" style="margin-top: 1rem; width: 100%;">
-					<div class="sub-title">Comments</div>
-					<div class="comment">
+				<div class="box" style="margin-top: 1rem; width: 100%;">
+					<div class="sub-title" style="padding: 2rem 2rem 0 2rem;">Comments</div>
+					<div class="comment" style="margin-top: 1rem;">
+						<!-- <img class="com-util-cont-fill" src="img/paragraph.png"></img>
 						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
-						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
-						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
+						<img class="com-util-cont-fill" src="img/paragraph.png"></img> -->
 					</div>
 				</div>
 			</div>
@@ -206,7 +206,7 @@
 		}
 	}
 
-	#sub-event .cont {
+	#sub-event>.cont {
 		position: relative;
 
 		width: 100%;
@@ -223,11 +223,11 @@
 		text-align: center;
 	}
 
-	#sub-event .cont.show {
+	#sub-event>.cont.show {
 		opacity: 1;
 	}
 
-	#sub-event .cont .title {
+	#sub-event>.cont .title {
 		position: relative;
 
 		text-align: center;
@@ -238,26 +238,26 @@
 		padding: 0 2rem;
 	}
 
-	#sub-event .cont .date,
-	#sub-event .cont .location {
+	#sub-event>.cont .date,
+	#sub-event>.cont .location {
 		text-align: center;
 		font-size: 0.8em;
 		margin-top: 0.5rem;
 	}
 
-	#sub-event .cont .info-box {
+	#sub-event>.cont .info-box {
 		padding: 3rem 4rem 4rem;
 		color: #333333;
 	}
 
-	#sub-event .cont .descr {
+	#sub-event>.cont .descr {
 		font-size: 1.5em;
 		text-align: left;
 		margin-top: 1.5rem;
 		line-height: 150%;
 	}
 
-	#sub-event .cont .scover {
+	#sub-event>.cont .scover {
 		width: 100%;
 		height: 20rem;
 
@@ -266,13 +266,13 @@
 		background-position: 50% 50%;
 	}
 
-	#sub-event .cont .bmap {
+	#sub-event>.cont .bmap {
 		width: 100%;
 		height: 30rem;
 		pointer-events: none;
 	}
 
-	#sub-event .cont .cont-box {
+	#sub-event>.cont .cont-box {
 		display: inline-block;
 
 		min-width: 50%;
@@ -284,7 +284,7 @@
 		padding-bottom: 2rem;
 	}
 
-	#sub-event .cont .box {
+	#sub-event>.cont .box {
 		position: relative;
 
 		width: 100%;
@@ -298,77 +298,77 @@
 		transition: opacity 0.3s;
 	}
 
-	#sub-event .cont .sub-title {
+	#sub-event>.cont .sub-title {
 		color: #4C4C4C;
 		opacity: 0.5;
 		font-size: 1.1em;
 		text-align: left;
 	}
 
-	#sub-event .cont .apply-prompt {
+	#sub-event>.cont .apply-prompt {
 		color: #262626;
 		opacity: 0.5;
 		font-size: 1.5em;
 		font-weight: bold;
 	}
 
-	#sub-event .cont .box-set .box {
+	#sub-event>.cont .box-set .box {
 		border-radius: 0;
 	}
 
-	#sub-event .cont .box-set .box:first-child {
+	#sub-event>.cont .box-set .box:first-child {
 		border-radius: 3px 3px 0 0;
 	}
 
-	#sub-event .cont .box-set .box:last-child {
+	#sub-event>.cont .box-set .box:last-child {
 		border-radius: 0 0 3px 3px;
 	}
 
-	#sub-event .cont .box.btn:hover {
+	#sub-event>.cont .box.btn:hover {
 		opacity: 0.8;
 		cursor: pointer;
 	}
 
-	#sub-event .cont .box.btn:active {
+	#sub-event>.cont .box.btn:active {
 		opacity: 1;
 	}
 
-	#sub-event .cont .box.pad {
+	#sub-event>.cont .box.pad {
 		padding: 2rem;
 	}
 
-	#sub-event .cont .box.btn {
+	#sub-event>.cont .box.btn {
 		padding-left: 0;
 		padding-right: 0;
 		transition: background 0.3s;
 	}
 
-	#sub-event .cont .box.btn.disabled {
+	#sub-event>.cont .box.btn.disabled {
 		color: #D9D9D9 !important;
 		background: #B3B3B3 !important;
 		pointer-events: none;
 	}
 
 	@media only screen and (max-width: 720px) {
-		#sub-event .cont .cont-box {
+		#sub-event>.cont .cont-box {
 			max-width: 95%;
 			margin-top: 1rem;
 			padding-bottom: 1rem;
 		}
 
-		#sub-event .cont .scover {
+		#sub-event>.cont .scover {
 			height: 15rem;
 		}
 
-		#sub-event .cont .title {
+		#sub-event>.cont .title {
 			font-size: 2em;
 		}
 
-		#sub-event .cont .info-box {
+		#sub-event>.cont .info-box {
 			padding: 1.5rem 1rem 2rem;
 		}
 
-		#sub-event .cont .descr {
+		#sub-event>.cont .descr {
 			font-size: 1.2em;
 		}
 	}
@@ -380,14 +380,15 @@
 			"com/env", "com/util", "com/event",
 			"com/xfilt", "com/login", "com/event",
 			"com/map", "com/lang", "com/avatar",
-			"com/colstat", "com/formi"
-		], function (env, util, event, xfilt, login, event, map, lang, avatar, colstat, formi) {
+			"com/colstat", "com/formi", "com/comment"
+		], function (env, util, event, xfilt, login, event, map, lang, avatar, colstat, formi, comment) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
 				return;
 			}
 
 			var euid = parseInt(args[0]);
+			var cont = main.children(".cont");
 
 			if (isNaN(euid)) {
 				util.emsg("$front.sub.event.illegal_euid");
@@ -398,7 +399,7 @@
 
 			tbar.setTitle("loading");
 
-			util.scroll(main.find(".cont"), function (n) {
+			util.scroll(cont, function (n) {
 				if (n > 0) {
 					tbar.showBanner();
 				} else {
@@ -601,6 +602,12 @@
 						});
 					}
 				});
+
+				var comm = comment.init(main.find(".comment"), euid);
+			
+				util.scrollBottom(cont, 5, function () {
+					comm.more();
+				});
 			};
 
 			foci.get("/event/info", { euid: euid }, function (suc, dat) {
@@ -620,7 +627,7 @@
 					$("body").addClass("padding-tbar");
 
 					setTimeout(function () {
-						main.find(".cont").addClass("show");
+						cont.addClass("show");
 					}, 0);
 				}, 400);
 			});

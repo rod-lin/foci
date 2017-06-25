@@ -17,6 +17,9 @@ module.exports = {
 		"core.word.search_result": "search result",
 		"core.word.app_form": "application form",
 
+		"core.word.comment": "comment",
+		"core.word.rating": "rating",
+
 		"core.word.event": "event",
 		"core.word.draft": "draft",
 
@@ -88,10 +91,16 @@ module.exports = {
 
 		"core.notice.event_notice": "Event Notice: $1",
 		"core.notice.untitled": "(untitled)",
-
 		"core.notice.no_type": "no notice type",
 		"core.notice.no_sender": "no notice sender",
 		"core.notice.no_msg": "no notice content",
+
+		"core.comment.no_uuid": "no comment sender",
+		"core.comment.no_comment": "no comment content",
+		"core.comment.issue_failed": "failed to issue comment",
+		"core.comment.empty": "(no comment)",
+		"core.comment.already_voted": "you've already upvoted",
+		"core.comment.max_comm_reached": "max comment count reached",
 
 		"front.com.parts.fail_get_url": "fail to get url $1: $2",
 		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",

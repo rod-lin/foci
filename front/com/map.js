@@ -176,8 +176,6 @@ define([ "com/util" ], function (util) {
 		cont.append(main);
 		cont.append(loader);
 
-		console.log(config);
-
 		var cur_marker = null;
 		var cur_loc = null;
 

@@ -1,0 +1,5 @@
+.ui.star.rating.com-rating.disabled i.icon.selected,
+.ui.star.rating.com-rating.disabled i.icon.active {
+	color: #F1C40F !important;
+	text-shadow: none !important;
+}

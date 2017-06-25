@@ -9,11 +9,12 @@
 
 	border-radius: 50%;
 
+	background-color: rgba(245, 245, 245, 1);
+
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 50% 50%;
 
-	box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
 	cursor: pointer;
 }
 

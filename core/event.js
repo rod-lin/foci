@@ -60,6 +60,8 @@ var Event = function (euid, owner /* uuid */) {
 
 	this.staff = [];
 	this.partic = []; // participants
+
+	this.comment = [];
 };
 
 exports.Event = Event;
@@ -194,6 +196,10 @@ Event.prototype.countApp = function (type) {
 
 Event.prototype.isOrg = function (uuid) {
 	return this.org.indexOf(uuid) != -1;
+};
+
+Event.prototype.getComment = function () {
+	return this.comment || [];
 };
 
 Event.format = {};
@@ -596,7 +602,7 @@ exports.apply = async (euid, uuid, type, form) => {
 	var col = await db.col("event");
 	var ret = await col.findOneAndUpdate(Event.query.apply_check(euid, max), Event.set.apply(euid, uuid, type, form));
 
-	if (!ret)
+	if (!ret.value)
 		throw new err.Exc("$core.app_full");
 
 	// apply success

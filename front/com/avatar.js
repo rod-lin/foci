@@ -9,9 +9,10 @@ define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 	function init(cont, info, config) {
 		cont = $(cont);
 		config = $.extend({
-			size: "1.5em",
+			size: "3rem",
 			radius: "50%",
 			popdir: "top center",
+			shadow: "0 0 2px rgba(0, 0, 0, 0.4)"
 		}, config);
 
 		info = login.parseInfo(info || {});
@@ -22,7 +23,11 @@ define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 			</div> \
 		");
 
-		ava.find(".avatar").css("border-radius", config.radius);
+		ava.find(".avatar")
+			.css({
+				"border-radius": config.radius,
+				"box-shadow": config.shadow
+			});
 
 		var avacont = $("<div class='dname'>" + xfilt(info.dname ? info.dname : "anonymous") + "</div>");
 
@@ -41,7 +46,13 @@ define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 
 		cont.append(ava);
 
-		return { dom: ava };
+		var ret = { dom: ava };
+
+		ret.setAvatar = function (file) {
+			util.bgimg(ava.find(".avatar"), file);
+		};
+
+		return ret;
 	}
 
 	return {

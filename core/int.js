@@ -15,6 +15,7 @@ var event = require("./event");
 var config = require("./config");
 var notice = require("./notice");
 var alipay = require("./alipay");
+var comment = require("./comment");
 
 require("./binds");
 
@@ -236,6 +237,11 @@ _event.info = util.route(async env => {
 _event.search = util.route(async env => {
 	var args = util.checkArg(env.query, event.Event.format.search, true);
 	env.qsuc(await event.search(args));
+});
+
+_event.comment = util.route(async env => {
+	var args = util.checkArg(env.query, { euid: "int", skip: { opt: true, type: "int" }, limit: { opt: true, type: "int" } });
+	env.qsuc(await comment.get(args.euid, { skip: args.skip, limit: args.limit }));
 });
 
 var _file = {};
@@ -460,11 +466,39 @@ encop.notice = async (env, usr, query, next) => {
 			var args = util.checkArg(query, {
 				type: "string",
 				uuids: "array", euid: "int",
-				title: "string", msg: "string"
+				title: util.checkArg.lenlim(config.lim.notice.title, "$core.too_long($core.word.title)"),
+				msg: util.checkArg.lenlim(config.lim.notice.text, "$core.too_long($core.word.msg)")
 			});
 
 			await notice.sendGroup(args.euid, usr.getUUID(), args.uuids, args);
 
+			return;
+
+		default:
+			throw new err.Exc("$core.action_not_exist");
+	}
+};
+
+encop.comment = async (env, usr, query, next) => {
+	switch (query.action) {
+		case "issue":
+			var args = util.checkArg(query, {
+				euid: "int",
+				rating: util.checkArg.posint(10, "$core.illegal($core.word.rating)").extend({ opt: true }),
+				comment: util.checkArg.lenlim(config.lim.comment.text, "$core.too_long($core.word.comment)")
+			});
+
+			await comment.issue(args.euid, {
+				uuid: usr.getUUID(),
+				comment: args.comment,
+				rating: args.rating
+			});
+
+			return;
+
+		case "upvote":
+			var args = util.checkArg(query, { euid: "int", cid: "int" });
+			await comment.upvote(args.euid, args.cid, usr.getUUID());
 			return;
 
 		default:

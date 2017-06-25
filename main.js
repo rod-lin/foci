@@ -49,6 +49,7 @@ app.get("/user/search", int.user.search);
 
 app.get("/event/info", int.event.info);
 app.get("/event/search", int.event.search);
+app.get("/event/comment", int.event.comment);
 
 app.post("/file/upload", int.file.upload);
 app.get("/file/download", int.file.download);

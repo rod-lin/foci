@@ -54,6 +54,17 @@ var conf = module.exports = {
 
 		pm: {
 			text: 256
+		},
+
+		notice: {
+			title: 128,
+			text: 2048
+		},
+
+		comment: {
+			text: 512,
+			max_get_length: 8,
+			max_comm_per_user: 3
 		}
 	},
 
