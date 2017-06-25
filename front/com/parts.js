@@ -6,6 +6,25 @@ define([ "com/util", "com/progress" ], function (util, progress) {
 	var $ = jQuery;
 	foci.loadCSS("com/parts.css");
 
+	var prog;
+	var cache = {};
+
+	$("body").ready(function () {
+		prog = progress.init("body", { top: true, position: "fixed" });
+	});
+
+	function fetch(url, suc, err) {
+		$.ajax({
+			type: "GET",
+			url: url,
+			success: function (dat) { suc(dat); },
+			error: function (req, exc) {
+				util.emsg("$front.com.parts.fail_get_url(" + url + "," + exc + ")");
+				err();
+			}
+		});
+	}
+
 	function init(cont, config) {
 		cont = $(cont);
 		config = $.extend({
@@ -13,21 +32,6 @@ define([ "com/util", "com/progress" ], function (util, progress) {
 		}, config);
 
 		var main = $("<div class='com-parts'></div>");
-		var prog = progress.init("body", { top: true, position: "fixed" });
-
-		var cache = {};
-
-		function fetch(url, suc, err) {
-			$.ajax({
-				type: "GET",
-				url: url,
-				success: function (dat) { suc(dat); },
-				error: function (req, exc) {
-					util.emsg("$front.com.parts.fail_get_url(" + url + "," + exc + ")");
-					err();
-				}
-			});
-		}
 
 		function load(name, cb, args) {
 			var next = function (text) {

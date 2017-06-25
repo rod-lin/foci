@@ -285,7 +285,7 @@ define(function () {
 
 		var ud = 1000 * 60 * 60 * 24; // one day
 
-		var time = date.toLocaleTimeString();
+		var time = date.getHours() + ":" + date.getMinutes();
 		var ret;
 
 		if (sub < ud) {
@@ -298,7 +298,10 @@ define(function () {
 				var pref = [ "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" ][date.getDay()];
 				ret = pref + " " + time;
 			} else {
-				ret = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + " " + time;
+				ret = date.getMonth() + "-" + date.getDate() + " " + time;
+			
+				if (cur.getFullYear() != date.getFullYear())
+					ret = date.getFullYear() + "-" + ret;
 			}
 		}
 

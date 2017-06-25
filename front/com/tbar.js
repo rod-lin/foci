@@ -414,7 +414,7 @@ define([
 
 		var session = null;
 
-		var styles = [ "simple", "shadowy", "apply" ];
+		var styles = [ "simple", "light-simple", "shadowy", "apply" ];
 
 		var ret = {
 			search: function (cb) {

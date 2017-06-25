@@ -53,25 +53,6 @@
 				overflow: auto;
 				overflow-x: hidden;
 			}
-
-			#cover {
-				position: fixed;
-				left: 0;
-				top: 0;
-				height: 100%;
-				width: 100%;
-
-				overflow: auto;
-
-				background-image: url("img/cover1.jpg");
-				background-repeat: no-repeat;
-				background-size: cover;
-				background-position: 50% 50%;
-
-				opacity: 1;
-
-				transition: opacity 0.3s;
-			}
 		</style>
 	</head>
 
@@ -85,17 +66,6 @@
 					</div>
 				</div> -->
 				<div id="search-cont"></div>
-			</div>
-
-			<div id="cover" style="opacity: 0;">
-				<!-- <div style="width: 100%; padding-top: 30rem;">
-					<div style="
-						width: 100%;
-						height: 100rem;
-						background: white;
-						box-shadow: 0 0 5rem rgba(0, 0, 0, 0.4);
-					"></div>
-				</div> -->
 			</div>
 		</div>
 
@@ -124,8 +94,8 @@
 				// map.search();
 				// uh.modal();
 
-				var cover = [ "img/cover1.jpg", "img/cover2.jpg", "img/cover3.jpg" ].choose();
-				$("#cover").css("background-image", "url(" + cover + ")");
+				// var cover = [ "img/cover1.jpg", "img/cover2.jpg", "img/cover3.jpg" ].choose();
+				// $("#cover").css("background-image", "url(" + cover + ")");
 
 				env.init(function () {
 					// map.init();
@@ -134,11 +104,7 @@
 					var bar = tbar.init();
 
 					bar.menu(function () {
-						if (!window.location.hash) {
-							pg.toggle("cover", "search");
-						} else {
-							util.jump("#");
-						}
+						util.jump("#cover");
 					});
 
 					bar.profile(function () {
@@ -158,7 +124,7 @@
 						}
 					});
 
-					var cover_loaded = false;
+					// var cover_loaded = false;
 					var pg = pages.init({
 						"search": {
 							page: "#search",
@@ -168,27 +134,27 @@
 							}
 						},
 						
-						"cover": {
-							page: "#cover",
-							onShow: function () {
-								bar.setTitle("Foci");
-								bar.setStyle("simple");
-							},
+						// "cover": {
+						// 	page: "#cover",
+						// 	onShow: function () {
+						// 		bar.setTitle("Foci");
+						// 		bar.setStyle("light-simple");
+						// 	},
 
-							onLoad: function (show) {
-								if (cover_loaded) {
-									show();
-								} else {
-									$("#cover").off("ready").ready(function () {
-										setTimeout(function () {
-											$("#main-loader").removeClass("active");
-											show();
-											cover_loaded = true;
-										}, 2000);
-									});
-								}
-							}
-						},
+						// 	onLoad: function (show) {
+						// 		if (cover_loaded) {
+						// 			show();
+						// 		} else {
+						// 			$("#cover").off("ready").ready(function () {
+						// 				setTimeout(function () {
+						// 					$("#main-loader").removeClass("active");
+						// 					show();
+						// 					cover_loaded = true;
+						// 				}, 2000);
+						// 			});
+						// 		}
+						// 	}
+						// },
 
 						"part": {
 							page: "#part",
@@ -196,7 +162,7 @@
 								bar.setStyle("");
 							}
 						},
-					}, { init: "cover" });
+					}, { init: "search" });
 
 					var pt = parts.init("#part", {
 						onJump: function (name, args) {
@@ -207,7 +173,7 @@
 
 							switch (name) {
 								case "":
-									pg.to("cover");
+									util.jump("#cover");
 									break;
 
 								case "search":

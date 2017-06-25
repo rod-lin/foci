@@ -378,10 +378,10 @@
 	function init(main, args, show, cont) {
 		require([
 			"com/env", "com/util", "com/event",
-			"com/xfilt", "com/login", "com/event",
-			"com/map", "com/lang", "com/avatar",
-			"com/colstat", "com/formi", "com/comment"
-		], function (env, util, event, xfilt, login, event, map, lang, avatar, colstat, formi, comment) {
+			"com/xfilt", "com/login", "com/map",
+			"com/lang", "com/avatar", "com/colstat",
+			"com/formi", "com/comment"
+		], function (env, util, event, xfilt, login, map, lang, avatar, colstat, formi, comment) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
 				return;

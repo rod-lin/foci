@@ -114,7 +114,7 @@ define([
 					history.append(genComment(list[i]));
 				}
 			} else {
-				history.append(genPrompt("no more comment"));
+				history.append(genPrompt("no more comments"));
 				is_end = true;
 			}
 
