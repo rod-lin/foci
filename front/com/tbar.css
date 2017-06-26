@@ -31,7 +31,7 @@
 
 	background: white;
 
-	border: 1px solid rgba(0, 0, 0, 0.08);
+	border: 1px solid rgba(236, 236, 236, 1); /* rgba(0, 0, 0, 0.08); */
 	border-width: 0 0 1px 0;
 
 	opacity: 1;

@@ -1,7 +1,6 @@
 <div id="sub-cover">
 	<div class="main-wrap">
-		<div class="show-board">
-			<div class="fake-cont"></div>
+		<div class="show-board trim">
 		</div>
 		<div class="tag-board">
 			<div class="fake-cont"></div>
@@ -33,6 +32,11 @@
 	#sub-cover .main-wrap {
 		display: inline-block;
 		width: auto;
+		max-width: 100%;
+	}
+
+	#sub-cover .trim {
+		overflow: hidden;
 	}
 
 	#sub-cover .fake-cont {
@@ -48,8 +52,14 @@
 		position: relative;
 		
 		width: 70rem;
-		height: 17rem;
+		height: 20rem;
 		max-width: 100%;
+
+		border-radius: 5px;
+	}
+
+	#sub-cover .show-board {
+		border: 1px solid rgba(0, 0, 0, 0.08);
 	}
 
 	#sub-cover .push-board {
@@ -76,16 +86,43 @@
 
 		padding-left: 0.5rem;
 	}
+
+	@media only screen and (max-width: 768px) {
+		#sub-cover {
+			padding: 1rem;
+		}
+	}
 </style>
 
 <script>
 	function init(main, args, show, cont) {
 		require([
-			"com/env", "com/util"
-		], function (env, util) {
+			"com/env", "com/util", "com/pboard"
+		], function (env, util, pboard) {
 			var tbar = env.get("tbar");
 			tbar.setTitle("Foci");
 			// tbar.setStyle("light-simple");
+
+			/* tmp settings */
+			var show_board = main.find(".show-board");
+			pboard.init(show_board, [
+				{
+					url: "img/cover1.jpg"
+				},
+
+				{
+					url: "img/cover2.jpg"
+				},
+
+				{
+					url: "img/cover3.jpg"
+				},
+
+				{
+					url: "img/tmp2.jpg"
+				}
+			]);
+
 			show(true);
 		});
 	}
