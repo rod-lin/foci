@@ -40,23 +40,31 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 			<div class='ui basic modal com-login'> \
 				<div class='exdim'></div> \
 				<form class='ui form'> \
-					<div class='avatar' style='background-image: url(\"/img/deficon.jpg\");'></div> \
-					<div class='field' style='margin-bottom: 1.5rem !important;'> \
-						<div class='field'><input class='uname' style='border-radius: 3px 3px 0 0; margin-bottom: 1px;'></div> \
-						<div class='vercode-field'><div class='ui grid'> \
-							<div class='nine wide column password-col field' style='padding-right: 0;'> \
-								<input class='vercode' style='border-radius: 0 0 0 3px;'> \
-							</div> \
-							<div class='seven wide column get-code-col' style='padding-left: 1px;'> \
-								<button class='ui basic button fluid vercode-btn' style='border-radius: 0; height: 100%;' type='button'>Verify</button> \
-							</div> \
-						</div></div> \
-						<div class='field'><input class='passwd' type='password' style='border-radius: 0 0 3px 3px; margin-top: 1px;'></div> \
+					<div class='top-banner'> \
+						<div class='banner-cont'> \
+							<div style='font-weight: bold;'>Foci</div> \
+							<div style='font-size: 60%; margin-top: 0.8rem;'>Experience worths sharing</div> \
+						</div> \
 					</div> \
-					<div class='ui buttons'> \
-						<button class='reg ui button' type='button'>Register</button> \
-						<div class='or' data-text='or' type='button'></div> \
-						<button class='login ui positive button' type='button'>Login</button> \
+					<!--div class='avatar' style='background-image: url(\"/img/deficon.jpg\");'></div--> \
+					<div class='form-wrap'> \
+						<div class='field' style='margin-bottom: 2rem !important;'> \
+							<div class='field'><input class='uname' style='border-radius: 3px 3px 0 0; margin-bottom: 1px;'></div> \
+							<div class='vercode-field'><div class='ui grid'> \
+								<div class='nine wide column password-col field' style='padding-right: 0;'> \
+									<input class='vercode' style='border-radius: 0 0 0 3px;'> \
+								</div> \
+								<div class='seven wide column get-code-col' style='padding-left: 1px;'> \
+									<button class='ui basic button fluid vercode-btn' style='border-radius: 0; height: 100%;' type='button'>Verify</button> \
+								</div> \
+							</div></div> \
+							<div class='field'><input class='passwd' type='password' style='border-radius: 0 0 3px 3px; margin-top: 1px;'></div> \
+						</div> \
+						<div class='ui fluid buttons'> \
+							<button class='reg ui button' type='button'>Register</button> \
+							<div class='or' data-text='or' type='button'></div> \
+							<button class='login ui positive button' type='button'>Login</button> \
+						</div> \
 					</div> \
 				</form> \
 			</div> \

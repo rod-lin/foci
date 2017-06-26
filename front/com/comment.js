@@ -57,7 +57,7 @@ define([
 			");
 
 			rating.init(comm.find(".ev-rating"), info.rating || 0);
-			var ava = avatar.init(comm.find(".avatar"), {}, { radius: "5px", shadow: "0 0 1px rgba(0, 0, 0, 0.3)" });
+			var ava = avatar.init(comm.find(".avatar"), { uuid: info.uuid }, { radius: "5px", shadow: "0 0 1px rgba(0, 0, 0, 0.3)" });
 
 			var voted = info.upvote ? info.upvote.length : 0;
 

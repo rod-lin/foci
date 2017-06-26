@@ -836,8 +836,8 @@
 								fields.favtag = info.favtag;
 
 								event.setDom(event_tmp, {
-									title: lang.msg("$front.sub.profile.template"),
-									descr: lang.msg("$front.sub.profile.custom_event_prompt"),
+									title: info.title || fields.title,
+									descr: info.descr || fields.descr,
 									cover: info.cover
 								}, {
 									editTag: true,
@@ -853,7 +853,10 @@
 
 									onTagChange: function (tags) {
 										fields.favtag = tags;
-									}
+									},
+
+									max_descr_len: 64,
+									max_title_len: 32
 								});
 
 								return fields.cover;

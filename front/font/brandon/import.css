@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+@font-face {
+	font-family: "Brandon";
+	src: url("brandon.woff2") format("woff2"),
+		 url("brandon.woff") format("woff"),
+		 url("brandon.ttf") format("truetype"),
+		 url("brandon.eot") format("embedded-opentype"),
+		 url("brandon.svg") format("svg"),
+		 url("brandon.otf") format("opentype");
+	font-weight: normal;
+	font-style: normal;
+}

@@ -9,6 +9,9 @@
 					<div class="location"><i class="map outline icon"></i><span></span></div>
 					<div class="date"><i class="calendar outline icon"></i><span></span></div>
 					<div class="descr"></div>
+					<div class="col-shadow">
+						<div class="show-more-btn">More</div>
+					</div>
 				</div>
 			</div>
 			<div class="box pad" style="margin-top: 1rem;">
@@ -236,6 +239,8 @@
 
 		margin-bottom: 1rem;
 		padding: 0 2rem;
+
+	    word-break: break-all;
 	}
 
 	#sub-event>.cont .date,
@@ -255,6 +260,48 @@
 		text-align: left;
 		margin-top: 1.5rem;
 		line-height: 150%;
+
+	    word-break: break-all;
+	}
+
+	#sub-event>.cont .descr.collapse {
+		height: 15rem;
+		overflow: hidden;
+	}
+
+	#sub-event>.cont .col-shadow {
+		position: absolute;
+		top: 0; left: 0;
+
+		display: none;
+
+		height: 100%;
+		width: 100%;
+
+		pointer-events: none;
+
+		box-shadow: 0 -4em 1.5em rgba(255, 255, 255, 1) inset;
+	}
+
+	#sub-event>.cont .descr.collapse+.col-shadow {
+		display: block;
+	}
+
+	#sub-event>.cont .show-more-btn {
+		position: absolute;
+		bottom: 1.5rem;
+		pointer-events: auto;
+
+		width: 100%;
+
+		color: rgba(100, 100, 100, 0.7);
+		cursor: pointer;
+
+		text-align: center;
+	}
+
+	#sub-event>.cont .show-more-btn:hover {
+		color: rgba(100, 100, 100, 1);
 	}
 
 	#sub-event>.cont .scover {
@@ -275,7 +322,7 @@
 	#sub-event>.cont .cont-box {
 		display: inline-block;
 
-		min-width: 60%;
+		width: 60rem;
 		max-width: 90%;
 
 		text-align: center;
@@ -469,6 +516,14 @@
 				cont.find(".date span").html(parsed.date);
 
 				cont.find(".detail").html(parsed.detail);
+
+				cont.find(".show-more-btn").click(function () {
+					cont.find(".descr").removeClass("collapse");
+				});
+
+				if (parsed.descr.length > 256) {
+					cont.find(".descr").addClass("collapse");
+				}
 
 				map.embed(main.find(".bmap"), function (bmap) {
 					if (parsed.loclng && parsed.loclat)
