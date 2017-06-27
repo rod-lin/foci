@@ -144,15 +144,25 @@ exports.uuid = async (uuid) => {
 	return new User(found);
 };
 
+var lname_valid = /^[0-9a-zA-Z_-]+$/g;
+
+exports.checkNewUserName = async (lname) => {
+	var col = await db.col("user");
+
+	if (!lname_valid.test(lname))
+		throw new err.Exc("$core.invalid_user_name");
+
+	var found = !!await col.findOne(User.query.lname(lname));
+	
+	if (found)
+		throw new err.Exc("$core.dup_user_name");
+};
+
 // passwd is clear text
 exports.newUser = async (dname, lname, passwd) => {
 	var col = await db.col("user");
 
-	var found = await col.findOne(User.query.lname(lname));
-	
-	if (found) {
-		throw new err.Exc("$core.dup_user_name");
-	}
+	await exports.checkNewUserName(lname);
 
 	var uuid = await uid.genUID("uuid");
 	var passwd = util.md5(passwd);

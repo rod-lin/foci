@@ -77,7 +77,8 @@ var conf = module.exports = {
 			user: "user",
 			event: "event",
 			uid: "uid",
-			file: "file"
+			file: "file",
+			pm: "pm"
 		}
 	},
 

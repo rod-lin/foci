@@ -70,6 +70,7 @@ module.exports = {
 
 		"core.dup_user_name": "duplicated user login name",
 		"core.wrong_user_passwd": "wrong user name or password",
+		"core.invalid_user_name": "invalid user name",
 
 		"core.session_timeout": "session timeout",
 

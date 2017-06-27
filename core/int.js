@@ -65,6 +65,10 @@ var _smsg = {};
 _smsg.vercode = util.route(async env => {
 	var args = util.checkArg(env.query, { "phone": "string" });
 
+	await user.checkNewUserName(args.phone);
+
+	// TODO: check phone reg
+
 	if (args.phone.length !== 11)
 		throw new err.Exc("$core.smsg.wrong_phone_format");
 
