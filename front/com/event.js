@@ -6,12 +6,12 @@ define([
 	"com/avatar", "com/env", "com/upload",
 	"com/login", "com/map", "com/tagbox",
 	"com/rating", "com/progress", "com/sortby",
-	"com/editable", "com/tip"
+	"com/editable", "com/tip", "com/lang"
 ], function (
 	xfilt, waterfall, util, avatar,
 	env, upload, login, map, tagbox,
 	rating, progress, sortby, editable,
-	tip
+	tip, lang
 ) {
 	var $ = jQuery;
 	foci.loadCSS("com/event.css");
@@ -47,15 +47,15 @@ define([
 				<div class="status-shadow"> \
 					<div class="accept prompt"> \
 						<i class="check circle icon"></i> \
-						<span class=>Accepted</span> \
+						<span class="lang" data-replace="$front.com.event.accepted">Accepted</span> \
 					</div> \
 					<div class="decline prompt"> \
 						<i class="remove circle icon"></i> \
-						<span class=>Declined</span> \
+						<span class="lang" data-replace="$front.com.event.declined">Declined</span> \
 					</div> \
 					<div class="pending prompt"> \
 						<i class="ellipsis horizontal icon"></i> \
-						<span class=>Pending</span> \
+						<span class="lang" data-replace="$front.com.event.pending">Pending</span> \
 					</div> \
 				</div> \
 			</div> \
@@ -75,6 +75,8 @@ define([
 				<div class="ext-btn-set"></div> \
 			</div> \
 		</div>');
+
+		lang.update(main);
 
 		main.find(".star.icon").popup({
 			position: "left center"
@@ -484,9 +486,9 @@ define([
 			<div class='com-eqview ui small modal'> \
 				<div style='position: relative;'> \
 					<div class='cover' style='border-radius: 3px 3px 0 0;'></div> \
-					<div class='cover-edit'>Change cover</div> \
+					<div class='cover-edit lang' data-replace='$front.com.event.change_cover'>Change cover</div> \
 					<div class='logo-cont'> \
-						<div class='logo'><div>Change logo</div></div> \
+						<div class='logo'><div class='lang' data-replace='$front.com.event.change_logo'>Change logo</div></div> \
 						<div class='title'></div><br> \
 						<div class='rating'></div><br> \
 						<div class='detail'><i class='map outline icon'></i><span class='location'></span></div> \
@@ -503,14 +505,15 @@ define([
 						<div class='descr'> \
 						</div> \
 						<div class='tagbox' style='margin-top: 0;'></div> \
-						<!--div class='ui horizontal divider'>organizer</div> \
-						<div class='orgs'> \
+						<!--div class='orgs'> \
 						</div--> \
 					</div> \
-					<button class='ui button more' style='width: 100%; border-radius: 0 0 3px 3px; height: 4rem; opacity: 0.7;'>MORE</button> \
+					<button class='ui button more lang' data-replace='$front.com.event.more' style='width: 100%; border-radius: 0 0 3px 3px; height: 4rem; opacity: 0.7;'>MORE</button> \
 				</div> \
 			</div> \
 		");
+
+		lang.update(main);
 
 		var tgbox = null;
 
@@ -552,38 +555,38 @@ define([
 			var fill = util.fill();
 			orgs.html(fill);
 
-			if (info.org) {
-				var size;
+			// if (info.org) {
+			// 	var size;
 
-				switch (info.org.length) {
-					case 1: size = "3em"; break;
-					case 2: size = "2.5em"; break;
-					default: size = "2em";
-				}
+			// 	switch (info.org.length) {
+			// 		case 1: size = "3em"; break;
+			// 		case 2: size = "2.5em"; break;
+			// 		default: size = "2em";
+			// 	}
 
-				for (var i = 0; i < info.org.length; i++) {
-					foci.get("/user/info", { uuid: info.org[i] }, function (suc, dat) {
-						ava = $("<div class='org'></div>");
-						if (!suc) {
-							util.emsg(dat);
-							dat = null;
-						}
+			// 	for (var i = 0; i < info.org.length; i++) {
+			// 		foci.get("/user/info", { uuid: info.org[i] }, function (suc, dat) {
+			// 			ava = $("<div class='org'></div>");
+			// 			if (!suc) {
+			// 				util.emsg(dat);
+			// 				dat = null;
+			// 			}
 
-						avatar.init(ava, dat, {
-							size: size,
-							onClick: function () {
-								main.modal("hide all");
-							}
-						});
+			// 			avatar.init(ava, dat, {
+			// 				size: size,
+			// 				onClick: function () {
+			// 					main.modal("hide all");
+			// 				}
+			// 			});
 
-						fill.remove();
-						orgs.prepend(ava);
-					});
-				}
-			} else {
-				fill.remove();
-				orgs.html("<div class='tip'>no organizer</div>");
-			}
+			// 			fill.remove();
+			// 			orgs.prepend(ava);
+			// 		});
+			// 	}
+			// } else {
+			// 	fill.remove();
+			// 	orgs.html("<div class='tip'>no organizer</div>");
+			// }
 
 			if (info.favtag) {
 				util.await(function () { return tgbox !== null; }, function () {

@@ -42,8 +42,8 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 				<form class='ui form'> \
 					<div class='top-banner'> \
 						<div class='banner-cont'> \
-							<div style='font-weight: bold;'>Foci</div> \
-							<div style='font-size: 60%; margin-top: 0.8rem;'>Experiences worth sharing</div> \
+							<div style='font-weight: bold;' class='lang' data-replace='$core.foci'>Foci</div> \
+							<div style='font-size: 60%; margin-top: 0.8rem;' class='lang' data-replace='$front.com.login.logo_prompt'>Experiences worth sharing</div> \
 						</div> \
 					</div> \
 					<!--div class='avatar' style='background-image: url(\"/img/deficon.jpg\");'></div--> \
@@ -55,20 +55,22 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 									<input class='vercode' style='border-radius: 0 0 0 3px;'> \
 								</div> \
 								<div class='seven wide column get-code-col' style='padding-left: 1px;'> \
-									<button class='ui basic button fluid vercode-btn' style='border-radius: 0; height: 100%;' type='button'>Verify</button> \
+									<button class='ui basic button fluid vercode-btn lang' style='border-radius: 0; height: 100%;' type='button' data-replace='$front.com.login.verify'>Verify</button> \
 								</div> \
 							</div></div> \
 							<div class='field'><input class='passwd' type='password' style='border-radius: 0 0 3px 3px; margin-top: 1px;'></div> \
 						</div> \
 						<div class='ui fluid buttons'> \
-							<button class='reg ui button' type='button'>Register</button> \
+							<button class='reg ui button lang' type='button' data-replace='$front.com.login.register'>Register</button> \
 							<div class='or' data-text='or' type='button'></div> \
-							<button class='login ui positive button' type='button'>Login</button> \
+							<button class='login ui positive button lang' type='button' data-replace='$front.com.login.login'>Login</button> \
 						</div> \
 					</div> \
 				</form> \
 			</div> \
 		");
+
+		lang.update(main);
 
 		var uname_input = main.find(".uname");
 		var passwd_input = main.find(".passwd");
@@ -88,11 +90,11 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 			var show = main.find(".form").toggleClass("show-reg").hasClass("show-reg");
 			
 			if (show) {
-				login_btn.off("click", loginProc).click(regFinishProc).html("Finish");
-				main.find(".reg.button").html("Back");
+				login_btn.off("click", loginProc).click(regFinishProc).html(lang.msg("$front.com.login.finish"));
+				main.find(".reg.button").html(lang.msg("$front.com.login.back"));
 			} else {
-				login_btn.click(loginProc).off("click", regFinishProc).html("Login");
-				main.find(".reg.button").html("Register");
+				login_btn.click(loginProc).off("click", regFinishProc).html(lang.msg("$front.com.login.login"));
+				main.find(".reg.button").html(lang.msg("$front.com.login.register"));
 			}
 		});
 

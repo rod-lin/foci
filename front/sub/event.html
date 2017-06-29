@@ -10,12 +10,12 @@
 					<div class="date"><i class="calendar outline icon"></i><span></span></div>
 					<div class="descr"></div>
 					<div class="col-shadow">
-						<div class="show-more-btn">More</div>
+						<div class="show-more-btn lang" data-replace='$front.sub.event.show_more'>More</div>
 					</div>
 				</div>
 			</div>
 			<div class="box pad" style="margin-top: 1rem;">
-				<div class="sub-title">Detail</div>
+				<div class="sub-title lang" data-replace="$front.sub.event.detail">Detail</div>
 				<div class="detail" style="margin-top: 1rem; text-align: left;">
 					<img class="com-util-cont-fill" src="img/paragraph.png"></img>
 				</div>
@@ -25,7 +25,7 @@
 					<div class="ui dimmer">
 						<div class="content">
 							<div class="center">
-								<div class="ui inverted button view-btn">View</div>
+								<div class="ui inverted button view-btn lang" data-replace="$front.sub.event.view">View</div>
 							</div>
 						</div>
 					</div>
@@ -73,7 +73,7 @@
 			<div class="row">
 				<div class="col col-7 col-mid-full">
 					<div class="box pad">
-						<div class="sub-title">Organizers</div>
+						<div class="sub-title lang" data-replace="$front.sub.event.organizer">Organizers</div>
 						<div class="org" style="margin-top: 1rem;">
 							<img class="com-util-cont-fill" src="img/paragraph.png"></img>
 							<img class="com-util-cont-fill" src="img/paragraph.png"></img>
@@ -82,26 +82,26 @@
 					</div>
 				</div><div class="col col-3 col-mid-full box-set">
 					<div class="box pad">
-						<div class="apply-prompt">Apply for</div>
+						<div class="apply-prompt lang" data-replace="$front.sub.event.apply_for">Apply for</div>
 					</div>
 					<div class="box pad apply-appcent btn" style=" margin-top: 0.2rem; background: #34495E; color: white; display: none;">
 						<div class="ui inverted loader"></div>
-						<span>Application center</span>
+						<span class="lang" data-replace="$front.sub.event.app_cent">Application center</span>
 					</div>
 					<div class="box pad apply-staff btn" style=" margin-top: 0.2rem; background: #3498DB; color: white;">
 						<div class="ui inverted loader"></div>
-						<span>Staff</span>
+						<span class="lang" data-replace="$front.sub.event.staff">Staff</span>
 					</div>
 					<div class="box pad apply-partic btn" style="margin-top: 0.2rem; background: #2ECC71; color: white;">
 						<div class="ui inverted loader"></div>
-						<span>Participant</span>
+						<span class="lang" data-replace="$front.sub.event.partic">Participant</span>
 					</div>
 				</div>
 			</div>
 
 			<div style="overflow: hidden; padding: 0 5% 3px 5%; width: 110%; margin-left: -5%;">
 				<div class="box" style="margin-top: 1rem; width: 100%;">
-					<div class="sub-title" style="padding: 2rem 2rem 0 2rem;">Comments</div>
+					<div class="sub-title lang" data-replace="$front.sub.event.comments" style="padding: 2rem 2rem 0 2rem;">Comments</div>
 					<div class="comment" style="margin-top: 1rem;">
 						<!-- <img class="com-util-cont-fill" src="img/paragraph.png"></img>
 						<img class="com-util-cont-fill" src="img/paragraph.png"></img>
@@ -118,7 +118,7 @@
 			<div class="date"><i class="calendar icon"></i><span>loading</span></div>
 			<div class="location"><i class="map icon"></i><span>loading</span></div>
 			<div class="title">(untitled)</div>
-			<div class="tip">Click for more</div>
+			<div class="tip lang" data-replace="$front.sub.event.click_for_more">Click for more</div>
 		</div>
 		<!-- <div class="ui loader active"></div> -->
 	</div>

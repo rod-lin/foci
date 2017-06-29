@@ -613,7 +613,7 @@
 								},
 
 								cont: cont,
-								no_more_prompt: lang.msg("$front.sub.profile.no_more_result")
+								no_more_prompt: m("$front.sub.profile.no_more_result")
 							}
 						}, config));
 					}
@@ -625,7 +625,7 @@
 
 				var tabs = {
 					"applied": {
-						name: lang.msg("$front.sub.profile.applied").capital(),
+						name: m("$front.sub.profile.applied").capital(),
 						onShow: function (show) {
 							tbar.setTitle("Profile", info.dname, "Applied");
 							eventTabOnShow("applied", false, undefined, null, show);
@@ -633,7 +633,7 @@
 					},
 
 					"org": {
-						name: lang.msg("$front.sub.profile.organized").capital(),
+						name: m("$front.sub.profile.organized").capital(),
 						onShow: function (show) {
 							tbar.setTitle("Profile", info.dname, "Organized");
 							eventTabOnShow("org", false, undefined, {
@@ -748,7 +748,7 @@
 								fields.title = info.title ? info.title : "";
 								fields.descr = info.descr ? info.descr : "";
 
-								tb.getItem("new").html(lang.msg("$front.sub.profile.save").capital())
+								tb.getItem("new").html(m("$front.sub.profile.save").capital())
 									.off("click", nextStep); // avoid duplication
 
 								util.nextTick(function () { // avoid bubbling
@@ -875,7 +875,7 @@
 										}
 									});
 								} else {
-									util.ask(lang.msg("$front.sub.profile.no_selected($front.sub.profile.cover)$front.sub.profile.period $front.sub.profile.sure_to_leave?").capital(), function (suc) {
+									util.ask(m("$front.sub.profile.no_selected($front.sub.profile.cover)$front.sub.profile.period $front.sub.profile.sure_to_leave?").capital(), function (suc) {
 										if (suc) {
 											// new_tab.find(".cover-step").addClass("completed");
 											cb(true);
@@ -967,7 +967,7 @@
 										}
 									});
 								} else {
-									util.ask(lang.msg("$front.sub.profile.no_selected($front.sub.profile.location)$front.sub.profile.period $front.sub.profile.sure_to_leave?").capital(), function (suc) {
+									util.ask(m("$front.sub.profile.no_selected($front.sub.profile.location)$front.sub.profile.period $front.sub.profile.sure_to_leave?").capital(), function (suc) {
 										if (suc) {
 											// new_tab.find(".loc-step").addClass("completed");
 											cb(true);
@@ -1139,7 +1139,7 @@
 
 							onInit: function (info) {
 								// reset publish message
-								setPublishMsg(lang.msg("$front.sub.profile.publish_event").capital());
+								setPublishMsg(m("$front.sub.profile.publish_event").capital());
 
 								new_tab.find(".ev-content .protocol .publish-btn").removeClass("disabled");
 								published = false;
@@ -1297,7 +1297,7 @@
 						changed = {};
 
 						tb.getItem("new").off("click", nextStep);
-						tb.getItem("new").html(lang.msg("$front.sub.profile.new").capital());
+						tb.getItem("new").html(m("$front.sub.profile.new").capital());
 						main.find(".unpublish-btn").removeClass("disabled");
 						fields = {};
 						// new_tab.find(".ev-step .step").off("click");
@@ -1366,7 +1366,7 @@
 									btn.addClass("disabled");
 									main.find(".unpublish-btn").removeClass("disabled");
 									published = true;
-									setPublishMsg(lang.msg("$front.sub.profile.success! $front.sub.profile.you_can_go_tab_to_view($front.sub.profile.organized)").capital());
+									setPublishMsg(m("$front.sub.profile.success! $front.sub.profile.you_can_go_tab_to_view($front.sub.profile.organized)").capital());
 								} else {
 									util.emsg(dat);
 								}
@@ -1379,7 +1379,7 @@
 					initDraft();
 
 					tabs["draft"] = {
-						name: lang.msg("$front.sub.profile.draft").capital(),
+						name: m("$front.sub.profile.draft").capital(),
 						onShow: function (show) {
 							tbar.setTitle("Profile", info.dname, "Draft");
 							eventTabOnShow("draft", true, function (info) {
@@ -1390,7 +1390,7 @@
 					};
 
 					tabs["new"] = {
-						name: lang.msg("$front.sub.profile.new").capital(),
+						name: m("$front.sub.profile.new").capital(),
 						float: "right",
 						style: "green",
 

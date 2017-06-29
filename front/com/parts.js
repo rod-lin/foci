@@ -2,7 +2,7 @@
 
 "use strict";
 
-define([ "com/util", "com/progress" ], function (util, progress) {
+define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lang) {
 	var $ = jQuery;
 	foci.loadCSS("com/parts.css");
 
@@ -45,6 +45,8 @@ define([ "com/util", "com/progress" ], function (util, progress) {
 						if (suc) {
 							prog.complete();
 							setTimeout(prog.hide, 1000);
+
+							lang.update(main);
 						} else {
 							prog.err();
 							setTimeout(prog.hide, 2000);

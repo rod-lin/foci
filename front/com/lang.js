@@ -53,7 +53,7 @@ define(function () {
 
 			if (i == msg.length || msg[i] != "(") {
 				if (def.hasOwnProperty(res[1])) {
-					ret += msg.substring(beg, res.index) + def[res[1]];
+					ret += msg.substring(beg, res.index) + expand(def[res[1]], def, em);
 					beg = i;
 				} else {
 					err("cannot find id '" + res[1] + "' in the definitions");
@@ -97,26 +97,32 @@ define(function () {
 				} else {
 					if (def.hasOwnProperty(res[1])) {
 						for (var j = 0; j < arg.length; j++) {
-							arg[j] = expand(arg[j], def);
+							arg[j] = expand(arg[j], def, em);
 							// alert(arg[j]);
 						}
 
 						var prompt = def[res[1]];
-						var num, nres;
 						var subt = "";
-						var subi = 0;
 
-						while (nres = reg_num.exec(prompt)) {
-							num = parseInt(nres[1]) - 1;
-							if (num < arg.length) {
-								subt += prompt.substring(subi, nres.index) + arg[num];
-								subi = nres.index + nres[0].length;
-							} else {
-								err("failed to subtitute $" + (num + 1) + ": too less argument(definition '" + prompt + "')");
+						if (typeof prompt === "function") {
+							subt = expand(prompt.apply(undefined, arg), def, em);
+						} else {
+							var num, nres;
+							var subi = 0;
+
+							while (nres = reg_num.exec(prompt)) {
+								num = parseInt(nres[1]) - 1;
+								if (num < arg.length) {
+									subt += prompt.substring(subi, nres.index) + arg[num];
+									subi = nres.index + nres[0].length;
+								} else {
+									err("failed to subtitute $" + (num + 1) + ": too less arguments(definition '" + prompt + "')");
+								}
 							}
-						}
 
-						subt += prompt.substring(subi);
+							subt += prompt.substring(subi);
+							subt = expand(subt, def, em);
+						}
 
 						ret += msg.substring(beg, res.index) + subt;
 						beg = i;
@@ -141,7 +147,15 @@ define(function () {
 		"def.failed_parse_form": "failed to parse form",
 		"def.illegal_json": "illegal JSON format",
 		"def.missing_n_field": "missing $1 field(s)",
-		"def.register_suc": "success, automatically login now"
+		"def.register_suc": "success, automatically login now",
+		
+		"nat.all_cap": function (str) {
+			return str.toUpperCase();
+		},
+
+		"nat.cap": function (str) {
+			return str[0].toUpperCase() + str.substring(1);
+		}
 	};
 
 	function msg(msg) {
@@ -163,9 +177,32 @@ define(function () {
 		});
 	}
 
+	function update(query) {
+		var dom = $(query).find(".lang");
+
+		dom.each(function (n, el) {
+			el = $(el);
+			replace = el.attr("data-replace");
+
+			if (replace) {
+				var suc = true;
+				var res = expand(replace, dict, function (err) {
+					console.log(err);
+					console.log("replace canceled");
+					suc = false;
+				});
+
+				if (suc) {
+					el.html(res);
+				}
+			}
+		});
+	}
+
 	return {
 		msg: msg,
 		loadDict: loadDict,
-		expand: expand
+		expand: expand,
+		update: update
 	};
 });

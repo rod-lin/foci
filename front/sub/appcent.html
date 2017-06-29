@@ -6,13 +6,13 @@
 				<div class="step link">
 					<i class="hand paper icon"></i>
 					<div class="content">
-						<div class="title">Staff</div>
+						<div class="title lang" data-replace="$front.sub.appcent.staff">Staff</div>
 					</div>
 				</div>
 				<div class="step link">
 					<i class="users icon"></i>
 					<div class="content">
-						<div class="title">Participant</div>
+						<div class="title lang" data-replace="$front.sub.appcent.partic">Participant</div>
 					</div>
 				</div>
 			</div>
@@ -25,7 +25,7 @@
 				<thead></thead>
 				<tbody></tbody>
 			</table>
-			<div class="no-more">no application</div>
+			<div class="no-more lang" data-replace="$front.sub.appcent.no_app">no application</div>
 		</div>
 
 		<div class="tab">
@@ -33,7 +33,7 @@
 				<thead></thead>
 				<tbody></tbody>
 			</table>
-			<div class="no-more">no application</div>
+			<div class="no-more lang" data-replace="$front.sub.appcent.no_app">no application</div>
 		</div>
 	</div>
 </div>
@@ -192,13 +192,13 @@
 
 	@media only screen and (max-width: 640px) {
 		#sub-appcent .left-panel {
-			width: 5rem;
+			width: 4rem;
 			font-size: 50%;
 		}
 
 		#sub-appcent .left-panel .logo {
-			width: 3.5rem;
-			height: 3.5rem;
+			width: 3rem;
+			height: 3rem;
 		}
 
 		#sub-appcent .tab-set .step {
@@ -210,7 +210,7 @@
 		}
 
 		#sub-appcent .tabs {
-			left: 5em;
+			left: 4em;
 		}
 
 		#sub-appcent .tabs .option-bar {
@@ -369,7 +369,11 @@
 						<div class='ui fitted checkbox check-all'> \
 							<input type='checkbox'><label></label> \
 						</div> \
-					", "Status", "User", "Apply for" ];
+					",
+						"<span class='lang' data-replace='$front.sub.appcent.status'>Status</span>",
+						"<span class='lang' data-replace='$front.sub.appcent.user'>User</span>",
+						"<span class='lang' data-replace='$front.sub.appcent.apply_for'>Apply for</span>"
+					];
 
 					function headerList(fields) {
 						var ret = init_header.slice();
@@ -620,11 +624,26 @@
 											var checkall = $(header.find("th .checkbox")[0]);
 
 											// option bar
-											var accept = $("<button class='option-btn ui basic positive icon button' style='box-shadow: none !important;'><i class='check icon'></i>Accept</button>");
+											var accept = $(" \
+												<button class='option-btn ui basic positive icon button' style='box-shadow: none !important;'> \
+													<i class='check icon'></i> \
+													<span class='lang' data-replace='$front.sub.appcent.accept'>Accept</span> \
+												</button> \
+											");
 
-											var decline = $("<button class='option-btn ui basic negative icon button' style='box-shadow: none !important;'><i class='cancel icon'></i>Decline</button>");
+											var decline = $(" \
+												<button class='option-btn ui basic negative icon button' style='box-shadow: none !important;'> \
+													<i class='cancel icon'></i \
+													<span class='lang' data-replace='$front.sub.appcent.decline'>Decline</span> \
+												</button> \
+											");
 
-											var ntbtn = $("<button class='option-btn ui basic blue icon button' style='box-shadow: none !important;'><i class='bell outline icon'></i>Notice</button>");
+											var ntbtn = $(" \
+												<button class='option-btn ui basic blue icon button' style='box-shadow: none !important;'> \
+													<i class='bell outline icon'></i> \
+													<span class='lang' data-replace='$front.sub.appcent.notice'>Notice</span> \
+												</button> \
+											");
 
 											var opt = $("<div class='option-bar'> \
 												<span class='option-prompt'><span class='option-selnum'></span> application(s) selected</span> \
@@ -694,6 +713,8 @@
 											opt.prepend(ntbtn);
 											opt.prepend(decline);
 											opt.prepend(accept);
+
+											lang.update(opt);
 
 											rtab.parent().find(".float-header").prepend(opt);
 											opt.ready(function () {
