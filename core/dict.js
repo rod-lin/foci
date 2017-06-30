@@ -2,7 +2,9 @@
 
 "use strict";
 
-module.exports = {
+var util = require("./util");
+
+var dict = module.exports = {
 	"english": {
 		"impossible": "impossible: $1",
 		"unsupported": "there is a vital component($1) not supported by your browser",
@@ -123,6 +125,51 @@ module.exports = {
 		"front.sub.profile.template": "template",
 		"front.sub.profile.success": "success",
 
+		"front.sub.profile.new.info": "Info",
+		"front.sub.profile.new.info_subtitle": "Title and description",
+		"front.sub.profile.new.cover": "Cover",
+		"front.sub.profile.new.cover_subtitle": "Cover and tags",
+		"front.sub.profile.new.location": "Location",
+		"front.sub.profile.new.location_subtitle": "When and where",
+		"front.sub.profile.new.payment": "Payment",
+		"front.sub.profile.new.payment_subtitle": "Payment method",
+		"front.sub.profile.new.applicant": "Applicants",
+		"front.sub.profile.new.applicant_subtitle": "Application settings",
+		"front.sub.profile.new.detail": "Detail",
+		"front.sub.profile.new.detail_subtitle": "Additional info",
+		"front.sub.profile.new.publish": "Publish",
+		"front.sub.profile.new.publish_subtitle": "Publish event",
+		"front.sub.profile.new.other": "Other",
+		"front.sub.profile.new.other_subtitle": "Additional actions",
+
+		"front.sub.profile.new.title": "Title",
+		"front.sub.profile.new.descr": "Description",
+		"front.sub.profile.new.no_limit_in_def": "no limit in default",
+
+		"front.sub.profile.app_form": "Application forms",
+		"front.sub.profile.staff_form": "Staff form",
+		"front.sub.profile.partic_form": "Participant form",
+		"front.sub.profile.create": "Create",
+		"front.sub.profile.edit": "Edit",
+		"front.sub.profile.limitation": "Limitations",
+		"front.sub.profile.max_staff": "Max staff number",
+		"front.sub.profile.max_partic": "Max participant number",
+		"front.sub.profile.detail": "Details",
+		"front.sub.profile.trivial_notice": "Trivial notice",
+		"front.sub.profile.trivial_notice_prompt": "This notice will be shown on the event page",
+
+		"front.sub.profile.change_event_state": "Change event state",
+		"front.sub.profile.delete_event": "Delete event",
+		"front.sub.profile.delete_event.prompt": "ALL data will be lost. Only draft event can be deleted.<br>If you want to delete a public event, please contact us for human assistance.",
+		"front.sub.profile.delete_event_ask": "Are you sure to delete this event",
+		"front.sub.profile.delete": "Delete",
+		"front.sub.profile.help": "Help",
+		"front.sub.profile.unpublish": "Unpublish",
+		"front.sub.profile.unpublish_prompt": "Change this event to draft state.<br>All info will be saved, but other users will not be able to view this event.",
+
+		"front.sub.profile.event_deleted": "event deleted",
+		"front.sub.profile.event_unpublished": "event unpublished",
+
 		"front.sub.profile.basic": "basic",
 		"front.sub.profile.publish": "publish",
 		"front.sub.profile.location": "location",
@@ -181,9 +228,10 @@ module.exports = {
 
 		"front.com.login.back": "Back",
 		"front.com.login.finish": "Finish",
-	},
+	}
+};
 
-	"chinese": {
+dict["chinese"] = {}.extend(dict["english"]).extend({
 		"impossible": "impossible: $1",
 		"unsupported": "你的浏览器不支持一个关键组件($1)",
 
@@ -303,8 +351,50 @@ module.exports = {
 		"front.sub.profile.template": "模板",
 		"front.sub.profile.success": "成功",
 
-		"front.sub.profile.basic": "基本信息",
-		"front.sub.profile.publish": "发布",
+		"front.sub.profile.new.info": "信息",
+		"front.sub.profile.new.info_subtitle": "标题和描述",
+		"front.sub.profile.new.cover": "封面",
+		"front.sub.profile.new.cover_subtitle": "封面和标签",
+		"front.sub.profile.new.location": "地址",
+		"front.sub.profile.new.location_subtitle": "活动地址",
+		"front.sub.profile.new.payment": "付款",
+		"front.sub.profile.new.payment_subtitle": "支付方式",
+		"front.sub.profile.new.applicant": "申请者",
+		"front.sub.profile.new.applicant_subtitle": "申请设置",
+		"front.sub.profile.new.detail": "详细信息",
+		"front.sub.profile.new.detail_subtitle": "活动注意事项",
+		"front.sub.profile.new.publish": "发布",
+		"front.sub.profile.new.publish_subtitle": "发布活动",
+		"front.sub.profile.new.other": "其他",
+		"front.sub.profile.new.other_subtitle": "其他操作",
+
+		"front.sub.profile.app_form": "活动表格",
+		"front.sub.profile.staff_form": "工作人员表格",
+		"front.sub.profile.partic_form": "参与者表格",
+		"front.sub.profile.create": "创建",
+		"front.sub.profile.edit": "修改",
+		"front.sub.profile.limitation": "限制",
+		"front.sub.profile.max_staff": "最多工作人员",
+		"front.sub.profile.max_partic": "最多参与者",
+		"front.sub.profile.detail": "详细",
+		"front.sub.profile.trivial_notice": "详细信息",
+		"front.sub.profile.trivial_notice_prompt": "这些信息会在活动主页上显示",
+
+		"front.sub.profile.change_event_state": "改变活动状态",
+		"front.sub.profile.delete_event": "删除活动",
+		"front.sub.profile.delete_event.prompt": "所有数据都会丢失。只有草稿可以被删除。<br>如果你想删除一个已公开的活动，请联系Foci工作人员",
+		"front.sub.profile.delete_event_ask": "你确定要删除活动吗",
+		"front.sub.profile.delete": "删除",
+		"front.sub.profile.help": "帮助",
+		"front.sub.profile.unpublish": "下线",
+		"front.sub.profile.unpublish_prompt": "将活动改为草稿<br>所有信息将会保留，但用户将无法查看活动",
+		"front.sub.profile.new.title": "标题",
+		"front.sub.profile.new.descr": "描述",
+		"front.sub.profile.new.no_limit_in_def": "默认无限制",
+
+		"front.sub.profile.event_deleted": "活动已删除",
+		"front.sub.profile.event_unpublished": "活动已下线",
+
 		"front.sub.profile.location": "地点",
 		"front.sub.profile.cover": "封面",
 		"front.sub.profile.folllower": "followers",
@@ -361,5 +451,4 @@ module.exports = {
 
 		"front.com.login.back": "返回",
 		"front.com.login.finish": "完成",
-	}
-};
+});

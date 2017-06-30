@@ -182,7 +182,8 @@ define(function () {
 
 		dom.each(function (n, el) {
 			el = $(el);
-			replace = el.attr("data-replace");
+			var replace = el.attr("data-replace");
+			var attr = el.attr("data-attr");
 
 			if (replace) {
 				var suc = true;
@@ -193,16 +194,25 @@ define(function () {
 				});
 
 				if (suc) {
-					el.html(res);
+					if (attr) {
+						el.attr(attr, res);
+					} else el.html(res);
 				}
 			}
 		});
+	}
+
+	function inline(replace, cont) {
+		var ret = $("<span class='lang'></span>").attr("data-replace", replace).html(cont);
+		update(ret);
+		return ret;
 	}
 
 	return {
 		msg: msg,
 		loadDict: loadDict,
 		expand: expand,
-		update: update
+		update: update,
+		inline: inline
 	};
 });

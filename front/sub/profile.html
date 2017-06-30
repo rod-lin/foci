@@ -41,8 +41,8 @@
 			<div class="ev-content">
 				<!-- <div id="sub-profile-map" class="map"></div> -->
 				<div class="page page-info active">
-					<input class="ev-title input-no-style" placeholder="Title">
-					<textarea class="ev-descr input-no-style" placeholder="Description"></textarea>
+					<input class="ev-title input-no-style lang" data-replace="$front.sub.profile.new.title" data-attr="placeholder" placeholder="Title">
+					<textarea class="ev-descr input-no-style lang" data-replace="$front.sub.profile.new.descr" data-attr="placeholder" placeholder="Description"></textarea>
 				</div>
 				<div class="page page-cover" style="text-align: center; overflow: auto;"></div>
 				<div class="page page-loc need-width">
@@ -73,30 +73,30 @@
 						}
 					</style>
 					<form class="ui form">
-						<h3 class="ui top attached header">Application Forms</h3>
+						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.app_form">Application Forms</h3>
 						<div class="ui attached segment">
 							<div class="fields">
 								<div class="field">
-									<label>Staff Form</label>
-									<button class="ui blue button create-staff-form" type="button">Create/Edit</button>
+									<label class="lang" data-replace="$front.sub.profile.staff_form">Staff Form</label>
+									<button class="ui blue button create-staff-form lang" data-replace="$front.sub.profile.create_edit" type="button">Create/Edit</button>
 								</div>
 								<div class="field">
-									<label>Participant Form</label>
-									<button class="ui green button create-partic-form" type="button">Create/Edit</button>
+									<label class="lang" data-replace="$front.sub.profile.partic_form">Participant Form</label>
+									<button class="ui green button create-partic-form lang" data-replace="$front.sub.profile.create_edit" type="button">Create/Edit</button>
 								</div>
 							</div>
 						</div>
 
-						<h3 class="ui top attached header">Limitations</h3>
+						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.limitation">Limitations</h3>
 						<div class="ui attached segment">
 							<div class="fields">
 								<div class="field">
-									<label>Max Staff</label>
-									<input class="staff_limit" type="text" placeholder="No limit in default">
+									<label class="lang" data-replace="$front.sub.profile.max_staff">Max Staff</label>
+									<input class="staff_limit lang" data-replace="$front.sub.profile.new.no_limit_in_def" data-attr="placeholder" type="text" placeholder="No limit in default">
 								</div>
 								<div class="field">
-									<label>Max Participant</label>
-									<input class="partic_limit" type="text" placeholder="No limit in default">
+									<label class="lang" data-replace="$front.sub.profile.max_partic">Max Participant</label>
+									<input class="partic_limit lang" data-replace="$front.sub.profile.new.no_limit_in_def" data-attr="placeholder" type="text" placeholder="No limit in default">
 								</div>
 							</div>
 						</div>
@@ -104,12 +104,12 @@
 				</div>
 				<div class="page page-detail pad" style="text-align: left;">
 					<form class="ui form">
-						<h3 class="ui top attached header">Details</h3>
+						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.detail">Details</h3>
 						<div class="ui attached segment">
 							<div class="field">
 								<p>
-									<b>Trivial notice</b><br>
-									This notice will be shown on the event page
+									<b class="lang" data-replace="$front.sub.profile.trivial_notice">Trivial notice</b><br>
+									<span class="lang" data-replace="$front.sub.profile.trivial_notice_prompt">This notice will be shown on the event page</span>
 								</p>
 								<textarea class="ev-detail"></textarea>
 							</div>
@@ -139,28 +139,32 @@
 					</div>
 				</div>
 				<div class="page page-other pad" style="text-align: left;">
-					<h3 class="ui top attached header">
+					<h3 class="ui top attached header lang" data-replace="$front.sub.profile.change_event_state">
 						Change event state
 					</h3>
 					<div class="ui attached segment">
 						<p>
-							<b>Delete this event</b><br>
-							ALL data will be lost. Only draft event can be deleted.<br>
-							If you want to delete a public event, please contact us for human assistance.
+							<b class="lang" data-replace="$front.sub.profile.delete_event">Delete this event</b><br>
+							<span class="lang" data-replace="$front.sub.profile.delete_event.prompt">
+								ALL data will be lost. Only draft event can be deleted.<br>
+								If you want to delete a public event, please contact us for human assistance.
+							</span>
 						</p>
 						<div class="ui field">
-							<button class="ui red basic button delete-event-btn">Delete</button>
-							<button class="ui basic button">Help</button>
+							<button class="ui red basic button delete-event-btn lang" data-replace="$front.sub.profile.delete">Delete</button>
+							<button class="ui basic button lang" data-replace="$front.sub.profile.help">Help</button>
 						</div>
 					</div>
 					<div class="ui attached segment">
 						<p>
-							<b>Unpublish</b><br>
-							Change this event to draft state.<br>
-							All info will be saved, but other users will not be able to view this event.
+							<b class="lang" data-replace="$front.sub.profile.unpublish">Unpublish</b><br>
+							<span class="lang" data-replace="$front.sub.profile.unpublish_prompt">
+								Change this event to draft state.<br>
+								All info will be saved, but other users will not be able to view this event.
+							</span>
 						</p>
 						<div class="ui field">
-							<button class="ui red basic button unpublish-btn">Unpublish</button>
+							<button class="ui red basic button unpublish-btn lang" data-replace="$front.sub.profile.unpublish">Unpublish</button>
 						</div>
 					</div>
 				</div>
@@ -524,6 +528,7 @@
 				var right_bar = main.find(".right-bar");
 
 				var m = lang.msg;
+				var i = lang.inline;
 
 				left_bar.find(".dname").html(util.fill());
 				left_bar.find(".intro").html(util.fill());
@@ -737,9 +742,9 @@
 
 					var steps = {
 						info: {
-							title: "Info",
+							title: i("$front.sub.profile.new.info"),
 							icon: "info",
-							subtitle: "Title and description",
+							subtitle: i("$front.sub.profile.new.info_subtitle"),
 
 							page: main.find(".page.page-info"),
 							next: "cover",
@@ -808,9 +813,9 @@
 						},
 
 						cover: {
-							title: "Cover",
+							title: i("$front.sub.profile.new.cover"),
 							icon: "camera retro card",
-							subtitle: "Cover and logo",
+							subtitle: i("$front.sub.profile.new.cover_subtitle"),
 
 							page: main.find(".page.page-cover"),
 							next: "loc",
@@ -892,9 +897,9 @@
 						},
 
 						loc: {
-							title: "Location",
+							title: i("$front.sub.profile.new.location"),
 							icon: "map outline",
-							subtitle: "When and where",
+							subtitle: i("$front.sub.profile.new.location_subtitle"),
 
 							page: main.find(".page.page-loc"),
 							next: "pay",
@@ -980,18 +985,18 @@
 						},
 
 						pay: {
-							title: "Payment",
+							title: i("$front.sub.profile.new.payment"),
 							icon: "payment",
-							subtitle: "Payments method",
+							subtitle: i("$front.sub.profile.new.payment_subtitle"),
 
 							page: main.find(".page.page-pay"),
 							next: "apply",
 						},
 
 						apply: {
-							title: "Applicants",
+							title: i("$front.sub.profile.new.applicant"),
 							icon: "user outline",
-							subtitle: "Register forms",
+							subtitle: i("$front.sub.profile.new.applicant_subtitle"),
 
 							page: main.find(".page.page-apply"),
 							next: "detail",
@@ -1006,8 +1011,23 @@
 								// fields.apply_staff_lim = info.apply_staff_lim;
 								// fields.apply_partic_lim = info.apply_partic_lim;
 
+								if (info.apply_staff_form) {
+									main.find(".create-staff-form").attr("data-replace", "$front.sub.profile.edit");
+								} else {
+									main.find(".create-staff-form").attr("data-replace", "$front.sub.profile.create");
+								}
+
+								if (info.apply_partic_form) {
+									main.find(".create-partic-form").attr("data-replace", "$front.sub.profile.edit");
+								} else {
+									main.find(".create-partic-form").attr("data-replace", "$front.sub.profile.create");
+								}
+
+								lang.update(main.find(".page.page-apply"));
+
 								if (info.apply_staff_lim) {
 									main.find(".staff_limit").val(info.apply_staff_lim);
+
 								}
 
 								if (info.apply_partic_lim) {
@@ -1020,6 +1040,8 @@
 									var nform = formi.modal(fields.apply_staff_form || info.apply_staff_form || def_form);
 									nform.openEdit(function (saved) {
 										fields.apply_staff_form = saved;
+										main.find(".create-staff-form").attr("data-replace", "$front.sub.profile.edit");
+										lang.update(main.find(".page.page-apply"));
 									});
 								});
 
@@ -1027,6 +1049,8 @@
 									var nform = formi.modal(fields.apply_partic_form || info.apply_partic_form || def_form);
 									nform.openEdit(function (saved) {
 										fields.apply_partic_form = saved;
+										main.find(".create-partic-form").attr("data-replace", "$front.sub.profile.edit");
+										lang.update(main.find(".page.page-apply"));
 									});
 								});
 
@@ -1095,9 +1119,9 @@
 						},
 
 						detail: {
-							title: "Detail",
+							title: i("$front.sub.profile.new.detail"),
 							icon: "announcement",
-							subtitle: "Detail notice",
+							subtitle: i("$front.sub.profile.new.detail_subtitle"),
 
 							page: main.find(".page.page-detail"),
 							next: "pub",
@@ -1131,9 +1155,9 @@
 						},
 
 						pub: {
-							title: "Publish",
+							title: i("$front.sub.profile.new.publish"),
 							icon: "send outline",
-							subtitle: "Rules and protocols",
+							subtitle: i("$front.sub.profile.new.publish_subtitle"),
 
 							page: main.find(".page.page-pub"),
 
@@ -1149,20 +1173,20 @@
 						},
 
 						other: {
-							title: "Other",
+							title: i("$front.sub.profile.new.other"),
 							icon: "warning circle",
-							subtitle: "Deletion and state change",
+							subtitle: i("$front.sub.profile.new.other_subtitle"),
 
 							page: main.find(".page.page-other"),
 
 							onInit: function (info) {
 								main.find(".delete-event-btn").off("click").click(function () {
-									util.ask("Are you sure to delete this event?", function (ans) {
+									util.ask(m("$front.sub.profile.delete_event_ask?"), function (ans) {
 										if (ans) {
 											deleteEvent(euid, function (suc) {
 												if (suc) {
 													deleted = true;
-													util.emsg("event deleted");
+													util.emsg("$front.sub.profile.event_deleted");
 													tb.to("draft");
 												}	
 											});
@@ -1178,7 +1202,7 @@
 											euid: euid
 										}, function (suc, dat) {
 											if (suc) {
-												util.emsg("event unpublished", "info");
+												util.emsg("$front.sub.profile.event_unpublished", "info");
 												main.find(".unpublish-btn").addClass("disabled");
 											} else {
 												util.emsg(dat);
@@ -1270,11 +1294,15 @@
 									<div class="link step ' + k + '-step"> \
 										<i class="' + steps[k].icon + ' icon"></i> \
 										<div class="content"> \
-											<div class="title">' + steps[k].title + '</div> \
-											<div class="description">' + steps[k].subtitle + '</div> \
+											<div class="title"></div> \
+											<div class="description"></div> \
 										</div> \
 									</div> \
 								');
+
+								step.find(".title").html(steps[k].title);
+								step.find(".description").html(steps[k].subtitle);
+
 								new_tab.find(".ev-step .steps").append(step);
 								set(step, k);
 							}
