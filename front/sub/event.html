@@ -169,10 +169,6 @@
 
 	#sub-event .cover .left-corner.shadow {
 		position: absolute;
-		width: 100%;
-		height: 100%;
-		left: -100%;
-		bottom: -100%;
 	}
 
 	#sub-event .cover .left-corner {
@@ -675,17 +671,27 @@
 
 			// util.blur(main.find(".dim"), 10);
 
-			main.find(".cover").click(function () {
-				main.find(".cover").addClass("hide");
+			function hideCover(quick) {
+				if (quick === true)
+					main.find(".cover").remove();
+				else
+					main.find(".cover").addClass("hide");
+	
 				setTimeout(function () {
 					tbar.setStyle("shadowy");
 					$("body").addClass("padding-tbar");
 
-					setTimeout(function () {
+					util.nextTick(function () {
 						cont.addClass("show");
-					}, 0);
+					});
 				}, 400);
-			});
+			}
+
+			main.find(".cover").click(hideCover);
+
+			if (args[1] !== "true") {
+				hideCover(true);
+			}
 		});
 	}
 </script>
