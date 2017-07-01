@@ -452,20 +452,14 @@
 
 			// modules
 			var display = {};
+			var cover = main.children(".cover");
 
 			display.render = function (info) {
 				var parsed = event.parseInfo(info, { max_title_len: 25 });
 				
-				var cover = main.children(".cover");
 				var cont = main.children(".cont");
 
 				tbar.setTitle(parsed.title, parsed.date);
-
-				cover.ready(function () {
-					tbar.setStyle("simple");
-					$("body").removeClass("padding-tbar");
-					show(true);
-				});
 
 				cover.find(".title").html(parsed.title);
 				cover.find(".date span").html(parsed.date);
@@ -664,6 +658,7 @@
 			foci.get("/event/info", { euid: euid }, function (suc, dat) {
 				if (suc) {
 					display.render(dat);
+					show(true);
 				} else {
 					util.emsg(dat);
 				}
@@ -678,7 +673,7 @@
 					main.find(".cover").addClass("hide");
 	
 				setTimeout(function () {
-					tbar.setStyle("shadowy");
+					tbar.setStyle("");
 					$("body").addClass("padding-tbar");
 
 					util.nextTick(function () {
@@ -691,6 +686,11 @@
 
 			if (args[1] !== "true") {
 				hideCover(true);
+			} else {
+				cover.ready(function () {
+					tbar.setStyle("simple");
+					$("body").removeClass("padding-tbar");
+				});
 			}
 		});
 	}
