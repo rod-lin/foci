@@ -46,7 +46,7 @@ define([
 				<div class="menu-view"> \
 					<div class="menu-cont"> \
 						<i class="cancel icon"></i> \
-						<a class="menu-link" href="#">HOME</a> \
+						<a class="menu-link" href="#cover">HOME</a> \
 						<a class="menu-link" href="#search">PLAZA</a> \
 					</div> \
 				</div> \

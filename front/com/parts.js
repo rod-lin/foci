@@ -86,7 +86,14 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 			}
 		}
 
+		var jump_cb = [];
+
+		var cur_hash = null;
+
 		var hashchange = function () {
+			if (cur_hash === window.location.hash)
+				return;
+
 			var hash = window.location.hash.slice(1);
 			var args;
 			var name = "";
@@ -97,14 +104,34 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 				args = split.slice(1);
 			} else args = [ "" ];
 
-			if (config.onJump) {
-				if (config.onJump(name, args) === true)
-					return; // no need to jump
+			var change = function () {
+				cur_hash = window.location.hash;
+
+				if (config.onJump) {
+					if (config.onJump(name, args) === true)
+						return; // no need to jump
+				}
+
+				if (!hash.length) return;
+
+				load(name, null, args);
+				jump_cb = [];
+			};
+
+			var restore = function () {
+				window.location.hash = cur_hash;
+			};
+
+			for (var i = 0; i < jump_cb.length; i++) {
+				if (jump_cb[i](function (suc) {
+						if (suc) change();
+						else restore();
+					}) === false) {
+					return;
+				}
 			}
 
-			if (!hash.length) return;
-
-			load(name, null, args);
+			change();
 		};
 
 		if (window.location.hash !== undefined) {
@@ -116,7 +143,11 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 
 		return {
 			load: load,
-			refresh: hashchange
+			refresh: hashchange,
+			jump: function (cb) { // all jump events will be cleared after a successful jump
+				if (jump_cb.indexOf(cb) == -1)
+					jump_cb.push(cb);
+			}
 		};
 	}
 
