@@ -880,21 +880,13 @@
 											cb(false);
 										}
 									});
-								} else {
-									// util.ask(m("$front.sub.profile.no_selected($front.sub.profile.cover)$front.sub.profile.period $front.sub.profile.sure_to_leave?").capital(), function (suc) {
-									// 	if (suc) {
-									// 		// new_tab.find(".cover-step").addClass("completed");
-									// 		cb(true);
-									// 	} else {
-									// 		cb(false);
-									// 	}
-									// });
-									cb(true);
 								}
 
 								uploadChanges({
 									favtag: fields.favtag,
-								}, function (suc) {});
+								}, function (suc) {
+									cb(true);
+								});
 							}
 						},
 

@@ -57,7 +57,6 @@ define([
 			");
 
 			rating.init(comm.find(".ev-rating"), info.rating || 0);
-			var ava = avatar.init(comm.find(".avatar"), { uuid: info.uuid }, { radius: "5px", shadow: "0 0 1px rgba(0, 0, 0, 0.3)" });
 
 			var voted = info.upvote ? info.upvote.length : 0;
 
@@ -94,7 +93,7 @@ define([
 				foci.get("/user/info", { uuid: info.uuid }, function (suc, dat) {
 					if (suc) {
 						comm.find(".name").html(dat.dname);
-						ava.setAvatar(foci.download(dat.avatar));
+						avatar.init(comm.find(".avatar"), dat, { radius: "5px", shadow: "0 0 1px rgba(0, 0, 0, 0.3)" });
 					} else {
 						util.emsg(dat);
 					}
