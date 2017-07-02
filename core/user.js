@@ -144,12 +144,10 @@ exports.uuid = async (uuid) => {
 	return new User(found);
 };
 
-var lname_valid = /^[0-9a-zA-Z_-]+$/g;
-
 exports.checkNewUserName = async (lname) => {
 	var col = await db.col("user");
 
-	if (!lname_valid.test(lname))
+	if (!/^[0-9a-zA-Z_-]+$/g.test(lname))
 		throw new err.Exc("$core.invalid_user_name");
 
 	var found = !!await col.findOne(User.query.lname(lname));

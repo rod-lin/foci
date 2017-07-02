@@ -92,7 +92,7 @@
 	top: 0;
 	left: 0;
 	height: 4.7em;
-	padding: 1em;
+	padding: 1em 0;
 	transition: top 0.2s;
 }
 
@@ -133,6 +133,10 @@
 
 .com-tbar .banner {
 	top: 4.7em;
+	padding: 0 1rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .com-tbar.show-banner .banner-view {
@@ -280,6 +284,7 @@
 
 .com-tbar .avatar-popup .cont {
 	padding: 1em;
+	min-width: 13rem;
 }
 
 .com-tbar .avatar-util-box {

@@ -139,6 +139,6 @@ exports.sendGroup = async (euid, sender, uuids, info) => {
 	info.sender = euid;
 
 	for (var i = 0; i < uuids.length; i++) {
-		await exports.push(uuids[i], sender, info);
+		await exports.push(uuids[i], euid, info);
 	}
 };

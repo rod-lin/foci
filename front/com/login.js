@@ -77,9 +77,9 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 
 		function restore() {
 			main.find(".error").removeClass("error");
-			main.find(".uname").attr("placeholder", "phone number");
-			main.find(".passwd").attr("placeholder", "passwd");
-			main.find(".vercode").attr("placeholder", "code");
+			main.find(".uname").attr("placeholder", lang.msg("$front.com.login.phone_number"));
+			main.find(".passwd").attr("placeholder", lang.msg("$front.com.login.passwd"));
+			main.find(".vercode").attr("placeholder", lang.msg("$front.com.login.code"));
 		}
 
 		restore();
@@ -152,7 +152,7 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 					}
 				});
 			} else {
-				uname_input.attr("placeholder", "illegal phone number").parent().addClass("error");
+				uname_input.attr("placeholder", lang.msg("$front.com.login.illegal_phone")).parent().addClass("error");
 				uname_input.focus();
 			}
 
@@ -183,13 +183,13 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 			var ret = true;
 
 			if (!uname) {
-				uname_input.attr("placeholder", "user name cannot be empty").parent().addClass("error");
+				uname_input.attr("placeholder", lang.msg("$front.com.login.empty_name")).parent().addClass("error");
 				uname_input.focus();
 				ret = false;
 			}
 
 			if (!passwd) {
-				passwd_input.attr("placeholder", "password cannot be empty").parent().addClass("error");
+				passwd_input.attr("placeholder", lang.msg("$front.com.login.empty_passwd")).parent().addClass("error");
 				ret = false;
 			}
 

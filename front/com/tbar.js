@@ -4,8 +4,8 @@
 define([
 	"com/login", "com/xfilt", "com/util",
 	"com/env", "com/upload", "com/pm",
-	"com/notice"
-], function (login, xfilt, util, env, upload, pm, notice) {
+	"com/notice", "com/lang"
+], function (login, xfilt, util, env, upload, pm, notice, lang) {
 	var $ = jQuery;
 	foci.loadCSS("com/tbar.css");
 
@@ -38,7 +38,7 @@ define([
 									</div> \
 								</div> \
 							</div> \
-							<input class="prompt" placeholder="Type for surprise" type="text"> \
+							<input class="prompt lang" data-attr="placeholder" data-replace="$front.com.tbar.search_prompt" placeholder="Type for surprise" type="text"> \
 						</div> \
 						<i class="filter-btn filter link icon"></i> \
 					</div> \
@@ -80,8 +80,8 @@ define([
 							<div class="ui star mini rating bottom right" data-rating="4" data-max-rating="5"></div> \
 						</div> \
 						<div class="ui two bottom attached buttons"> \
-							<div class="ui basic button profile">Profile</div> \
-							<div class="ui basic button logout">Logout</div> \
+							<div class="ui basic button profile lang" data-replace="$front.com.tbar.profile">Profile</div> \
+							<div class="ui basic button logout lang" data-replace="$front.com.tbar.logout">Logout</div> \
 						</div> \
 					</div> \
 				</div> \
@@ -89,6 +89,9 @@ define([
 		';
 
 		main = $(main);
+
+		lang.update(main);
+
 		main.css("opacity", "0");
 		main.ready(function () {
 			main.css("opacity", "");

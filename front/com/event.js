@@ -248,12 +248,12 @@ define([
 			main.find(".sortby"),
 			{
 				"sort_create": {
-					name: "create",
+					name: lang.msg("$front.com.event.sortby.create"),
 					init: -1
 				},
 				
 				"sort_pop": {
-					name: "popularity",
+					name: lang.msg("$front.com.event.sortby.popularity"),
 					init: -1
 				}
 			},

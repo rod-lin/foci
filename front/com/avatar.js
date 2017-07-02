@@ -12,7 +12,8 @@ define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 			size: "3rem",
 			radius: "50%",
 			popdir: "top center",
-			shadow: "0 0 2px rgba(0, 0, 0, 0.4)"
+			shadow: "0 0 2px rgba(0, 0, 0, 0.4)",
+			show_name: false
 		}, config);
 
 		info = login.parseInfo(info || {});
@@ -30,6 +31,10 @@ define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 			});
 
 		var avacont = $("<div class='dname'>" + xfilt(info.dname ? info.dname : "anonymous") + "</div>");
+
+		if (config.show_name) {
+			ava.append(avacont.clone().css("margin-top", "0.5rem"));
+		}
 
 		ava.popup({
 			html: avacont,

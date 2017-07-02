@@ -228,6 +228,19 @@ var dict = module.exports = {
 
 		"front.com.login.back": "Back",
 		"front.com.login.finish": "Finish",
+	
+		"front.com.login.phone_number": "phone number",
+		"front.com.login.passwd": "password",
+		"front.com.login.code": "code",
+		"front.com.login.illegal_phone": "illegal phone number",
+		"front.com.login.empty": "empty $1",
+
+		"front.com.tbar.profile": "Profile",
+		"front.com.tbar.logout": "Logout",
+		"front.com.tbar.search_prompt": "Search",
+
+		"front.com.event.sortby.create": "create time",
+		"front.com.event.sortby.popularity": "popularity",
 	}
 };
 
@@ -451,4 +464,18 @@ dict["chinese"] = {}.extend(dict["english"]).extend({
 
 		"front.com.login.back": "返回",
 		"front.com.login.finish": "完成",
+
+		"front.com.login.phone_number": "手机号",
+		"front.com.login.passwd": "密码",
+		"front.com.login.code": "验证码",
+		"front.com.login.illegal_phone": "假手机！",
+		"front.com.login.empty_name": "用户名不能为空",
+		"front.com.login.empty_passwd": "密码不能为空",
+
+		"front.com.tbar.profile": "主页",
+		"front.com.tbar.logout": "退出",
+		"front.com.tbar.search_prompt": "搜索",
+		
+		"front.com.event.sortby.create": "创建日期",
+		"front.com.event.sortby.popularity": "人气",
 });
