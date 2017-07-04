@@ -650,12 +650,23 @@
 											loadDraft(info);
 											tb.to("new");
 										}
+									},
+
+									{
+										class: "sitemap vuid-profile-org-event-appcent",
+										onClick: function (info) {
+											util.jump("#appcent/" + info.euid);
+										}
 									}
 								]
 							}, show);
 
 							setTimeout(function () {
 								tip.init(main.find(".vuid-profile-org-event-setting")[0], "Setting is here", "top center", {
+									scroll: $("#part")
+								});
+
+								tip.init(main.find(".vuid-profile-org-event-appcent")[0], "Application center", "bottom center", {
 									scroll: $("#part")
 								});
 							}, 1000);

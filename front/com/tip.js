@@ -12,6 +12,7 @@ define([ "com/util" ], function (util) {
 			position: position,
 			on: "click",
 			scrollContext: config.scroll,
+			variation: "inverted",
 			onHide: function () {
 				setTimeout(function () {
 					cont.popup("destroy");
