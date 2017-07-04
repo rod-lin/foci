@@ -15,7 +15,9 @@ define([ "com/util" ], function (util) {
 	 */
 	function init(obj, option, config) {
 		obj = $(obj);
-		config = $.extend({}, config);
+		config = $.extend({
+			position: "bottom center"
+		}, config);
 
 		var main = $(" \
 			<div class='com-popselect ui popup hidden'> \
@@ -51,7 +53,7 @@ define([ "com/util" ], function (util) {
 			lastResort: true,
 			on: "click",
 
-			position: "bottom center",
+			position: config.position,
 			
 			onShow: function () {
 				selected = false;

@@ -4,8 +4,8 @@
 define([
 	"com/login", "com/xfilt", "com/util",
 	"com/env", "com/upload", "com/pm",
-	"com/notice", "com/lang"
-], function (login, xfilt, util, env, upload, pm, notice, lang) {
+	"com/notice", "com/lang", "com/popselect"
+], function (login, xfilt, util, env, upload, pm, notice, lang, popselect) {
 	var $ = jQuery;
 	foci.loadCSS("com/tbar.css");
 
@@ -97,11 +97,23 @@ define([
 			main.css("opacity", "");
 		});
 
-		main.find(".new-event-btn")
-			.click(function () { util.jump("#profile//new"); })
-			.popup({
-				content: "new event"
-			});
+		popselect.init(main.find(".new-event-btn"), [
+			{
+				cont: "<i class='flag checkered text outline icon'></i> Event",
+				onSelect: function () {
+					util.jump("#profile//new");
+				}
+			},
+
+			{
+				cont: "<i class='users text outline icon'></i> Club",
+				onSelect: function () {}
+			},
+		], { position: "bottom left" });
+			// .click(function () { util.jump("#profile//new"); })
+			// .popup({
+			// 	content: "new event"
+			// });
 
 		// main.find(".pm-btn").click(function () { util.jump("#profile//new"); });
 
