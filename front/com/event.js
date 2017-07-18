@@ -92,14 +92,14 @@ define([
 
 		ret.cover = info.cover ? foci.download(info.cover) : "img/cover/" + Math.floor(Math.random() * 35 + 1) + ".jpg"; // [ "img/cover/1.jpg", "img/cover/2.jpg", "img/cover/3.jpg", "img/cover/4.jpg", "img/cover/5.jpg", "img/cover/6.jpg", "img/cover/7.jpg" ].choose();
 		ret.logo = info.logo ? foci.download(info.logo) : "img/def/logo.jpg";
-		
+
 		ret.descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len), { ignore_nl: config.ignore_nl }) : "(no description)";
 		ret.title = info.title ? xfilt(util.short(info.title, config.max_title_len), { ignore_nl: config.ignore_nl }) : "(untitled)";
-		
+
 		ret.detail = info.detail ? xfilt(util.short(info.detail, config.max_detail_len)) : "(no detail)";
 
 		ret.date = genDate(info.start, info.end);
-		
+
 		ret.apply_num = info.apply_num;
 		ret.rating = info.rating ? info.rating : "nop";
 
@@ -175,9 +175,9 @@ define([
 
 			env.favtag(function (tags) {
 				var box = tagbox.init(dom.find(".favtag"), tags, { onChange: config.onTagChange })
-				
+
 				box.set(parsed.favtag);
-			
+
 				if (config.editTag) {
 					box.openEdit();
 				}
@@ -203,20 +203,20 @@ define([
 		if (config.ext_button) {
 			dom.find(".ext-btn-set").html("");
 			for (var i = 0; i < config.ext_button.length; i++) {
-				var btn = config.ext_button[i];
+				(function (btn) {
+					/*
+						e.g. { class: "send outline", onClick: function }
+					 */
 
-				/*
-					e.g. { class: "send outline", onClick: function }
-				 */
+					var extbtn = $("<i class='" + btn.class + " icon'></i>");
+					dom.find(".ext-btn-set").append(extbtn);
 
-				var extbtn = $("<i class='" + btn.class + " icon'></i>");
-				dom.find(".ext-btn-set").append(extbtn);
-
-				extbtn.click(function () {
-					if (btn.onClick) {
-						btn.onClick(info);
-					}
-				});
+					extbtn.click(function () {
+						if (btn.onClick) {
+							btn.onClick(info);
+						}
+					});
+				})(config.ext_button[i]);
 			}
 		}
 	}
@@ -248,12 +248,12 @@ define([
 			main.find(".sortby"),
 			{
 				"sort_create": {
-					name: lang.msg("$front.com.event.sortby.create"),
+					name: "<span class='lang' data-replace='$front.com.event.sortby.create'>create time</span>",
 					init: -1
 				},
-				
+
 				"sort_pop": {
-					name: lang.msg("$front.com.event.sortby.popularity"),
+					name: lang.msg("<span class='lang' data-replace='$front.com.event.sortby.popularity'>popularity</span>"),
 					init: -1
 				}
 			},
@@ -335,12 +335,12 @@ define([
 		// interfaces
 		mod.add = function (info) {
 			var dom;
-			
+
 			events.push(info);
 
 			dom = genEvent(info);
 			edom.push(dom);
-			
+
 			wf.add(dom);
 		};
 
@@ -464,7 +464,7 @@ define([
 			util.scrollBottom($(config.fetch.cont), 3, function (com) {
 				if (fetch_lock || fetch_loader) return;
 				fetch_lock = true;
-				
+
 				mod.fetch(function () {
 					// com.toBottom(4); // to avoid duplicated loadings
 					fetch_lock = false;
@@ -637,7 +637,7 @@ define([
 			// 	var editor = $("<textarea class='editor-text'></textarea>");
 
 			// 	editor.val(com.html());
-			
+
 			// 	function updatePos() {
 			// 		var ofs = com.offset();
 			// 		var mofs = main.offset();
@@ -667,7 +667,7 @@ define([
 
 			// 		$(window).off("resize", updatePos);
 			// 		editor.remove();
-					
+
 			// 		if (cb) cb(val);
 			// 	});
 			// }
@@ -714,7 +714,7 @@ define([
 									changes[field] = file;
 									if (cb) cb(file);
 								}
-								
+
 								unlock();
 							});
 						});
@@ -758,13 +758,13 @@ define([
 
 				main.find(".back .util.setting")
 					.attr("data-content", "Click components to edit");
-				
+
 				main.find(".back .util .setting-btn")
 					.removeClass("setting")
 					.addClass("checkmark");
 
 				main.modal("refresh");
-			
+
 				util.await(function () { return tgbox !== null; }, function () {
 					tgbox.openEdit();
 				});
@@ -823,14 +823,14 @@ define([
 
 				main.find(".back .util .setting-btn")
 					.removeClass("checkmark");
-				
+
 				main.find(".back .util.setting").addClass("loading");
 
 				function close() {
 					main.removeClass("setting");
 
 					main.find(".back .util.setting").removeClass("loading");
-					
+
 					main.find(".back .util .setting-btn")
 						.removeClass("refresh")
 						.addClass("setting");
@@ -858,7 +858,7 @@ define([
 
 					main.find(".back .util .setting-btn")
 						.addClass("refresh");
-				
+
 					// not set session_open
 					onproc();
 				}

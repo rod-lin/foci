@@ -82,6 +82,9 @@
 .com-tbar.show-menu {
 	background: #262626 !important;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+	border-bottom-color: black;
+
+	transition: border-bottom-color 0.2s;
 }
 
 .com-tbar .menu-view,

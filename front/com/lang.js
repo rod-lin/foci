@@ -163,7 +163,7 @@ define(function () {
 	}
 
 	// load dictionary
-	function loadDict(name, util) {
+	function loadDict(name, util, cb) {
 		util = util || { emsg: function (msg) { console.log(msg); } };
 
 		foci.get("/dict", { lang: name }, function (suc, dat) {
@@ -174,6 +174,8 @@ define(function () {
 			} else {
 				util.emsg(msg("$front.com.lang.fail_load_dict(" + name + "): " + dat));
 			}
+
+			if (cb) cb(suc);
 		});
 	}
 

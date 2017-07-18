@@ -2,7 +2,7 @@
 
 "use strict";
 
-define([ "com/util" ], function (util) {
+define([ "com/util", "com/lang" ], function (util, lang) {
 	foci.loadCSS("com/sortby.css");
 
 	function init(cont, cond, config) {
@@ -22,6 +22,7 @@ define([ "com/util" ], function (util) {
 			}
 
 			var cond = $("<div class='cond'><i class='caret " + dir(conf.init) + " icon'></i>" + conf.name + "</div>");
+			lang.update(cond);
 
 			cond.click(function () {
 				if (sortby.hasOwnProperty(name) && sortby[name]) {

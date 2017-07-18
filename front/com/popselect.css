@@ -1,17 +1,18 @@
 .com-popselect {
 	padding: 0 !important;
-	min-width: 10rem !important;
+	min-width: 0 !important;
 }
 
 .com-popselect .option {
 	position: relative;
 
 	min-width: 100%;
-	padding: 1rem;
+	padding: 1rem 2rem;
 
 	z-index: 3;
 
 	background: white;
+	color: rgba(80, 80, 80, 1);
 	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 
 	cursor: pointer;

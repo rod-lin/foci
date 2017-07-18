@@ -1,0 +1,21 @@
+<div id="sub-clubreg"> <!-- club registration -->
+</div>
+
+<style>
+	#sub-clubreg {
+
+	}
+</style>
+
+<script>
+	function init(main, args, show, cont) {
+		require([
+			"com/env", "com/util"
+		], function (env, util) {
+			var tbar = env.get("tbar");
+			tbar.setTitle("Club Registration");
+
+			show(true);
+		});
+	}
+</script>
