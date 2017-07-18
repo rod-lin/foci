@@ -21,7 +21,7 @@ define([
 				<div class="left-bar"> \
 					<div class="ui left action right icon input search-box"> \
 						<button class="menu-btn"> \
-							<i class="content icon" style="margin: 0;"></i> \
+							<i class="foci-logo" style="margin: 0;"></i> \
 						</button> \
 						<!--div class="tags">Hi</div--> \
 						<div class="ui search fluid"> \
@@ -223,7 +223,7 @@ define([
 					<div class='ui grey empty circular label'></div> \
 				</div> \
 			");
-			
+
 			tag.attr("data-value", name);
 			tag.append(tag_dname.hasOwnProperty(name) ? tag_dname[name] : name);
 			tag.click(function () {
@@ -374,7 +374,7 @@ define([
 				main.find(".rating")
 					.attr("data-rating", info.rating.toString())
 					.rating("disable");
-				
+
 				main.find(".avatar-popup .pop-title").html(info.dname);
 				main.find(".avatar-popup .logout").click(function () {
 					// ava.addClass("loading");

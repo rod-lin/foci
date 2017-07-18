@@ -1,0 +1,28 @@
+@font-face {
+	font-family: "foci";
+	src: url("foci.eot?zfovl9");
+	src: url("foci.eot?zfovl9#iefix") format("embedded-opentype"),
+		 url("foci.ttf?zfovl9") format("truetype"),
+		 url("foci.woff?zfovl9") format("woff"),
+		 url("foci.svg?zfovl9#foci") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+
+.foci-logo {
+	font-family: foci !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.foci-logo:before {
+	content: "\e900";
+}
