@@ -1,4 +1,4 @@
-/* com user bar */
+/* com event */
 
 .com-event {
 	position: relative;
@@ -17,7 +17,7 @@
 
 .com-event .com-event-single {
 	position: absolute;
-	
+
 	top: 0;
 	left: 0;
 

@@ -16,6 +16,7 @@ define([
 	var $ = jQuery;
 	foci.loadCSS("com/event.css");
 	foci.loadCSS("com/eqview.css");
+	foci.loadCSS("com/ecase.css");
 
 	var lim_config = {
 		max_title_len: 32,
@@ -70,7 +71,7 @@ define([
 			</div> \
 			<div class="extra content"> \
 				<a> \
-					<i class="user icon"></i><span class="apply_num"></span> \
+					<i class="user outline icon"></i><span class="apply_num"></span> \
 				</a> \
 				<div class="ext-btn-set"></div> \
 			</div> \
@@ -555,39 +556,6 @@ define([
 			var fill = util.fill();
 			orgs.html(fill);
 
-			// if (info.org) {
-			// 	var size;
-
-			// 	switch (info.org.length) {
-			// 		case 1: size = "3em"; break;
-			// 		case 2: size = "2.5em"; break;
-			// 		default: size = "2em";
-			// 	}
-
-			// 	for (var i = 0; i < info.org.length; i++) {
-			// 		foci.get("/user/info", { uuid: info.org[i] }, function (suc, dat) {
-			// 			ava = $("<div class='org'></div>");
-			// 			if (!suc) {
-			// 				util.emsg(dat);
-			// 				dat = null;
-			// 			}
-
-			// 			avatar.init(ava, dat, {
-			// 				size: size,
-			// 				onClick: function () {
-			// 					main.modal("hide all");
-			// 				}
-			// 			});
-
-			// 			fill.remove();
-			// 			orgs.prepend(ava);
-			// 		});
-			// 	}
-			// } else {
-			// 	fill.remove();
-			// 	orgs.html("<div class='tip'>no organizer</div>");
-			// }
-
 			if (info.favtag) {
 				util.await(function () { return tgbox !== null; }, function () {
 					tgbox.set(info.favtag);
@@ -904,9 +872,60 @@ define([
 		main.ready(function () { main.modal("show"); });
 	}
 
+	function showcase(cont, info, config) {
+		cont = $(cont);
+		config = $.extend({
+			imgpos: "right"
+		}, config);
+
+		var parsed = parseInfo(info, {
+			max_title_len: 32,
+			max_descr_len: 64
+		});
+
+		var main = $("<div class='com-event-showcase img-" + config.imgpos + "'> \
+			<div class='show-info'> \
+				<div style='position: relative; height: 100%; width: 100%;'> \
+					<div class='show-title'>Hello, world</div> \
+					<div class='show-descr'>Light, he said.<br>Then there was light</div> \
+					<div class='show-toolbar'> \
+						<span class='info-icon' style='float: right;'><i class='user outline icon'></i><span class='show-partic'></span></span> \
+						<span class='info-icon'><i class='map outline icon'></i><span class='show-loc'></span></span> \
+					</div> \
+				</div> \
+			</div> \
+			<div class='show-cover'></div> \
+		</div>");
+
+		main.find(".show-title").html(parsed.title);
+		main.find(".show-descr").html(parsed.descr);
+		main.find(".show-partic").html(parsed.apply_num || "0");
+
+		util.bgimg(main.find(".show-cover"), parsed.cover);
+
+		if (info.loclng && info.loclat) {
+			map.locToName(info.loclng, info.loclat, function (addr) {
+				main.find(".show-loc").html(addr);
+			});
+		} else {
+			main.find(".show-loc").html("(no location)");
+		}
+
+		main.click(function () {
+			util.jump("#event/" + info.euid);
+		});
+
+		cont.append(main);
+
+		var ret = {};
+
+		return ret;
+	}
+
 	return {
 		init: init,
 		qview: qview,
+		showcase: showcase,
 		genDate: genDate,
 		eventTemplate: eventTemplate,
 		setDom: setDom,

@@ -114,14 +114,14 @@
 						util.jump("#profile");
 					});
 
-					util.scrollTop("#search", function () {
-						bar.removeShadow();
-					});
+					// util.scrollTop("#search", function () {
+					// 	bar.removeShadow();
+					// });
 
 					util.scroll("#search, #part", function (n) {
 						if (n > 0) {
 							bar.showBanner();
-							bar.applyShadow();
+							// bar.applyShadow();
 						} else {
 							bar.hideBanner();
 						}

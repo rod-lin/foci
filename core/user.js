@@ -42,6 +42,8 @@ var User = function (uuid, dname, lname, passwd) {
 		log: []
 	};
 
+	this.club = null;
+
 	this.pm = {};
 };
 
@@ -61,6 +63,8 @@ User.prototype.getInfo = function () {
 		level: this.level,
 		favtag: this.favtag,
 		rating: this.rating.tot,
+
+		club: this.club,
 
 		avatar: this.avatar,
 
@@ -102,7 +106,7 @@ User.query = {
 	sid: sid => ({ "sid": sid }),
 
 	pass: (lname, passwd) => ({ "lname": lname, "passwd": util.md5(passwd) }),
-	
+
 	// fuzzy search(all)
 	fuzzy: kw => {
 		var reg = new RegExp(kw, "i");
@@ -151,7 +155,7 @@ exports.checkNewUserName = async (lname) => {
 		throw new err.Exc("$core.invalid_user_name");
 
 	var found = !!await col.findOne(User.query.lname(lname));
-	
+
 	if (found)
 		throw new err.Exc("$core.dup_user_name");
 };

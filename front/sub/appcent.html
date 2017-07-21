@@ -69,7 +69,7 @@
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 50% 50%;
-	
+
 		box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 	}
 
@@ -120,7 +120,7 @@
 	#sub-appcent .tabs .empty .no-more {
 		display: block;
 		width: 100%;
-		
+
 		text-align: center;
 		color: #CCCCCC;
 		font-weight: bold;
@@ -143,7 +143,7 @@
 	}
 
 	#sub-appcent .tabs .status {
-		
+
 	}
 
 	#sub-appcent .tabs .option-bar {
@@ -229,7 +229,7 @@
 </style>
 
 <script>
-	
+
 	function init(main, args, show, cont) {
 		require([
 			"com/env", "com/util", "com/event",
@@ -306,7 +306,7 @@
 						for (var i = 0; i < dat.length; i++) {
 							item.append(dat[i]);
 						}
-						
+
 						tab.find("tbody").append(item);
 
 						return item;
@@ -354,7 +354,7 @@
 					ret.updateHeader = function (tab) {
 						tab.parent().find(".float-header table tbody").html(tab.find("tbody").html());
 					};
-			
+
 					return ret;
 				})();
 
@@ -430,9 +430,9 @@
 						foci.get("/user/info", { uuid: app.uuid }, function (suc, dat) {
 							if (suc) {
 								var ava = avatar.init(user.find(".avatar"), dat, { size: "3em", popdir: "top left" });
-							
+
 								dat = login.parseInfo(dat);
-							
+
 								user.find(".trivial").append("<div class='user-name'>" + dat.dname + "</div>");
 								var rat = rating.init(user.find(".trivial"), dat.rating);
 
@@ -471,7 +471,7 @@
 							case "decline":
 								dom.addClass("negative");
 								dom.find(".icon").addClass("cancel");
-								dom.find(".status-prompt").html("Decline");
+								dom.find(".status-prompt").html("Declined");
 								break;
 
 							default:
@@ -539,7 +539,7 @@
 						for (var i = 0; i < selected.length; i++) {
 							ret.push(parseInt($(selected[i]).attr("data-uuid")));
 						}
-					
+
 						return ret;
 					}
 
@@ -554,13 +554,14 @@
 							var fail = false;
 
 							for (var i = 0; i < selected.length; i++) {
-								if ($(selected[i]).attr("data-status") !== undefined) {
+								var cur_status = $(selected[i]).attr("data-status");
+								if (cur_status !== "pending" && cur_status !== undefined) {
 									// already accepted/declined
 									if (!fail) {
 										fail = true;
 										util.emsg("Unable to change some of the statuses because they have already been settled");
 									}
-									
+
 									$(selected[i]).addClass("negative");
 								} else {
 									uuids.push(parseInt($(selected[i]).attr("data-uuid")));
@@ -607,7 +608,7 @@
 						var form = formi.genForm(util.json(app[type + "_form"]));
 
 						var hlist = headerList(form.fields);
-					
+
 						var header = table.setHeader(rtab, hlist);
 
 						var loaded = false;
@@ -690,7 +691,7 @@
 																int: "notice",
 																action: "send",
 																type: "event",
-																
+
 																euid: euid,
 																uuids: uuids,
 
@@ -761,11 +762,11 @@
 
 					show(true);
 				}
-			
+
 				$(window).resize(function () {
 					main.children(".tabs").width(main.width() - main.children(".left-panel").width());
 				}).resize();
-			
+
 				foci.get("/event/info", { euid: euid }, function (suc, dat) {
 					if (suc) {
 						foci.encop(session, {
@@ -774,7 +775,7 @@
 							euid: euid
 						}, function (suc, app) {
 							if (suc) {
-								render(dat, app);		
+								render(dat, app);
 							} else {
 								util.emsg(app);
 							}
