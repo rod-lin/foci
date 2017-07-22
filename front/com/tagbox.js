@@ -2,12 +2,13 @@
 
 "use strict";
 
-define([], function () {
+define([ "com/util" ], function (util) {
 	var $ = jQuery;
 	foci.loadCSS("com/tagbox.css");
+	foci.loadCSS("com/imgtag.css");
 
-	function genTag(name) {
-		var tag = $("<div class='tag' data-value='" + name + "'>" + name.toUpperCase() + "<i class='deltag cancel icon'></i></div>");
+	function genTag(id, obj) {
+		var tag = $("<div class='tag' data-value='" + id + "'>" + obj.name.toUpperCase() + "<i class='deltag cancel icon'></i></div>");
 		return tag;
 	}
 
@@ -37,13 +38,15 @@ define([], function () {
 		var menu = main.find(".menu");
 		var addtag = main.find(".addtag");
 
+		var tag_count = 0;
+
 		function addTag(name) {
 			if (cur.indexOf(name) != -1) return;
 
 			cur.push(name);
 			main.find(".addtag").before(tag_dom[name].click(tagOnClick));
 
-			if (cur.length == tags.length) {
+			if (cur.length == tag_count) {
 				addtag.addClass("disabled");
 			}
 
@@ -63,12 +66,13 @@ define([], function () {
 
 		function delAll() {
 			addtag.removeClass("disabled");
-			
+
 			for (var i = 0; i < cur.length; i++) {
 				tag_dom[cur[i]].remove();
 			}
 
 			cur = [];
+
 		}
 
 		function tagOnClick() {
@@ -76,18 +80,23 @@ define([], function () {
 				delTag($(this).attr("data-value"));
 		}
 
-		for (var i = 0; i < tags.length; i++) {
-			menu.append("<div class='item t-" + tags[i] + "'>" + tags[i] + "</div>");
-			tag_dom[tags[i]] = genTag(tags[i]).click(tagOnClick);
+		for (var k in tags) {
+			if (tags.hasOwnProperty(k)) {
+				menu.append("<div class='item t-" + k + "'>" + tags[k].name + "</div>");
+				tag_dom[k] = genTag(k, tags[k]).click(tagOnClick);
+				tag_count++;
+			}
 		}
 
 		addtag.dropdown({
 			onShow: function () {
-				for (var i = 0; i < tags.length; i++) {
-					if (cur.indexOf(tags[i]) == -1)
-						menu.find(".t-" + tags[i]).removeClass("active").removeClass("selected").css("display", "");
-					else
-						menu.find(".t-" + tags[i]).removeClass("active").removeClass("selected").css("display", "none");
+				for (var k in tags) {
+					if (tags.hasOwnProperty(k)) {
+						if (cur.indexOf(k) == -1)
+							menu.find(".t-" + k).removeClass("active").removeClass("selected").css("display", "");
+						else
+							menu.find(".t-" + k).removeClass("active").removeClass("selected").css("display", "none");
+					}
 				}
 			},
 
@@ -119,10 +128,10 @@ define([], function () {
 				tag_dom[cur[i]].click(tagOnClick);
 			}
 
-			if (cur.length == tags.length) {
+			if (cur.length == tag_count) {
 				addtag.addClass("disabled");
 			}
-			
+
 			if (!noev && config.onChange) config.onChange(cur);
 		};
 
@@ -148,7 +157,44 @@ define([], function () {
 		return ret;
 	}
 
+	function imgtag(cont, tags, config) {
+		cont = $(cont);
+		config = $.extend({}, config);
+
+		var main = $(" \
+			<div class='com-tagbox-imgtag'> \
+			</div> \
+		");
+
+		function genTag(k, tag) {
+			var t = $("<div class='imgtag'> \
+				<div class='imgtag-img'></div><span class='imgtag-text'></span> \
+			</div>");
+
+			t.find(".imgtag-text").html(tag.name);
+			util.bgimg(t.find(".imgtag-img"), tag.img || ("img/cover/" + Math.floor(Math.random() * 35 + 1) + ".jpg"));
+
+			t.click(function () {
+				util.jump("#search//" + k);
+			});
+
+			return t;
+		}
+
+		for (var k in tags) {
+			if (tags.hasOwnProperty(k))
+				main.append(genTag(k, tags[k]));
+		}
+
+		cont.append(main);
+
+		var ret = {};
+
+		return ret;
+	}
+
 	return {
-		init: init
+		init: init,
+		imgtag: imgtag
 	};
 });

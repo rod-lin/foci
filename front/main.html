@@ -234,7 +234,7 @@
 						bar.showSearchLoad();
 
 						ev.clear(function () {
-							bar.setTitle("Search results", query.kw);
+							bar.setTitle("Search results", (query.kw || "(empty)") + ", " + (query.favtag || "all"));
 
 							$("#search").scrollTop(0);
 							cur_query = query;

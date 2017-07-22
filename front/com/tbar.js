@@ -236,8 +236,9 @@ define([
 		}
 
 		env.favtag(function (tags) {
-			if (tags) for (var i = 0; i < tags.length; i++) {
-				addTag(tags[i]);
+			if (tags) for (var k in tags) {
+				if (tags.hasOwnProperty(k))
+					addTag(k);
 			}
 		});
 

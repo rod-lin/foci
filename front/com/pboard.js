@@ -45,8 +45,13 @@ define([ "com/util" ], function (util) {
 					var dom = $("<div class='preview' data-id='" + i + "'></div>");
 					var loader = $("<div class='ui small loader active'></div>");
 
+					dom.click(function () {
+						if (ph.onClick)
+							ph.onClick();
+					});
+
 					dom.append(loader);
-				
+
 					util.bgimg(dom, ph.url, function () {
 						loader.remove();
 					});
@@ -74,6 +79,12 @@ define([ "com/util" ], function (util) {
 			var back = main_slide.find(".slide-back");
 
 			var preview_set = main.find(".preview-set");
+
+			main_slide.click(function () {
+				if (photo[cur_ph].onClick) {
+					photo[cur_ph].onClick();
+				}
+			});
 
 			function setMain(ph) {
 				if (main_slide.hasClass("switch")) {
@@ -150,7 +161,7 @@ define([ "com/util" ], function (util) {
 				}
 
 				setMain(photo[cur_ph]);
-				
+
 				setTimeout(function () {
 					prev.css("transition", "none"); // block the animation
 					prev.css(prop, "0");

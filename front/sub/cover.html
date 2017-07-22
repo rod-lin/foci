@@ -2,13 +2,23 @@
 	<div class="main-wrap">
 		<div class="show-board trim">
 		</div>
-		<div class="tag-board">
-			<div class="fake-cont"></div>
-		</div
-		><div class="ad-board">
-			<div class="fake-cont"></div>
+		<div class="push-board">
+			<div class="tag-board-cont">
+				<div class="tag-board"></div>
+				<div class="push-board-set"></div>
+			</div
+			><div class="side-board">
+				<div class="push-board">
+					<div class="fake-cont"></div>
+				</div>
+				<div class="push-board">
+					<div class="fake-cont" style="height: 10em;"></div>
+				</div>
+				<div class="push-board">
+					<div class="fake-cont" style="height: 30em;"></div>
+				</div>
+			</div>
 		</div>
-		<div class="push-board-set"></div>
 	</div>
 </div>
 
@@ -45,42 +55,74 @@
 		max-width: 100%;
 
 		overflow: hidden;
+		text-align: left;
 
 		border-radius: 5px;
 	}
 
 	#sub-cover .show-board {
 		border: 1px solid rgba(0, 0, 0, 0.08);
+		margin-bottom: 1rem;
 	}
 
 	#sub-cover .push-board {
 		height: auto;
-		margin-top: 1rem;
+		margin-bottom: 1rem;
+	}
+
+	#sub-cover .tag-board-cont {
+		display: inline-block;
+
+		padding: 0;
+
+		width: 70%;
+		vertical-align: top;
+
+		padding-right: 1rem;
 	}
 
 	#sub-cover .tag-board {
-		display: inline-block;
-
-		width: 70%;
-		height: 20rem;
 		margin-top: 1rem;
-		vertical-align: top;
-
-		padding-right: 0.5rem;
 	}
 
-	#sub-cover .ad-board {
+	#sub-cover .side-board {
 		display: inline-block;
 		width: 30%;
-		height: 20rem;
-		margin-top: 1rem;
 
-		padding-left: 0.5rem;
+		margin-top: 1rem;
+		padding-left: 1rem;
+	}
+
+	#sub-cover .extra-margin {
+		margin-top: 3rem;
+		margin-bottom: 2rem;
+	}
+
+	#sub-cover .push-board-set {
+		margin-top: 1rem;
 	}
 
 	@media only screen and (max-width: 768px) {
 		#sub-cover {
 			padding: 1rem;
+		}
+	}
+
+	@media only screen and (max-width: 640px) {
+		#sub-cover .tag-board-cont {
+			width: 100%;
+			padding-right: 0;
+		}
+
+		#sub-cover .side-board {
+			display: none;
+			width: 100%;
+			padding-left: 0;
+		}
+
+		#sub-cover .extra-margin {
+			margin-top: 1rem;
+			margin-bottom: 0;
 		}
 	}
 </style>
@@ -89,16 +131,20 @@
 	function init(main, args, show, cont) {
 		require([
 			"com/env", "com/util", "com/pboard",
-			"com/event"
-		], function (env, util, pboard, event) {
+			"com/event", "com/tagbox"
+		], function (env, util, pboard, event, tagbox) {
 			var tbar = env.get("tbar");
 			tbar.setTitle("Foci");
 			// tbar.setStyle("light-simple");
 
-			event.showcase($(".push-board-1"), {});
-			event.showcase($(".push-board-2"), {}, { imgpos: "left" });
-
 			var push_board = main.find(".push-board-set");
+
+			env.favtag(function (tags) {
+				if (tags)
+					tagbox.imgtag(main.find(".tag-board"), tags, {});
+
+				show(true);
+			});
 
 			foci.get("/event/search", { lim: 8 }, function (suc, dat) {
 				if (suc) {
@@ -118,23 +164,33 @@
 			var show_board = main.find(".show-board");
 			pboard.init(show_board, [
 				{
-					url: "img/cover1.jpg"
+					url: "img/cover1.jpg",
+					onClick: function () {
+						util.jump("#search");
+					}
 				},
 
 				{
-					url: "img/cover2.jpg"
+					url: "img/cover2.jpg",
+					onClick: function () {
+						util.jump("#search");
+					}
 				},
 
 				{
-					url: "img/cover3.jpg"
+					url: "img/cover3.jpg",
+					onClick: function () {
+						util.jump("#search");
+					}
 				},
 
 				{
-					url: "img/tmp2.jpg"
+					url: "img/tmp2.jpg",
+					onClick: function () {
+						util.jump("#search");
+					}
 				}
 			]);
-
-			show(true);
 		});
 	}
 </script>

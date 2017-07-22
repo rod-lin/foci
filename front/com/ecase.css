@@ -3,7 +3,7 @@
 .com-event-showcase {
     position: relative;
     width: 100%;
-    height: 20em;
+    height: 15em;
 
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
@@ -42,7 +42,7 @@
 .com-event-showcase .show-cover {
     position: absolute;
     top: 0;
-    width: 20em;
+    width: 15em;
     height: 100%;
 
     background-color: rgba(250, 250, 250, 1);
@@ -60,7 +60,7 @@
 }
 
 .com-event-showcase.img-right .show-info {
-    padding-right: 23em;
+    padding-right: 18em;
 }
 
 .com-event-showcase.img-left .show-cover {
@@ -69,7 +69,7 @@
 }
 
 .com-event-showcase.img-left .show-info {
-    padding-left: 23em;
+    padding-left: 18em;
 }
 
 .com-event-showcase .show-toolbar {
@@ -88,15 +88,15 @@
 
 @media only screen and (max-width: 768px) {
     .com-event-showcase.img-left .show-info {
-        padding-left: 16em;
+        padding-left: 13em;
     }
 
     .com-event-showcase.img-right .show-info {
-        padding-right: 16em;
+        padding-right: 13em;
     }
 
     .com-event-showcase .show-cover {
-        width: 13em;
+        width: 10em;
     }
 }
 
@@ -108,14 +108,14 @@
     .com-event-showcase .show-cover {
         left: 0;
         width: 100%;
-        height: 20em;
+        height: 15em;
         border-left: none !important;
         border-right: none !important;
         border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     }
 
     .com-event-showcase .show-info {
-        padding: 22em 2em 2em 2em !important;
+        padding: 17em 2em 2em 2em !important;
     }
 
     .com-event-showcase .show-info .show-title {

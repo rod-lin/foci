@@ -256,11 +256,8 @@ exports.checkTag = (tags) => {
 	var ntags = [];
 	tags = new Set(tags);
 
-	if (tags.size > config.lim.favtag.length)
-		throw new err.Exc("$core.too_many($core.word.tag)");
-
 	tags.forEach((tag) => {
-		if (config.lim.favtag.indexOf(tag) === -1) {
+		if (!config.lim.favtag.hasOwnProperty(tag)) {
 			throw new err.Exc("$core.not_exist($core.word.tag)");
 		}
 

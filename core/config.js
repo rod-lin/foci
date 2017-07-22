@@ -19,7 +19,37 @@ var conf = module.exports = {
 	},
 
 	lim: {
-		favtag: [ "art", "academic", "sports", "exam", "music", "developing", "tech" ],
+		// favtag: [ "art", "academic", "sports", "exam", "music", "developing", "tech" ],
+		favtag: {
+			
+			"art": {
+				name: "art"
+			},
+
+			"academic": {
+				name: "academic"
+			},
+
+			"sports": {
+				name: "sports"
+			},
+
+			"exam": {
+				name: "exam"
+			},
+
+			"music": {
+				name: "music"
+			},
+
+			"developing": {
+				name: "developing"
+			},
+
+			"tech": {
+				name: "tech"
+			}
+		},
 
 		user: {
 			dname: 64,
