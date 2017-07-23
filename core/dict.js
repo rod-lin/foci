@@ -120,8 +120,8 @@ var dict = module.exports = {
 		"front.sub.profile.applied": "applied",
 		"front.sub.profile.organized": "organized",
 		"front.sub.profile.draft": "draft",
-		"front.sub.profile.new": "new",
-		"front.sub.profile.save": "save",
+		"front.sub.profile.new": "<i class='add icon'></i> New",
+		"front.sub.profile.save": "<i class='check icon'></i> Save",
 		"front.sub.profile.template": "template",
 		"front.sub.profile.success": "success",
 
@@ -228,7 +228,7 @@ var dict = module.exports = {
 
 		"front.com.login.back": "Back",
 		"front.com.login.finish": "Finish",
-	
+
 		"front.com.login.phone_number": "phone number",
 		"front.com.login.passwd": "password",
 		"front.com.login.code": "code",
@@ -359,8 +359,8 @@ dict["chinese"] = {}.extend(dict["english"]).extend({
 		"front.sub.profile.applied": "申请过",
 		"front.sub.profile.organized": "组织过",
 		"front.sub.profile.draft": "草稿",
-		"front.sub.profile.new": "新建",
-		"front.sub.profile.save": "保存",
+		// "front.sub.profile.new": "新建",
+		// "front.sub.profile.save": "保存",
 		"front.sub.profile.template": "模板",
 		"front.sub.profile.success": "成功",
 
@@ -475,7 +475,7 @@ dict["chinese"] = {}.extend(dict["english"]).extend({
 		"front.com.tbar.profile": "主页",
 		"front.com.tbar.logout": "退出",
 		"front.com.tbar.search_prompt": "搜索",
-		
+
 		"front.com.event.sortby.create": "创建日期",
 		"front.com.event.sortby.popularity": "人气",
 });

@@ -32,7 +32,7 @@
 	text-align: center;
 	vertical-align: middle;
 
-	transition: background 0.3s;
+	transition: background 0.3s, opacity 0.3s;
 }
 
 .com-tab .menu .item:hover {
@@ -64,6 +64,23 @@
 
 .com-tab .menu .item.green.active {
 	background: #28B363;
+}
+
+.com-tab .menu .item.transparent {
+	background: transparent;
+	border-color: transparent;
+}
+
+.com-tab .menu .item.transparent:hover {
+	opacity: 0.7;
+}
+
+.com-tab .menu .item.transparent.active {
+	opacity: 1 !important;
+}
+
+.com-tab .menu .item.icon-btn {
+	padding: 1.5rem;
 }
 
 .com-tab .menu.flow .item {

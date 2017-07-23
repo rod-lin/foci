@@ -140,7 +140,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 
 						for (var i = 0; i < dat.length; i++) {
 							dat[i].date = new Date(dat[i].date);
-							
+
 							if (needDate(i ? dat[i - 1] : null, dat[i])) {
 								main.find(".history").append(formatDate(dat[i].date));
 							}
@@ -173,9 +173,9 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 				main.find(".input").val("");
 
 				if (!msg) return;
-				
+
 				var msgdom = genMsg(null, msg);
-		
+
 				var msgdat = { msg: msg, date: new Date() };
 				var prev = all_msg.length ? all_msg[all_msg.length - 1] : null;
 
@@ -273,6 +273,11 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 			main.modal("hide");
 		});
 
+		main.find(".sendee-avatar").click(function () {
+			main.modal("hide");
+			util.jump("#profile/" + sendee);
+		});
+
 		main.find(".input").keydown(function (e) {
 			if (e && e.which == 13) {
 				if (!e.ctrlKey) {
@@ -304,7 +309,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 	function qview(cont, config) {
 		cont = $(cont);
 		config = $.extend({}, config)
-	
+
 		var main = $(" \
 			<div class='com-pm-qview'> \
 				<div class='msg-box'> \

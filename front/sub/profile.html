@@ -57,7 +57,7 @@
 									cursor: pointer;
 								}
 							</style>
-							
+
 							<div class="loc-selected" style="display: inline-block;"></div>
 							<div class="loc-search-btn"><i class="search icon"></i></div>
 						</div>
@@ -119,7 +119,7 @@
 				<div class="page page-pub" style="text-align: center;">
 					<div class="protocol">
 						<style>
-							
+
 							#sub-profile .new-event .ev-content .page-pub .protocol {
 								padding: 0 2rem;
 								height: 100%;
@@ -398,7 +398,7 @@
 
 	#sub-profile .new-event .ui.steps .step {
 		border-radius: 0 !important;
-	
+
 		display: -webkit-flex !important;
 		display: flex !important;
 
@@ -549,7 +549,7 @@
 					left_bar.find(".dname").html(parsed.dname);
 					left_bar.find(".intro").html(parsed.intro);
 					left_bar.find(".avatar").css("background-image", "url('" + parsed.avatar + "')").removeClass("empty");
-				
+
 					if (!tgbox) {
 						env.favtag(function (tags) {
 							tgbox = tagbox.init(left_bar.find(".favtag"), tags, {
@@ -661,15 +661,17 @@
 								]
 							}, show);
 
-							setTimeout(function () {
-								tip.init(main.find(".vuid-profile-org-event-setting")[0], "Setting is here", "top center", {
-									scroll: $("#part")
-								});
+							if (is_self) {
+								setTimeout(function () {
+									tip.init(main.find(".vuid-profile-org-event-setting")[0], "Setting is here", "top center", {
+										scroll: $("#part")
+									});
 
-								tip.init(main.find(".vuid-profile-org-event-appcent")[0], "Application center", "bottom center", {
-									scroll: $("#part")
-								});
-							}, 1000);
+									tip.init(main.find(".vuid-profile-org-event-appcent")[0], "Application center", "bottom center", {
+										scroll: $("#part")
+									});
+								}, 1000);
+							}
 						}
 					}
 				};
@@ -692,7 +694,7 @@
 						4. Add check and show event in "step_show" and "step_check"
 						5. Add initialization code in loadDraft
 				 */
-				
+
 				"use strict";
 
 				var loadDraft, clearDraft, hasDraft, saveDraft, deleteEmptyDraft;
@@ -708,7 +710,7 @@
 					var changed = {};
 
 					var deleted = false;
-					
+
 					function isEmptyDraft() {
 						for (var k in fields) {
 							if (fields.hasOwnProperty(k) && fields[k] &&
@@ -935,7 +937,7 @@
 											steps["loc"].onShow = function () {
 												// bmap.init(); // init position
 
-												tip.init(new_tab.find(".loc-search-btn"), "Click here to search!", "bottom center");
+												tip.init(new_tab.find(".loc-search-btn"), "Click here to search!", "bottom center", { style: "white" });
 
 												if (fields.lng && fields.lat) {
 													bmap.set(fields.lng, fields.lat);
@@ -1039,7 +1041,7 @@
 								if (info.apply_partic_lim) {
 									main.find(".partic_limit").val(info.apply_partic_lim);
 								}
-								
+
 								var def_form = { name: "New Form", block: [] };
 
 								main.find(".create-staff-form").off("click").click(function () {
@@ -1134,7 +1136,7 @@
 
 							onInit: function (info) {
 								fields.detail = info.detail;
-								
+
 								new_tab.find(".ev-detail")
 									.val(info.detail)
 									.off("change").change(function () {
@@ -1173,7 +1175,7 @@
 
 								new_tab.find(".ev-content .protocol .publish-btn").removeClass("disabled");
 								published = false;
-								
+
 								return false;
 							}
 						},
@@ -1194,7 +1196,7 @@
 													deleted = true;
 													util.emsg("$front.sub.profile.event_deleted");
 													tb.to("draft");
-												}	
+												}
 											});
 										}
 									});
@@ -1223,7 +1225,7 @@
 					function setPublishMsg(msg) {
 						new_tab.find(".ev-content .protocol .prompt").html(msg);
 					}
-					
+
 					/* loader icon on the New/Save button */
 					function setLoader() {
 						tb.getItem("new").html("<div class='ui active inverted " + (
@@ -1233,7 +1235,7 @@
 					}
 
 					function delLoader() {
-						tb.getItem("new").html("Save");
+						tb.getItem("new").html(m("$front.sub.profile.save"));
 					}
 
 					// save the current changes
@@ -1256,7 +1258,7 @@
 							});
 						});
 					}
-					
+
 					function checkStep(cb) {
 						var check = steps[cur_step].onCheck;
 						if (check) {
@@ -1331,7 +1333,7 @@
 						changed = {};
 
 						tb.getItem("new").off("click", nextStep);
-						tb.getItem("new").html(m("$front.sub.profile.new").capital());
+						tb.getItem("new").html(m("$front.sub.profile.new"));
 						main.find(".unpublish-btn").removeClass("disabled");
 						fields = {};
 						// new_tab.find(".ev-step .step").off("click");
@@ -1395,7 +1397,7 @@
 								euid: euid
 							}, function (suc, dat) {
 								btn.removeClass("loading");
-								
+
 								if (suc) {
 									btn.addClass("disabled");
 									main.find(".unpublish-btn").removeClass("disabled");
@@ -1433,7 +1435,7 @@
 								cb(true);
 							}
 						});
-						
+
 						return false;
 					}
 
@@ -1449,9 +1451,9 @@
 					};
 
 					tabs["new"] = {
-						name: m("$front.sub.profile.new").capital(),
+						name: m("$front.sub.profile.new"),
 						float: "right",
-						style: "green",
+						style: "transparent icon-btn",
 
 						onShow: function (show) {
 							updateAllPos();
@@ -1584,7 +1586,7 @@
 
 				main.ready(function () {
 					$(window).resize();
-					
+
 					if (init_page && tb.has(init_page)) {
 						tb.to(init_page);
 					} else {

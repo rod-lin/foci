@@ -5,14 +5,16 @@
 define([ "com/util" ], function (util) {
 	function init(cont, text, position, config) {
 		cont = $(cont);
-		config = $.extend({}, config);
+		config = $.extend({
+			style: "black"
+		}, config);
 
 		cont.popup({
 			content: text,
 			position: position,
 			on: "click",
 			scrollContext: config.scroll,
-			variation: "inverted",
+			variation: config.style == "white" ? "" : "inverted",
 			onHide: function () {
 				setTimeout(function () {
 					cont.popup("destroy");
