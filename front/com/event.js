@@ -885,7 +885,7 @@ define([
 
 		var main = $("<div class='com-event-showcase img-" + config.imgpos + "'> \
 			<div class='show-info'> \
-				<div style='position: relative; height: 100%; width: 100%;'> \
+				<div style='position: relative; height: 100%; width: 100%; overflow: hidden;'> \
 					<div class='show-title'>Hello, world</div> \
 					<div class='show-descr'>Light, he said.<br>Then there was light</div> \
 					<div class='show-toolbar'> \
