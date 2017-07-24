@@ -22,7 +22,7 @@ define(function () {
 
 	util.jump = function (url) {
 		window.location = url;
-	};	
+	};
 
 	util.refresh = function () {
 		require("com/env").get("part").refresh();
@@ -62,7 +62,7 @@ define(function () {
 				"max-width": "80%",
 				"display": "inline-block"
 			})
-		
+
 		msg.find(".message")
 			.css("cursor", "pointer")
 			.css("pointer-events", "auto")
@@ -157,7 +157,7 @@ define(function () {
 
 	util.kcount = function (obj) {
 		var count = 0;
-		
+
 		for (var k in obj) {
 			if (obj.hasOwnProperty(k)) count++;
 		}
@@ -267,7 +267,7 @@ define(function () {
 		var img = new Image();
 		img.src = url;
 		$(img).on("load", function () {
-			cb(img);	
+			cb(img);
 		});
 	};
 
@@ -299,7 +299,7 @@ define(function () {
 				ret = pref + " " + time;
 			} else {
 				ret = date.getMonth() + "-" + date.getDate() + " " + time;
-			
+
 				if (cur.getFullYear() != date.getFullYear())
 					ret = date.getFullYear() + "-" + ret;
 			}
@@ -311,6 +311,10 @@ define(function () {
 	// unreliable
 	util.wheel = function (cb) {
 		$(window).on("mousewheel DOMMouseScroll", cb);
+	};
+
+	util.randimg = function () {
+		return "img/cover/" + Math.floor(Math.random() * 30 + 1) + ".jpg";
 	};
 
 	return util;

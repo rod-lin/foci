@@ -121,7 +121,7 @@ var dict = module.exports = {
 		"front.sub.profile.organized": "organized",
 		"front.sub.profile.draft": "draft",
 		"front.sub.profile.new": "<i class='add icon'></i> New",
-		"front.sub.profile.save": "<i class='check icon'></i> Save",
+		"front.sub.profile.save": "<span style='color: #27AE60;'><i class='check icon'></i> Save</span>",
 		"front.sub.profile.template": "template",
 		"front.sub.profile.success": "success",
 
@@ -359,8 +359,8 @@ dict["chinese"] = {}.extend(dict["english"]).extend({
 		"front.sub.profile.applied": "申请过",
 		"front.sub.profile.organized": "组织过",
 		"front.sub.profile.draft": "草稿",
-		// "front.sub.profile.new": "新建",
-		// "front.sub.profile.save": "保存",
+		"front.sub.profile.new": "<i class='add icon'></i> 新建",
+		"front.sub.profile.save": "<span style='color: #27AE60;'><i class='check icon'></i> 保存</span>",
 		"front.sub.profile.template": "模板",
 		"front.sub.profile.success": "成功",
 

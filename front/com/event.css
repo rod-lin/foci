@@ -28,9 +28,13 @@
 
 	border: 1px solid rgba(0, 0, 0, 0.08);
 
-	box-shadow: none !important;
+	box-shadow: -2px 2px 15px rgba(0, 0, 0, 0.04) !important;
 
-	transition: opacity 0.3s;
+	transition: opacity 0.3s, box-shadow 0.3s;
+}
+
+.com-event .com-event-single:hover {
+	box-shadow: -2px 2px 18px rgba(0, 0, 0, 0.08) !important;
 }
 
 .com-event-single .cover {

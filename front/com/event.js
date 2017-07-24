@@ -91,7 +91,7 @@ define([
 
 		var ret = {};
 
-		ret.cover = info.cover ? foci.download(info.cover) : "img/cover/" + Math.floor(Math.random() * 35 + 1) + ".jpg"; // [ "img/cover/1.jpg", "img/cover/2.jpg", "img/cover/3.jpg", "img/cover/4.jpg", "img/cover/5.jpg", "img/cover/6.jpg", "img/cover/7.jpg" ].choose();
+		ret.cover = info.cover ? foci.download(info.cover) : util.randimg();
 		ret.logo = info.logo ? foci.download(info.logo) : "img/def/logo.jpg";
 
 		ret.descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len), { ignore_nl: config.ignore_nl }) : "(no description)";

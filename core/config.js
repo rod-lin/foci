@@ -21,33 +21,40 @@ var conf = module.exports = {
 	lim: {
 		// favtag: [ "art", "academic", "sports", "exam", "music", "developing", "tech" ],
 		favtag: {
-			
+
 			"art": {
-				name: "art"
+				name: "art",
+				icon: "paint brush"
 			},
 
 			"academic": {
-				name: "academic"
+				name: "academic",
+				icon: "student"
 			},
 
 			"sports": {
-				name: "sports"
+				name: "sports",
+				icon: "flag checkered"
 			},
 
 			"exam": {
-				name: "exam"
+				name: "exam",
+				icon: "book"
 			},
 
 			"music": {
-				name: "music"
+				name: "music",
+				icon: "music"
 			},
 
 			"developing": {
-				name: "developing"
+				name: "developing",
+				icon: "bug"
 			},
 
 			"tech": {
-				name: "tech"
+				name: "tech",
+				icon: "microchip"
 			}
 		},
 

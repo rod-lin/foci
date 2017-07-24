@@ -172,7 +172,11 @@ define([ "com/util" ], function (util) {
 			</div>");
 
 			t.find(".imgtag-text").html(tag.name);
-			util.bgimg(t.find(".imgtag-img"), tag.img || ("img/cover/" + Math.floor(Math.random() * 35 + 1) + ".jpg"));
+			if (tag.img) {
+				util.bgimg(t.find(".imgtag-img"), tag.img || util.randimg());
+			} else if (tag.icon) {
+				t.find(".imgtag-img").html("<i class='" + tag.icon + " icon'></i>");;
+			}
 
 			t.click(function () {
 				util.jump("#search//" + k);

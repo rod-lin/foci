@@ -767,7 +767,7 @@
 								fields.title = info.title ? info.title : "";
 								fields.descr = info.descr ? info.descr : "";
 
-								tb.getItem("new").html(m("$front.sub.profile.save").capital())
+								tb.getItem("new").html(m("$front.sub.profile.save"))
 									.off("click", nextStep); // avoid duplication
 
 								util.nextTick(function () { // avoid bubbling
