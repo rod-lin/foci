@@ -26,6 +26,7 @@
     "express": "^4.15.2",
     "https": "^1.0.0",
     "jquery": "^3.1.1",
+    "markdown": "^0.5.0",
     "moment": "^2.18.1",
     "mongo": "^0.1.0",
     "multiparty": "^4.1.3",

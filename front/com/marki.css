@@ -1,0 +1,38 @@
+
+.com-marki-editor {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.com-marki-editor .editor-toolbar {
+    position: absolute;
+    top: 0; left: 0;
+    height: 3em;
+    width: 100%;
+}
+
+.com-marki-editor .editor-text {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    padding-top: 3em; /* same as 11 */
+}
+
+.com-marki-editor.split .editor-text {
+    width: 50%;
+}
+
+.com-marki-editor .editor-preview {
+    position: absolute;
+
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    padding-top: 3em; /* same as 11 */
+}
+
+.com-marki-editor.split .editor-preview {
+    width: 50%;
+    left: 50%;
+}

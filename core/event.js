@@ -56,7 +56,7 @@ var Event = function (euid, owner /* uuid */) {
 
 	this.favtag = [];
 
-	this.rating = null;
+	// this.rating = null; // [ val, voted people ]
 
 	this.staff = [];
 	this.partic = []; // participants
@@ -67,6 +67,23 @@ var Event = function (euid, owner /* uuid */) {
 exports.Event = Event;
 Event.prototype = {};
 Event.prototype.getEUID = function () { return this.euid };
+
+Event.prototype.getRating = function () {
+	var comm = this.getComment();
+	var tot = 0;
+	var count = 0;
+
+	for (var i = 0; i < comm.length; i++) {
+		if (comm[i].rating) {
+			tot += comm[i].rating;
+			count++;
+		}
+	}
+
+	// console.log(this.euid + ", " + tot);
+
+	return tot ? tot / count : null;
+};
 
 Event.prototype.getInfo = function (only) {
 	var all = {
@@ -88,12 +105,12 @@ Event.prototype.getInfo = function (only) {
 		state: this.state,
 
 		org: this.org,
-		
+
 		start: this.start ? this.start.getTime() : null,
 		end: this.end ? this.end.getTime() : null,
 
 		apply_num: this.apply_num,
-		rating: this.rating,
+		rating: this.getRating(),
 
 		apply_staff_form: this.apply_staff_form,
 		apply_partic_form: this.apply_partic_form,
@@ -103,31 +120,6 @@ Event.prototype.getInfo = function (only) {
 
 		favtag: this.favtag
 	};
-
-	// only = only || {
-	// 	euid: true,
-
-	// 	title: true,
-	// 	descr: true,
-
-	// 	detail: true,
-
-	// 	loclng: true,
-	// 	loclat: true,
-
-	// 	logo: true,
-	// 	cover: true,
-
-	// 	org: true,
-		
-	// 	start: true,
-	// 	end: true,
-
-	// 	apply_num: true,
-	// 	rating: true,
-
-	// 	favtag: true
-	// };
 
 	if (only) {
 		var ret = {};
@@ -212,7 +204,7 @@ Event.format.info = {
 			return title.replace(/\n/g, "");
 		}
 	},
-	
+
 	descr: util.checkArg.lenlim(config.lim.event.descr, "$core.too_long($core.word.descr)"),
 	detail: util.checkArg.lenlim(config.lim.event.detail, "$core.too_long($core.word.detail)"),
 
@@ -367,7 +359,7 @@ Event.query = {
 
 	applicant: (euid, uuid, type) => {
 		var q = { "euid": euid };
-		
+
 		q["apply_" + type + ".$.status"] = { $exists: 0 };
 		q["apply_" + type + ".uuid"] = uuid;
 
@@ -561,7 +553,7 @@ exports.search = async (conf, state) => {
 			.skip(lim.skip)
 			.limit(lim.lim)
 			.toArray();
-	
+
 	var ret = [];
 
 	res.forEach(ev => ret.push(new Event(ev).getInfo()));

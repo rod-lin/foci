@@ -1,20 +1,22 @@
 <div id="sub-cover">
 	<div class="main-wrap">
-		<div class="show-board trim">
+		<div class="show-board border trim">
 		</div>
 		<div class="push-board">
 			<div class="tag-board-cont">
 				<div class="tag-board"></div>
-				<div class="push-board-set"></div>
+				<div class="push-board-set">
+					<div class="ui inline loader active"></div>
+				</div>
 			</div
 			><div class="side-board">
-				<div class="push-board">
+				<div class="push-board border">
 					<div class="fake-cont"></div>
 				</div>
-				<div class="push-board">
+				<div class="push-board border">
 					<div class="fake-cont" style="height: 10em;"></div>
 				</div>
-				<div class="push-board">
+				<div class="push-board border">
 					<div class="fake-cont" style="height: 30em;"></div>
 				</div>
 			</div>
@@ -42,8 +44,6 @@
 		height: 20rem;
 		width: 100%;
 		background: rgba(250, 250, 250, 1);
-		border: 1px solid rgba(0, 0, 0, 0.08);
-		border-radius: 5px;
 	}
 
 	#sub-cover .push-board,
@@ -55,12 +55,16 @@
 		max-width: 100%;
 
 		text-align: left;
+	}
 
+	#sub-cover .border {
+		overflow: hidden;
 		border-radius: 5px;
+		border: 1px solid rgba(0, 0, 0, 0.08);
+		box-shadow: -1px 1px 15px rgba(0, 0, 0, 0.04);
 	}
 
 	#sub-cover .show-board {
-		border: 1px solid rgba(0, 0, 0, 0.08);
 		margin-bottom: 1rem;
 	}
 
@@ -99,6 +103,11 @@
 
 	#sub-cover .push-board-set {
 		margin-top: 1rem;
+		text-align: center;
+	}
+
+	#sub-cover .push-board-set>.ui.loader {
+		margin-top: 2em;
 	}
 
 	@media only screen and (max-width: 768px) {
@@ -145,18 +154,34 @@
 				show(true);
 			});
 
-			foci.get("/event/search", { lim: 8 }, function (suc, dat) {
-				if (suc) {
-					var is_right = 0;
+			var fetch_push = (function () {
+				var skip = 0;
+				return function fetch_push() {
+					foci.get("/event/search", { lim: 8, skip: skip }, function (suc, dat) {
+						if (suc) {
+							var is_right = 0;
 
-					for (var i = 0; i < dat.length; i++) {
-						var push = $("<div class='push-board'></div>");
-						event.showcase(push, dat[i], { imgpos: "left" });
-						push_board.append(push);
-					}
-				} else {
-					util.emsg(dat);
-				}
+							if (!dat.length) {
+								push_board.children(".ui.loader").remove();
+							}
+
+							skip += dat.length;
+
+							for (var i = 0; i < dat.length; i++) {
+								var push = $("<div class='push-board border'></div>");
+								event.showcase(push, dat[i], { imgpos: "left" });
+								push_board.children(".ui.loader").before(push);
+							}
+						} else {
+							util.emsg(dat);
+						}
+					});
+				};
+			})();
+
+			fetch_push();
+			util.scrollBottom("#part", 3, function (com) {
+				fetch_push();
 			});
 
 			/* tmp settings */

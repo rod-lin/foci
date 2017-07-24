@@ -13,7 +13,7 @@ define([ "com/util" ], function (util) {
 			freeze: true
 		}, config);
 
-		var main = $("<div class='com-rating ui star rating' style='display: inline-block; margin: 0;' data-max-rating='" + config.total + "'></div>");
+		var main = $("<div class='com-rating ui star rating' style='display: inline-block; margin: 0;'></div>");
 
 		cont.append(main);
 
@@ -27,15 +27,15 @@ define([ "com/util" ], function (util) {
 			}
 		};
 
-		main.ready(function () {
-			main.rating({
-				initialRating: Math.round(rating / config.max * config.total),
-				maxRating: 5
-			});
-
-			if (config.freeze)
-				main.rating("disable");
+		// main.ready(function () {
+		main.rating({
+			initialRating: Math.round(rating / config.max * config.total),
+			maxRating: 5
 		});
+
+		if (config.freeze)
+			main.rating("disable");
+		// });
 
 		return ret;
 	}

@@ -1,6 +1,7 @@
 "use strict";
 
 window.jQuery = window.$ = require("jquery");
+window.markdown = require("markdown");
 window.foci = {};
 
 (function () {

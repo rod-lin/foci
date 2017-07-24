@@ -649,4 +649,8 @@
 	.com-tbar.simple .search-box .menu-btn {
 		padding: 0 1.5em 0 0;
 	}
+
+	.com-tbar.simple .search-box .menu-btn {
+		padding-left: 0;
+	}
 }
