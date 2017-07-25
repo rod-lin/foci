@@ -3,36 +3,112 @@
     position: relative;
     width: 100%;
     height: 100%;
+    background: white;
 }
 
 .com-marki-editor .editor-toolbar {
+    z-index: 3;
+
     position: absolute;
     top: 0; left: 0;
-    height: 3em;
+
+    height: 4em;
+    line-height: 4em;
+
+    padding: 0 1.6em;
+
     width: 100%;
+
+    background: #FDFDFD;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.02) inset;
+
+    white-space: nowrap;
+    overflow-y: visible;
+}
+
+.com-marki-editor .editor-toolbar .icon {
+    font-size: 1.2em;
+    margin-right: 0.7em;
+    color: #6C6C6C;
+    cursor: pointer;
+}
+
+.com-marki-editor .editor-toolbar .icon.code {
+    font-weight: bold;
+}
+
+.com-marki-editor .editor-toolbar .icon:hover {
+    opacity: 0.8;
+}
+
+.com-marki-editor .editor-toolbar .right.icon {
+    float: right;
+    margin-right: 0;
+    margin-left: 0.7em;
 }
 
 .com-marki-editor .editor-text {
+    z-index: 1;
+    position: absolute;
+
+    background: white;
+
     display: inline-block;
     height: 100%;
     width: 100%;
-    padding-top: 3em; /* same as 11 */
+    padding-top: 4em; /* same as 11 */
 }
 
 .com-marki-editor.split .editor-text {
     width: 50%;
+    border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-marki-editor .editor-text .editor-cont {
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+    font-size: 1.3em;
+    font-family: Consolas, Ubuntu Mono, monospace;
+
+    transition: background 0.3s, color 0.3s;
+}
+
+.com-marki-editor.warning .editor-text .editor-cont {
+    background: #FFF6F6;
+    color: #9F3A38;
 }
 
 .com-marki-editor .editor-preview {
+    z-index: 0;
     position: absolute;
+    top: 0; left: 0;
 
     display: inline-block;
+
+    background: white;
+
+    font-size: 1.3em;
+
     height: 100%;
     width: 100%;
-    padding-top: 3em; /* same as 11 */
+
+    padding: 2rem;
+    padding-top: 6rem; /* same as 11 */
+
+    overflow: auto;
+}
+
+.com-marki-editor.show-preview .editor-preview {
+    z-index: 2;
 }
 
 .com-marki-editor.split .editor-preview {
     width: 50%;
     left: 50%;
+}
+
+.com-marki-editor.split .toggle-preview-btn {
+    display: none;
 }

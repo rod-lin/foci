@@ -94,7 +94,15 @@ define([
 		ret.cover = info.cover ? foci.download(info.cover) : util.randimg();
 		ret.logo = info.logo ? foci.download(info.logo) : "img/def/logo.jpg";
 
-		ret.descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len), { ignore_nl: config.ignore_nl }) : "(no description)";
+		var descr_html = markdown.toHTML(info.descr);
+		var descr_text = $(descr_html).text();
+
+		descr_text = xfilt(util.short(descr_text, config.max_descr_len));
+
+		ret.descr = descr_html;
+		ret.descr_text = descr_text;
+
+		// ret.descr = info.descr ? xfilt(util.short(info.descr, config.max_descr_len), { ignore_nl: config.ignore_nl }) : "(no description)";
 		ret.title = info.title ? xfilt(util.short(info.title, config.max_title_len), { ignore_nl: config.ignore_nl }) : "(untitled)";
 
 		ret.detail = info.detail ? xfilt(util.short(info.detail, config.max_detail_len)) : "(no detail)";
@@ -165,7 +173,7 @@ define([
 
 		dom.find(".title").html(parsed.title);
 		dom.find(".date").html(parsed.date);
-		dom.find(".description").html(parsed.descr);
+		dom.find(".description").html(parsed.descr_text);
 		dom.find(".apply_num").html(parsed.apply_num);
 
 		if (info.status)
@@ -898,7 +906,7 @@ define([
 		</div>");
 
 		main.find(".show-title").html(parsed.title);
-		main.find(".show-descr").html(parsed.descr);
+		main.find(".show-descr").html(parsed.descr_text);
 		main.find(".show-partic").html(parsed.apply_num || "0");
 
 		util.bgimg(main.find(".show-cover"), parsed.cover);

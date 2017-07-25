@@ -113,7 +113,7 @@ define(function () {
 
 	util.ask = function (msg, cb) {
 		var main = $(' \
-			<div class="ui small modal com-util-ask"> \
+			<div class="ui mini modal com-util-ask"> \
 				<div class="ui header"> \
 					' + util.mfilt(msg) + ' \
 				</div> \
@@ -316,6 +316,28 @@ define(function () {
 	util.randimg = function () {
 		return "img/cover/" + Math.floor(Math.random() * 30 + 1) + ".jpg";
 	};
+
+	util.insertTextarea = function (textarea, val, is_before) {
+		textarea = $(textarea)[0];
+
+		if (document.selection) {
+			// ie
+			textarea.focus();
+			var sel = document.selection.createRange();
+			sel.text = val;
+		} else if (textarea.selectionStart || textarea.selectionStart == '0') {
+			// others
+			var pos = is_before ? textarea.selectionEnd : textarea.selectionStart;
+
+			textarea.value = textarea.value.substring(0, pos)
+							 + val
+							 + textarea.value.substring(pos, textarea.value.length);
+
+			textarea.focus();
+		} else {
+			textarea.value += val;
+		}
+	}
 
 	return util;
 });

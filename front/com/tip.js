@@ -6,12 +6,14 @@ define([ "com/util" ], function (util) {
 	function init(cont, text, position, config) {
 		cont = $(cont);
 		config = $.extend({
-			style: "black"
+			style: "black",
+			auto: true
 		}, config);
 
 		cont.popup({
 			content: text,
 			position: position,
+			lastResort: true,
 			on: "click",
 			scrollContext: config.scroll,
 			variation: config.style == "white" ? "" : "inverted",
@@ -22,9 +24,10 @@ define([ "com/util" ], function (util) {
 			}
 		});
 
-		setTimeout(function () {
-			cont.popup("show");
-		}, 500);
+		if (config.auto)
+			setTimeout(function () {
+				cont.popup("show");
+			}, 500);
 
 		util.wheel(function () {
 			cont.popup("hide");

@@ -42,7 +42,8 @@
 				<!-- <div id="sub-profile-map" class="map"></div> -->
 				<div class="page page-info active">
 					<input class="ev-title input-no-style lang" data-replace="$front.sub.profile.new.title" data-attr="placeholder" placeholder="Title">
-					<textarea class="ev-descr input-no-style lang" data-replace="$front.sub.profile.new.descr" data-attr="placeholder" placeholder="Description"></textarea>
+					<!-- textarea class="ev-descr input-no-style lang" data-replace="$front.sub.profile.new.descr" data-attr="placeholder" placeholder="Description"></textarea -->
+					<div class="ev-descr"></div>
 				</div>
 				<div class="page page-cover" style="text-align: center; overflow: auto;"></div>
 				<div class="page page-loc need-width">
@@ -382,14 +383,14 @@
 		border-width: 0 0 1px 0;
 	}
 
-	#sub-profile .new-event .ev-descr {
+	/* #sub-profile .new-event .ev-descr {
 		width: 100%;
 		padding: 2rem;
 		background: white;
 		color: #252525;
 
 		font-size: 1.5em;
-	}
+	} */
 
 	#sub-profile .new-event .ui.steps {
 		border-width: 0 0 1px 0 !important;
@@ -410,6 +411,7 @@
 	#sub-profile .new-event .ui.steps .step .icon {
 		display: inline-block;
 		width: 4rem;
+		color: #323232;
 	}
 
 	#sub-profile .new-event .ui.steps .step .content {
@@ -485,10 +487,10 @@
 			font-size: 1.5em;
 		}
 
-		#sub-profile .new-event .ev-descr {
+		/* #sub-profile .new-event .ev-descr {
 			padding: 1.4rem;
 			font-size: 1.2em;
-		}
+		} */
 
 		#sub-profile .new-event .ev-step .step {
 			font-size: 0.7em;
@@ -512,12 +514,12 @@
 			"com/login", "com/event", "com/upload",
 			"com/map", "com/lang", "com/editable",
 			"com/tagbox", "com/pm", "com/tip",
-			"com/formi"
+			"com/formi", "com/marki"
 		], function (
 			env, util, event, xfilt,
 			pages, tab, login, event,
 			upload, map, lang, editable,
-			tagbox, pm, tip, formi
+			tagbox, pm, tip, formi, marki
 		) {
 			var init = function (info, is_self, init_page) {
 				var tbar = env.get("tbar");
@@ -682,8 +684,12 @@
 					$(this).removeClass("warning");
 				});
 
-				new_tab.find(".ev-descr").keyup(function () {
-					$(this).removeClass("warning");
+				// new_tab.find(".ev-descr").keyup(function () {
+				// 	$(this).removeClass("warning");
+				// });
+
+				var editor_descr = marki.editor(new_tab.find(".ev-descr"), {
+					placeholder: m("$front.sub.profile.new.descr")
 				});
 
 				/*
@@ -763,6 +769,12 @@
 							page: main.find(".page.page-info"),
 							next: "cover",
 
+							onShow: function () {
+								main.ready(function () {
+									updateAllPos();
+								});
+							},
+
 							onInit: function (info) {
 								fields.title = info.title ? info.title : "";
 								fields.descr = info.descr ? info.descr : "";
@@ -780,7 +792,8 @@
 
 								// page 1
 								new_tab.find(".ev-title").val(fields.title).off("change").change(change);
-								new_tab.find(".ev-descr").val(fields.descr).off("change").change(change);
+								// new_tab.find(".ev-descr").val(fields.descr).off("change").change(change);
+								editor_descr.val(fields.descr);
 
 								return fields.title && fields.descr;
 							},
@@ -789,7 +802,8 @@
 								var suc = true;
 
 								var has_title = !!new_tab.find(".ev-title").val();
-								var has_descr = !!new_tab.find(".ev-descr").val();
+								// var has_descr = !!new_tab.find(".ev-descr").val();
+								var has_descr = !!editor_descr.val();
 
 								if (!has_title && !has_descr) {
 									cb(true);
@@ -802,7 +816,8 @@
 								}
 
 								if (!has_descr) {
-									new_tab.find(".ev-descr").addClass("warning");
+									// new_tab.find(".ev-descr").addClass("warning");
+									editor_descr.setWarning();
 									suc = false;
 								}
 
@@ -810,7 +825,8 @@
 									if (changed.info) {
 										uploadChanges({
 											title: fields.title = new_tab.find(".ev-title").val(),
-											descr: fields.descr = new_tab.find(".ev-descr").val()
+											// descr: fields.descr = new_tab.find(".ev-descr").val()
+											descr: fields.descr = editor_descr.val()
 										}, function (suc) {
 											if (suc) {
 												new_tab.find(".info-step").addClass("completed");
@@ -1555,6 +1571,8 @@
 					new_tab.find(".ev-descr")
 						.css("box-sizing", "border-box")
 						.css("height", tb.displayHeight() - new_tab.find(".ev-title").outerHeight(true) - 3 /* TODO: temporary fix!! */ + "px");
+
+					editor_descr.refreshSize();
 
 					new_tab.find(".ev-content .page")
 						.css("height", tb.displayHeight() + "px");

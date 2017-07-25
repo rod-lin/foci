@@ -1,7 +1,17 @@
 "use strict";
 
 window.jQuery = window.$ = require("jquery");
-window.markdown = require("markdown");
+window.markdown = require("markdown").markdown;
+
+window.markdown._toHTML = window.markdown.toHTML;
+window.markdown.toHTML = function (src) {
+	return "<div class='markdown-body'>" + window.markdown._toHTML(src) + "</div>";
+};
+
+window.markdown.toText = function (src) {
+	return $(window.markdown.toHTML(src))[0].innerText;
+};
+
 window.foci = {};
 
 (function () {
