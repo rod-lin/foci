@@ -950,6 +950,13 @@
 										map.embed(new_tab.find(".ev-content .page-loc .map"), function (map) {
 											bmap = map;
 
+											// TODO: temp fix!
+											if (display_mode == "mobile")
+												// bmap.pan(0, main.parent().scrollTop());
+												$("#part").scroll(function () {
+													bmap.pan(0, $("#part").scrollTop());
+												});
+
 											steps["loc"].onShow = function () {
 												// bmap.init(); // init position
 

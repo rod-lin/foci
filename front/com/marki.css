@@ -24,7 +24,7 @@
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.02) inset;
 
     white-space: nowrap;
-    overflow-y: visible;
+    overflow-y: hidden;
 }
 
 .com-marki-editor .editor-toolbar .icon {

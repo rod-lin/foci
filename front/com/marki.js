@@ -26,7 +26,7 @@ define([ "com/xfilt", "com/util", "com/tip" ], function (xfilt, util, tip) {
                 <i class='not-ordered list icon'></i> \
                 <i class='ordered list icon'></i> \
                 <i class='toggle-preview-btn wizard icon'></i> \
-                <span data-tooltip='About Markdown' data-position='top center'> \
+                <span data-tooltip='About Markdown' data-position='right center'> \
                     <i class='help circle icon' style='margin-right: 0;'></i> \
                 </span> \
             </div> \
@@ -47,8 +47,8 @@ define([ "com/xfilt", "com/util", "com/tip" ], function (xfilt, util, tip) {
         function bindTool(dom, before, after) {
             $(dom).click(function () {
                 var area = main.find(".editor-cont");
-                util.insertTextarea(area, before, false);
-                util.insertTextarea(area, after, true);
+                util.insertTextarea(area, before, "before");
+                util.insertTextarea(area, after, "after");
                 updatePreview();
             });
         }
@@ -80,7 +80,12 @@ define([ "com/xfilt", "com/util", "com/tip" ], function (xfilt, util, tip) {
         //     on: "click"
         // }).popup("show");
 
-        main.find(".editor-cont").keyup(function () {
+        main.find(".editor-cont").keydown(function (e) {
+            if (e.which == 9) {
+                util.insertTextarea(this, "\t", "replace");
+                e.preventDefault();
+            }
+        }).keyup(function () {
             updatePreview();
             ret.removeWarning();
         }).attr("placeholder", config.placeholder);

@@ -317,8 +317,10 @@ define(function () {
 		return "img/cover/" + Math.floor(Math.random() * 30 + 1) + ".jpg";
 	};
 
-	util.insertTextarea = function (textarea, val, is_before) {
+	// mode: 0: after, 1, before, 2, replace
+	util.insertTextarea = function (textarea, val, mode) {
 		textarea = $(textarea)[0];
+		mode = mode || "after";
 
 		if (document.selection) {
 			// ie
@@ -327,11 +329,26 @@ define(function () {
 			sel.text = val;
 		} else if (textarea.selectionStart || textarea.selectionStart == '0') {
 			// others
-			var pos = is_before ? textarea.selectionEnd : textarea.selectionStart;
+			var start, end;
 
-			textarea.value = textarea.value.substring(0, pos)
+			switch (mode) {
+				case "before":
+					start = end = textarea.selectionStart;
+					break;
+
+				case "after":
+					start = end = textarea.selectionEnd;
+					break;
+
+				case "replace":
+					start = textarea.selectionStart;
+					end = textarea.selectionEnd;
+					break;
+			}
+
+			textarea.value = textarea.value.substring(0, start)
 							 + val
-							 + textarea.value.substring(pos, textarea.value.length);
+							 + textarea.value.substring(end, textarea.value.length);
 
 			textarea.focus();
 		} else {

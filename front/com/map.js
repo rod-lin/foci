@@ -133,7 +133,7 @@ define([ "com/util" ], function (util) {
 
 			bmap.dom.append(obj);
 			// map.getPanes().floatPane.appendChild(obj[0]);
-		
+
 			return obj[0];
 		};
 
@@ -157,7 +157,7 @@ define([ "com/util" ], function (util) {
 				}
 			}
 		]))(point);
-		
+
 		return obj;
 	};
 
@@ -184,7 +184,11 @@ define([ "com/util" ], function (util) {
 
 			var map = new BMap.Map(main[0]);
 
+			map.enableAutoResize();
 			map.clearOverlays();
+
+			var crazy_offset_x = 0;
+			var crazy_offset_y = 0;
 
 			var ret = {
 				dom: main,
@@ -237,22 +241,35 @@ define([ "com/util" ], function (util) {
 					if (cur_marker) map.removeOverlay(cur_marker);
 					cur_marker = null;
 					cur_loc = null;
+				},
+
+				pan: function (x, y) {
+					crazy_offset_x = x;
+					crazy_offset_y = y;
 				}
 			};
 
 			map.centerAndZoom("杭州", 12);
-			
+
 			map.enableScrollWheelZoom(true);
 			map.setMapStyle({ style: "grayscale" });
 
 			map.addEventListener("click", function(e) {
 				if (!config.canMark) return;
+
+				var pix = map.pointToPixel(e.point);
+
+				pix.x += crazy_offset_x;
+				pix.y += crazy_offset_y;
+
+				e.point = map.pixelToPoint(pix);
+
 				ret.mark(e.point.lng, e.point.lat);
 			});
 
 			map.addEventListener("load", function () {
 				if (init) init(ret);
-				
+
 				if (config.init_lng && config.init_lat) {
 					ret.set(config.init_lng, config.init_lat);
 				}
