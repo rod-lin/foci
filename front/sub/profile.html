@@ -951,11 +951,11 @@
 											bmap = map;
 
 											// TODO: temp fix!
-											if (display_mode == "mobile")
-												// bmap.pan(0, main.parent().scrollTop());
-												$("#part").scroll(function () {
-													bmap.pan(0, $("#part").scrollTop());
-												});
+											// if (display_mode == "mobile")
+											// bmap.pan(0, main.parent().scrollTop());
+											$("#part").scroll(function () {
+												bmap.pan(0, $("#part").scrollTop());
+											}).scroll();
 
 											steps["loc"].onShow = function () {
 												// bmap.init(); // init position
