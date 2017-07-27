@@ -293,7 +293,7 @@ define(function () {
 		} else {
 			var day = cur.getDay();
 
-			if (sub < day * ud) {
+			if (sub >= 0 && sub < day * ud) {
 				// in this week
 				var pref = [ "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" ][date.getDay()];
 				ret = pref + " " + (short ? "" : time);
