@@ -1070,12 +1070,12 @@
 							onInit: function (info) {
 								if (info.start) {
 									fields.start = new Date(info.start);
-									new_tab.find(".ev-start-date").val("").val(fields.start);
+									new_tab.find(".ev-start-date").val("").calendar("set startDate", fields.start);
 								}
 
 								if (info.end) {
 									fields.end = new Date(info.end);
-									new_tab.find(".ev-end-date").val("").val(fields.end);
+									new_tab.find(".ev-end-date").val("").calendar("set endDate", fields.end);
 								}
 
 								return fields.start && fields.end;
