@@ -44,6 +44,7 @@
     "pump": "^1.0.2",
     "run-sequence": "^2.1.0",
     "semantic-ui": "^2.2.10",
+    "semantic-ui-calendar": "0.0.8",
     "vinyl-source-stream": "^1.1.0",
     "vinyl-transform": "^1.0.0"
   },

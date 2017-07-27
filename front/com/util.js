@@ -279,7 +279,7 @@ define(function () {
 		});
 	};
 
-	util.localDate = function (date) {
+	util.localDate = function (date, short) {
 		var cur = new Date();
 		var sub = cur - date;
 
@@ -296,9 +296,9 @@ define(function () {
 			if (sub < day * ud) {
 				// in this week
 				var pref = [ "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" ][date.getDay()];
-				ret = pref + " " + time;
+				ret = pref + " " + (short ? "" : time);
 			} else {
-				ret = date.getMonth() + "-" + date.getDate() + " " + time;
+				ret = date.getMonth() + "-" + date.getDate() + " " + (short ? "" : time);
 
 				if (cur.getFullYear() != date.getFullYear())
 					ret = date.getFullYear() + "-" + ret;

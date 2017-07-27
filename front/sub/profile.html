@@ -64,6 +64,50 @@
 						</div>
 					</div>
 				</div>
+				<div class="page page-time pad" style="text-align: left; overflow-x: hidden;">
+					<!-- <form class="ui form">
+						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.start_end_date">Start/End Date</h3>
+						<div class="ui attached segment">
+							<div class="fields">
+								<div class="field"> -->
+					<style>
+
+						#sub-profile .page-time>span {
+							display: inline-block;
+
+							width: 100%;
+							padding: 1rem;
+
+							text-align: center;
+
+							font-weight: bold;
+							font-size: 1.2rem;
+							border: 1px solid rgba(0, 0, 0, 0.1);
+							border-radius: 3px 3px 0 0;
+							border-bottom-width: 0;
+						}
+
+						#sub-profile .page-time>.calendar {
+							margin-bottom: 1rem;
+							overflow: auto;
+						}
+
+						#sub-profile .page-time>.calendar table {
+							border-radius: 0 0 3px 3px !important;
+						}
+
+					</style>
+					<span class="lang" data-replace="$front.sub.profile.start_date" style="">Start date</span>
+					<div class="ui calendar ev-start-date"></div>
+								<!-- </div>
+								<div class="field"> -->
+					<span class="lang" data-replace="$front.sub.profile.end_date">End date</span>
+					<div class="ui calendar ev-end-date"></div>
+								<!-- </div>
+							</div>
+						</div>
+					</form> -->
+				</div>
 				<div class="page page-pay" style="text-align: center;">
 				</div>
 				<div class="page page-apply pad" style="text-align: left;">
@@ -925,7 +969,7 @@
 							subtitle: i("$front.sub.profile.new.location_subtitle"),
 
 							page: main.find(".page.page-loc"),
-							next: "pay",
+							next: "time",
 
 							onInit: function (info) {
 								function set(lng, lat) {
@@ -1010,6 +1054,47 @@
 									// 		cb(false);
 									// 	}
 									// });
+									cb(true);
+								}
+							}
+						},
+
+						time: {
+							title: i("$front.sub.profile.new.time"),
+							icon: "checked calendar",
+							subtitle: i("$front.sub.profile.new.time_subtitle"),
+
+							page: main.find(".page.page-time"),
+							next: "pay",
+
+							onInit: function (info) {
+								if (info.start) {
+									fields.start = new Date(info.start);
+									new_tab.find(".ev-start-date").val("").val(fields.start);
+								}
+
+								if (info.end) {
+									fields.end = new Date(info.end);
+									new_tab.find(".ev-end-date").val("").val(fields.end);
+								}
+
+								return fields.start && fields.end;
+							},
+
+							onCheck: function (cb) {
+								if (fields.start || fields.end) {
+									uploadChanges({
+										start: fields.start.getTime(),
+										end: fields.end.getTime()
+									}, function (suc) {
+										if (suc) {
+											new_tab.find(".time-step").addClass("completed");
+											cb(true);
+										} else {
+											cb(false);
+										}
+									});
+								} else {
 									cb(true);
 								}
 							}
@@ -1431,6 +1516,24 @@
 								}
 							});
 						});
+					});
+
+					new_tab.find(".ev-start-date").calendar({
+						type: "date",
+						inline: true,
+						endCalendar: new_tab.find(".ev-end-date"),
+						onChange: function (date) {
+							fields.start = date;
+						}
+					});
+
+					new_tab.find(".ev-end-date").calendar({
+						type: "date",
+						inline: true,
+						startCalendar: new_tab.find(".ev-start-date"),
+						onChange: function (date) {
+							fields.end = date;
+						}
 					});
 				};
 

@@ -25,20 +25,10 @@ define([
 	};
 
 	function genDate(start, end) {
-		var ret = "";
-		var form = function (date) {
-			return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-		};
+		start = start ? util.localDate(new Date(start), true) : "TBD";
+		end = end ? util.localDate(new Date(end), true) : "TBD";
 
-		if (start) ret += form(new Date(start));
-		else ret += "TBD";
-
-		ret += " ~ ";
-
-		if (end) ret += form(new Date(end));
-		else ret += "TBD";
-
-		return ret;
+		return start + " ~ " + end;
 	}
 
 	function eventTemplate() {

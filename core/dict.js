@@ -129,8 +129,10 @@ var dict = module.exports = {
 		"front.sub.profile.new.info_subtitle": "Title and description",
 		"front.sub.profile.new.cover": "Cover",
 		"front.sub.profile.new.cover_subtitle": "Cover and tags",
+		"front.sub.profile.new.time": "Dates",
+		"front.sub.profile.new.time_subtitle": "Event timeline",
 		"front.sub.profile.new.location": "Location",
-		"front.sub.profile.new.location_subtitle": "When and where",
+		"front.sub.profile.new.location_subtitle": "Event location",
 		"front.sub.profile.new.payment": "Payment",
 		"front.sub.profile.new.payment_subtitle": "Payment method",
 		"front.sub.profile.new.applicant": "Applicants",
@@ -141,6 +143,10 @@ var dict = module.exports = {
 		"front.sub.profile.new.publish_subtitle": "Publish event",
 		"front.sub.profile.new.other": "Other",
 		"front.sub.profile.new.other_subtitle": "Additional actions",
+
+		"front.sub.profile.start_end_date": "Start/End Date",
+		"front.sub.profile.start_date": "Event start date",
+		"front.sub.profile.end_date": "Event end date",
 
 		"front.sub.profile.new.title": "Title",
 		"front.sub.profile.new.descr": "Description",
