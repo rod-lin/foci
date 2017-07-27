@@ -288,7 +288,7 @@ define(function () {
 		var time = date.getHours() + ":" + date.getMinutes();
 		var ret;
 
-		if (sub < ud) {
+		if (sub >= 0 && sub < ud) {
 			ret = time;
 		} else {
 			var day = cur.getDay();
