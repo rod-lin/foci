@@ -85,7 +85,7 @@ define([
 		ret.logo = info.logo ? foci.download(info.logo) : "img/def/logo.jpg";
 
 		var descr_html = markdown.toHTML(info.descr);
-		var descr_text = $(descr_html).text();
+		var descr_text = $(descr_html).text().replace(/<[^>]+>/g, "").replace(/\n/g, " ");
 
 		descr_text = xfilt(util.short(descr_text, config.max_descr_len));
 

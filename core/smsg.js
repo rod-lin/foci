@@ -4,6 +4,7 @@
 
 var db = require("./db");
 var err = require("./err");
+var reg = require("./reg");
 var util = require("./util");
 var config = require("./config");
 
@@ -44,7 +45,7 @@ function initNetease() {
 	}
 
 	exports.sendCode = (phone) => {
-		return req("https://api.netease.im/sms/sendcode.action", { mobile: phone, codeLen: config.smsg.vercode_len }, function (suc, rej, dat) {
+		return req("https://api.netease.im/sms/sendcode.action", { mobile: phone, codeLen: config.reg.vercode_len }, function (suc, rej, dat) {
 			if (dat.obj) suc();
 			else rej(new err.Exc("$core.smsg.failed_send_code"));
 		});
@@ -114,7 +115,7 @@ function initAli() {
 
 					// console.log(moment().format("YYYY-MM-DD HH:mm:ss"));
 					// console.log(url);
-					
+
 					return new Promise(function (suc, rej) {
 						request.get(url, function (error, res, body) {
 							if (error || res.statusCode != 200) {
@@ -144,14 +145,8 @@ function initAli() {
 	// var ali = require("alidayu-node-sdk");
 	var app = new ali(appkey, appsec);
 
-	function genCode(len) {
-		var code = "";
-		while (len--) code += Math.floor(Math.random() * 10);
-		return code;
-	}
-
 	exports.sendCode = async (phone) => {
-		var code = genCode(config.smsg.vercode_len);
+		var code = reg.genCode();
 		var res = await app.smsSend({
 			sms_type: "normal",
 			sms_free_sign_name: config.smsg.ali.sign,
@@ -160,32 +155,12 @@ function initAli() {
 			sms_template_code: config.smsg.ali.template.reg_vercode
 		});
 
-		var col = await db.col("smsg");
-
-		col.findOneAndUpdate(
-			{ phone: phone },
-			{ $set: { phone: phone, code: code, stamp: util.stamp() } },
-			{ upsert: true }
-		);
-
 		if (!res.success) {
 			console.log(res);
 			throw new err.Exc("$core.smsg.failed_send_code");
 		}
-	};
 
-	exports.verify = async (phone, code) => {
-		var col = await db.col("smsg");
-
-		var ret = (await col.findOneAndDelete({ phone: phone, code: code })).value;
-
-		if (!ret) {
-			throw new err.Exc("$core.smsg.failed_verify");
-		}
-
-		if (util.stamp() - ret.stamp > config.smsg.timeout) {
-			throw new err.Exc("$core.smsg.vercode_timeout");
-		}
+		await reg.insert(phone, code);
 	};
 }
 

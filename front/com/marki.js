@@ -117,6 +117,13 @@ define([ "com/xfilt", "com/util", "com/tip" ], function (xfilt, util, tip) {
                 main.find(".editor-cont").val(text);
                 updatePreview();
             }
+
+            return ret;
+        };
+
+        ret.keyup = function (arg) {
+            main.find(".editor-cont").keyup(arg);
+            return ret;
         };
 
         ret.setWarning = function () {

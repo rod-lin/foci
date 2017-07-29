@@ -38,6 +38,8 @@ app.get("/dict", int.dict);
 app.get("/smsg/vercode", int.smsg.vercode);
 // app.get("/smsg/verify", int.smsg.verify);
 
+app.get("/mail/vercode", int.mail.vercode);
+
 app.get("/user/new", int.user.new);
 app.get("/user/login", int.user.login);
 app.get("/user/csid", int.user.csid);
@@ -122,4 +124,4 @@ if (config.ssl.enabled) {
 	} catch (e) {
 		util.log("failed to enable https: " + e.toString(), util.style.yellow("ERROR"));
 	}
-}	
+}

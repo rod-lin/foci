@@ -5,12 +5,14 @@
 var db = require("./db");
 var pm = require("./pm");
 var err = require("./err");
+var reg = require("./reg");
 var auth = require("./auth");
 var user = require("./user");
 var util = require("./util");
 var file = require("./file");
 var dict = require("./dict");
 var smsg = require("./smsg");
+var mail = require("./mail");
 var event = require("./event");
 var config = require("./config");
 var notice = require("./notice");
@@ -42,24 +44,6 @@ exports.dict = util.route(async env => {
 
 var _alipay = {};
 
-// _alipay.test = util.route(async env => {
-// 	env.qsuc(alipay.genQuery({
-// 		app_id: "2017061907523948",
-// 		method: "alipay.trade.page.pay",
-// 		format: "JSON",
-// 		charset: "utf-8",
-// 		timestamp: moment().format("YYYY-MM-DD HH:mm:ss"),
-// 		version: "1.0",
-// 		biz_content: JSON.stringify({
-// 			out_trade_no: "000123",
-// 			product_code: "FAST_INSTANT_TRADE_PAY",
-// 			total_amount: "0.11",
-// 			subject: "iPhone8",
-// 			body: "iPhone8"
-// 		})
-// 	}));
-// });
-
 var _smsg = {};
 
 _smsg.vercode = util.route(async env => {
@@ -77,18 +61,16 @@ _smsg.vercode = util.route(async env => {
 	env.qsuc();
 });
 
-// _smsg.verify = util.route(async env => {
-// 	var args = util.checkArg(env.query, { "phone": "string", "code": "string" });
+var _mail = {};
 
-// 	if (args.phone.length !== 11)
-// 		throw new err.Exc("$core.smsg.wrong_phone_format");
+_mail.vercode = util.route(async env => {
+	var args = util.checkArg(env.query, { "email": "string" });
 
-// 	if (await smsg.verify(agrs.phone, args.code)) {
-// 		env.qsuc();
-// 	} else {
-// 		throw new err.Exc("$core.smsg.failed_verify");
-// 	}
-// });
+	await user.checkNewUserName(args.email);
+	await mail.sendVercode(args.email);
+
+	env.qsuc();
+});
 
 var _user = {};
 var _pub = {};
@@ -102,7 +84,7 @@ _user.new = util.route(async env => {
 		"penc": "string"
 	});
 
-	await smsg.verify(args.lname, args.vercode);
+	await reg.verify(args.lname, args.vercode);
 
 	var passwd = auth.rsa.dec(args.penc, args.pkey);
 	var res = await user.newUser(args.lname, args.lname, passwd);
@@ -220,7 +202,7 @@ _user.applied = util.route(async env => {
 	var args = util.checkArg(env.query, {}.extend(event.Event.format.lim).extend({
 		"uuid": "int"
 	}));
-	
+
 	var ret = await event.getApplied(args.uuid, args);
 	env.qsuc(ret);
 });
@@ -273,6 +255,7 @@ _file.download = util.route(async env => {
 
 exports.alipay = _alipay;
 exports.smsg = _smsg;
+exports.mail = _mail;
 exports.user = _user;
 exports.event = _event;
 exports.file = _file;
@@ -380,7 +363,7 @@ encop.event = async (env, usr, query) => {
 
 			await event.exist(args.euid, 0);
 			await event.setInfo(args.euid, usr.getUUID(), setq);
-			
+
 			return;
 
 		case "search":
@@ -397,7 +380,7 @@ encop.event = async (env, usr, query) => {
 				return {
 					staff: await event.getAppList(args.euid, usr.getUUID(), "staff"),
 					staff_form: await event.getAppForm(args.euid, "staff"),
-					
+
 					partic: await event.getAppList(args.euid, usr.getUUID(), "partic"),
 					partic_form: await event.getAppForm(args.euid, "partic")
 				};

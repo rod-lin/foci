@@ -90,9 +90,13 @@ var dict = module.exports = {
 		"core.smsg.bad_res_format": "bad result format",
 		"core.smsg.failed_send_code": "failed to send code",
 		"core.smsg.wrong_phone_format": "wrong phone number format",
-		"core.smsg.failed_verify": "failed to verify code",
 		"core.smsg.no_appkey": "no app key or secret key",
 		"core.smsg.service_rej": "smsg service reject",
+
+		"core.mail.failed_send": "failed to send email",
+
+		"core.reg.failed_verify": "failed to verify code",
+		"core.reg.vercode_timeout": "verification code timeout",
 
 		"core.pm.no_sender": "no sender",
 		"core.pm.no_sendee": "no sendee",
@@ -235,10 +239,10 @@ var dict = module.exports = {
 		"front.com.login.back": "Back",
 		"front.com.login.finish": "Finish",
 
-		"front.com.login.phone_number": "phone number",
+		"front.com.login.user_name": "phone number/email",
 		"front.com.login.passwd": "password",
 		"front.com.login.code": "code",
-		"front.com.login.illegal_phone": "illegal phone number",
+		"front.com.login.illegal_user_name": "illegal phone number/email",
 		"front.com.login.empty": "empty $1",
 
 		"front.com.tbar.profile": "Profile",

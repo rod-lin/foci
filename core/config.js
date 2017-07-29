@@ -135,9 +135,6 @@ var conf = module.exports = {
 	},
 
 	smsg: {
-		vercode_len: 4,
-		timeout: 1000 * 120, // 2 mi
-
 		use: "ali", // ali or netease
 		ali: {
 			appkey: "23885780",
@@ -152,6 +149,17 @@ var conf = module.exports = {
 			appkey: "",
 			appsec: ""
 		}
+	},
+
+	mail: {
+		service: "Hotmail",
+		email: "",
+		passwd: ""
+	},
+
+	reg: {
+		timeout: 1000 * 120, // 2 min
+		vercode_len: 4
 	},
 
 	// system sender

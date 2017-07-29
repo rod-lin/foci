@@ -77,7 +77,7 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 
 		function restore() {
 			main.find(".error").removeClass("error");
-			main.find(".uname").attr("placeholder", lang.msg("$front.com.login.phone_number"));
+			main.find(".uname").attr("placeholder", lang.msg("$front.com.login.user_name"));
 			main.find(".passwd").attr("placeholder", lang.msg("$front.com.login.passwd"));
 			main.find(".vercode").attr("placeholder", lang.msg("$front.com.login.code"));
 		}
@@ -88,7 +88,7 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 			restore();
 
 			var show = main.find(".form").toggleClass("show-reg").hasClass("show-reg");
-			
+
 			if (show) {
 				login_btn.off("click", loginProc).click(regFinishProc).html(lang.msg("$front.com.login.finish"));
 				main.find(".reg.button").html(lang.msg("$front.com.login.back"));
@@ -138,23 +138,34 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 
 		main.find(".vercode-btn").click(function () {
 			var uname = uname_input.val();
+			var type;
 
-			if (uname.length === 11) {
-				main.find(".vercode-btn").addClass("loading");
-
-				foci.get("/smsg/vercode", { phone: uname }, function (suc, dat) {
-					main.find(".vercode-btn").removeClass("loading");
-					
-					if (suc) {
-						freezeCount(60);
-					} else {
-						util.emsg(dat);
-					}
-				});
-			} else {
-				uname_input.attr("placeholder", lang.msg("$front.com.login.illegal_phone")).parent().addClass("error");
+			if (uname.indexOf("@") != -1)
+				type = "email";
+			else if (uname.length == 11)
+				type = "phone"
+			else {
+				uname_input.attr("placeholder", lang.msg("$front.com.login.illegal_user_name")).parent().addClass("error");
 				uname_input.focus();
+				return;
 			}
+
+			var next = function (suc, dat) {
+				main.find(".vercode-btn").removeClass("loading");
+
+				if (suc) {
+					freezeCount(60);
+				} else {
+					util.emsg(dat);
+				}
+			};
+
+			main.find(".vercode-btn").addClass("loading");
+
+			if (type == "phone")
+				foci.get("/smsg/vercode", { phone: uname }, next);
+			else
+				foci.get("/mail/vercode", { email: uname }, next);
 
 			// util.atimes(function () {
 			// 	main.modal("refresh");

@@ -837,7 +837,7 @@
 								// page 1
 								new_tab.find(".ev-title").val(fields.title).off("change").change(change);
 								// new_tab.find(".ev-descr").val(fields.descr).off("change").change(change);
-								editor_descr.val(fields.descr);
+								editor_descr.val(fields.descr).keyup(change);
 
 								return fields.title && fields.descr;
 							},
