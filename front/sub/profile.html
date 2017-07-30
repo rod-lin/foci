@@ -1068,14 +1068,17 @@
 							next: "pay",
 
 							onInit: function (info) {
+								new_tab.find(".ev-start-date").calendar("clear");
+								new_tab.find(".ev-end-date").calendar("clear");
+
 								if (info.start) {
 									fields.start = new Date(info.start);
-									new_tab.find(".ev-start-date").val("").calendar("set startDate", fields.start);
+									new_tab.find(".ev-start-date").val("").calendar("set date", fields.start);
 								}
 
 								if (info.end) {
 									fields.end = new Date(info.end);
-									new_tab.find(".ev-end-date").val("").calendar("set endDate", fields.end);
+									new_tab.find(".ev-end-date").val("").calendar("set date", fields.end);
 								}
 
 								return fields.start && fields.end;
@@ -1523,6 +1526,9 @@
 						inline: true,
 						endCalendar: new_tab.find(".ev-end-date"),
 						onChange: function (date) {
+							setTimeout(function () {
+								new_tab.find(".ev-end-date").calendar("refresh");
+							}, 0);
 							fields.start = date;
 						}
 					});
@@ -1532,6 +1538,9 @@
 						inline: true,
 						startCalendar: new_tab.find(".ev-start-date"),
 						onChange: function (date) {
+							setTimeout(function () {
+								new_tab.find(".ev-start-date").calendar("refresh");
+							}, 0);
 							fields.end = date;
 						}
 					});
