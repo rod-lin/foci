@@ -7,20 +7,22 @@ define([ "com/util" ], function (util) {
 		cont = $(cont);
 		config = $.extend({
 			style: "black",
-			auto: true
+			auto: true,
+			on: "click"
 		}, config);
 
 		cont.popup({
 			content: text,
 			position: position,
 			lastResort: true,
-			on: "click",
+			on: config.on,
 			scrollContext: config.scroll,
 			variation: config.style == "white" ? "" : "inverted",
 			onHide: function () {
-				setTimeout(function () {
-					cont.popup("destroy");
-				}, 500);
+				if (config.auto)
+					setTimeout(function () {
+						cont.popup("destroy");
+					}, 500);
 			}
 		});
 

@@ -60,14 +60,58 @@
 } */
 
 .com-event-single .title {
+	display: inline-block;
+	width: 100%;
 	overflow: hidden;
 	text-overflow: ellipsis;
 
+	padding-right: 4rem;
+
+	font-size: 1.3em;
+	font-weight: bold;
 	color: #595959 !important;
 }
 
 .com-event-single .title:hover {
 	color: #404040 !important;
+}
+
+.com-event-single .content {
+	position: relative;
+}
+
+.com-event-single .flags {
+	position: absolute;
+	top: 1em;
+	right: 1em;
+}
+
+.com-event-single .flag {
+	padding: 5px 6px;
+	background: white;
+	border-radius: 3px;
+	font-size: 0.8em;
+
+	width: 4rem;
+	text-align: center;
+
+	color: #4D4D4D;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-event-single .flag.blue {
+	color: #2980B9;
+	border: 1px solid #3498DB;
+}
+
+.com-event-single .flag.green {
+	color: #27AE60;
+	border: 1px solid #2ECC71;
+}
+
+.com-event-single .flag.yellow {
+	color: #F39C12;
+	border: 1px solid #F1C40F;
 }
 
 .com-event-single .description {

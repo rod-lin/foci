@@ -213,7 +213,11 @@ var dict = module.exports = {
 
 		"front.sub.event.organizer": "$nat.cap($core.word.org)",
 		"front.sub.event.apply_for": "Apply for",
+		"front.sub.event.thank_you": "Thank you",
+		"front.sub.event.login_first": "Login first",
+		"front.sub.event.organize": "Organize",
 		"front.sub.event.app_cent": "Application center",
+		"front.sub.event.term_event": "Terminate event",
 		"front.sub.event.staff": "$nat.cap($core.word.staff)",
 		"front.sub.event.partic": "$nat.cap($core.word.partic)",
 		"front.sub.event.comments": "Comments",

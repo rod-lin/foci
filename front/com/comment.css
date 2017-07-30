@@ -34,6 +34,14 @@
 	vertical-align: top;
 }
 
+.com-comment .new-comment .toolbar .rating-cont.disabled {
+	opacity: 0.5;
+}
+
+.com-comment .new-comment .toolbar .rating-cont.disabled * {
+	pointer-events: none;
+}
+
 .com-comment .new-comment .toolbar .issue-btn {
 	float: right;
 	height: 2.7rem;

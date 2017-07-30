@@ -34,7 +34,7 @@
 			</div>
 
 			<style>
-				
+
 				#sub-event>.cont .row {}
 
 				#sub-event>.cont .col {
@@ -82,11 +82,15 @@
 					</div>
 				</div><div class="col col-3 col-mid-full box-set">
 					<div class="box pad">
-						<div class="apply-prompt lang" data-replace="$front.sub.event.apply_for">Apply for</div>
+						<div class="apply-prompt">Apply for</div>
 					</div>
 					<div class="box pad apply-appcent btn" style=" margin-top: 0.2rem; background: #34495E; color: white; display: none;">
 						<div class="ui inverted loader"></div>
 						<span class="lang" data-replace="$front.sub.event.app_cent">Application center</span>
+					</div>
+					<div class="box pad apply-terminate btn" style=" margin-top: 0.2rem; background: #7F8C8D; color: white; display: none;">
+						<div class="ui inverted loader"></div>
+						<span class="lang" data-replace="$front.sub.event.app_terminate">Terminate event</span>
 					</div>
 					<div class="box pad apply-staff btn" style=" margin-top: 0.2rem; background: #3498DB; color: white;">
 						<div class="ui inverted loader"></div>
@@ -139,7 +143,7 @@
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 50% 50%;
-		
+
 		overflow: hidden;
 
 		box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
@@ -439,6 +443,7 @@
 			}
 
 			var tbar = env.get("tbar");
+			var m = lang.msg;
 
 			tbar.setTitle("loading");
 
@@ -456,7 +461,7 @@
 
 			display.render = function (info) {
 				var parsed = event.parseInfo(info, { max_title_len: 25 });
-				
+
 				var cont = main.children(".cont");
 
 				tbar.setTitle(parsed.title, parsed.date);
@@ -606,27 +611,31 @@
 				}
 
 				function disableApp(msg) {
-					setAppPrompt(msg || "Thank you");
+					setAppPrompt(msg || m("$front.sub.event.thank_you"));
 					main.find(".apply-staff").addClass("disabled");
 					main.find(".apply-partic").addClass("disabled");
 				}
 
 				login.session(function (session) {
 					if (!session) {
-						disableApp("Login first");
+						disableApp(m("$front.sub.event.login_first"));
 						return;
 					}
 
 					var uuid = session.getUUID();
 
 					if (info.org.indexOf(uuid) != -1) {
-						setAppPrompt("As an owner");
+						setAppPrompt(m("$front.sub.event.organize"));
 						main.find(".apply-staff").remove();
 						main.find(".apply-partic").remove();
-				
+
 						main.find(".apply-appcent").css("display", "").click(function () {
 							util.jump("#appcent/" + euid);
 						});
+
+						main.find(".apply-terminate").css("display", "").click(function () {
+							alert("TODO!!");
+						}).addClass("disabled");
 					} else {
 						main.find(".apply-staff").click(function () {
 							main.find(".apply-staff .loader").addClass("active");
@@ -639,7 +648,7 @@
 
 						main.find(".apply-partic").click(function () {
 							main.find(".apply-partic .loader").addClass("active");
-							
+
 							apply(session, "partic", function (suc) {
 								main.find(".apply-partic" + " .loader").removeClass("active");
 								if (suc) disableApp();
@@ -648,8 +657,11 @@
 					}
 				});
 
-				var comm = comment.init(main.find(".comment"), euid);
-			
+				var comm = comment.init(main.find(".comment"), euid, {
+					state: info.state,
+					disable_prompt: "event not ended yet"
+				});
+
 				util.scrollBottom(cont, 5, function () {
 					comm.more();
 				});
@@ -671,7 +683,7 @@
 					main.find(".cover").remove();
 				else
 					main.find(".cover").addClass("hide");
-	
+
 				setTimeout(function () {
 					tbar.setStyle("");
 					$("body").addClass("padding-tbar");

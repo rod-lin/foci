@@ -51,7 +51,10 @@ define([
 				</div> \
 			</div> \
 			<div class="content"> \
-				<a class="header title"></a> \
+				<div> \
+					<a class="header title"></a> \
+					<div class="flags"></div> \
+				</div> \
 				<div class="meta"> \
 					<span class="date"></span> \
 				</div> \
@@ -165,6 +168,20 @@ define([
 		dom.find(".date").html(parsed.date);
 		dom.find(".description").html(parsed.descr_text);
 		dom.find(".apply_num").html(parsed.apply_num);
+
+		switch (info.state) {
+			case 0:
+				dom.find(".flags").html("<div class='flag yellow'>draft</div>");
+				break;
+
+			case 1:
+				dom.find(".flags").html("<div class='flag green'>ongoing</div>");
+				break;
+
+			case 2:
+				dom.find(".flags").html("<div class='flag blue'>ended</div>");
+				break;
+		}
 
 		if (info.status)
 			dom.addClass(info.status);

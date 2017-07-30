@@ -19,6 +19,8 @@ var Event = function (euid, owner /* uuid */) {
 
 	this.org = [ owner ];
 	this.state = 0; // draft state
+	// 1 for published
+	// 2 for terminated
 
 	this.contact = owner; // contact user
 
@@ -83,6 +85,10 @@ Event.prototype.getRating = function () {
 	// console.log(this.euid + ", " + tot);
 
 	return tot ? tot / count : null;
+};
+
+Event.prototype.getState = function () {
+	return this.state;
 };
 
 Event.prototype.getInfo = function (only) {

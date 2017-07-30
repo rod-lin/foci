@@ -5,13 +5,16 @@
 define([
 	"com/util", "com/login", "com/rating",
 	"com/avatar", "com/xfilt", "com/lang",
-	"com/env"
-], function (util, login, rating, avatar, xfilt, lang, env) {
+	"com/env", "com/tip"
+], function (util, login, rating, avatar, xfilt, lang, env, tip) {
 	foci.loadCSS("com/comment.css");
 
 	function init(cont, euid, config) {
 		cont = $(cont);
-		config = $.extend({}, config);
+		config = $.extend({
+			state: 2,
+			disable_prompt: "rating disabled"
+		}, config);
 
 		var main = $(" \
 			<div class='com-comment'> \
@@ -134,7 +137,7 @@ define([
 
 			history.addClass("loading");
 			history.children(".prompt").remove();
-		
+
 			foci.get("/event/comment", { euid: euid, skip: cur_skip }, function (suc, dat) {
 				history.removeClass("loading");
 
@@ -175,6 +178,12 @@ define([
 					}
 				});
 			});
+		}
+
+		// event state
+		if (config.state < 2) {
+			main.find(".rating-cont").addClass("disabled");
+			tip.init(main.find(".rating-cont"), config.disable_prompt, "bottom center", { on: "hover", auto: false });
 		}
 
 		main.find(".issue-btn").click(issueComment);

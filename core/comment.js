@@ -92,10 +92,14 @@ var checkCommCount = async (comm, uuid) => {
 };
 
 exports.issue = async (euid, conf) => {
-	var ncomm = new Comment(conf);
 	var col = await db.col("event");
 
 	var ev = await event.euid(euid);
+
+	if (ev.getState() < 2)
+		delete conf.rating;
+
+	var ncomm = new Comment(conf);
 	var comm = ev.getComment();
 
 	await checkCommCount(comm, ncomm.getUUID());
