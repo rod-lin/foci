@@ -112,6 +112,14 @@ define([ "com/util" ], function (util) {
 
         var ret = {};
 
+        ret.nextPage = function () {
+            nextPage();
+        };
+
+        ret.background = function (val) {
+            cont.css("background", val);
+        };
+
         return ret;
     }
 

@@ -430,7 +430,7 @@ define([
 
 		var session = null;
 
-		var styles = [ "simple", "light-simple", "shadowy", "apply" ];
+		var styles = [ "simple", "light-simple", "shadowy", "apply", "success" ];
 
 		var ret = {
 			search: function (cb) {

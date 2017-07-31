@@ -10,7 +10,7 @@
     /* overflow-y: auto; */
     overflow-x: visible;
 
-    transition: left 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: left 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .com-pform .pform-page {
@@ -24,6 +24,9 @@
     text-align: center;
 
     white-space: nowrap;
+    background: transparent;
+
+    transition: background 0.3s;
 }
 
 .com-pform .pform-page.show {
@@ -36,7 +39,10 @@
     position: relative;
     text-align: left;
 
-    padding: 2em;
+    max-width: 100%;
+    white-space: normal;
+
+    padding: 0 3em 3em 3em;
 
     line-height: normal;
 }

@@ -582,6 +582,28 @@
 
 /* styles */
 
+/* success */
+.com-tbar.success {
+	background: #2ECC71;
+	border-color: transparent;
+}
+
+.com-tbar.success .search-box .menu-btn i {
+	color: white;
+}
+
+.com-tbar.success .search-box .prompt {
+	background: rgba(0, 0, 0, 0.08) !important;
+}
+
+.com-tbar.success .filter-btn {
+	color: white !important;
+}
+
+.com-tbar.success .avatar-util {
+	color: white !important;
+}
+
 /* shadowy */
 
 .com-tbar.shadowy.apply {
@@ -650,7 +672,7 @@
 		padding: 0 1.5em 0 0;
 	}
 
-	.com-tbar.simple .search-box .menu-btn {
+	.com-tbar .search-box .menu-btn {
 		padding-left: 0;
 	}
 }

@@ -1,12 +1,88 @@
 <div id="sub-termev"> <!-- event termination -->
+	<style>
+		#sub-termev .page-1 {
+			text-align: center;
+			font-size: 1.5em;
+			font-family: Brandon;
+			word-wrap: break-word;
+		}
+
+		@media only screen and (max-width: 640px) {
+			#sub-termev .page-1 {
+				font-size: 1.2em;
+			}
+		}
+
+		#sub-termev .page-1 .title {
+			font-size: 1.5em;
+			font-weight: bold;
+			font-family: Brandon;
+			margin-bottom: 1rem;
+		}
+
+		#sub-termev .page-1 .msg {
+			margin-bottom: 2rem;
+		}
+
+		#sub-termev .page-1 .btns {
+			width: 100%;
+		}
+	</style>
 	<div class="page-1" style="display: none;">
-		
+		<div class="title">Ending the Event</div>
+		<div class="msg">
+			Are you sure to end the event? <br>
+			You will <b>NOT</b> be able to withdraw. <br>
+			If you are not sure about this, please <br>
+			read the <a>rules of terminated events</a>.
+		</div>
+		<div class="btns">
+			<button class="ui button">Later</button>
+			<button class="ui primary button end-btn">Yes</button>
+		</div>
+	</div>
+
+	<style>
+
+		#sub-termev .page-2 {
+			text-align: center;
+			color: white;
+
+			font-family: Brandon;
+			font-size: 2em;
+		}
+
+		#sub-termev .page-2 .big-icon {
+			font-size: 3em;
+		}
+
+		#sub-termev .page-2 .title {
+			margin-top: 0.5rem;
+			font-weight: bold;
+		}
+
+		#sub-termev .page-2 .subtitle {
+			font-size: 0.7em;
+			margin-bottom: 3rem;
+		}
+
+	</style>
+
+	<div class="page-2" style="display: none;">
+		<div class="big-icon">
+			<i class="check circle icon"></i>
+		</div>
+		<div class="title">Congradualations</div>
+		<div class="subtitle">On organizing an event</div>
+		<button class="ui basic inverted button next-btn">Haha</button>
 	</div>
 </div>
 
 <style>
 	#sub-termev {
 		height: 100%;
+		background: transparent;
+		transition: background 0.3s;
 	}
 </style>
 
@@ -18,11 +94,38 @@
 			var tbar = env.get("tbar");
 			tbar.setTitle("Event finished");
 
-			pform.init(main, [
+			var pf = pform.init(main, [
 				{
 					cont: main.find(".page-1")
+				},
+
+				{
+					cont: main.find(".page-2"),
+					onShow: function () {
+						tbar.setStyle("success");
+						pf.background("#2ECC71");
+					},
+
+					onHide: function () {
+						tbar.setStyle("");
+						pf.background("");
+					}
+				},
+
+				{
+					cont: "<span>Next</span>"
 				}
 			], {});
+
+			main.find(".page-1 .end-btn").click(function () {
+				pf.nextPage();
+			});
+
+			main.find(".page-2 .next-btn").click(function () {
+				pf.nextPage();
+			});
+
+			// pf.nextPage();
 
 			show(true);
 		});
