@@ -389,6 +389,8 @@ Event.set = {
 	publish: () => ({ $set: { state: 1 } }),
 	unpublish: () => ({ $set: { state: 0 } }),
 
+	terminate: () => ({ $set: { state: 2 } }),
+
 	status: (euid, status) => ({ $set: { "apply_staff.$.status": status } })
 };
 
@@ -488,18 +490,27 @@ function formatStdLim(conf) {
 }
 
 async function getEventGroup(query, conf, filter) {
-	var lim = formatStdLim(conf);
 
 	var col = await db.col("event");
-	var arr = await col.find(query)
-						.sort(lim.sortby)
-						.skip(lim.skip)
-						.limit(lim.lim).toArray();
+	var arr = await col.find(query);
+
+	if (conf) {
+		var lim = formatStdLim(conf);
+		arr = arr.sort(lim.sortby)
+				 .skip(lim.skip)
+				 .limit(lim.lim);
+	} else {
+		arr = arr.sort({ created: -1 });
+	}
+
+	arr = await arr.toArray();
+
 	var ret = [];
 
 	arr.forEach(function (ev) {
-		var ev = new Event(ev).getInfo();
+		var ev = new Event(ev);
 		if (filter) ev = filter(ev);
+		else ev = ev.getInfo();
 		ret.push(ev);
 	});
 
@@ -519,16 +530,19 @@ exports.getOrganized = async (uuid, conf) => {
 // events applied by a user
 exports.getApplied = async (uuid, conf) => {
 	var accept = await getEventGroup(Event.query.applied(uuid, "accept"), conf, ev => {
+		ev = ev.getInfo();
 		ev.status = "accept";
 		return ev;
 	});
 
 	var reject = await getEventGroup(Event.query.applied(uuid, "decline"), conf, ev => {
+		ev = ev.getInfo();
 		ev.status = "decline";
 		return ev;
 	});
 
 	var pending = await getEventGroup(Event.query.applied(uuid, "pending"), conf, ev => {
+		ev = ev.getInfo();
 		ev.status = "pending";
 		return ev;
 	});
@@ -538,6 +552,74 @@ exports.getApplied = async (uuid, conf) => {
 
 exports.getDraft = async (uuid, conf) => {
 	return await getEventGroup(Event.query.draft(uuid), conf);
+};
+
+/*
+	3 types:
+	1. organizer("org")
+	2. accepted participant/staff("app")
+ */
+exports.genResume = async (uuid) => {
+	var org = await getEventGroup(Event.query.org(uuid), null, function (ev) {
+		ev.resume_type = "org";
+		return ev;
+	});
+
+	var accept = await getEventGroup(Event.query.applied(uuid, "accept"), null, function (ev) {
+		ev.resume_type = "app";
+		return ev;
+	});
+
+	var ret = org.concat(accept);
+
+	ret.sort(function (a, b) {
+		return (b.end || b.created) - (a.created || a.created);
+	});
+
+	/*
+		{
+			type: "org" / "app",
+			start: start,
+			end: created,
+
+		}
+	 */
+
+	for (var i = 0; i < ret.length; i++) {
+		var ev = ret[i];
+
+		// TODO: f**king slow?
+		if (ev.resume_type == "app") {
+			if (ev.apply_partic) {
+				for (var j = 0; j < ev.apply_partic.length; j++) {
+					if (ev.apply_partic[j].uuid == uuid) {
+						ev.resume_job += "partic";
+						break;
+					}
+				}
+			}
+
+			if (ev.apply_staff) {
+				for (var j = 0; j < ev.apply_staff.length; j++) {
+					if (ev.apply_staff[j].uuid == uuid) {
+						ev.resume_job = "staff";
+						break;
+					}
+				}
+			}
+		}
+
+		ret[i] = {
+			type: ev.resume_type,
+			job: ev.resume_job,
+			start: ev.start,
+			end: ev.end,
+			cover: ev.cover,
+			rating: ev.resume_type == "org" ? ev.rating : undefined
+		};
+	}
+
+	return ret;
 };
 
 exports.search = async (conf, state) => {
@@ -605,6 +687,8 @@ exports.apply = async (euid, uuid, type, form) => {
 
 	// apply success
 	tick.emit("foci.event-apply", euid, uuid, type);
+
+	await user.updateResume(uuid);
 };
 
 exports.publish = async (euid, uuid) => {
@@ -617,6 +701,7 @@ exports.publish = async (euid, uuid) => {
 		throw new err.Exc("$core.event_not_draft");
 
 	await col.findOneAndUpdate(Event.query.euid(euid, 0), Event.set.publish());
+	await user.updateResume(uuid);
 };
 
 exports.unpublish = async (euid, uuid) => {
@@ -656,6 +741,16 @@ exports.changeAppStatus = async (euid, uuids, type, status) => {
 	for (var i = 0; i < uuids.length; i++) {
 		await col.updateOne(Event.query.applicant(euid, uuids[i], type), Event.set.status(euid, status));
 	}
+};
 
-	return;
+exports.terminate = async (euid, uuid) => {
+	await exports.checkOwner(euid, uuid);
+	var ev = await exports.euid(euid);
+
+	if (ev.state != 1)
+		throw new err.Exc("$core.unable_to_terminate");
+
+	var col = await db.col("event");
+
+	await col.findOneAndUpdate(Event.query.euid(euid), Event.set.terminate());
 };

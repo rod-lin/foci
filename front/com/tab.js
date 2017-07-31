@@ -25,7 +25,13 @@ define(function () {
 		var items = {};
 		var cur = null;
 
-		for (var k in tabs) {
+		var keys = Object.keys(tabs).sort(function (a, b) {
+			return (tabs[a].order || 0) - (tabs[b].order || 0);
+		});
+
+		for (var i = 0; i < keys.length; i++) {
+			var k = keys[i];
+
 			if (tabs.hasOwnProperty(k)) {
 				(function (name) {
 					var dname;
@@ -37,12 +43,12 @@ define(function () {
 
 					if (typeof tabs[k] === "object") {
 						dname = tabs[k].name;
-						
+
 						onShow = tabs[k].onShow;
 						onChange = tabs[k].onChange;
 
 						onright = tabs[k].float === "right";
-						
+
 						if (tabs[k].style) style = tabs[k].style;
 					} else {
 						dname = tabs[k];
@@ -50,8 +56,8 @@ define(function () {
 
 					var item = $("<button class='item" + (onright ? " right" : "") + " " + style + "'>" + dname + "</button>");
 					var tab = $("<div class='tab'></div>");
-					
-					items[k] = { 
+
+					items[k] = {
 						item: item,
 						tab: tab,
 						onChange: onChange
@@ -68,12 +74,12 @@ define(function () {
 							main.children(".tabs").children(".active").removeClass("active");
 
 							item.addClass("active");
-						
+
 							if (onShow) {
 								tab.addClass("active");
 								loader.addClass("active");
 								tab.css("opacity", "0");
-								
+
 								onShow(function () {
 									loader.removeClass("active");
 									tab.css("opacity", "1");

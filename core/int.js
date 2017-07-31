@@ -212,6 +212,11 @@ _user.search = util.route(async env => {
 	env.qsuc(await user.search(args.kw));
 });
 
+_user.resume = util.route(async env => {
+	var args = util.checkArg(env.query, { uuid: "int" });
+	env.qsuc(await user.getResumeCache(args.uuid));
+});
+
 var _event = {};
 
 _event.info = util.route(async env => {
@@ -342,6 +347,11 @@ encop.event = async (env, usr, query) => {
 		case "unpublish":
 			var args = util.checkArg(query, { euid: "int" });
 			await event.unpublish(args.euid, usr.getUUID());
+			return;
+
+		case "terminate":
+			var args = util.checkArg(query, { euid: "int" });
+			await event.terminate(args.euid, usr.getUUID());
 			return;
 
 		case "own":

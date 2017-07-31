@@ -3,7 +3,6 @@
 		#sub-termev .page-1 {
 			text-align: center;
 			font-size: 1.5em;
-			font-family: Brandon;
 			word-wrap: break-word;
 		}
 
@@ -16,7 +15,6 @@
 		#sub-termev .page-1 .title {
 			font-size: 1.5em;
 			font-weight: bold;
-			font-family: Brandon;
 			margin-bottom: 1rem;
 		}
 
@@ -31,29 +29,27 @@
 	<div class="page-1" style="display: none;">
 		<div class="title">Ending the Event</div>
 		<div class="msg">
-			Are you sure to end the event? <br>
+			Are you sure to end this event? <br>
 			You will <b>NOT</b> be able to withdraw. <br>
 			If you are not sure about this, please <br>
 			read the <a>rules of terminated events</a>.
 		</div>
 		<div class="btns">
-			<button class="ui button">Later</button>
+			<button class="ui button later-btn">Later</button>
 			<button class="ui primary button end-btn">Yes</button>
 		</div>
 	</div>
 
 	<style>
-
 		#sub-termev .page-2 {
 			text-align: center;
 			color: white;
 
-			font-family: Brandon;
 			font-size: 2em;
 		}
 
 		#sub-termev .page-2 .big-icon {
-			font-size: 3em;
+			font-size: 2.5em;
 		}
 
 		#sub-termev .page-2 .title {
@@ -63,18 +59,49 @@
 
 		#sub-termev .page-2 .subtitle {
 			font-size: 0.7em;
-			margin-bottom: 3rem;
+			margin-bottom: 2rem;
 		}
-
 	</style>
 
 	<div class="page-2" style="display: none;">
 		<div class="big-icon">
 			<i class="check circle icon"></i>
 		</div>
-		<div class="title">Congradualations</div>
-		<div class="subtitle">On organizing an event</div>
-		<button class="ui basic inverted button next-btn">Haha</button>
+		<div class="title">You did it!</div>
+		<div class="subtitle">
+			There are some last steps<br>
+			we need you to complete
+		</div>
+		<button class="ui basic inverted button next-btn">Yep</button>
+	</div>
+
+	<style>
+		#sub-termev .page-3 {
+			text-align: center;
+		}
+
+		#sub-termev .page-3 .title {
+			font-size: 1.8em;
+			font-weight: bold;
+		}
+
+		#sub-termev .page-3 .msg {
+			margin-top: 1rem;
+			margin-bottom: 2rem;
+			font-size: 1.3em;
+		}
+	</style>
+
+	<div class="page-3" style="display: none;">
+		<div class="title">Send notice to participants</div>
+		<div class="msg">
+			A departing letter for participants<br>
+			You can choose to write this later<br>
+			in the event setting. But note that<br>
+			you have a time limit of 10 days.
+		</div>
+		<button class="ui button later-btn">Later</button>
+		<button class="ui green button send-btn">Send</button>
 	</div>
 </div>
 
@@ -82,52 +109,158 @@
 	#sub-termev {
 		height: 100%;
 		background: transparent;
+		font-family: Brandon;
 		transition: background 0.3s;
+		color: #343434;
 	}
 </style>
 
 <script>
 	function init(main, args, show, cont) {
 		require([
-			"com/env", "com/util", "com/pform"
-		], function (env, util, pform) {
-			var tbar = env.get("tbar");
-			tbar.setTitle("Event finished");
+			"com/env", "com/util", "com/pform",
+			"com/notice", "com/event", "com/login"
+		], function (env, util, pform, notice, event, login) {
+			if (!args || !args.length) {
+				util.emsg("$front.sub.event.no_euid");
+				return;
+			}
 
-			var pf = pform.init(main, [
-				{
-					cont: main.find(".page-1")
-				},
+			var euid = parseInt(args[0]);
 
-				{
-					cont: main.find(".page-2"),
-					onShow: function () {
-						tbar.setStyle("success");
-						pf.background("#2ECC71");
+			if (isNaN(euid)) {
+				util.emsg("$front.sub.event.illegal_euid");
+				return;
+			}
+
+			function init(info, session) {
+				var parsed = event.parseInfo(info);
+
+				var tbar = env.get("tbar");
+				tbar.setTitle("Event finished");
+
+				var pf = pform.init(main, [
+					{
+						cont: main.find(".page-1")
 					},
 
-					onHide: function () {
-						tbar.setStyle("");
-						pf.background("");
+					{
+						cont: main.find(".page-2"),
+						onShow: function () {
+							tbar.setStyle("success");
+							pf.background("#2ECC71");
+						},
+
+						onHide: function () {
+							tbar.setStyle("");
+							pf.background("");
+						}
+					},
+
+					{
+						cont: main.find(".page-3")
+					},
+
+					{
+						cont: "<span>to be continued</span>"
 					}
-				},
+				], {});
 
-				{
-					cont: "<span>Next</span>"
+				main.find(".page-1 .later-btn").click(function () {
+					history.back();
+				});
+
+				main.find(".page-1 .end-btn").click(function () {
+					main.find(".page-1 .end-btn").addClass("loading");
+
+					foci.encop(session, {
+						int: "event",
+						action: "terminate",
+						euid: euid
+					}, function (suc, dat) {
+						main.find(".page-1 .end-btn").removeClass("loading");
+
+						if (suc)
+							pf.nextPage();
+						else
+							util.emsg(dat);
+					});
+				});
+
+				main.find(".page-2 .next-btn").click(function () {
+					pf.nextPage();
+				});
+
+				main.find(".page-3 .later-btn").click(function () {
+					pf.nextPage();
+				});
+
+				main.find(".page-3 .send-btn").click(function () {
+					notice.editor({
+						logo: parsed.logo,
+						prompt: "To all participants/staffs",
+						onSend: function (conf, cb) {
+							foci.encop(session, {
+								int: "event",
+								action: "getapp",
+								euid: euid
+							}, function (suc, app) {
+								if (suc) {
+									var uuids = [];
+
+									for (var i = 0; i < app.partic.length; i++) {
+										if (app.partic[i].status == "accept")
+											uuids.push(app.partic[i].uuid);
+									}
+
+									for (var i = 0; i < app.staff.length; i++) {
+										if (app.staff[i].status == "accept")
+											uuids.push(app.staff[i].uuid);
+									}
+
+									foci.encop(session, {
+										int: "notice",
+										action: "send",
+										type: "event",
+
+										euid: euid,
+										uuids: uuids,
+
+										title: conf.title,
+										msg: conf.msg
+									}, function (suc, dat) {
+										if (suc) {
+											cb(true);
+											pf.nextPage();
+										} else {
+											util.emsg(dat);
+											cb(false);
+										}
+									});
+								} else {
+									util.emsg(app);
+									cb(false);
+								}
+							});
+						}
+					});
+				});
+
+				// pf.nextPage();
+				// pf.nextPage();
+
+				show(true);
+			}
+
+			foci.get("/event/info", { euid: euid }, function (suc, dat) {
+				if (suc) {
+					login.session(function (session) {
+						init(dat, session);
+					});
+				} else {
+					util.emsg(dat);
 				}
-			], {});
-
-			main.find(".page-1 .end-btn").click(function () {
-				pf.nextPage();
 			});
-
-			main.find(".page-2 .next-btn").click(function () {
-				pf.nextPage();
-			});
-
-			// pf.nextPage();
-
-			show(true);
 		});
 	}
 </script>

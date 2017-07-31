@@ -55,6 +55,7 @@ var dict = module.exports = {
 		"core.not_exist": "no such $1",
 		"core.not_event_owner": "you're not the owner of this event",
 		"core.not_event_applicant": "someone in the list is not an applicant",
+		"core.unable_to_terminate": "unable to terminate event in this state",
 
 		"core.illegal_app_type": "illegal type of application",
 		"core.illegal_app_status": "illegal application status",
@@ -123,6 +124,7 @@ var dict = module.exports = {
 		"front.sub.profile.no_more_result": "no more results",
 		"front.sub.profile.applied": "applied",
 		"front.sub.profile.organized": "organized",
+		"front.sub.profile.resume": "resume",
 		"front.sub.profile.draft": "draft",
 		"front.sub.profile.new": "<i class='add icon'></i> New",
 		"front.sub.profile.save": "<span style='color: #27AE60;'><i class='check icon'></i> Save</span>",

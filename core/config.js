@@ -86,7 +86,10 @@ var conf = module.exports = {
 			keyword: 128,
 			rform: 2048,
 
-			max_search_results: 16
+			max_search_results: 16,
+
+			// max days after the event ended and before auto termination
+			// max_term_delay: 1000 * 60 * 60 * 24 * 10, // 10 day
 		},
 
 		pm: {

@@ -558,14 +558,25 @@
 			"com/login", "com/event", "com/upload",
 			"com/map", "com/lang", "com/editable",
 			"com/tagbox", "com/pm", "com/tip",
-			"com/formi", "com/marki"
+			"com/formi", "com/marki", "com/resume"
 		], function (
 			env, util, event, xfilt,
 			pages, tab, login, event,
 			upload, map, lang, editable,
-			tagbox, pm, tip, formi, marki
+			tagbox, pm, tip, formi, marki,
+			resume
 		) {
 			var init = function (info, is_self, init_page) {
+				// foci.get("/user/resume", {
+				// 	uuid: info.uuid
+				// }, function (suc, dat) {
+				// 	if (suc) {
+				// 		console.log(dat);
+				// 	} else {
+				// 		util.emsg(dat);
+				// 	}
+				// });
+
 				var tbar = env.get("tbar");
 				var pt = env.get("part");
 
@@ -677,6 +688,7 @@
 
 				var tabs = {
 					"applied": {
+						order: 1,
 						name: m("$front.sub.profile.applied").capital(),
 						onShow: function (show) {
 							tbar.setTitle("Profile", info.dname, "Applied");
@@ -685,6 +697,7 @@
 					},
 
 					"org": {
+						order: 2,
 						name: m("$front.sub.profile.organized").capital(),
 						onShow: function (show) {
 							tbar.setTitle("Profile", info.dname, "Organized");
@@ -1087,8 +1100,8 @@
 							onCheck: function (cb) {
 								if (fields.start || fields.end) {
 									uploadChanges({
-										start: fields.start.getTime(),
-										end: fields.end.getTime()
+										start: fields.start ? fields.start.getTime() : undefined,
+										end: fields.end ? fields.end.getTime() : undefined
 									}, function (suc) {
 										if (suc) {
 											new_tab.find(".time-step").addClass("completed");
@@ -1575,6 +1588,7 @@
 					}
 
 					tabs["draft"] = {
+						order: 3,
 						name: m("$front.sub.profile.draft").capital(),
 						onShow: function (show) {
 							tbar.setTitle("Profile", info.dname, "Draft");
@@ -1621,14 +1635,28 @@
 					};
 
 					pt.jump(onChange);
+				} else {
+					tabs["resume"] = {
+						order: 0,
+						name: m("$front.sub.profile.resume").capital(),
+						onShow: function (show) {
+							var	rtab = tb.getTab("resume");
+							resume.init(rtab, uuid);
+							show();
+						}
+					}
+
+					delete tabs["applied"];
 				}
 
 				var tb = tab.init(right_bar.find(".main-tab"), tabs);
 
-				if (is_self)
+				if (is_self) {
 					tb.getTab("new").html(new_tab);
-
-				tb.to("applied");
+					tb.to("applied")
+				} else {
+					tb.to("resume");
+				}
 
 				// profile editable
 				if (is_self) {

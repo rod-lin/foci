@@ -185,7 +185,7 @@ define([
 			case 2:
 				dom.find(".flags").html("<div class='flag blue'> \
 					<div class='flag-name'>ended</div> \
-					<div class='flag-rating'>" + (info.rating || 0.0) + "</div> \
+					<div class='flag-rating'>" + (util.trimFloat(info.rating, 1) || 0) + " / 10</div> \
 				</div>");
 				break;
 		}

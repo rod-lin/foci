@@ -356,5 +356,10 @@ define(function () {
 		}
 	}
 
+	util.trimFloat = function (val, decimal) {
+		var e = Math.pow(10, decimal);
+		return Math.floor(val * e) / e;
+	};
+
 	return util;
 });

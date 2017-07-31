@@ -594,6 +594,7 @@
 
 .com-tbar.success .search-box .prompt {
 	background: rgba(0, 0, 0, 0.08) !important;
+	color: white !important;
 }
 
 .com-tbar.success .filter-btn {

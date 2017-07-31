@@ -6,6 +6,7 @@ var uid = require("./uid");
 var auth = require("./auth");
 var util = require("./util");
 var config = require("./config");
+var event = require("./event");
 
 var User = function (uuid, dname, lname, passwd) {
 	if (dname === undefined) {
@@ -30,6 +31,8 @@ var User = function (uuid, dname, lname, passwd) {
 	this.lname = lname;
 	this.passwd = passwd;
 	this.favtag = [];
+
+	this.resume = null; // cache of resume
 
 	this.age = NaN;
 	this.intro = "";
@@ -72,6 +75,10 @@ User.prototype.getInfo = function () {
 		intro: this.intro,
 		school: this.school
 	};
+};
+
+User.prototype.getResume = function () {
+	return this.resume;
 };
 
 User.format = {};
@@ -133,7 +140,9 @@ User.set = {
 
 	info: info => ({ $set: info }),
 
-	tag: tag => ({ $set: { "favtag": tag } })
+	tag: tag => ({ $set: { "favtag": tag } }),
+
+	resume: resume => ({ $set: { "resume": resume } })
 };
 
 var genSessionID = (lname) => util.md5(util.salt(), "hex");
@@ -280,4 +289,18 @@ exports.search = async (kw) => {
 	}
 
 	return res;
+};
+
+exports.updateResume = async (uuid) => {
+	var col = await db.col("user");
+	var nresume = await event.genResume(uuid);
+
+	await col.updateOne(User.query.uuid(uuid), User.set.resume(nresume));
+};
+
+exports.getResumeCache = async (uuid) => {
+	var user = await exports.uuid(uuid);
+	var resume = user.getResume();
+
+	return resume ? resume : [];
 };

@@ -633,27 +633,34 @@
 							util.jump("#appcent/" + euid);
 						});
 
-						main.find(".apply-terminate").css("display", "").click(function () {
-							alert("TODO!!");
-						}).addClass("disabled");
+						var termbtn = main.find(".apply-terminate").css("display", "").click(function () {
+							util.jump("#termev/" + euid);
+						}) // .addClass("disabled");
+
+						if (info.state > 1 || info.end && info.end > new Date().getTime())
+							termbtn.addClass("disabled");
 					} else {
-						main.find(".apply-staff").click(function () {
-							main.find(".apply-staff .loader").addClass("active");
+						if (info.state > 1) {
+							disableApp("Event ended");
+						} else {
+							main.find(".apply-staff").click(function () {
+								main.find(".apply-staff .loader").addClass("active");
 
-							apply(session, "staff", function (suc) {
-								main.find(".apply-staff" + " .loader").removeClass("active");
-								if (suc) disableApp();
+								apply(session, "staff", function (suc) {
+									main.find(".apply-staff" + " .loader").removeClass("active");
+									if (suc) disableApp();
+								});
 							});
-						});
 
-						main.find(".apply-partic").click(function () {
-							main.find(".apply-partic .loader").addClass("active");
+							main.find(".apply-partic").click(function () {
+								main.find(".apply-partic .loader").addClass("active");
 
-							apply(session, "partic", function (suc) {
-								main.find(".apply-partic" + " .loader").removeClass("active");
-								if (suc) disableApp();
+								apply(session, "partic", function (suc) {
+									main.find(".apply-partic" + " .loader").removeClass("active");
+									if (suc) disableApp();
+								});
 							});
-						});
+						}
 					}
 				});
 

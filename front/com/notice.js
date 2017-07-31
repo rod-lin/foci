@@ -145,7 +145,7 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 	function init(cont, config) {
 		cont = $(cont);
 		config = $.extend({}, config);
-	
+
 		var main = $(" \
 			<div class='com-notice'> \
 				<div class='nt-view'> \
@@ -199,7 +199,7 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 			for (var i = 0; i < items.length; i++) {
 				ret.preview.push(items[i].last());
 			}
-		
+
 			return ret;
 		}
 
@@ -241,7 +241,7 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 			");
 
 			item.find(".sender-msg").html(msg.title + ": " + msg.msg);
-		
+
 			// console.log(msg);
 
 			login.session(function (session) {
