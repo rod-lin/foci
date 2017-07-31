@@ -1,0 +1,42 @@
+.com-pform {
+    position: relative;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    min-height: 100%;
+
+    /* overflow-y: auto; */
+    overflow-x: visible;
+
+    transition: left 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.com-pform .pform-page {
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    top: 0;
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+.com-pform .pform-page.show {
+    height: auto;
+    min-height: 100%;
+}
+
+.com-pform .pform-page .pform-cont {
+    display: inline-block;
+    position: relative;
+    text-align: left;
+
+    padding: 2em;
+
+    line-height: normal;
+}

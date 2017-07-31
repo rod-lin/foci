@@ -67,7 +67,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 				part.ready(function () {
 					prog.inc();
 					if (window.init) {
-						window.init(part, args, show, cont);
+						window.init($(part[0]), args, show, cont);
 					}
 				});
 			};

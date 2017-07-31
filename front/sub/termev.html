@@ -1,8 +1,11 @@
-<div id="sub-clubreg"> <!-- club registration -->
+<div id="sub-termev"> <!-- event termination -->
+	<div class="page-1" style="display: none;">
+		
+	</div>
 </div>
 
 <style>
-	#sub-clubreg {
+	#sub-termev {
 		height: 100%;
 	}
 </style>
@@ -13,7 +16,13 @@
 			"com/env", "com/util", "com/pform"
 		], function (env, util, pform) {
 			var tbar = env.get("tbar");
-			tbar.setTitle("Club Registration");
+			tbar.setTitle("Event finished");
+
+			pform.init(main, [
+				{
+					cont: main.find(".page-1")
+				}
+			], {});
 
 			show(true);
 		});

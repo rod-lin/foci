@@ -65,9 +65,9 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 
-	padding-right: 4rem;
+	padding-right: 4.5rem;
 
-	font-size: 1.3em;
+	font-size: 1.2em;
 	font-weight: bold;
 	color: #595959 !important;
 }
@@ -78,16 +78,28 @@
 
 .com-event-single .content {
 	position: relative;
+	padding: 1.1em !important;
 }
 
 .com-event-single .flags {
 	position: absolute;
-	top: 1em;
+	top: 1.1em;
 	right: 1em;
+
+	opacity: 1;
+
+	user-select: none;
+	-moz-user-select: none;
+	cursor: pointer;
+
+	transition: opacity 0.3s;
+}
+
+.com-event-single .flags:hover {
+	opacity: 0.7;
 }
 
 .com-event-single .flag {
-	padding: 5px 6px;
 	background: white;
 	border-radius: 3px;
 	font-size: 0.8em;
@@ -99,25 +111,39 @@
 	border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.com-event-single .flag.blue {
+.com-event-single .flag-name {
+	padding: 5px 6px;
+}
+
+.com-event-single .flag-rating {
+	font-weight: bold;
+	padding: 4px 6px;
+	border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-event-single .flag.blue,
+.com-event-single .flag.blue .flag-rating {
 	color: #2980B9;
-	border: 1px solid #3498DB;
+	border-color: #3498DB;
 }
 
-.com-event-single .flag.green {
+.com-event-single .flag.green,
+.com-event-single .flag.green .flag-rating {
 	color: #27AE60;
-	border: 1px solid #2ECC71;
+	border-color: #2ECC71;
 }
 
-.com-event-single .flag.yellow {
+.com-event-single .flag.yellow,
+.com-event-single .flag.yellow .flag-rating {
 	color: #F39C12;
-	border: 1px solid #F1C40F;
+	border-color: #F1C40F;
 }
 
 .com-event-single .description {
 	cursor: pointer;
 	word-wrap: break-word;
 	color: #999999 !important;
+	margin-top: 1em !important;
 }
 
 .com-event-single .ext-btn-set {

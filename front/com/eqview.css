@@ -6,7 +6,7 @@
 
 .com-eqview .back {
 	position: absolute;
-	
+
 	top: 10px;
 	left: 0;
 
@@ -114,7 +114,7 @@
 .com-eqview .title {
 	display: inline-block;
 	position: relative;
-	
+
 	font-weight: bold;
 
 	max-width: 90%;
@@ -136,7 +136,7 @@
 
 .com-eqview .detail {
 	color: #B3B3B3;
-	font-size: 0.8em;
+	font-size: 0.95em;
 	margin: 5px 0;
 }
 

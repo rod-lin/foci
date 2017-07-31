@@ -74,7 +74,7 @@ var conf = module.exports = {
 				}
 			],
 
-			session_timeout: 1000 * 60 * 60, // 60 min
+			session_timeout: 1000 * 60 * 60 * 48, // 2 days
 			max_search_results: 8
 		},
 

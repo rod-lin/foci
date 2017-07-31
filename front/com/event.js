@@ -171,15 +171,22 @@ define([
 
 		switch (info.state) {
 			case 0:
-				dom.find(".flags").html("<div class='flag yellow'>draft</div>");
+				dom.find(".flags").html("<div class='flag yellow'> \
+					<div class='flag-name'>draft</div> \
+				</div>");
 				break;
 
 			case 1:
-				dom.find(".flags").html("<div class='flag green'>ongoing</div>");
+				dom.find(".flags").html("<div class='flag green'> \
+					<div class='flag-name'>ongoing</div> \
+				</div>");
 				break;
 
 			case 2:
-				dom.find(".flags").html("<div class='flag blue'>ended</div>");
+				dom.find(".flags").html("<div class='flag blue'> \
+					<div class='flag-name'>ended</div> \
+					<div class='flag-rating'>" + (info.rating || 0.0) + "</div> \
+				</div>");
 				break;
 		}
 
@@ -506,7 +513,7 @@ define([
 					<div class='logo-cont'> \
 						<div class='logo'><div class='lang' data-replace='$front.com.event.change_logo'>Change logo</div></div> \
 						<div class='title'></div><br> \
-						<div class='rating'></div><br> \
+						<div class='rating'></div> \
 						<div class='detail'><i class='map outline icon'></i><span class='location'></span></div> \
 						<div class='detail'><i class='calendar outline icon'></i><span class='time'></span></div> \
 					</div> \
@@ -554,7 +561,12 @@ define([
 			main.find(".logo").css("background-image", "url('" + parsed.logo + "')");
 
 			main.find(".title").html(parsed.title);
-			rat.set(parsed.rating || 0.0);
+
+			if (info.state >= 2) {
+				rat.set(parsed.rating || 0.0);
+			} else {
+				main.find(".rating").remove();
+			}
 
 			main.find(".time").html(parsed.date);
 
