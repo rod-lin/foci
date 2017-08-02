@@ -87,7 +87,7 @@ define([
 		ret.cover = info.cover ? foci.download(info.cover) : util.randimg();
 		ret.logo = info.logo ? foci.download(info.logo) : "img/def/logo.jpg";
 
-		var descr_html = markdown.toHTML(info.descr);
+		var descr_html = info.descr ? markdown.toHTML(info.descr) : "";
 		var descr_text = $(descr_html).text().replace(/<[^>]+>/g, "").replace(/\n/g, " ");
 
 		descr_text = xfilt(util.short(descr_text, config.max_descr_len));
@@ -103,7 +103,7 @@ define([
 		ret.date = genDate(info.start, info.end);
 
 		ret.apply_num = info.apply_num;
-		ret.rating = info.rating ? info.rating : "nop";
+		ret.rating = info.rating ? info.rating : 0;
 
 		ret.favtag = info.favtag ? info.favtag : [];
 

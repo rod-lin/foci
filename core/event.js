@@ -573,7 +573,7 @@ exports.genResume = async (uuid) => {
 	var ret = org.concat(accept);
 
 	ret.sort(function (a, b) {
-		return (b.end || b.created) - (a.created || a.created);
+		return (b.end || b.created) - (a.start || a.created);
 	});
 
 	/*
@@ -610,12 +610,10 @@ exports.genResume = async (uuid) => {
 		}
 
 		ret[i] = {
-			type: ev.resume_type,
-			job: ev.resume_job,
-			start: ev.start,
-			end: ev.end,
+			job: ev.resume_type == "org" ? "org" : (ev.resume_job == "staff" ? "staff" : "partic"),
+			rating: ev.rating,
 			cover: ev.cover,
-			rating: ev.resume_type == "org" ? ev.rating : undefined
+			euid: ev.euid
 		};
 	}
 

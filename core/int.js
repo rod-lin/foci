@@ -186,6 +186,9 @@ _user.encop = util.route(async env => {
 _user.info = util.route(async env => {
 	var args = util.checkArg(env.query, { "uuid": "int" });
 	var usr = await user.uuid(args.uuid);
+
+	user.updateResume(args.uuid);
+
 	env.qsuc(usr.getInfo());
 });
 
