@@ -1636,15 +1636,21 @@
 
 					pt.jump(onChange);
 				} else {
-					tabs["resume"] = {
-						order: 0,
-						name: m("$front.sub.profile.resume").capital(),
-						onShow: function (show) {
-							var	rtab = tb.getTab("resume");
-							resume.init(rtab, uuid);
-							show();
+					(function () {
+						var init = false;
+						tabs["resume"] = {
+							order: 0,
+							name: m("$front.sub.profile.resume").capital(),
+							onShow: function (show) {
+								if (!init) {
+									init = true;
+									var	rtab = tb.getTab("resume");
+									resume.init(rtab, uuid);
+								}
+								show();
+							}
 						}
-					}
+					})();
 
 					delete tabs["applied"];
 				}
