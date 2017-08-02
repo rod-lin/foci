@@ -302,5 +302,10 @@ exports.getResumeCache = async (uuid) => {
 	var user = await exports.uuid(uuid);
 	var resume = user.getResume();
 
+	if (!resume) {
+		user.updateResume(uuid);
+		resume = (await exports.uuid(uuid)).getResume();
+	}
+
 	return resume ? resume : [];
 };
