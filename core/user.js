@@ -303,7 +303,7 @@ exports.getResumeCache = async (uuid) => {
 	var resume = user.getResume();
 
 	if (!resume) {
-		exports.updateResume(uuid);
+		await exports.updateResume(uuid);
 		resume = (await exports.uuid(uuid)).getResume();
 	}
 
