@@ -5,6 +5,11 @@
     width: 100%;
 }
 
+.com-resume.empty {
+    margin-top: 20px;
+    padding-top: 1rem;
+}
+
 .com-resume .resume-tag {
     color: #A3A3A3;
     font-family: Brandon;
@@ -21,6 +26,16 @@
     display: inline-block;
     width: 45%;
     padding-left: 1em;
+}
+
+.com-resume.empty .resume-preview {
+    display: none;
+}
+
+.com-resume .resume-empty-prompt {
+    text-align: center;
+    font-weight: bold;
+    color: #CCCCCC;
 }
 
 .com-resume .resume-item {

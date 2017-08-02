@@ -173,8 +173,13 @@ function (util, rating, event, lang) {
         	uuid: uuid
         }, function (suc, dat) {
             if (suc) {
-                for (var i = 0; i < dat.length; i++) {
-                    main.find(".resume-list").append(genItem(dat[i], i));
+                if (!dat.length) {
+                    main.addClass("empty");
+                    main.prepend("<div class='resume-empty-prompt'>empty resume</div>");
+                } else {
+                    for (var i = 0; i < dat.length; i++) {
+                        main.find(".resume-list").append(genItem(dat[i], i));
+                    }
                 }
             } else {
                 util.emsg(dat);
