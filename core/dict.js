@@ -62,6 +62,7 @@ var dict = module.exports = {
 		"core.app_full": "application is full",
 		"core.dup_app": "duplicated applications",
 		"core.app_own_event": "you can't apply for your own event",
+		"core.app_closed": "Application is currently closed",
 
 		"core.event_not_draft": "event not a draft",
 		"core.event_is_draft": "event is not published",
@@ -195,7 +196,7 @@ var dict = module.exports = {
 		"front.sub.profile.custom_event_prompt": "click the picture to change cover and the add button below to add tags",
 		"front.sub.profile.you_can_go_tab_to_view": "you can now go to the '$1' tab to view your event",
 		"front.sub.profile.illegal_uuid": "illegal user id",
-		"front.sub.profile.save_draft": "draft saved",
+		"front.sub.profile.save_draft": "draft/event saved",
 
 		"front.sub.appcent.staff": "$nat.cap($core.word.staff)",
 		"front.sub.appcent.partic": "$nat.cap($core.word.partic)",

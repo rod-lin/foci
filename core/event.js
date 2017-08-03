@@ -54,6 +54,8 @@ var Event = function (euid, owner /* uuid */) {
 	this.apply_partic_lim = null
 	this.apply_partic = [];
 
+	this.apply_open = null;
+
 	this.apply_num = 0;
 
 	this.favtag = [];
@@ -107,6 +109,8 @@ Event.prototype.getInfo = function (only) {
 
 		logo: this.logo,
 		cover: this.cover,
+
+		apply_open: this.apply_open,
 
 		state: this.state,
 
@@ -200,6 +204,10 @@ Event.prototype.getComment = function () {
 	return this.comment || [];
 };
 
+Event.prototype.isAppOpen = function () {
+	return !!this.apply_open;
+};
+
 Event.format = {};
 
 Event.format.info = {
@@ -236,6 +244,8 @@ Event.format.info = {
 	start: { type: "int", lim: time => new Date(time) },
 	end: { type: "int", lim: time => new Date(time) },
 	favtag: { type: "json", lim: tags => user.checkTag(tags) },
+
+	apply_open: "bool",
 
 	apply_staff_lim: {
 		type: "int",
@@ -665,6 +675,10 @@ exports.apply = async (euid, uuid, type, form) => {
 	form = form || null;
 
 	var ev = await exports.euid(euid);
+
+	if (!ev.isAppOpen())
+		throw new err.Exc("$core.app_closed");
+
 	var max = ev.getAppLimit(type);
 	var cur = ev.countApp(type);
 

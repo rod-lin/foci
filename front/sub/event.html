@@ -80,7 +80,7 @@
 							<img class="com-util-cont-fill" src="img/paragraph.png"></img>
 						</div>
 					</div>
-				</div><div class="col col-3 col-mid-full box-set">
+				</div><div class="col col-3 col-mid-full box-set app-box">
 					<div class="box pad">
 						<div class="apply-prompt">Apply for</div>
 					</div>
@@ -390,6 +390,7 @@
 		transition: background 0.3s;
 	}
 
+	#sub-event>.cont .disabled .box.btn,
 	#sub-event>.cont .box.btn.disabled {
 		color: #D9D9D9 !important;
 		background: #B3B3B3 !important;
@@ -612,8 +613,8 @@
 
 				function disableApp(msg) {
 					setAppPrompt(msg || m("$front.sub.event.thank_you"));
-					main.find(".apply-staff").addClass("disabled");
-					main.find(".apply-partic").addClass("disabled");
+					main.find(".app-box").addClass("disabled");
+					// main.find(".apply-partic").addClass("disabled");
 				}
 
 				login.session(function (session) {
@@ -625,6 +626,8 @@
 					var uuid = session.getUUID();
 
 					if (info.org.indexOf(uuid) != -1) {
+						// organizer
+
 						setAppPrompt(m("$front.sub.event.organize"));
 						main.find(".apply-staff").remove();
 						main.find(".apply-partic").remove();
@@ -639,9 +642,15 @@
 
 						if (info.state > 1 || info.end && info.end > new Date().getTime())
 							termbtn.addClass("disabled");
+
+						if (!info.apply_open) {
+							disableApp("Enable application in <a href='#profile//new/" + euid + "/apply'>event settings</a>");
+						}
 					} else {
 						if (info.state > 1) {
 							disableApp("Event ended");
+						} else if (!info.apply_open) {
+							disableApp("Application disabled");
 						} else {
 							main.find(".apply-staff").click(function () {
 								main.find(".apply-staff .loader").addClass("active");

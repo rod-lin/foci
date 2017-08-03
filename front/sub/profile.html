@@ -118,6 +118,14 @@
 						}
 					</style>
 					<form class="ui form">
+						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.enable_app">Enable application</h3>
+						<div class="ui attached segment">
+							<div class="ui toggle checkbox enable-app-check">
+								<input type="checkbox" name="public">
+								<label>Start application process</label>
+							</div>
+						</div>
+
 						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.app_form">Application Forms</h3>
 						<div class="ui attached segment">
 							<div class="fields">
@@ -566,7 +574,7 @@
 			tagbox, pm, tip, formi, marki,
 			resume
 		) {
-			var init = function (info, is_self, init_page) {
+			var init = function (info, is_self, init_page, page_arg) {
 				// foci.get("/user/resume", {
 				// 	uuid: info.uuid
 				// }, function (suc, dat) {
@@ -761,6 +769,7 @@
 				"use strict";
 
 				var loadDraft, clearDraft, hasDraft, saveDraft, deleteEmptyDraft;
+				var setDraftStep;
 				var published;
 
 				function initDraft() {
@@ -1137,6 +1146,12 @@
 								// fields.apply_staff_form = info.apply_staff_form;
 								// fields.apply_partic_form = info.apply_partic_form;
 
+								if (info.apply_open) {
+									new_tab.find(".enable-app-check").checkbox("check");
+								} else {
+									new_tab.find(".enable-app-check").checkbox("uncheck");
+								}
+
 								info.apply_staff_form = util.json(info.apply_staff_form);
 								info.apply_partic_form = util.json(info.apply_partic_form);
 
@@ -1230,6 +1245,9 @@
 										has_field = true;
 									}
 								}
+
+								q.apply_open = new_tab.find(".enable-app-check").checkbox("is checked");
+								has_field = true;
 
 								if (!suc) {
 									cb(false);
@@ -1451,6 +1469,13 @@
 						}
 					}
 
+					setDraftStep = function (name) {
+						if (!steps.hasOwnProperty(name)) {
+							util.emsg("illegal setting page");
+						} else
+							setStep(name, true);
+					};
+
 					clearDraft = function () {
 						euid = null;
 						deleted = false;
@@ -1475,7 +1500,7 @@
 						});
 					};
 
-					loadDraft = function (info) {
+					loadDraft = function (info, cb) {
 						if (!info || !info.euid) {
 							util.emsg("$impossible(euid not given)");
 							return;
@@ -1504,6 +1529,8 @@
 						}
 
 						setStep(last || "pub", true);
+
+						if (cb) cb();
 					};
 
 					initStep();
@@ -1557,6 +1584,8 @@
 							fields.end = date;
 						}
 					});
+
+					new_tab.find(".enable-app-check").checkbox();
 				};
 
 				if (is_self) {
@@ -1571,9 +1600,11 @@
 							if (!empty) {
 								saveDraft(function (suc, deleted) {
 									if (suc !== false) {
-										clearDraft();
-										if (!published && !deleted)
+										if (!published && !deleted) {
 											util.emsg("$front.sub.profile.save_draft", "info");
+										}
+
+										clearDraft();
 									}
 
 									cb(suc); // if suc == true, change the tab
@@ -1759,16 +1790,42 @@
 					$(window).resize();
 
 					if (init_page && tb.has(init_page)) {
-						tb.to(init_page);
+						if (init_page == "new" && page_arg && page_arg.length) {
+							var euid = parseInt(page_arg[0]);
+
+							if (isNaN(euid)) {
+								util.emsg("$front.sub.event.illegal_euid");
+							} else {
+								foci.get("/event/info", { euid: euid }, function (suc, dat) {
+									if (suc) {
+										if (dat.org.indexOf(uuid) == -1) {
+											util.jump("#profile");
+										} else {
+											loadDraft(dat, function () {
+												if (page_arg[1]) {
+													setDraftStep(page_arg[1]);
+												}
+											});
+
+											tb.to("new");
+										}
+									} else {
+										util.emsg(dat);
+									}
+								});
+							}
+						} else {
+							tb.to(init_page);
+						}
 					} else {
 						if (!is_self)
 							tip.init(main.find(".chat-btn"), "start chat here", "left center");
 					}
+
+					show(true); // show part
 				});
 
 				setDom(info);
-
-				show(true); // show part
 			};
 
 			if (args && args[0]) {
@@ -1792,7 +1849,7 @@
 			} else {
 				login.session(function (session) {
 					if (session) {
-						env.user(function (info) { init(info, true, args[1]); });
+						env.user(function (info) { init(info, true, args[1], args.slice(2)); });
 					} else {
 						show(false);
 					}

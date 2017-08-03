@@ -90,7 +90,7 @@ var checkArg = (args, req, opt) => {
 		var clim = null;
 
 		// if (typeof entry === "string") {
-		
+
 		if (typeof entry === "object") {
 			clim = entry.lim;
 			entry = entry.type;
@@ -120,6 +120,19 @@ var checkArg = (args, req, opt) => {
 				tmp = parseFloat(tmp);
 				if (isNaN(tmp))
 					throw new err.Exc("$core.expect_argument_type(" + k + ",number)");
+
+				break;
+
+			case "bool":
+				if (typeof tmp === "boolean")
+					break;
+
+				if (tmp == "true")
+					tmp = true;
+				else if (tmp == "false")
+					tmp = false;
+				else
+					throw new err.Exc("$core.expect_argument_type(" + k + ",bool)");
 
 				break;
 

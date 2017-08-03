@@ -73,7 +73,7 @@ function (util, rating, event, lang) {
                 main.find(".info-rating").html(rat);
             } else main.find(".info-rating").html("N/A");
 
-            main.find(".about-btn").click(function () {
+            main.find(".about-btn").off("click").click(function () {
                 util.jump("#event/" + info.euid);
             });
 
