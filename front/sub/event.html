@@ -84,15 +84,19 @@
 					<div class="box pad">
 						<div class="apply-prompt">Apply for</div>
 					</div>
-					<div class="box pad apply-appcent btn" style=" margin-top: 0.2rem; background: #34495E; color: white; display: none;">
+					<div class="box pad apply-appcent btn" style="margin-top: 0.2rem; background: #7F8C8D; color: white; display: none;">
 						<div class="ui inverted loader"></div>
 						<span class="lang" data-replace="$front.sub.event.app_cent">Application center</span>
 					</div>
-					<div class="box pad apply-terminate btn" style=" margin-top: 0.2rem; background: #7F8C8D; color: white; display: none;">
+					<div class="box pad apply-setting btn" style="margin-top: 0.2rem; background: #7F8C8D; color: white; display: none;">
 						<div class="ui inverted loader"></div>
-						<span class="lang" data-replace="$front.sub.event.app_terminate">End event</span>
+						<span class="lang" data-replace="$front.sub.event.event_setting">Settings</span>
 					</div>
-					<div class="box pad apply-staff btn" style=" margin-top: 0.2rem; background: #3498DB; color: white;">
+					<div class="box pad apply-terminate btn" style="margin-top: 0.2rem; background: #7F8C8D; color: white; display: none;">
+						<div class="ui inverted loader"></div>
+						<span class="lang" data-replace="$front.sub.event.term_event">End event</span>
+					</div>
+					<div class="box pad apply-staff btn" style="margin-top: 0.2rem; background: #3498DB; color: white;">
 						<div class="ui inverted loader"></div>
 						<span class="lang" data-replace="$front.sub.event.staff">Staff</span>
 					</div>
@@ -353,8 +357,7 @@
 	}
 
 	#sub-event>.cont .apply-prompt {
-		color: #262626;
-		opacity: 0.5;
+		color: #696969;
 		font-size: 1.5em;
 		font-weight: bold;
 	}
@@ -387,7 +390,7 @@
 	#sub-event>.cont .box.btn {
 		padding-left: 0;
 		padding-right: 0;
-		transition: background 0.3s;
+		transition: background 0.3s, opacity 0.3s;
 	}
 
 	#sub-event>.cont .disabled .box.btn,
@@ -636,9 +639,13 @@
 							util.jump("#appcent/" + euid);
 						});
 
+						main.find(".apply-setting").css("display", "").click(function () {
+							util.jump("#profile//new/" + euid);
+						});
+
 						var termbtn = main.find(".apply-terminate").css("display", "").click(function () {
 							util.jump("#termev/" + euid);
-						}) // .addClass("disabled");
+						}); // .addClass("disabled");
 
 						if (info.state > 1 || info.end && info.end > new Date().getTime())
 							termbtn.addClass("disabled");
