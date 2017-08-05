@@ -47,6 +47,8 @@ var dict = module.exports = {
 		"core.internal_err": "internal error",
 		"core.assert_failed": "assertion failed",
 
+		"core.permission_denied": "permission denied",
+
 		"core.fail_upload": "fail to upload file",
 		"core.too_long": "$1 too long",
 		"core.illegal": "illegal $1",

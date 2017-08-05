@@ -27,8 +27,14 @@
 	display: none;
 }
 
+.com-upload .preview-cont {
+	text-align: center;
+}
+
 .com-upload .preview {
 	display: block;
+
+	text-align: center;
 
 	max-height: 40vh;
 	max-width: 70vw;

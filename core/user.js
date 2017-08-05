@@ -131,7 +131,10 @@ User.query = {
 		return { "favtag": { $regex: reg } };
 	},
 
-	tag: tag => ({ "favtag": tag })
+	tag: tag => ({ "favtag": tag }),
+
+	check_level: (uuid, level) => ({ "uuid": uuid, "level": level }),
+	check_admin: (uuid, level) => ({ "uuid": uuid, "level": { $lte: level } })
 };
 
 User.set = {
@@ -155,6 +158,22 @@ exports.uuid = async (uuid) => {
 		throw new err.Exc("$core.not_exist($core.word.user)");
 
 	return new User(found);
+};
+
+exports.checkLevel = async (uuid, level) => {
+	var col = await db.col("user");
+	var found = await col.findOne(User.query.check_level(uuid, level));
+
+	if (!found)
+		throw new err.Exc("$core.permission_denied");
+};
+
+exports.checkAdmin = async (uuid) => {
+	var col = await db.col("user");
+	var found = await col.findOne(User.query.check_level(uuid, config.lim.user.admin_level));
+
+	if (!found)
+		throw new err.Exc("$core.permission_denied");
 };
 
 var testUserName = (name) => {

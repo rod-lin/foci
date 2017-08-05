@@ -74,6 +74,8 @@ var conf = module.exports = {
 				}
 			],
 
+			admin_level: -1, // lower the admin_level, higher the ability
+
 			session_timeout: 1000 * 60 * 60 * 48, // 2 days
 			max_search_results: 8
 		},
@@ -118,7 +120,8 @@ var conf = module.exports = {
 			event: "event",
 			uid: "uid",
 			file: "file",
-			pm: "pm"
+			pm: "pm",
+			cover: "cover"
 		}
 	},
 

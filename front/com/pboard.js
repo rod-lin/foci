@@ -2,14 +2,14 @@
 
 "use strict";
 
-define([ "com/util" ], function (util) {
+define([ "com/util", "com/upload" ], function (util, upload) {
 	foci.loadCSS("com/pboard.css");
 
 	/*
 		photo: [
 			{
-				url: photo url,
-				overlay: overlay dom,
+				img: photo url,
+				url: link,
 				onClick
 				onShow
 			}
@@ -22,14 +22,20 @@ define([ "com/util" ], function (util) {
 			scroll_dir: "top", // top or right
 			interval: 3000,
 			preview_width: "15rem",
-			preview_height: "5rem"
+			preview_height: "5rem",
+			setting: false,
+			setting_cb: null
 		}, config);
 
 		var main = $(" \
 			<div class='com-pboard'> \
 				<div class='main-slide'> \
-					<div class='slide-front'></div> \
-					<div class='slide-back'></div> \
+					<div class='slide-front'> \
+						<div class='setting-btn vcenter'><i class='setting icon'></i></div> \
+					</div> \
+					<div class='slide-back'> \
+						<div class='setting-btn vcenter'><i class='setting icon'></i></div> \
+					</div> \
 				</div> \
 				<div class='preview-set'> \
 				</div> \
@@ -38,23 +44,44 @@ define([ "com/util" ], function (util) {
 
 		var mod = {};
 
+		if (config.setting)
+			main.addClass("enable-setting");
+
+		function photoClick(ph, n) {
+			if (config.setting) {
+				upload.init(function (id, url) {
+					if (config.setting_cb)
+						config.setting_cb(n, id, url);
+				}, { arg: { prompt: "foci.me#", placeholder: "url" } });
+			} else {
+				if (ph.url)
+					util.jump(ph.url);
+
+				if (ph.onClick) {
+					ph.onClick();
+				}
+			}
+		}
+
 		(function () {
 			for (var i = 0; i < photo.length; i++) {
 				(function (i) {
 					var ph = photo[i];
-					var dom = $("<div class='preview' data-id='" + i + "'></div>");
+					var dom = $("<div class='preview' data-id='" + i + "'> \
+						<div class='setting-btn vcenter'><i class='setting icon'></i></div> \
+					</div>");
 					var loader = $("<div class='ui small loader active'></div>");
 
 					dom.click(function () {
-						if (ph.onClick)
-							ph.onClick();
+						photoClick(ph, i);
 					});
 
-					dom.append(loader);
-
-					util.bgimg(dom, ph.url, function () {
-						loader.remove();
-					});
+					if (ph.img) {
+						dom.append(loader);
+						util.bgimg(dom, ph.img, function () {
+							loader.remove();
+						});
+					} else dom.addClass("no-img");
 
 					main.find(".preview-set").append(dom);
 				})(i);
@@ -81,20 +108,20 @@ define([ "com/util" ], function (util) {
 			var preview_set = main.find(".preview-set");
 
 			main_slide.click(function () {
-				if (photo[cur_ph].onClick) {
-					photo[cur_ph].onClick();
-				}
+				photoClick(photo[cur_ph], cur_ph);
 			});
 
 			function setMain(ph) {
-				if (main_slide.hasClass("switch")) {
-					util.bgimg(front, ph.url, function () {
-						main_slide.toggleClass("switch");
-					});
-				} else {
-					util.bgimg(back, ph.url, function () {
-						main_slide.toggleClass("switch");
-					});
+				if (ph.img) {
+					if (main_slide.hasClass("switch")) {
+						util.bgimg(front, ph.img, function () {
+							main_slide.toggleClass("switch");
+						});
+					} else {
+						util.bgimg(back, ph.img, function () {
+							main_slide.toggleClass("switch");
+						});
+					}
 				}
 			};
 
@@ -144,7 +171,7 @@ define([ "com/util" ], function (util) {
 
 			mod.setDir(config.scroll_dir);
 
-			mod.scrollNext = function () {
+			mod.scrollNext = function (delay) {
 				if (locked) return;
 				locked = true;
 
@@ -170,11 +197,11 @@ define([ "com/util" ], function (util) {
 						prev.css("transition", "");
 						locked = false;
 					}, 100);
-				}, 1200);
+				}, delay || 1200);
 			}
 		})();
 
-		mod.scrollNext();
+		mod.scrollNext(1);
 		util.media(768, function () {
 			mod.setDir("left");
 		}, function () {

@@ -6,13 +6,22 @@ define([ "com/util" ], function (util) {
 	var $ = jQuery;
 	foci.loadCSS("com/upload.css");
 
-	function init(cb) {
+	function init(cb, config) {
+		config = $.extend({
+			arg: null // { prompt }
+		}, config);
+
 		var main = $(" \
 			<div class='ui basic modal com-upload'> \
 				<div class='exdim'></div> \
 				<form class='ui form' enctype='multipart/form-data'> \
 					<div class='field preview-cont' style='display: none;'> \
-						<img class='ui medium rounded bordered preview'> \
+						<img class='ui medium rounded bordered preview'></img> \
+						<div class='ui labeled input upload-arg' style='margin-top: 0.5rem;'> \
+							<div class='ui label'></div> \
+							<input type='text'> \
+						</div> \
+						<input type='text' style='display: none;'> \
 					</div> \
 					<div class='ui buttons'> \
 						<button type='button' class='ui icon button exit-btn'> \
@@ -31,6 +40,18 @@ define([ "com/util" ], function (util) {
 		");
 
 		var selected = null;
+		var argfield = main.find(".upload-arg");
+
+		function getArg() {
+			return config.arg ? argfield.find("input").val() : undefined;
+		}
+
+		if (config.arg) {
+			argfield.find(".label").html(config.arg.prompt);
+			argfield.find("input").attr("placeholder", config.arg.placeholder);
+		} else {
+			argfield.remove();
+		}
 
 		main.find(".select-btn").click(function () {
 			main.find(".file").click();
@@ -41,7 +62,7 @@ define([ "com/util" ], function (util) {
 				util.emsg("no file selected");
 			} else {
 				main.modal("hide");
-				if (cb) cb(selected);
+				if (cb) cb(selected, getArg());
 			}
 		});
 
@@ -87,7 +108,7 @@ define([ "com/util" ], function (util) {
 
 		main.find(".exit-btn, .exdim").click(function () {
 			main.modal("hide");
-			if (cb) cb(null);
+			if (cb) cb(null, getArg());
 		});
 
 		main.modal({

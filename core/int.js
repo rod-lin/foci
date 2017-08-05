@@ -14,6 +14,7 @@ var dict = require("./dict");
 var smsg = require("./smsg");
 var mail = require("./mail");
 var event = require("./event");
+var cover = require("./cover");
 var config = require("./config");
 var notice = require("./notice");
 var alipay = require("./alipay");
@@ -40,6 +41,12 @@ exports.dict = util.route(async env => {
 		throw new err.Exc("$core.dict_not_exist(" + args.lang + ")");
 
 	env.qsuc(dict[args.lang]);
+});
+
+var _cover = {};
+
+_cover.pboard = util.route(async env => {
+	env.qsuc(await cover.getPBoard());
 });
 
 var _alipay = {};
@@ -259,6 +266,7 @@ _file.download = util.route(async env => {
 	env.raw(ret.cont);
 });
 
+exports.cover = _cover;
 exports.alipay = _alipay;
 exports.smsg = _smsg;
 exports.mail = _mail;
@@ -497,6 +505,18 @@ encop.comment = async (env, usr, query, next) => {
 		case "upvote":
 			var args = util.checkArg(query, { euid: "int", cid: "int" });
 			await comment.upvote(args.euid, args.cid, usr.getUUID());
+			return;
+
+		default:
+			throw new err.Exc("$core.action_not_exist");
+	}
+};
+
+encop.cover = async (env, usr, query, next) => {
+	switch (query.action) {
+		case "setpboard":
+			var args = util.checkArg(query, { n: "int", info: "json" });
+			await cover.setPBoard(usr.getUUID(), args.n, args.info);
 			return;
 
 		default:

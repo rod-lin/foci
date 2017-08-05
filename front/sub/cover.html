@@ -186,35 +186,56 @@
 
 			/* tmp settings */
 			var show_board = main.find(".show-board");
-			pboard.init(show_board, [
-				{
-					url: "img/cover1.jpg",
-					onClick: function () {
-						util.jump("#search");
-					}
-				},
 
-				{
-					url: "img/cover2.jpg",
-					onClick: function () {
-						util.jump("#search");
-					}
-				},
+			foci.get("/cover/pboard", {}, function (suc, dat) {
+				if (suc) {
+					var parsed = [];
+					var i;
 
-				{
-					url: "img/cover3.jpg",
-					onClick: function () {
-						util.jump("#search");
-					}
-				},
 
-				{
-					url: "img/tmp2.jpg",
-					onClick: function () {
-						util.jump("#search");
+					for (i = 0; i < dat.length; i++) {
+						parsed.push(dat[i] ? {
+							img: foci.download(dat[i].img),
+							url: dat[i].url
+						} : {});
 					}
+
+					for (; i < 4; i++) {
+						parsed.push({});
+					}
+
+					if (env.session()) {
+						env.user(function (info) {
+							if (info.level < 0) {
+								pboard.init(show_board, parsed, {
+									setting: true,
+									setting_cb: function (n, file, url) {
+										foci.encop(env.session(), {
+											int: "cover",
+											action: "setpboard",
+											n: n, info: {
+												img: file, url: "#" + url
+											}
+										}, function (suc, dat) {
+											if (suc) {
+												util.refresh();
+											} else {
+												util.emsg(dat);
+											}
+										});
+									}
+								});
+							} else {
+								pboard.init(show_board, parsed);
+							}
+						});
+					} else {
+						pboard.init(show_board, parsed);
+					}
+				} else {
+					util.emsg(dat);
 				}
-			]);
+			});
 		});
 	}
 </script>

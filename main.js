@@ -35,6 +35,8 @@ app.get("/dict", int.dict);
 
 // app.get("/alipay/test", int.alipay.test);
 
+app.get("/cover/pboard", int.cover.pboard);
+
 app.get("/smsg/vercode", int.smsg.vercode);
 // app.get("/smsg/verify", int.smsg.verify);
 
