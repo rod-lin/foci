@@ -1,9 +1,28 @@
 <div id="sub-contact"> <!-- contact -->
-	Contact
+	<style>
+		#sub-contact .page-1 {
+			font-family: Brandon;
+			text-align: center;
+		}
+
+		#sub-contact .page-1 .title {
+			font-size: 1.5rem;
+			font-weight: bold;
+		}
+
+		#sub-contact .page-1 .cont {
+			margin-top: 0.5rem;
+			font-size: 1.2rem;
+		}
+	</style>
+	<div class="page-1" style="display: none;">
+		<div class="title">Contact us</div>
+		<div class="cont">Coming soon</div>
+	</div>
 </div>
 
 <style>
-	#sub-clubreg {
+	#sub-contact {
 		height: 100%;
 	}
 </style>
@@ -15,6 +34,9 @@
 		], function (env, util, pform) {
 			var tbar = env.get("tbar");
 			tbar.setTitle("Contact");
+
+			var pf = pform.init(main, [ { cont: main.find(".page-1") } ]);
+
 			show(true);
 		});
 	}

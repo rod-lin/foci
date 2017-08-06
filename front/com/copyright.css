@@ -1,14 +1,15 @@
 /* copyright */
 
 .com-copyright {
-    padding: 1rem;
+    padding: 1.4rem;
     color: #B3B3B3;
-    line-height: 1.7;
+    line-height: 2;
 }
 
 .com-copyright a {
     color: #B3B3B3;
     transition: color 0.3s;
+    cursor: pointer;
 }
 
 .com-copyright a:hover {

@@ -4,6 +4,7 @@
     text-align: left;
     word-wrap: break-word;
     word-break: break-all;
+    white-space: nowrap;
 }
 
 .com-tagbox-imgtag .imgtag {
@@ -54,8 +55,8 @@
 }
 
 .com-tagbox-imgtag .imgtag .imgtag-text {
-    display: inline;
-
+    display: inline-block;
+    text-align: center;
     font-weight: bold;
 
     padding: 0 1.3em;

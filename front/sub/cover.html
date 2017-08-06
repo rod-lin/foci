@@ -193,18 +193,6 @@
 
 			userstat.init(main.find(".userstat-board"));
 
-			pboard.slide(main.find(".mini-push-board"), [
-				{
-					img: "/img/cover/1.jpg"
-				},
-				{
-					img: "/img/cover/2.jpg"
-				},
-				{
-					img: "/img/cover/3.jpg"
-				}
-			]);
-
 			copyright.init(main.find(".copyright-board"));
 
 			util.media(640, function () {
@@ -221,45 +209,53 @@
 					var parsed = [];
 					var i;
 
-
-					for (i = 0; i < dat.length; i++) {
+					// 7 = 4(main push board) + 3(sub slide)
+					for (i = 0; i < 7; i++) {
 						parsed.push(dat[i] ? {
 							img: foci.download(dat[i].img),
 							url: dat[i].url
 						} : {});
 					}
 
-					for (; i < 4; i++) {
-						parsed.push({});
+					function settingProc(ofs) {
+						return function (n, file, url) {
+							foci.encop(env.session(), {
+								int: "cover",
+								action: "setpboard",
+								n: n + ofs, info: {
+									img: file, url: "#" + url
+								}
+							}, function (suc, dat) {
+								if (suc) {
+									util.refresh();
+								} else {
+									util.emsg(dat);
+								}
+							});
+						};
+					}
+
+					function initPBoard(main_config, sub_config) {
+						pboard.init(show_board, parsed.slice(0, 4), main_config);
+						pboard.slide(main.find(".mini-push-board"), parsed.slice(4, 7), sub_config);
 					}
 
 					if (env.session()) {
 						env.user(function (info) {
 							if (info.level < 0) {
-								pboard.init(show_board, parsed, {
+								initPBoard({
 									setting: true,
-									setting_cb: function (n, file, url) {
-										foci.encop(env.session(), {
-											int: "cover",
-											action: "setpboard",
-											n: n, info: {
-												img: file, url: "#" + url
-											}
-										}, function (suc, dat) {
-											if (suc) {
-												util.refresh();
-											} else {
-												util.emsg(dat);
-											}
-										});
-									}
+									setting_cb: settingProc(0)
+								}, {
+									setting: true,
+									setting_cb: settingProc(4)
 								});
 							} else {
-								pboard.init(show_board, parsed);
+								initPBoard();
 							}
 						});
 					} else {
-						pboard.init(show_board, parsed);
+						initPBoard();
 					}
 				} else {
 					util.emsg(dat);

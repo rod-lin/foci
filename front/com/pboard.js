@@ -230,7 +230,7 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 		config = $.extend({
 			interval: 4000,
 			height: "10rem",
-			setting: true,
+			setting: false,
 			setting_cb: null
 		}, config);
 
@@ -247,15 +247,17 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 				util.bgimg(slide.dom, slide.img);
 
 				slide.dom.click(function () {
-
 					if (config.setting) {
 						upload.init(function (id, url) {
 							if (config.setting_cb)
-								config.setting_cb(n, id, url);
+								config.setting_cb(i, id, url);
 						}, { arg: { prompt: "foci.me#", placeholder: "url" } });
 					} else if (slide.url)
 						util.jump(slide.url);
 				});
+
+				main.find(".slides").append(slide.dom);
+				slide.dom.css("display", "none");
 			})(i);
 		}
 
@@ -274,7 +276,7 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 			if (go_back)
 				dir = [ "right", "left" ];
 
-			main.find(".slides").append(next);
+			next.css("display", "");
 			cur_slide = i;
 
 			setTimeout(function () {
@@ -282,7 +284,7 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 				cur.addClass(dir[0]);
 				setTimeout(function () {
 					cur.removeClass(dir[0]);
-					cur.remove();
+					cur.css("display", "none");
 					locked = false;
 				}, 300);
 			}, 50);
@@ -290,7 +292,7 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 			next.addClass(dir[1] + "-ready");
 		}
 
-		main.find(".slides").append(slides[cur_slide].dom);
+		slides[cur_slide].dom.css("display", "");
 
 		function nextSlide() {
 			setSlide((cur_slide + 1) % slides.length);

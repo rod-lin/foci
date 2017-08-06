@@ -171,7 +171,7 @@ define([ "com/util" ], function (util) {
 				<div class='imgtag-img'></div><span class='imgtag-text'></span> \
 			</div>");
 
-			t.find(".imgtag-text").html(tag.name);
+			t.find(".imgtag-text").html("<span>" + tag.name + "</span>");
 			if (tag.img) {
 				util.bgimg(t.find(".imgtag-img"), tag.img || util.randimg());
 			} else if (tag.icon) {
@@ -189,6 +189,67 @@ define([ "com/util" ], function (util) {
 			if (tags.hasOwnProperty(k))
 				main.append(genTag(k, tags[k]));
 		}
+
+		// justify margins and widths so that tags can fill up the entire container
+		function justifyTag() {
+			main.children("br").remove();
+
+			var arr = main.find(".imgtag").sort(function (a, b) {
+				return $(a).width() - $(b).width();
+			});
+
+			for (var i = 0; i < arr.length; i++) {
+				main.append(arr[i]);
+				// main.append(arr[arr.length - i - 1]);
+			}
+
+			var narr = main.find(".imgtag");
+			var lines = [];
+			var cur = [];
+			var length = 0;
+			var cont_width = cont.width();
+
+			var def_margin = $(narr[0]).outerWidth(true) - $(narr[0]).outerWidth();
+
+			for (var i = 0; i < narr.length; i++) {
+				var cur_tag = $(narr[i]);
+
+				var cur_length = cur_tag.outerWidth(true);
+
+				if (length + cur_length > cont_width) {
+					cur.total_length = length;
+					lines.push(cur);
+					cur = [ cur_tag ];
+					length = cur_tag.outerWidth(true);
+				} else {
+					length += cur_length;
+					cur.push(cur_tag);
+				}
+			}
+
+			cur.total_length = length;
+			lines.push(cur);
+
+			for (var i = 0; i < lines.length - 1; i++) {
+				var line = lines[i];
+				if (line.length > 1) {
+					var gap = (cont_width - line.total_length + def_margin) / line.length;
+					// console.log(gap);
+					for (var j = 0; j < line.length; j++) {
+						// line[j].css("margin-right", gap + "px");
+						var tag_width = $(line[j]).find(".imgtag-text span").width();
+						$(line[j]).find(".imgtag-text").width(tag_width + gap + "px");
+					}
+
+					line[line.length - 1].css("margin-right", "0").after("<br>");
+				}
+			}
+		}
+
+		cont.ready(justifyTag);
+		// $(window).resize(justifyTag);
+
+		// setTimeout(justifyTag, 5000);
 
 		cont.append(main);
 
