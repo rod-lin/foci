@@ -1,7 +1,6 @@
 <div id="sub-cover">
 	<div class="main-wrap">
-		<div class="show-board border trim">
-		</div>
+		<div class="show-board border trim"></div>
 		<div class="push-board">
 			<div class="tag-board-cont">
 				<div class="tag-board"></div>
@@ -10,15 +9,9 @@
 				</div>
 			</div
 			><div class="side-board">
-				<div class="push-board border">
-					<div class="fake-cont"></div>
-				</div>
-				<div class="push-board border">
-					<div class="fake-cont" style="height: 10em;"></div>
-				</div>
-				<div class="push-board border">
-					<div class="fake-cont" style="height: 30em;"></div>
-				</div>
+				<div class="push-board border userstat-board"></div>
+				<div class="push-board border mini-push-board"></div>
+				<div class="push-board border copyright-board"></div>
 			</div>
 		</div>
 	</div>
@@ -73,6 +66,10 @@
 		margin-bottom: 1rem;
 	}
 
+	#sub-cover .push-board:last-child {
+		margin-bottom: 0;
+	}
+
 	#sub-cover .tag-board-cont {
 		display: inline-block;
 
@@ -123,9 +120,18 @@
 		}
 
 		#sub-cover .side-board {
-			display: none;
 			width: 100%;
 			padding-left: 0;
+			margin-top: 0;
+		}
+
+		#sub-cover .side-board .copyright-board {
+			display: none;
+		}
+
+		#sub-cover .tag-board,
+		#sub-cover .push-board-set {
+			margin-top: 0;
 		}
 
 		#sub-cover .extra-margin {
@@ -139,8 +145,9 @@
 	function init(main, args, show, cont) {
 		require([
 			"com/env", "com/util", "com/pboard",
-			"com/event", "com/tagbox"
-		], function (env, util, pboard, event, tagbox) {
+			"com/event", "com/tagbox", "com/userstat",
+			"com/copyright"
+		], function (env, util, pboard, event, tagbox, userstat, copyright) {
 			var tbar = env.get("tbar");
 			tbar.setTitle("Foci");
 			// tbar.setStyle("light-simple");
@@ -182,6 +189,28 @@
 			fetch_push();
 			util.scrollBottom("#part", 3, function (com) {
 				fetch_push();
+			});
+
+			userstat.init(main.find(".userstat-board"));
+
+			pboard.slide(main.find(".mini-push-board"), [
+				{
+					img: "/img/cover/1.jpg"
+				},
+				{
+					img: "/img/cover/2.jpg"
+				},
+				{
+					img: "/img/cover/3.jpg"
+				}
+			]);
+
+			copyright.init(main.find(".copyright-board"));
+
+			util.media(640, function () {
+				main.find(".tag-board-cont").prepend(main.find(".side-board"));
+			}, function () {
+				main.find(".tag-board-cont").after(main.find(".side-board"));
 			});
 
 			/* tmp settings */

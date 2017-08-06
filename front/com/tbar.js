@@ -529,11 +529,19 @@ define([
 
 			hideSearchLoad: function () {
 				main.find(".search-box").removeClass("loading");
+			},
+
+			openNotice: function () {
+				main.find(".notice-btn").click();
+			},
+
+			openPM: function () {
+				main.find(".pm-btn").click();
 			}
 		};
 
 		ret.updateAvatar();
-		setInterval(ret.updateAvatar, 10000);
+		setInterval(ret.updateAvatar, 5000);
 		env.on("loginchange", function () {
 			updateAvatar();
 		});

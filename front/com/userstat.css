@@ -1,0 +1,139 @@
+
+.com-userstat {
+    position: relative;
+
+    width: 100%;
+    padding: 2rem;
+    padding-top: 0.5rem;
+
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.com-userstat .load-page {
+    position: absolute;
+
+    height: 100%;
+    width: 100%;
+    top: 0; left: 0;
+    opacity: 1;
+
+    background: white;
+
+    transition: opacity 0.3s;
+}
+
+.com-userstat.nologin .load-page,
+.com-userstat.login .load-page {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.com-userstat .no-login-page {
+    position: absolute;
+
+    height: 100%;
+    width: 100%;
+    top: 0; left: 0;
+
+    text-align: center;
+
+    background: white;
+}
+
+.com-userstat .no-login-page .reg-btn {
+    margin-top: 1rem;
+}
+
+.com-userstat .no-login-page .login-btn {
+    margin-top: 0.4rem;
+}
+
+.com-userstat .no-login-page .logo {
+    font-size: 3rem;
+    font-family: Brandon;
+    font-weight: bold;
+    color: #323232;
+
+    margin-left: -0.4em;
+}
+
+.com-userstat .no-login-page .logo .foci-logo {
+    font-size: 85%;
+    margin-right: 0.2rem;
+    color: #3498DB;
+}
+
+.com-userstat.login .no-login-page {
+    display: none;
+}
+
+.com-userstat .stat-item {
+    display: flex;
+    display: -webkit-flex;
+
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+
+    width: 100%;
+    padding-top: 1.5rem;
+    vertical-align: middle;
+
+    opacity: 1;
+
+    cursor: pointer;
+
+    transition: opacity 0.2s;
+}
+
+.com-userstat .stat-item:hover {
+    opacity: 0.7;
+}
+
+.com-userstat .stat-item:active {
+    opacity: 0.9;
+}
+
+.com-userstat .stat-item .icon {
+    font-size: 1.7rem;
+}
+
+.com-userstat .stat-item.blue .icon {
+    color: #2980B9;
+}
+
+.com-userstat .stat-item.green .icon {
+    color: #27AE60;
+}
+
+.com-userstat .stat-item.yellow .icon {
+    color: #F39C12;
+}
+
+.com-userstat .stat-item .stat-name {
+    margin-left: 0.5rem;
+    color: #3C3C3C;
+
+    font-size: 1.3rem;
+    font-family: Brandon;
+    font-weight: bold;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    -webkit-box-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+}
+
+.com-userstat .stat-item .stat-number {
+    float: right;
+
+    padding: 0.5rem 0.7rem;
+    color: #828282;
+
+    border-radius: 3px;
+    background: rgb(252, 252, 252);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}

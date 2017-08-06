@@ -620,12 +620,7 @@
 					// main.find(".apply-partic").addClass("disabled");
 				}
 
-				login.session(function (session) {
-					if (!session) {
-						disableApp(m("$front.sub.event.login_first"));
-						return;
-					}
-
+				function refreshAppBlock(session) {
 					var uuid = session.getUUID();
 
 					if (info.org.indexOf(uuid) != -1) {
@@ -678,7 +673,24 @@
 							});
 						}
 					}
-				});
+				}
+
+				if (env.session()) {
+					refreshAppBlock(env.session());
+					foci.encop(env.session(), {
+						int: "event",
+						action: "view",
+						euid: euid
+					}, function () {});
+				} else {
+					var prompt = $(m("$front.sub.event.login_first"));
+					disableApp(prompt);
+					prompt.find("a").click(function () {
+						login.session(function (session) {
+							if (session) refreshAppBlock(session);
+						});
+					});
+				}
 
 				var comm = comment.init(main.find(".comment"), euid, {
 					state: info.state,

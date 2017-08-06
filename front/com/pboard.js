@@ -219,5 +219,106 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 		return ret;
 	}
 
-	return { init: init };
+	/*
+		slide {
+			img: image url,
+			url: optional url
+		}
+	 */
+	function slide(cont, slides, config) {
+		cont = $(cont);
+		config = $.extend({
+			interval: 4000,
+			height: "10rem",
+			setting: true,
+			setting_cb: null
+		}, config);
+
+		var main = $("<div class='com-pboard-slide'> \
+			<i class='left-btn angle left icon'></i> \
+			<i class='right-btn angle right icon'></i> \
+			<div class='slides'></div> \
+		</div>");
+
+		for (var i = 0; i < slides.length; i++) {
+			(function (i) {
+				var slide = slides[i];
+				slide.dom = $("<div class='slide'></div>");
+				util.bgimg(slide.dom, slide.img);
+
+				slide.dom.click(function () {
+
+					if (config.setting) {
+						upload.init(function (id, url) {
+							if (config.setting_cb)
+								config.setting_cb(n, id, url);
+						}, { arg: { prompt: "foci.me#", placeholder: "url" } });
+					} else if (slide.url)
+						util.jump(slide.url);
+				});
+			})(i);
+		}
+
+		var cur_slide = 0;
+		var locked = false;
+
+		function setSlide(i, go_back) {
+			if (locked) return;
+			locked = true;
+
+			var cur = slides[cur_slide].dom;
+			var next = slides[i].dom;
+
+			var dir = [ "left", "right" ];
+
+			if (go_back)
+				dir = [ "right", "left" ];
+
+			main.find(".slides").append(next);
+			cur_slide = i;
+
+			setTimeout(function () {
+				next.addClass(dir[1]).removeClass(dir[1] + " " + dir[1] + "-ready");
+				cur.addClass(dir[0]);
+				setTimeout(function () {
+					cur.removeClass(dir[0]);
+					cur.remove();
+					locked = false;
+				}, 300);
+			}, 50);
+
+			next.addClass(dir[1] + "-ready");
+		}
+
+		main.find(".slides").append(slides[cur_slide].dom);
+
+		function nextSlide() {
+			setSlide((cur_slide + 1) % slides.length);
+		}
+
+		function prevSlide() {
+			setSlide((cur_slide - 1 + slides.length) % slides.length, true);
+		}
+
+		setInterval(function () {
+			nextSlide();
+		}, config.interval - 300);
+
+		main.css("height", config.height);
+		main.find(".left-btn").css("line-height", config.height).click(function () {
+			prevSlide();
+		});
+
+		main.find(".right-btn").css("line-height", config.height).click(function () {
+			nextSlide();
+		});
+
+		cont.append(main);
+
+		var ret = {};
+
+		return ret;
+	}
+
+	return { init: init, slide: slide };
 });

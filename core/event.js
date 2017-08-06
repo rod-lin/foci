@@ -66,6 +66,8 @@ var Event = function (euid, owner /* uuid */) {
 	this.partic = []; // participants
 
 	this.comment = [];
+
+	this.view = [];
 };
 
 exports.Event = Event;
@@ -190,6 +192,10 @@ Event.prototype.getAppLimit = function (type) {
 
 Event.prototype.getAppList = function (type) {
 	return this["apply_" + type];
+};
+
+Event.prototype.getViewCount = function () {
+	return this.view ? this.view.length : 0;
 };
 
 Event.prototype.countApp = function (type) {
@@ -401,7 +407,11 @@ Event.set = {
 
 	terminate: () => ({ $set: { state: 2 } }),
 
-	status: (euid, status) => ({ $set: { "apply_staff.$.status": status } })
+	status: (euid, status) => ({ $set: { "apply_staff.$.status": status } }),
+
+	add_view: uuid => ({
+		$addToSet: { "view": uuid }
+	})
 };
 
 exports.euid = async (euid, state) => {
@@ -752,6 +762,7 @@ exports.changeAppStatus = async (euid, uuids, type, status) => {
 
 	for (var i = 0; i < uuids.length; i++) {
 		await col.updateOne(Event.query.applicant(euid, uuids[i], type), Event.set.status(euid, status));
+		user.incAppUpdate(uuids[i]);
 	}
 };
 
@@ -765,4 +776,9 @@ exports.terminate = async (euid, uuid) => {
 	var col = await db.col("event");
 
 	await col.findOneAndUpdate(Event.query.euid(euid), Event.set.terminate());
+};
+
+exports.incView = async (euid, uuid) => {
+	var col = await db.col("event");
+	col.updateOne(Event.query.euid(euid), Event.set.add_view(uuid));
 };

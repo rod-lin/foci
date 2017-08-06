@@ -47,6 +47,9 @@ var User = function (uuid, dname, lname, passwd) {
 
 	this.club = null;
 
+	this.apply_update = 0;
+	this.notice_update = 0;
+
 	this.pm = {};
 };
 
@@ -56,6 +59,7 @@ User.prototype.getUUID = function () { return this.uuid; };
 // User.prototype.getInfo = function () { return this.info; };
 User.prototype.getTag = function () { return this.favtag; };
 User.prototype.getLevel = function () { return this.level; };
+User.prototype.getAppUpdate = function () { return this.apply_update ? this.apply_update : 0 };
 
 // this will be sent to the client
 User.prototype.getInfo = function () {
@@ -145,7 +149,10 @@ User.set = {
 
 	tag: tag => ({ $set: { "favtag": tag } }),
 
-	resume: resume => ({ $set: { "resume": resume } })
+	resume: resume => ({ $set: { "resume": resume } }),
+
+	inc_app: () => ({ $inc: { "apply_update": 1 } }),
+	clear_app: () => ({ $set: { "apply_update": 0 } })
 };
 
 var genSessionID = (lname) => util.md5(util.salt(), "hex");
@@ -327,4 +334,19 @@ exports.getResumeCache = async (uuid) => {
 	}
 
 	return resume ? resume : [];
+};
+
+exports.getAppUpdate = async (uuid) => {
+	var user = await exports.uuid(uuid);
+	return user.getAppUpdate();
+};
+
+exports.incAppUpdate = async (uuid) => {
+	var col = await db.col("user");
+	await col.updateOne(User.query.uuid(uuid), User.set.inc_app(), { upsert: true });
+};
+
+exports.clearAppUpdate = async (uuid) => {
+	var col = await db.col("user");
+	await col.updateOne(User.query.uuid(uuid), User.set.clear_app());
 };

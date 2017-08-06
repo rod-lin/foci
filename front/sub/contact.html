@@ -1,0 +1,21 @@
+<div id="sub-contact"> <!-- contact -->
+	Contact
+</div>
+
+<style>
+	#sub-clubreg {
+		height: 100%;
+	}
+</style>
+
+<script>
+	function init(main, args, show, cont) {
+		require([
+			"com/env", "com/util", "com/pform"
+		], function (env, util, pform) {
+			var tbar = env.get("tbar");
+			tbar.setTitle("Contact");
+			show(true);
+		});
+	}
+</script>

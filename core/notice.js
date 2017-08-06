@@ -11,9 +11,9 @@ var lpoll = require("./lpoll");
 var config = require("./config");
 
 /*
-	type: "event": event notice, "system": system notice 
+	type: "event": event notice, "system": system notice
 	sender: euid or system senders("helper", "welcome")
-	
+
 	title: title of the message
 
 	msg: message text
@@ -23,7 +23,7 @@ var config = require("./config");
  */
 
 /*
-	
+
 	user {
 		notice: {
 			"sender": [ msg1, msg2 ]
@@ -59,9 +59,13 @@ Notice.set = {
 		return q;
 	},
 
-	update: (uuid, val) => ({
-		$set: { notice_update: val }
-	})
+	update: (uuid, val) => {
+		if (val) {
+			return { $inc: { notice_update: 1 } };
+		} else {
+			return { $set: { notice_update: 0 } };
+		}
+	}
 };
 
 async function setUpdate(uuid, val) {
@@ -100,7 +104,7 @@ exports.info = async (type, sender) => {
 		case "event":
 			var euid = parseInt(sender);
 			var ev = await event.euid(euid);
-			
+
 			return {
 				url: false,
 				logo: ev.getLogo(),
@@ -114,7 +118,7 @@ exports.info = async (type, sender) => {
 
 exports.update = async (uuid) => {
 	var usr = await user.uuid(uuid);
-	return !!usr.notice_update;
+	return usr.notice_update ? usr.notice_update : 0;
 };
 
 exports.updatel = async (uuid, next) => {

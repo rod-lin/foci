@@ -72,7 +72,7 @@ PMsg.set = {
 exports.send = async (sender, sendee, msg) => {
 	var nmsg = new PMsg({ sender: sender, sendee: sendee, msg: msg });
 	var col = await db.col("pm");
-	
+
 	await col.insertOne(nmsg);
 
 	lpoll.emit(ltok(sender, sendee), [ nmsg ]);
@@ -83,19 +83,28 @@ exports.send = async (sender, sendee, msg) => {
 
 exports.getUpdate = async (uuid, sender) => {
 	var usr = await user.uuid(uuid);
-	
+
 	var col = await db.col("pm");
 	// console.log(PMsg.query.update(uuid, sender, usr.pm_update || 0));
 	var res = await col.find(PMsg.query.update(uuid, sender, usr.pm_update || 0)).sort({ date: -1 }).toArray();
 
-	exports.removeUpdate(uuid);
+	// exports.removeUpdate(uuid);
+
+	return res;
+};
+
+exports.getUpdateCount = async (uuid) => {
+	var usr = await user.uuid(uuid);
+
+	var col = await db.col("pm");
+	var res = await col.find(PMsg.query.update(uuid, null, usr.pm_update || 0)).sort({ date: -1 }).count();
 
 	return res;
 };
 
 exports.getUpdateHang = async (uuid, sender, next) => {
 	var usr = await user.uuid(uuid);
-	
+
 	var col = await db.col("pm");
 	var res = await col.find(PMsg.query.update(uuid, sender, usr.pm_update || 0)).sort({ date: -1 }).toArray();
 
@@ -130,10 +139,10 @@ exports.getConvHead = async (uuid) => {
 
 exports.getConvAll = async (uuid, sender) => {
 	var col = await db.col("pm");
-	
+
 	var res = await col.find(PMsg.query.conv(uuid, sender))
 					   .sort({ date: 1 })
 					   .toArray();
-	
+
 	return res;
 };

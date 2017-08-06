@@ -124,3 +124,102 @@
 .com-pboard.left-dir .preview {
 	display: inline-block;
 }
+
+/* slide */
+
+.com-pboard-slide {
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+	border-radius: 3px;
+
+	background: black;
+}
+
+.com-pboard-slide .right-btn,
+.com-pboard-slide .left-btn {
+	z-index: 1;
+	display: inline-block !important;
+
+	position: absolute;
+
+	top: 0;
+	height: 100%; width: auto;
+
+	margin: 0 !important;
+	padding: 0 1rem;
+
+	font-size: 2rem;
+	font-weight: bold;
+	color: white;
+
+	opacity: 0;
+
+	cursor: pointer;
+
+	text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+
+	transition: text-shadow 0.2s, opacity 0.3s;
+}
+
+.com-pboard-slide:hover .right-btn,
+.com-pboard-slide:hover .left-btn {
+	opacity: 1;
+}
+
+.com-pboard-slide .right-btn:hover,
+.com-pboard-slide .left-btn:hover {
+	text-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+}
+
+.com-pboard-slide .right-btn:active,
+.com-pboard-slide .left-btn:active {
+	text-shadow: 0 0 7px rgba(0, 0, 0, 0.8);
+}
+
+.com-pboard-slide .left-btn {
+	left: 0;
+}
+
+.com-pboard-slide .right-btn {
+	right: 0;
+}
+
+.com-pboard-slide .slide {
+	position: absolute;
+	height: 100%; width: 100%;
+	left: 0;
+
+	background: red; rgba(250, 250, 250, 1);
+	cursor: pointer;
+
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+
+	opacity: 1;
+
+	transition: left 0.3s cubic-bezier(.6, 0, .2, 1), opacity 0.3s;
+}
+
+.com-pboard-slide:hover .slide {
+	opacity: 0.9;
+}
+
+.com-pboard-slide .slide.left {
+	left: -100%;
+}
+
+.com-pboard-slide .slide.right {
+	left: 100%;
+}
+
+.com-pboard-slide .slide.left-ready {
+	left: -100%;
+	transition: none !important;
+}
+
+.com-pboard-slide .slide.right-ready {
+	left: 100%;
+	transition: none !important;
+}

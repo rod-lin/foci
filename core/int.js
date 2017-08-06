@@ -412,6 +412,11 @@ encop.event = async (env, usr, query) => {
 
 			return;
 
+		case "view":
+			var args = util.checkArg(query, { euid: "int" });
+			await event.incView(args.euid, usr.getUUID());
+			return;
+
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}
@@ -478,6 +483,28 @@ encop.notice = async (env, usr, query, next) => {
 
 			await notice.sendGroup(args.euid, usr.getUUID(), args.uuids, args);
 
+			return;
+
+		/*
+			{
+				notice: number of unread notice,
+				pm: number of unread pm,
+				app: number of app updates
+			}
+		 */
+		case "getall":
+			var uuid = usr.getUUID();
+
+			var ret = {
+				notice: await notice.update(uuid),
+				pm: await pm.getUpdateCount(uuid),
+				app: await user.getAppUpdate(uuid)
+			};
+
+			return ret;
+
+		case "clearapp":
+			await user.clearAppUpdate(usr.getUUID());
 			return;
 
 		default:
