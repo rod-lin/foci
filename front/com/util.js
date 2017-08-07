@@ -298,7 +298,7 @@ define(function () {
 				var pref = [ "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat" ][date.getDay()];
 				ret = pref + " " + (short ? "" : time);
 			} else {
-				ret = date.getMonth() + "-" + date.getDate() + " " + (short ? "" : time);
+				ret = (date.getMonth() + 1) + "-" + date.getDate() + " " + (short ? "" : time);
 
 				if (cur.getFullYear() != date.getFullYear())
 					ret = date.getFullYear() + "-" + ret;

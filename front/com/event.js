@@ -31,7 +31,7 @@ define([
 		return start + " ~ " + end;
 	}
 
-	function eventTemplate() {
+	function eventTemplate(show_logo) {
 		var main = $('<div class="com-event-single ui card event"> \
 			<div class="cover"> \
 				<div class="ui loader"></div> \
@@ -59,6 +59,9 @@ define([
 					<span class="date"></span> \
 				</div> \
 				<div class="description"></div> \
+				<div class="logo"> \
+					<i class="add icon"></i> \
+				</div> \
 			</div> \
 			<div class="extra content favtag"> \
 			</div> \
@@ -69,6 +72,9 @@ define([
 				<div class="ext-btn-set"></div> \
 			</div> \
 		</div>');
+
+		if (!show_logo)
+			main.find(".logo").remove();
 
 		lang.update(main);
 
@@ -164,6 +170,11 @@ define([
 			if (config.onCoverLoad) config.onCoverLoad();
 		});
 
+		if (dom.find(".logo").length && info.logo) {
+			dom.find(".logo i").css("display", "none");
+			util.bgimg(dom.find(".logo"), parsed.logo);
+		}
+
 		dom.find(".title").html(parsed.title);
 		dom.find(".date").html(parsed.date);
 		dom.find(".description").html(parsed.descr_text);
@@ -213,6 +224,12 @@ define([
 			changeCover: function (cover) {
 				parsed.cover = foci.download(cover);
 				util.bgimg(dom.find(".cover"), parsed.cover);
+			},
+
+			changeLogo: function (logo) {
+				parsed.logo = foci.download(logo);
+				util.bgimg(dom.find(".logo"), parsed.logo);
+				dom.find(".logo i").css("display", "none");
 			}
 		};
 
@@ -220,6 +237,12 @@ define([
 			dom.find(".cover").css("cursor", "pointer");
 			dom.find(".cover").click(function () {
 				config.onCoverClick(dom_util);
+			});
+		}
+
+		if (config.onLogoClick) {
+			dom.find(".logo").click(function () {
+				config.onLogoClick(dom_util);
 			});
 		}
 

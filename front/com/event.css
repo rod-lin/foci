@@ -95,6 +95,46 @@
 	transition: opacity 0.3s;
 }
 
+.com-event-single .logo {
+	position: absolute;
+	right: 2rem;
+	top: -2rem;
+	height: 5rem; width: 5rem;
+	line-height: 5rem;
+	text-align: center;
+
+	border-radius: 50%;
+
+	background-color: rgba(250, 250, 250, 1);
+
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+
+	cursor: pointer;
+
+	box-shadow:
+		0 0 1px rgba(0, 0, 0, 0.4),
+		0 0 15px rgba(0, 0, 0, 0.06);
+}
+
+.com-event-single .logo i {
+	font-size: 1.4rem;
+	color: #808080;
+	margin: 0 !important;
+
+	opacity: 1;
+	transition: opacity 0.3s;
+}
+
+.com-event-single .logo:hover i {
+	opacity: 0.6;
+}
+
+.com-event-single .logo:active i {
+	opacity: 0.8;
+}
+
 .com-event-single .flags:hover {
 	opacity: 0.7;
 }

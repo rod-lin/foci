@@ -931,7 +931,7 @@
 							next: "loc",
 
 							onInit: function (info) {
-								var event_tmp = event.eventTemplate();
+								var event_tmp = event.eventTemplate(true);
 								new_tab.find(".ev-content .page-cover").html(event_tmp);
 								event_tmp
 									.css("display", "inline-block")
@@ -949,11 +949,13 @@
 
 								fields.cover = info.cover;
 								fields.favtag = info.favtag;
+								fields.logo = info.logo;
 
 								event.setDom(event_tmp, {
 									title: info.title || fields.title,
 									descr: info.descr || fields.descr,
-									cover: info.cover
+									cover: info.cover,
+									logo: info.logo
 								}, {
 									editTag: true,
 
@@ -966,6 +968,15 @@
 										});
 									},
 
+									onLogoClick: function (dom) {
+										upload.init(function (file) {
+											if (file) {
+												fields.logo = file;
+												dom.changeLogo(file);
+											}
+										});
+									},
+
 									onTagChange: function (tags) {
 										fields.favtag = tags;
 									},
@@ -974,13 +985,14 @@
 									max_title_len: 32
 								});
 
-								return fields.cover;
+								return fields.cover && fields.logo;
 							},
 
 							onCheck: function (cb) {
-								if (fields.cover) {
+								if (fields.cover || fields.logo) {
 									uploadChanges({
-										cover: fields.cover,
+										cover: fields.cover || undefined,
+										logo: fields.logo || undefined
 									}, function (suc) {
 										if (suc) {
 											new_tab.find(".cover-step").addClass("completed");
