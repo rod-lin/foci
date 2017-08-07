@@ -17,6 +17,10 @@ button { padding: 0; user-select: none; -moz-user-select: none; }
 	border-radius: 0;
 }
 
+.ui.two.buttons>.button {
+	display: block !important;
+}
+
 /*
 .uix.loader {
 	display: none;

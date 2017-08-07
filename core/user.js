@@ -51,6 +51,9 @@ var User = function (uuid, dname, lname, passwd) {
 	this.notice_update = 0;
 
 	this.pm = {};
+
+	this.login_fail_last = null;
+	this.login_fail_count = 0;
 };
 
 exports.User = User;
@@ -138,7 +141,14 @@ User.query = {
 	tag: tag => ({ "favtag": tag }),
 
 	check_level: (uuid, level) => ({ "uuid": uuid, "level": level }),
-	check_admin: (uuid, level) => ({ "uuid": uuid, "level": { $lte: level } })
+	check_admin: (uuid, level) => ({ "uuid": uuid, "level": { $lte: level } }),
+
+	// too many failed login tries
+	check_exceed_try: (lname) => ({
+		"lname": lname,
+		"login_fail_count": { $gt: config.lim.user.max_login_try },
+		"login_fail_last": { $gt: new Date(new Date() - config.lim.user.account_freeze_time) }
+	})
 };
 
 User.set = {
@@ -152,7 +162,19 @@ User.set = {
 	resume: resume => ({ $set: { "resume": resume } }),
 
 	inc_app: () => ({ $inc: { "apply_update": 1 } }),
-	clear_app: () => ({ $set: { "apply_update": 0 } })
+	clear_app: () => ({ $set: { "apply_update": 0 } }),
+
+	inc_login_fail: () => ({
+		$inc: { "login_fail_count": 1 },
+		$set: { "login_fail_last": new Date() }
+	}),
+
+	reset_login_fail: () => ({
+		$set: {
+			"login_fail_count": 0,
+			"login_fail_last": new Date(0)
+		}
+	})
 };
 
 var genSessionID = (lname) => util.md5(util.salt(), "hex");
@@ -165,6 +187,11 @@ exports.uuid = async (uuid) => {
 		throw new err.Exc("$core.not_exist($core.word.user)");
 
 	return new User(found);
+};
+
+exports.hasLName = async (lname) => {
+	var col = await db.col("user");
+	return await col.find(User.query.lname(lname)).count() > 0;
 };
 
 exports.checkLevel = async (uuid, level) => {
@@ -219,10 +246,24 @@ exports.newUser = async (dname, lname, passwd) => {
 // passwd is clear text
 exports.checkPass = async (lname, passwd) => {
 	var col = await db.col("user");
+
+	if (await col.find(User.query.check_exceed_try(lname)).count()) {
+		throw new err.Exc("$core.account_frozen");
+	}
+
 	var found = await col.findOne(User.query.pass(lname, passwd));
 
 	if (!found) {
+		// TODO: inc fail count
+		if (await exports.hasLName(lname)) {
+			await col.updateOne(User.query.lname(lname),
+								User.set.inc_login_fail());
+		}
+
 		throw new err.Exc("$core.wrong_user_passwd");
+	} else {
+		await col.updateOne(User.query.lname(lname),
+							User.set.reset_login_fail());
 	}
 
 	return new User(found).getUUID();

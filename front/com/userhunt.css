@@ -5,7 +5,7 @@
 
 .com-userhunt-modal .close-btn {
 	position: absolute;
-	
+
 	width: 18px;
 	height: 18px;
 
@@ -13,7 +13,7 @@
 	right: -3px;
 
 	font-size: 10px;
-	
+
 	text-align: center;
 
 	background: #E74C3C;
@@ -64,7 +64,7 @@
 
 .com-userhunt-modal .user-search .results .result-avatar {
 	display: inline-block;
-	
+
 	width: 3rem;
 	height: 3rem;
 	border-radius: 5px;
@@ -85,6 +85,9 @@
 	-webkit-box-flex: 1;
 	-ms-flex: 1;
 	flex: 1;
+	flex-grow: 1;
+	flex-shrink: 1;
+	flex-basis: 0;
 }
 
 .com-userhunt-modal .user-search .results .result * {

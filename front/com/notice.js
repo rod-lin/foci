@@ -369,5 +369,5 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 		return ret;
 	}
 
-	return { init: init, editor };
+	return { init: init, editor: editor };
 });

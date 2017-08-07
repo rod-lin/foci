@@ -69,7 +69,7 @@ function initAli() {
 	var appkey = config.smsg.ali.appkey;
 	var appsec = config.smsg.ali.appsec;
 
-	// re-implement ali(the npm package is not working... :-()
+	// re-implement ali interface(the npm package is not working... :-()
 	var ali = (function () {
 		function alisign(param, sec) {
 			var pairs = [];
