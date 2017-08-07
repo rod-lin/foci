@@ -70,16 +70,16 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 					var dom = $("<div class='preview' data-id='" + i + "'> \
 						<div class='setting-btn vcenter'><i class='setting icon'></i></div> \
 					</div>");
-					var loader = $("<div class='ui small loader active'></div>");
+					// var loader = $("<div class='ui small loader active'></div>");
 
 					dom.click(function () {
 						photoClick(ph, i);
 					});
 
 					if (ph.img) {
-						dom.append(loader);
+						// dom.append(loader);
 						util.bgimg(dom, ph.img, function () {
-							loader.remove();
+							// loader.remove();
 						});
 					} else dom.addClass("no-img");
 
