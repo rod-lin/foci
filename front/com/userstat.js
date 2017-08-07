@@ -14,18 +14,18 @@ define([ "com/env", "com/util", "com/login" ], function (env, util, login) {
             <div class='login-stat'> \
                 <div class='stat-item notice-item blue'> \
                     <i class='alarm outline icon'></i> \
-                    <span class='stat-name'>Notice</span> \
-                    <span class='stat-number'>2</span> \
+                    <span class='stat-name'>Notification</span> \
+                    <span class='stat-number'></span> \
                 </div> \
                 <div class='stat-item message-item yellow'> \
                     <i class='comments outline icon'></i> \
-                    <span class='stat-name'>Messages</span> \
-                    <span class='stat-number'>10</span> \
+                    <span class='stat-name'>Message</span> \
+                    <span class='stat-number'></span> \
                 </div> \
                 <div class='stat-item app-item green'> \
                     <i class='open envelope outline icon'></i> \
                     <span class='stat-name'>Application</span> \
-                    <span class='stat-number'>1</span> \
+                    <span class='stat-number'></span> \
                 </div> \
             </div> \
             <div class='no-login-page'> \

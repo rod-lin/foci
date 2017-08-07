@@ -49,7 +49,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		var ret;
 
 		input.type = input.type || "text";
-		
+
 		if (!input.name) {
 			warn("unnamed input");
 			input.name = "unnamed";
@@ -157,7 +157,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		// input {
 		//     type, name, [ placeholder, value, label ]
 		// }
-	
+
 		obj = obj || { block: [] };
 
 		var fields = {};
@@ -173,7 +173,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		ret += "</form>";
 
 		ret = $(ret);
-	
+
 		ret.find(".checkbox").checkbox();
 
 		return {
@@ -191,7 +191,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				name: input.attr("name"),
 				placeholder: input.attr("placeholder")
 			};
-		
+
 			if (input.hasClass("text-input")) {
 				ret.type = "text";
 			} else if (input.hasClass("textarea-input")) {
@@ -209,7 +209,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 			var ret = [];
 
 			var field = dom.children(".field").not(".no-save");
-	
+
 			field.each(function (n, el) {
 				el = $(el);
 
@@ -291,7 +291,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				}
 			}
 		}
-	
+
 		var ret = {
 			dom: gen.dom,
 			fields: gen.fields
@@ -370,6 +370,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				<div class='form'></div> \
 				<div class='btn-set' style='text-align: center; margin-top: 2rem;'> \
 					<div class='ui buttons'> \
+						<div class='ui white button cancel'>Cancel</div> \
 						<div class='ui white button restore' data-content='Click to restore the form'>Restore</div> \
 						<div class='ui blue button save'>Save</div> \
 						<div class='ui green button submit'>Submit</div> \
@@ -393,13 +394,17 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 			gen.restore(config.uid);
 		});
 
+		main.find(".cancel").click(function () {
+			main.modal("hide");
+		});
+
 		var submitted = false;
 
 		main.find(".submit").click(function () {
 			var res = gen.check();
 			var next = function (suc) {
 				main.find(".submit").removeClass("loading");
-			
+
 				if (suc) {
 					can_hide = true;
 					main.modal("hide");
@@ -419,7 +424,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 			setTimeout(function () {
 				if (config.auto_save)
 					main.find(".restore").popup({ on: "click" }).popup("show");
-	
+
 				setTimeout(function () {
 					main.find(".restore").popup("hide");
 				}, 8000);
@@ -470,7 +475,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 					<div class='ui green button save-btn'>Save</div> \
 				</div> \
 			");
-		
+
 			var split = $("<div class='ui divider'></div>");
 			var addblock = $("<button class='ui basic button add-block-btn' type='button'><i class='add icon'></i>Add block</button>");
 			var delbtn = $("<button class='ui icon button del-btn' type='button'><i class='cancel icon'></i></button>");
@@ -494,7 +499,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				var nform = ret.genForm();
 
 				can_hide = true;
-			
+
 				main.modal("hide");
 				modal(nform, {
 					cancel: function () { main.modal("show"); can_hide = false; },
@@ -507,13 +512,14 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 					if (onSave(ret.genForm()) !== false) {
 						can_hide = true;
 						main.modal("hide");
+						form.find(".checkbox").checkbox("set enabled");
 					}
 			});
 
 			var editable_conf = { explicit: true };
 
 			function initField(field, group) {
-				util.nextTick(function () {
+				setTimeout(function () {
 					field.append(delbtn.clone().css("height", field.find("label").outerHeight() + "px").click(function () {
 						if (group.children(".field").not(".no-save").length == 1) {
 							group.remove();
@@ -523,7 +529,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 					}));
 
 					main.modal("refresh");
-				});
+				}, 100);
 			}
 
 			function askType(obj, cb) {
@@ -551,17 +557,28 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				]);
 			}
 
-			function initGroup(group) {
+			function initGroup(group, new_type) {
 				// var split = $("<div class='ui divider'></div>");
 				var addfield = $("<div class='field no-save'><label class='no-edit'>Add field</label><button class='ui basic icon button add-field-btn' type='button'><i class='add icon'></i></button></div>");
-				
+
 				group.append(addfield);
 				// group.after(split);
-				editable.init(group.find(".field>label").not(".no-edit"), null, editable_conf);
-
+				// editable.init(group.find(".field>label").not(".no-edit"), null, editable_conf);
+				setEditable(group);
 				group.find(".field").each(function (n, fl) {
-					initField($(fl), group, split);
+					initField($(fl), group, split)
 				});
+
+				function setEditable(f) {
+					f.ready(function () {
+						f.find("label").not(".no-edit").each(function (i, dom) {
+							// console.log(dom);
+							editable.init($(dom), null, editable_conf);
+						});
+
+						initField(f, group);
+					});
+				}
 
 				function newField(type) {
 					if (group.find(".field").length >= 5) {
@@ -571,10 +588,8 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 					var f = $(genField({ name: "Field name", input: { type: type, name: nextUID() } }, true));
 					addfield.before(f);
-					editable.init(f.find("label").not(".no-edit"), null, editable_conf);
 
-					initField(f, group);
-
+					setEditable(f);
 					// f.find(".checkbox").checkbox();
 				}
 
@@ -591,7 +606,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				askType(addgroup, function (type) {
 					var nfield = $(genField([ { name: "Field name", input: { type: type, name: nextUID() } } ]));
 					addgroup.before(nfield);
-					initGroup(nfield);
+					initGroup(nfield, type);
 				});
 
 				block.find(".fields").each(function (n, gr) {
@@ -599,8 +614,8 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				});
 
 				util.nextTick(function () {
-					console.log(header.length);
-					console.log(header[0]);
+					// console.log(header.length);
+					// console.log(header[0]);
 
 					block.append(delbtn.clone().css("height", header.outerHeight() + "px").click(function () {
 						block.remove();
@@ -610,6 +625,8 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 					main.modal("refresh");
 				});
 			}
+
+			form.find(".checkbox").checkbox("set disabled").removeClass("disabled");
 
 			form.append(split).append(addblock);
 			editable.init(main.children(".title"), null, editable_conf);

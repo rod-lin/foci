@@ -801,6 +801,13 @@
 					var deleted = false;
 
 					function isEmptyDraft() {
+						if (fields.state) return false;
+
+						for (var k in changed) {
+							if (changed.hasOwnProperty(k) && changed[k])
+								return false;
+						}
+
 						for (var k in fields) {
 							if (fields.hasOwnProperty(k) && fields[k] &&
 								(fields[k].length === undefined || fields[k].length)) {
@@ -1542,6 +1549,10 @@
 						euid = info.euid;
 
 						fields = {};
+
+						if (info.state)
+							fields.state = info.state;
+
 						var last = null;
 
 						// init all steps with new event info

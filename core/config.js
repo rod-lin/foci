@@ -93,6 +93,9 @@ var conf = module.exports = {
 
 			max_search_results: 16,
 
+			auto_clean: true, // auto clean all empty drafts
+			auto_clean_interval: 1000 * 60 * 60 * 24 * 2, // 2 days
+
 			// max days after the event ended and before auto termination
 			// max_term_delay: 1000 * 60 * 60 * 24 * 10, // 10 day
 		},

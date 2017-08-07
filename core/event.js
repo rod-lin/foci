@@ -391,6 +391,34 @@ Event.query = {
 	is_applicant: (euid, uuid) => ({
 		euid: euid,
 		$or: [ { "apply_partic.uuid": uuid }, { "apply_staff.uuid": uuid } ]
+	}),
+
+	empty_draft: () => ({
+		state: 0,
+		logo: null,
+		cover: null,
+
+		title: "",
+		descr: "",
+
+		detail: null,
+
+		loclng: null,
+		loclat: null,
+		start: null,
+		end: null,
+
+		apply_staff_form: null,
+		apply_staff_lim: null,
+		apply_staff: [],
+
+		apply_partic_form: null,
+		apply_partic_lim: null,
+		apply_partic: [],
+
+		apply_open: null,
+		apply_num: 0,
+		favtag: [],
 	})
 };
 
@@ -412,6 +440,11 @@ Event.set = {
 	add_view: uuid => ({
 		$addToSet: { "view": uuid }
 	})
+};
+
+exports.clearEmptyDraft = async () => {
+	var col = await db.col("event");
+	await col.remove(Event.query.empty_draft());
 };
 
 exports.euid = async (euid, state) => {

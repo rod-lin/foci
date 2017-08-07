@@ -1,7 +1,7 @@
 .com-editable.enabled {
 	border: 2px dotted transparent;
 	border-radius: 3px;
-	transition: border 0.3s;
+	transition: border-color 0.3s;
 	cursor: pointer;
 }
 

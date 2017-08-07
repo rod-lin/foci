@@ -11,6 +11,8 @@ var auth = require("./core/auth");
 var user = require("./core/user");
 var util = require("./core/util");
 var file = require("./core/file");
+var tick = require("./core/tick");
+var event = require("./core/event");
 var config = require("./core/config");
 var notice = require("./core/notice");
 
@@ -107,6 +109,13 @@ serv.listen(config.port, function () {
 
 	util.log("listening at http://" + host + ":" + port);
 });
+
+if (config.lim.event.auto_clean) {
+	setInterval(function () {
+		util.log("auto clean empty drafts", util.style.yellow("AUTO CLEAN"));
+		tick.awrap(event.clearEmptyDraft)();
+	}, config.lim.event.auto_clean_interval);
+}
 
 /* https */
 
