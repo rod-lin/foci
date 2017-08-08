@@ -18,7 +18,7 @@ tick
 		"staff": "staff"
 	}[type];
 
-	var tmp = template.event_apply(title, job);
+	var tmp = await template.event_apply(title, job);
 
 	await notice.push(uuid, euid, {
 		type: "event",

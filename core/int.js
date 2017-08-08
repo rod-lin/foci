@@ -19,6 +19,7 @@ var config = require("./config");
 var notice = require("./notice");
 var alipay = require("./alipay");
 var comment = require("./comment");
+var template = require("./template");
 
 require("./binds");
 
@@ -506,6 +507,15 @@ encop.notice = async (env, usr, query, next) => {
 		case "clearapp":
 			await user.clearAppUpdate(usr.getUUID());
 			return;
+
+		// template
+		case "temp":
+			var args = util.checkArg(query, { name: "string", args: "array" });
+			if (template.hasOwnProperty(args.name)) {
+				return await template[args.name].apply(undefined, args.args);
+			} else {
+				throw new err.Exc("$core.not_exist($core.word.template)");
+			}
 
 		default:
 			throw new err.Exc("$core.action_not_exist");

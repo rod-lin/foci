@@ -2,7 +2,7 @@
 
 "use strict";
 
-define([ "com/xfilt", "com/util", "com/tip" ], function (xfilt, util, tip) {
+define([ "com/xfilt", "com/util", "com/tip", "com/login", "com/helper" ], function (xfilt, util, tip, login, helper) {
     var $ = jQuery;
 	foci.loadCSS("com/marki.css");
 
@@ -63,8 +63,6 @@ define([ "com/xfilt", "com/util", "com/tip" ], function (xfilt, util, tip) {
         bindTool(main.find(".not-ordered.list.icon"), "* ", "");
         bindTool(main.find(".ordered.list.icon"), "1. ", "");
 
-        // TODO: W!!! T!!! F!!!
-
         // tip.init(main.find(".help.icon"), "Markdown", "bottom center");
         // console.log(main.find("button"));
         // main.find("button").popup({
@@ -72,6 +70,10 @@ define([ "com/xfilt", "com/util", "com/tip" ], function (xfilt, util, tip) {
         //         alert("wtf");
         //     }
         // });
+
+        main.find(".help.icon").click(function () {
+            ret.showHelp();
+        });
 
         // main.find(".help.icon").popup({
         //     content: "About Markdown",
@@ -126,12 +128,34 @@ define([ "com/xfilt", "com/util", "com/tip" ], function (xfilt, util, tip) {
             return ret;
         };
 
+        ret.focus = function (arg) {
+            main.find(".editor-cont").focus(arg);
+            return ret;
+        };
+
         ret.setWarning = function () {
             main.addClass("warning");
         };
 
         ret.removeWarning = function () {
             main.removeClass("warning");
+        };
+
+        ret.showHelp = function () {
+            login.session(function (session) {
+                foci.encop(session, {
+                    int: "notice",
+                    action: "temp",
+                    name: "markdown_edit",
+                    args: [ session.getUUID() ]
+                }, function (suc, dat) {
+                    if (suc) {
+                        helper.init(dat);
+                    } else {
+                        util.emsg(dat);
+                    }
+                });
+            });
         };
 
         return ret;

@@ -1,18 +1,29 @@
 "use strict";
 
 window.jQuery = window.$ = require("jquery");
-window.markdown = require("markdown").markdown;
+window.markdown = (function () {
+	var showdown = require("showdown");
+	var conv = new showdown.Converter({
+		simplifiedAutoLink: true,
+		excludeTrailingPunctuationFromURLs: true,
+		strikethrough: true,
+		tables: true,
+		tablesHeaderId: true,
+		// simpleLineBreaks: true
+	});
 
-window.markdown._toHTML = window.markdown.toHTML;
-window.markdown.toHTML = function (src) {
-	return "<div class='markdown-body'>" + window.markdown._toHTML(src) + "</div>";
-};
+	var mod = {
+		toHTML: function (src) {
+			return "<div class='markdown-body'>" + conv.makeHtml(src) + "</div>";
+		},
 
-window.markdown.toText = function (src) {
-	return $(window.markdown.toHTML(src))[0].innerText;
-};
+		toText: function (src) {
+			return $(mod.toHTML(src))[0].innerText;
+		}
+	};
 
-window.foci = {};
+	return mod;
+})();
 
 (function () {
 	var global = window;
@@ -55,6 +66,8 @@ window.foci = {};
 		return false;
 	};
 })();
+
+window.foci = {};
 
 (function () {
 	var NodeRSA = require("node-rsa");

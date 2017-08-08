@@ -59,6 +59,7 @@ var User = function (uuid, dname, lname, passwd) {
 exports.User = User;
 User.prototype = {};
 User.prototype.getUUID = function () { return this.uuid; };
+User.prototype.getDName = function () { return this.dname; };
 // User.prototype.getInfo = function () { return this.info; };
 User.prototype.getTag = function () { return this.favtag; };
 User.prototype.getLevel = function () { return this.level; };

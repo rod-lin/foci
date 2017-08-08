@@ -42,6 +42,8 @@ var dict = module.exports = {
 		"core.word.sid": "session id",
 		"core.word.string": "string",
 
+		"core.word.template": "template",
+
 		"core.word.msg": "message",
 
 		"core.internal_err": "internal error",
@@ -133,7 +135,7 @@ var dict = module.exports = {
 		"front.sub.profile.draft": "draft",
 		"front.sub.profile.new": "<i class='add icon'></i> New",
 		"front.sub.profile.save": "<span style='color: #27AE60;'><i class='check icon'></i> Save</span>",
-		"front.sub.profile.template": "template",
+		"front.sub.profile.template": "$core.word.template",
 		"front.sub.profile.success": "success",
 
 		"front.sub.profile.new.info": "Info",
@@ -282,6 +284,7 @@ dict["chinese"] = {}.extend(dict["english"]).extend({
 		"core.word.search_result": "搜索结果",
 		"core.word.app_form": "申请表",
 
+		"core.word.template": "模板",
 		"core.word.comment": "评论",
 		"core.word.rating": "评分",
 
@@ -383,7 +386,7 @@ dict["chinese"] = {}.extend(dict["english"]).extend({
 		"front.sub.profile.draft": "草稿",
 		"front.sub.profile.new": "<i class='add icon'></i> 新建",
 		"front.sub.profile.save": "<span style='color: #27AE60;'><i class='check icon'></i> 保存</span>",
-		"front.sub.profile.template": "模板",
+		"front.sub.profile.template": "$core.word.template",
 		"front.sub.profile.success": "成功",
 
 		"front.sub.profile.new.info": "信息",

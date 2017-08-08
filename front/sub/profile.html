@@ -583,13 +583,14 @@
 			"com/login", "com/event", "com/upload",
 			"com/map", "com/lang", "com/editable",
 			"com/tagbox", "com/pm", "com/tip",
-			"com/formi", "com/marki", "com/resume"
+			"com/formi", "com/marki", "com/resume",
+			"com/helper"
 		], function (
 			env, util, event, xfilt,
 			pages, tab, login, event,
 			upload, map, lang, editable,
 			tagbox, pm, tip, formi, marki,
-			resume
+			resume, helper
 		) {
 			var init = function (info, is_self, init_page, page_arg) {
 				// foci.get("/user/resume", {
@@ -772,6 +773,10 @@
 
 				var editor_descr = marki.editor(new_tab.find(".ev-descr"), {
 					placeholder: m("$front.sub.profile.new.descr")
+				});
+
+				editor_descr.focus(function () {
+					util.localOnce("sub-profile-descr-editor", editor_descr.showHelp);
 				});
 
 				/*
@@ -1677,6 +1682,7 @@
 					};
 
 					tabs["new"] = {
+						order: 4,
 						name: m("$front.sub.profile.new"),
 						float: "right",
 						style: "transparent icon-btn",

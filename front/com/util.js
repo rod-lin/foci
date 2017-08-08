@@ -361,5 +361,15 @@ define(function () {
 		return Math.floor(val * e) / e;
 	};
 
+	// run once according to the local record
+	util.localOnce = function (id, func) {
+		id = "util-local-once-" + id;
+
+		if (foci.getLocal(id)) return;
+
+		foci.setLocal(id, true);
+		func();
+	};
+
 	return util;
 });
