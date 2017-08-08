@@ -66,13 +66,17 @@ var conf = module.exports = {
 			intro: 2048,
 			school: 128,
 
-			level: [
+			level: {
+				"-1": {
+					event_interval: 0,
+				},
+				
 				// level 0 - basic user
-				{
+				"0": {
 					// event lock interval
 					event_interval: 1000 * 60 * 60 * 24 * 7, // 7 days
 				}
-			],
+			},
 
 			admin_level: -1, // lower the admin_level, higher the ability
 

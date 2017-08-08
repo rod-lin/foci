@@ -2,7 +2,10 @@
 
 "use strict";
 
-define([ "com/xfilt", "com/util", "com/tip", "com/login", "com/helper" ], function (xfilt, util, tip, login, helper) {
+define([
+    "com/xfilt", "com/util", "com/tip",
+    "com/login", "com/helper"
+], function (xfilt, util, tip, login, helper) {
     var $ = jQuery;
 	foci.loadCSS("com/marki.css");
 
@@ -33,7 +36,9 @@ define([ "com/xfilt", "com/util", "com/tip", "com/login", "com/helper" ], functi
         </div>");
 
         function updatePreview() {
-            main.find(".editor-preview").html(markdown.toHTML(main.find(".editor-cont").val()));
+            main.find(".editor-preview").html(markdown.toHTML(xfilt(main.find(".editor-cont").val(), {
+                ignore_space: true, ignore_nl: true
+            })));
         }
 
         function refreshSize() {
