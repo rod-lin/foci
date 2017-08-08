@@ -131,6 +131,12 @@
     }
 }
 
+@media only screen and (max-width: 640px) {
+    .com-resume {
+        padding: 2rem;
+    }
+}
+
 /* preview */
 
 .com-resume-preview {
