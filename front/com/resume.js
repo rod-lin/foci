@@ -185,6 +185,10 @@ function (util, rating, event, lang) {
                 util.emsg(dat);
             }
         });
+        
+        function isMobile() {
+            return main.find(".resume-preview").css("display") == "none";
+        }
 
         var prev = preview(main.find(".resume-preview"));
 
