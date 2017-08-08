@@ -25,6 +25,8 @@ window.markdown = (function () {
 	return mod;
 })();
 
+window.xssfilt = require("xss");
+
 (function () {
 	var global = window;
 

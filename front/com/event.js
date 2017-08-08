@@ -93,7 +93,7 @@ define([
 		ret.cover = info.cover ? foci.download(info.cover) : util.randimg();
 		ret.logo = info.logo ? foci.download(info.logo) : "img/def/logo.jpg";
 
-		var descr_html = info.descr ? markdown.toHTML(xfilt(info.descr, { ignore_space: true, ignore_nl: true })) : "";
+		var descr_html = info.descr ? markdown.toHTML(xssfilt(info.descr)) : "";
 		var descr_text = $(descr_html).text().replace(/<[^>]+>/g, "").replace(/\n/g, " ");
 
 		descr_text = xfilt(util.short(descr_text, config.max_descr_len));

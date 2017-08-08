@@ -36,9 +36,7 @@ define([
         </div>");
 
         function updatePreview() {
-            main.find(".editor-preview").html(markdown.toHTML(xfilt(main.find(".editor-cont").val(), {
-                ignore_space: true, ignore_nl: true
-            })));
+            main.find(".editor-preview").html(markdown.toHTML(xssfilt(main.find(".editor-cont").val())));
         }
 
         function refreshSize() {
