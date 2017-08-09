@@ -9,6 +9,10 @@ define([ "com/util" ], function (util) {
 
 	function genTag(id, obj) {
 		var tag = $("<div class='tag' data-value='" + id + "'>" + obj.name.toUpperCase() + "<i class='deltag cancel icon'></i></div>");
+		tag.click(function () {
+			util.jump("#search//" + id);
+		});
+		
 		return tag;
 	}
 

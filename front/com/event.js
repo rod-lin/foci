@@ -391,6 +391,11 @@ define([
 		};
 
 		mod.clear = function (cb) {
+			// NOTE: fetch lock is necessary because removing the events
+			// may trigger the scrolling event which will refetch before
+			// the client callback
+			fetch_lock = true;
+			
 			events = [];
 			edom = [];
 
@@ -398,7 +403,10 @@ define([
 
 			mod.hide(function () {
 				wf.clear();
-				mod.show(cb);
+				mod.show(function () {
+					fetch_lock = false;
+					if (cb) cb();
+				});
 			});
 		};
 
@@ -450,14 +458,14 @@ define([
 			fetch_skip = 0;
 			if (fetch_loader) fetch_loader.remove();
 			fetch_loader = null;
-			fetch_lock = false;
+			// fetch_lock = false;
 		}
 
 		var fetch_skip = 0;
 		var fetch_loader = null;
 		var fetch_lock = false;
 
-		mod.fetch = function (cb) {
+		mod.fetch = function (cb) {			
 			if (!config.fetch) {
 				util.emsg("$impossible(fetch function is not set for the current container)");
 				return;
@@ -465,11 +473,16 @@ define([
 
 			if (fetch_loader) return; // already loading
 
+			if (fetch_lock) return;
+			fetch_lock = true;
+
+			// alert("??");
+
 			// console.log("load");
 
 			// set bottom loader icon
 			var bar = bottomBar();
-			fetch_loader = bar; // as a sign to prevent reload
+			fetch_loader = bar;
 			main.append(bar);
 
 			// alert(edom.length);
@@ -492,8 +505,10 @@ define([
 					// no unlock
 				} else {
 					bar.remove();
-					fetch_loader = null; // unlock fetch
+					fetch_loader = null;
 				}
+				
+				fetch_lock = false;
 
 				if (cb) cb(suc);
 			});
@@ -508,13 +523,7 @@ define([
 
 		if (config.fetch) {
 			util.scrollBottom($(config.fetch.cont), 3, function (com) {
-				if (fetch_lock || fetch_loader) return;
-				fetch_lock = true;
-
-				mod.fetch(function () {
-					// com.toBottom(4); // to avoid duplicated loadings
-					fetch_lock = false;
-				});
+				mod.fetch();
 
 				// com.toBottom();
 			});
