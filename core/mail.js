@@ -5,18 +5,33 @@
 var err = require("./err");
 var reg = require("./reg");
 var util = require("./util");
+var auth = require("./auth");
 var config = require("./config");
+var template = require("./template");
 
 var nodemailer = require("nodemailer");
 var smtp = require("nodemailer-smtp-transport");
 
-var transport = nodemailer.createTransport(smtp({
-    service: config.mail.service,
-    auth: {
-        user: config.mail.email,
-        pass: config.mail.passwd
-    }
-}));
+var transport;
+
+function initTransport() {
+    transport = nodemailer.createTransport(smtp({
+        service: config.mail.service,
+        auth: {
+            user: config.mail.email,
+            pass: config.mail.passwd
+        }
+    }));
+}
+
+if (config.mail.passwd_enc) {
+    util.ask("password for mail service: ", (key) => {
+        config.mail.passwd = auth.aes.dec(config.mail.passwd, key);
+        initTransport();
+    });
+} else {
+    initTransport();
+}
 
 exports.send = (to, subject, cont) => {
     return new Promise((suc, rej) => {
@@ -37,6 +52,7 @@ exports.send = (to, subject, cont) => {
 
 exports.sendVercode = async (to) => {
     var code = reg.genCode();
-    await exports.send(to, "A Little Secret", "Your verification code is " + code);
+    var cont = await template.email_vericode(code);
+    await exports.send(to, cont.title, cont.cont);
     await reg.insert(to, code);
 };

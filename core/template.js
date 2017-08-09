@@ -5,9 +5,11 @@ exports.event_apply = async (title, job) => ({
 	msg: `Thank you for applying for ${title} as a ${job}. You can find further info about the application status in your profile.`
 });
 
+var wrap = a => a;
+
 exports.markdown_edit = async (uuid) => {
 	var name = (await user.uuid(uuid)).getDName();
-	var ret =
+	return wrap(
 `
 Hi ${name}, 第一次使用Markdown?
 =============================
@@ -36,6 +38,19 @@ Hi ${name}, 第一次使用Markdown?
 
 	在这些编辑器编辑好后可以直接拷贝源码到Foci活动介绍的输入框中
 `
+	);
+};
 
-	return ret;
+exports.email_vericode = async (code) => {
+	return wrap({
+		title: "Foci - Verification Code",
+		cont:
+`
+Hi, welcome to Foci!<br>
+Your verification code is ${code}<br>
+DON'T TELL ANYONE ABOUT IT!<br>
+<br>
+(and sorry about this brutal theme)
+`
+	});
 };

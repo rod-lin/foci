@@ -168,9 +168,10 @@ var conf = module.exports = {
 	},
 
 	mail: {
-		service: "Hotmail",
-		email: "",
-		passwd: ""
+		service: "QQex",
+		email: "helper@foci.me",
+		passwd_enc: true,
+		passwd: "U2FsdGVkX1+5WKK5xcMya2zJvSPDnFOWn+YOW6Qwn+0="
 	},
 
 	reg: {

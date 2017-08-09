@@ -6,6 +6,8 @@ var Env = require("./env").Env;
 var err = require("./err");
 var util = require("./util");
 
+var readline = require("readline");
+
 Object.prototype.extend = function (obj) {
 	for (var k in obj) {
 		if (obj.hasOwnProperty(k)) {
@@ -214,3 +216,12 @@ checkArg.posint = (max, sth) => {
 exports.checkArg = checkArg;
 
 exports.stamp = type => (new Date()).getTime() / (type == "unix" ? 1000 : 1);
+
+var ask_rl = readline.createInterface({
+	input: process.stdin,
+	output: process.stdout
+});
+
+exports.ask = (ques, cb) => {
+	ask_rl.question(ques, cb);
+};
