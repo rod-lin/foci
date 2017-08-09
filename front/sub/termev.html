@@ -41,23 +41,27 @@
 	</div>
 
 	<style>
-		#sub-termev .page-2 {
+		#sub-termev .page-2,
+		#sub-termev .page-end {
 			text-align: center;
 			color: white;
 
 			font-size: 2em;
 		}
 
-		#sub-termev .page-2 .big-icon {
+		#sub-termev .page-2 .big-icon,
+		#sub-termev .page-end .big-icon {
 			font-size: 2.5em;
 		}
 
-		#sub-termev .page-2 .title {
+		#sub-termev .page-2 .title,
+		#sub-termev .page-end .title {
 			margin-top: 0.5rem;
 			font-weight: bold;
 		}
 
-		#sub-termev .page-2 .subtitle {
+		#sub-termev .page-2 .subtitle,
+		#sub-termev .page-end .subtitle {
 			font-size: 0.7em;
 			margin-bottom: 2rem;
 		}
@@ -102,6 +106,18 @@
 		</div>
 		<button class="ui button later-btn">Later</button>
 		<button class="ui green button send-btn">Send</button>
+	</div>
+	
+	<div class="page-end" style="display: none;">
+		<div class="big-icon">
+			<i class="check circle icon"></i>
+		</div>
+		<div class="title">Thank you!</div>
+		<div class="subtitle">
+			Your event will be open<br>
+			for comments and rating
+		</div>
+		<button class="ui basic inverted button ok-btn">OK</button>
 	</div>
 </div>
 
@@ -162,7 +178,16 @@
 					},
 
 					{
-						cont: "<span>to be continued</span>"
+						cont: main.find(".page-end"),
+						onShow: function () {
+							tbar.setStyle("success");
+							pf.background("#2ECC71");
+						},
+
+						onHide: function () {
+							tbar.setStyle("");
+							pf.background("");
+						}
 					}
 				], {});
 
@@ -251,6 +276,10 @@
 
 				show(true);
 			}
+			
+			main.find(".page-end .ok-btn").click(function () {
+				util.jump("#event/" + euid);
+			});
 
 			foci.get("/event/info", { euid: euid }, function (suc, dat) {
 				if (suc) {

@@ -518,6 +518,7 @@ define([
 
 			setTitle: function () {
 				main.find(".banner").html(Array.prototype.slice.apply(arguments).join("<i class='sub caret right icon'></i>"));
+				util.setTitle.apply(util, arguments);
 
 				// ret.showBanner();
 				// setTimeout(ret.hideBanner, 3000);

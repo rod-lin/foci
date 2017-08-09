@@ -142,7 +142,7 @@ define(function () {
 		};
 
 		ret.displayHeight = function () {
-			return cont.parent().innerHeight() - menu.outerHeight();
+			return cont.parent().height() - menu.outerHeight(true);
 		};
 
 		return ret;

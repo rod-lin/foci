@@ -12,7 +12,8 @@ function (util, rating, event, lang) {
         cont = $(cont);
         config = $.extend({
             scroll: $("#part"),
-            stickto: cont.parent()
+            stickto: cont.parent(),
+            use_modal: false
         }, config);
 
         var main = $("<div class='com-resume-preview ui sticky'> \
@@ -75,23 +76,33 @@ function (util, rating, event, lang) {
 
             main.find(".about-btn").off("click").click(function () {
                 util.jump("#event/" + info.euid);
+                if (config.use_modal)
+                    main.modal("hide");
             });
 
             main.ready(function () {
-                main.sticky("refresh");
+                if (!config.use_modal)
+                    main.sticky("refresh");
             });
         }
 
-        main.sticky({
-            context: config.stickto,
-            scrollContext: config.scroll
-        });
-
-        cont.append(main);
+        if (config.use_modal) {
+            main.removeClass("sticky").addClass("ui small modal");
+            main.modal();
+        } else {
+            main.sticky({
+                context: config.stickto,
+                scrollContext: config.scroll
+            });
+            cont.append(main);
+        }
 
         var ret = {};
 
         ret.setResume = function (dat, info, parsed) {
+            if (config.use_modal)
+                main.modal("show");
+            
             if (info) {
                 setDom(dat, info, parsed);
             } else {
@@ -121,10 +132,11 @@ function (util, rating, event, lang) {
         function genItem(dat, i) {
             var item = $("<div class='resume-item'> \
                 <div class='resume-cover'></div> \
-                <div class='resume-prompt'></div> \
+                <div class='resume-prompt'> \
+                    <span class='resume-rating' style='font-size: 1rem;'><br></span> \
+                </div> \
                 <div class='resume-fixed'> \
-                    <span class='resume-rating' style='font-size: 1rem;'></span> \
-                    <i class='pin icon'></i> \
+                    <i class='expand icon detail-btn'></i> \
                 </div> \
             </div>");
 
@@ -139,19 +151,19 @@ function (util, rating, event, lang) {
 
                     switch (dat.job) {
                         case "org":
-                            item.find(".resume-prompt").html("<b>Organized</b> event " + info.title);
+                            item.find(".resume-prompt").prepend("<b>Organized</b> event " + info.title);
                             break;
 
                         case "partic":
-                            item.find(".resume-prompt").html("<b>Participated</b> event " + info.title);
+                            item.find(".resume-prompt").prepend("<b>Participated</b> event " + info.title);
                             break;
 
                         case "staff":
-                            item.find(".resume-prompt").html("<b>Volunteered</b> event " + info.title);
+                            item.find(".resume-prompt").prepend("<b>Volunteered</b> event " + info.title);
                             break;
 
                         default:
-                            item.find(".resume-prompt").html("Unknown job in event " + info.title);
+                            item.find(".resume-prompt").prepend("Unknown job in event " + info.title);
                     }
 
                     item.click(function () {
@@ -160,7 +172,8 @@ function (util, rating, event, lang) {
                         prev.setResume(dat, info, parsed);
                     });
 
-                    if (i == 0) item.click();
+                    if (util.windowWidth() > 640)
+                        if (i == 0) item.click();
                 } else {
                     util.emsg(info);
                 }
@@ -185,12 +198,10 @@ function (util, rating, event, lang) {
                 util.emsg(dat);
             }
         });
-        
-        function isMobile() {
-            return main.find(".resume-preview").css("display") == "none";
-        }
 
-        var prev = preview(main.find(".resume-preview"));
+        var prev = preview(main.find(".resume-preview"), {
+            use_modal: util.windowWidth() <= 640
+        });
 
         cont.append(main);
 

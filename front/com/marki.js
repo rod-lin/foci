@@ -74,9 +74,14 @@ define([
         //     }
         // });
 
-        main.find(".help.icon").click(function () {
-            ret.showHelp();
-        });
+        function helpClick() {
+            main.find(".help.icon").off("click")
+            ret.showHelp(function () {
+                main.find(".help.icon").click(helpClick);
+            });
+        }
+
+        main.find(".help.icon").click(helpClick);
 
         // main.find(".help.icon").popup({
         //     content: "About Markdown",
@@ -144,7 +149,7 @@ define([
             main.removeClass("warning");
         };
 
-        ret.showHelp = function () {
+        ret.showHelp = function (cb) {
             login.session(function (session) {
                 foci.encop(session, {
                     int: "notice",
@@ -157,6 +162,8 @@ define([
                     } else {
                         util.emsg(dat);
                     }
+                    
+                    cb();
                 });
             });
         };

@@ -760,6 +760,9 @@ exports.publish = async (euid, uuid) => {
 };
 
 exports.unpublish = async (euid, uuid) => {
+	// TODO: fix this
+	throw new err.Exc("sorry this action is currently disabled :-/");
+	
 	await exports.checkOwner(euid, uuid);
 
 	var col = await db.col("event");

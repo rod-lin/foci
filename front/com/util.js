@@ -110,6 +110,10 @@ define(function () {
 				exit();
 		}).resize();
 	};
+	
+	util.windowWidth = function () {
+		return $(window).width();
+	};
 
 	util.ask = function (msg, cb) {
 		var main = $(' \
@@ -369,6 +373,10 @@ define(function () {
 
 		foci.setLocal(id, true);
 		func();
+	};
+
+	util.setTitle = function () {
+		document.title = "Foci - " + Array.prototype.slice.apply(arguments).join(" - ");
 	};
 
 	return util;

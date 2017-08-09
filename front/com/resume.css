@@ -118,7 +118,10 @@
 }
 
 .com-resume .resume-item .resume-rating {
-    margin-left: 1rem;
+}
+
+.com-resume .resume-item .detail-btn {
+    display: none;
 }
 
 @media only screen and (max-width: 1023px) {
@@ -127,7 +130,7 @@
     }
 
     .com-resume .resume-preview {
-        display: none;
+        
     }
 }
 
@@ -135,13 +138,19 @@
     .com-resume {
         padding: 2rem;
     }
+    
+    .com-resume .resume-item .resume-rating {
+        margin-left: 0;
+    }
+    
+    .com-resume .resume-item .detail-btn {
+        display: inline;
+    }
 }
 
 /* preview */
 
 .com-resume-preview {
-    top: 5.7em !important;
-
     overflow: hidden;
 
     text-align: center;
@@ -152,6 +161,10 @@
     box-shadow: -2px 2px 15px rgba(0, 0, 0, 0.04);
 
     color: #424242;
+}
+
+.com-resume-preview:not(.modal) {
+    top: 5.7em !important;
 }
 
 .com-resume-preview .preview-cover {
@@ -167,6 +180,7 @@
 
 .com-resume-preview .preview-cont {
     padding: 1.5rem;
+    text-align: center;
 }
 
 .com-resume-preview .preview-title {
