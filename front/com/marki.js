@@ -16,9 +16,11 @@ define([
         }, config);
 
         var main = $("<div class='com-marki-editor split'> \
-            <div class='editor-preview'></div> \
-            <div class='editor-text'> \
-                <textarea class='editor-cont input-no-style'></textarea> \
+            <div style='position: relative; height: 100%;'> \
+                <div class='editor-preview'></div> \
+                <div class='editor-text'> \
+                    <textarea class='editor-cont input-no-style'></textarea> \
+                </div> \
             </div> \
             <div class='editor-toolbar'> \
                 <i class='bold icon'></i> \
