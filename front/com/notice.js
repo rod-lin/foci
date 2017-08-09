@@ -94,7 +94,9 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 	}
 
 	function modal(msg, config) {
-		config = $.extend({}, config);
+		config = $.extend({
+			logo_url: null
+		}, config);
 
 		var main = $(" \
 			<div class='com-notice-view ui small modal'> \
@@ -117,6 +119,13 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 		");
 
 		util.bgimg(main.find(".nt-header .logo"), config.info.logo);
+		
+		if (config.logo_url) {
+			main.find(".nt-header .logo").click(function () {
+				main.modal("hide");
+				util.jump(config.logo_url);
+			});
+		}
 
 		main.find(".nt-header .title").html(msg.title);
 
@@ -222,7 +231,9 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 						util.nextTick(function () {
 							no_hide = false;
 						});
-					}
+					},
+					
+					logo_url: msg.type == "event" ? "#event/" + parseInt(msg.sender) : null
 				});
 			});
 

@@ -250,6 +250,8 @@
 
 	height: 5rem;
 	width: 5rem;
+	
+	cursor: pointer;
 
 	border-radius: 5px;
 
