@@ -16,7 +16,7 @@
 			</div>
 			<div class="box pad" style="margin-top: 1rem;">
 				<div class="sub-title lang" data-replace="$front.sub.event.detail">Detail</div>
-				<div class="detail" style="margin-top: 1rem; text-align: left;">
+				<div class="detail">
 					<img class="com-util-cont-fill" src="img/paragraph.png"></img>
 				</div>
 			</div>
@@ -224,6 +224,7 @@
 
 		opacity: 0;
 		background: rgba(251, 251, 251, 1);
+		color: rgba(70, 70, 70, 1);
 
 		transition: opacity 0.3s;
 
@@ -256,14 +257,13 @@
 
 	#sub-event>.cont .info-box {
 		padding: 3rem 4rem 4rem;
-		color: #333333;
 	}
 
 	#sub-event>.cont .descr {
 		font-size: 1.5em;
 		text-align: left;
-		margin-top: 1.5rem;
-		line-height: 150%;
+		margin-top: 1.2em;
+		line-height: 1.7;
 
 	    word-break: break-all;
 	}
@@ -315,6 +315,14 @@
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 50% 50%;
+	}
+	
+	#sub-event>.cont .detail {
+		word-wrap: break-word;
+		word-break: break-all;
+		
+		margin-top: 1rem;
+		text-align: left;
 	}
 
 	#sub-event>.cont .bmap {
@@ -412,15 +420,15 @@
 		}
 
 		#sub-event>.cont .title {
-			font-size: 2em;
+			font-size: 1.7em;
 		}
 
 		#sub-event>.cont .info-box {
-			padding: 1.5rem 1rem 2rem;
+			padding: 1.5rem 1rem 1.5rem;
 		}
 
 		#sub-event>.cont .descr {
-			font-size: 1.2em;
+			font-size: 1.05em;
 		}
 	}
 </style>

@@ -6,6 +6,14 @@
     font-family: Brandon !important;
 }
 
+.markdown-body p {
+    line-height: inherit !important;
+}
+
+.markdown-body>p:last-child {
+    margin-bottom: 0;
+}
+
 .markdown-body ol {
     padding-left: 2em;
 }
