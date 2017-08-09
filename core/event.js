@@ -419,6 +419,16 @@ Event.query = {
 		apply_open: null,
 		apply_num: 0,
 		favtag: [],
+	}),
+	
+	check_partic: (euid, uuid) => ({
+		"euid": euid,
+		"partic": uuid
+	}),
+	
+	check_staff: (euid, uuid) => ({
+		"euid": euid,
+		"staff": uuid
 	})
 };
 
@@ -435,7 +445,19 @@ Event.set = {
 
 	terminate: () => ({ $set: { state: 2 } }),
 
-	status: (euid, status) => ({ $set: { "apply_staff.$.status": status } }),
+	status: (euid, uuid, type, status) => {
+		var q = {};
+		
+		q.$set = {};
+		q.$set["apply_" + type + ".$.status"] = status;
+	
+		if (status == "accept") {
+			q.$addToSet = {};
+			q.$addToSet[type] = uuid
+		}
+		
+		return q;
+	},
 
 	add_view: uuid => ({
 		$addToSet: { "view": uuid }
@@ -505,6 +527,20 @@ exports.checkApplicant = async (euid, uuid) => {
 exports.checkOwner = async (euid, uuid) => {
 	if (!await exports.isOwner(euid, uuid))
 		throw new err.Exc("$core.not_event_owner");
+};
+
+exports.checkPartic = async (euid, uuid) => {
+	var col = await db.col("event");
+	
+	if (!(await col.count(Event.query.check_partic(euid, uuid))))
+		throw new err.Exc("$core.not_event_partic");
+};
+
+exports.checkStaff = async (euid, uuid) => {
+	var col = await db.col("event");
+	
+	if (!(await col.count(Event.query.check_staff(euid, uuid))))
+		throw new err.Exc("$core.not_event_staff");
 };
 
 exports.exist = async (euid, state) => {
@@ -797,7 +833,9 @@ exports.changeAppStatus = async (euid, uuids, type, status) => {
 	var col = await db.col("event");
 
 	for (var i = 0; i < uuids.length; i++) {
-		await col.updateOne(Event.query.applicant(euid, uuids[i], type), Event.set.status(euid, status));
+		await col.updateOne(Event.query.applicant(euid, uuids[i], type),
+							Event.set.status(euid, uuids[i], type, status));
+							// this will push the uuid to partic/staff if status == "accept"
 		user.incAppUpdate(uuids[i]);
 	}
 };

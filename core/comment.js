@@ -98,6 +98,9 @@ exports.issue = async (euid, conf) => {
 
 	if (ev.getState() < 2)
 		delete conf.rating;
+		
+	// TODO: check if the user is a participant
+	await event.checkPartic(euid, conf.uuid);
 
 	var ncomm = new Comment(conf);
 	var comm = ev.getComment();

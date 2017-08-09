@@ -61,6 +61,8 @@ var dict = module.exports = {
 		"core.not_exist": "no such $1",
 		"core.not_event_owner": "you're not the owner of this event",
 		"core.not_event_applicant": "someone in the list is not an applicant",
+		"core.not_event_partic": "you're not a participant of this event",
+		"core.not_event_staff": "you're not a staff of this event",
 		"core.unable_to_terminate": "unable to terminate event in this state",
 
 		"core.illegal_app_type": "illegal type of application",
