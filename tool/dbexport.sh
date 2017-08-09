@@ -22,8 +22,15 @@ else
 	SERV="$3"
 fi
 
-mongoexport -d "$1" -c user -o "$2/user.json" --type json -h "$SERV"
-mongoexport -d "$1" -c event -o "$2/event.json" --type json -h "$SERV"
-mongoexport -d "$1" -c uid -o "$2/uid.json" --type json -h "$SERV"
-mongoexport -d "$1" -c file -o "$2/file.json" --type json -h "$SERV"
-mongoexport -d "$1" -c pm -o "$2/pm.json" --type json -h "$SERV"
+DATABASE=$1
+OUTPUT=$2
+
+function doexport() {
+	mongoexport -d $DATABASE -c $1 -o $OUTPUT/$1.json --type json -h $SERV
+}
+
+doexport user
+doexport event
+doexport uid
+doexport file
+doexport pm

@@ -22,8 +22,16 @@ else
 	SERV="$3"
 fi
 
-mongoimport -d "$1" -c user	--type json -h "$SERV" "$2/user.json"
-mongoimport -d "$1" -c event	--type json -h "$SERV" "$2/event.json"
-mongoimport -d "$1" -c uid	--type json -h "$SERV" "$2/uid.json"
-mongoimport -d "$1" -c file	--type json -h "$SERV" "$2/file.json"
-mongoimport -d "$1" -c pm	--type json -h "$SERV" "$2/pm.json"
+DATABASE=$1
+INPUT=$2
+
+function doimport() {
+	mongoimport -d $DATABASE -c $1 --type json -h $SERV $INPUT/$1.json
+}
+
+doimport user
+doimport event
+doimport uid
+doimport file
+doimport pm
+doimport cover
