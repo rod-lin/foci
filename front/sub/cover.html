@@ -163,21 +163,26 @@
 
 			var fetch_push = (function () {
 				var skip = 0;
+				var ended = false;
+				
 				return function fetch_push() {
+					if (ended) return;
+					
 					foci.get("/event/search", { lim: 8, skip: skip }, function (suc, dat) {
 						if (suc) {
 							var is_right = 0;
 
 							if (!dat.length) {
 								push_board.children(".ui.loader").remove();
-							}
+								ended = true;
+							} else {
+								skip += dat.length;
 
-							skip += dat.length;
-
-							for (var i = 0; i < dat.length; i++) {
-								var push = $("<div class='push-board border'></div>");
-								event.showcase(push, dat[i], { imgpos: "left" });
-								push_board.children(".ui.loader").before(push);
+								for (var i = 0; i < dat.length; i++) {
+									var push = $("<div class='push-board border'></div>");
+									event.showcase(push, dat[i], { imgpos: "left" });
+									push_board.children(".ui.loader").before(push);
+								}
 							}
 						} else {
 							util.emsg(dat);
