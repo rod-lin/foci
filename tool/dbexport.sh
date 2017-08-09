@@ -34,3 +34,4 @@ doexport event
 doexport uid
 doexport file
 doexport pm
+doexport cover
