@@ -30,6 +30,67 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 
 		return parsed;
 	}
+	
+	function vercode(uname_input, veribtn, config) {
+		config = $.extend({
+			forgot: false
+		}, config);
+		
+		function freezeCount(sec) {
+			var orig = veribtn.html();
+
+			veribtn.addClass("disabled");
+
+			veribtn.html(sec + "s");
+
+			var proc = setInterval(function () {
+				if (!--sec) {
+					clearInterval(proc);
+					veribtn.removeClass("disabled").html(orig);
+				} else {
+					veribtn.html(sec + "s");
+				}
+			}, 1000);
+		}
+		
+		veribtn.click(function () {
+			var uname = uname_input.val();
+			var type;
+
+			if (uname.indexOf("@") != -1)
+				type = "email";
+			else if (uname.length == 11)
+				type = "phone"
+			else {
+				uname_input.attr("placeholder", lang.msg("$front.com.login.illegal_user_name")).parent().addClass("error");
+				uname_input.focus();
+				return;
+			}
+
+			var next = function (suc, dat) {
+				veribtn.removeClass("loading");
+
+				if (suc) {
+					freezeCount(60);
+				} else {
+					util.emsg(dat);
+				}
+			};
+
+			veribtn.addClass("loading");
+
+			if (type == "phone")
+				foci.get("/smsg/vercode", { phone: uname, forgot: config.forgot }, next);
+			else
+				foci.get("/mail/vercode", { email: uname, forgot: config.forgot }, next);
+
+			// util.atimes(function () {
+			// 	main.modal("refresh");
+			// }, 5);
+		});
+		
+		return {};
+	}
 
 	function init(cb) {
 		if (cb) all_cb.push(cb);
@@ -58,7 +119,10 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 									<button class='ui basic button fluid vercode-btn lang' style='border-radius: 0; height: 100%;' type='button' data-replace='$front.com.login.verify'>Verify</button> \
 								</div> \
 							</div></div> \
-							<div class='field'><input class='passwd' type='password' style='border-radius: 0 0 3px 3px; margin-top: 1px;'></div> \
+							<div class='field' style='position: relative;'> \
+								<input class='passwd' type='password' style='border-radius: 0 0 3px 3px; margin-top: 1px;'> \
+								<div class='forgot-btn avcenter'>Forgot</div> \
+							</div> \
 						</div> \
 						<div class='ui fluid buttons'> \
 							<button class='reg ui button lang' type='button' data-replace='$front.com.login.register'>Register</button> \
@@ -83,6 +147,8 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 		}
 
 		restore();
+		
+		vercode(uname_input, main.find(".vercode-btn"));
 
 		main.find(".reg.button").click(function () {
 			restore();
@@ -103,6 +169,16 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 			var vercode = main.find(".vercode").val();
 			var passwd = passwd_input.val();
 
+			if (vercode.length < 4) {
+				util.emsg("invalid verification code");
+				return;
+			}
+			
+			if (passwd < 6) {
+				util.emsg("password too weak");
+				return;
+			}
+
 			login_btn.addClass("loading");
 
 			foci.newUser(uname, vercode, passwd, function (suc, dat) {
@@ -117,60 +193,6 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 				}
 			});
 		}
-
-		function freezeCount(sec) {
-			var btn = main.find(".vercode-btn");
-			var orig = btn.html();
-
-			btn.addClass("disabled");
-
-			btn.html(sec + "s");
-
-			var proc = setInterval(function () {
-				if (!--sec) {
-					clearInterval(proc);
-					btn.removeClass("disabled").html(orig);
-				} else {
-					btn.html(sec + "s");
-				}
-			}, 1000);
-		}
-
-		main.find(".vercode-btn").click(function () {
-			var uname = uname_input.val();
-			var type;
-
-			if (uname.indexOf("@") != -1)
-				type = "email";
-			else if (uname.length == 11)
-				type = "phone"
-			else {
-				uname_input.attr("placeholder", lang.msg("$front.com.login.illegal_user_name")).parent().addClass("error");
-				uname_input.focus();
-				return;
-			}
-
-			var next = function (suc, dat) {
-				main.find(".vercode-btn").removeClass("loading");
-
-				if (suc) {
-					freezeCount(60);
-				} else {
-					util.emsg(dat);
-				}
-			};
-
-			main.find(".vercode-btn").addClass("loading");
-
-			if (type == "phone")
-				foci.get("/smsg/vercode", { phone: uname }, next);
-			else
-				foci.get("/mail/vercode", { email: uname }, next);
-
-			// util.atimes(function () {
-			// 	main.modal("refresh");
-			// }, 5);
-		});
 
 		uname_input.keyup(function (e) {
 			uname_input.parent().removeClass("error");
@@ -245,6 +267,11 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 		};
 
 		login_btn.click(loginProc);
+		
+		main.find(".forgot-btn").click(function () {
+			util.jump("#forgotpass");
+			main.modal("hide");
+		});
 
 		main.modal({
 			allowMultiple: true,
@@ -265,6 +292,7 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 	return {
 		init: init,
 		parseInfo: parseInfo,
+		vercode: vercode,
 		session: function (cb) {
 			if (!env.session()) {
 				this.init(cb);

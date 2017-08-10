@@ -595,6 +595,10 @@
 	color: white !important;
 }
 
+.com-tbar.success .login-btn {
+	color: white !important;
+}
+
 /* shadowy */
 
 .com-tbar.shadowy.apply {

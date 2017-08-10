@@ -156,6 +156,8 @@ User.set = {
 	session: (sid, stamp) => ({ $set: { "sid": sid, "stamp": stamp } }),
 	rmsession: () => ({ $unset: { "sid": "", "stamp": "" } }),
 
+	passwd: passwd => ({ $set: { "passwd": util.md5(passwd) } }),
+
 	info: info => ({ $set: info }),
 
 	tag: tag => ({ $set: { "favtag": tag } }),
@@ -227,6 +229,18 @@ exports.checkNewUserName = async (lname) => {
 		throw new err.Exc("$core.dup_user_name");
 };
 
+exports.checkUserExist = async (lname) => {
+	var col = await db.col("user");
+
+	if (!testUserName(lname))
+		throw new err.Exc("$core.invalid_user_name");
+		
+	var found = await col.findOne(User.query.lname(lname));
+	
+	if (!found)
+		throw new err.Exc("$core.not_exist($core.word.user)");
+};
+
 // passwd is clear text
 exports.newUser = async (dname, lname, passwd) => {
 	var col = await db.col("user");
@@ -242,6 +256,14 @@ exports.newUser = async (dname, lname, passwd) => {
 	await col.insertOne(user);
 
 	return user;
+};
+
+exports.resetPass = async (lname, passwd) => {
+	var col = await db.col("user");
+	
+	await exports.checkUserExist(lname);
+	
+	await col.updateOne(User.query.lname(lname), User.set.passwd(passwd));
 };
 
 // passwd is clear text

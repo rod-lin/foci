@@ -45,6 +45,7 @@ app.get("/smsg/vercode", int.smsg.vercode);
 app.get("/mail/vercode", int.mail.vercode);
 
 app.get("/user/new", int.user.new);
+app.get("/user/reset", int.user.reset);
 app.get("/user/login", int.user.login);
 app.get("/user/csid", int.user.csid);
 app.get("/user/info", int.user.info);

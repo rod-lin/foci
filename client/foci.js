@@ -200,6 +200,26 @@ window.foci = {};
 			});
 		});
 	};
+	
+	foci.resetPass = function (lname, vercode, passwd, cb) {
+		sendAsync(server + "/auth", {}, function (suc, dat) {
+			if (!suc) return cb(false, "$def.network_error");
+			if (!dat.suc) return cb(false, dat.msg);
+
+			var pub = dat.res;
+
+			sendAsync(server + "/user/reset", {
+				lname: lname,
+				vercode: vercode,
+				pkey: pub,
+				penc: foci.rsaenc(passwd, pub)
+			}, function (suc, dat) {
+				if (!suc) return cb(false, "$def.network_error");
+				if (!dat.suc) return cb(false, dat.msg);
+				return cb(true, dat.res);
+			});
+		});
+	};
 
 	// cb(suc, dat/err)
 	foci.login = function (lname, passwd, cb) {

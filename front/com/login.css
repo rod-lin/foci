@@ -90,3 +90,31 @@
 .com-login .show-reg .vercode-field {
 	display: block;
 }
+
+.com-login .show-reg .forgot-btn {
+	pointer-events: none;
+	opacity: 0;
+}
+
+.com-login .forgot-btn {
+	display: inline-block;
+	position: absolute;
+	right: 1rem;
+	top: 0;
+	color: #2980B9;
+	
+	font-size: 0.9rem;
+	
+	cursor: pointer;
+	opacity: 1;
+	
+	transition: color 0.2s, opacity 0.3s;
+}
+
+.com-login .forgot-btn:hover {
+	color: #3498DB;
+}
+
+.com-login .forgot-btn:active {
+	color: #216A9A;
+}

@@ -1,0 +1,194 @@
+<div id="sub-forgotpass"> <!-- forgot password -->
+
+	<div class="page page-1" style="display: none;">
+		<div class="title">Oh that's UNFORTUNATE!</div>
+		<div class="cont">
+			We deeply apologize for this as your account will be <b>ETERNALLY</b> lost,<br>
+			And <b>ALL</b> of your personal data will be deleted in <b>3 HOURS</b>.
+		</div>
+		<div style="text-align: center;">
+			<button class="ui red button wanna-cry-btn">NO!! I WANNA CRY!!</button>
+		</div>
+	</div>
+	
+	<div class="page page-2" style="display: none;">
+		<div class="title">NO KIDDING!</div>
+		<div class="cont">
+			Fill out the following form and we will<br>
+			delete your account as soon as possible.<br>
+			Check your email/phone for verification code<br>
+			-- we don't want to delete anyone else's account!
+		</div>
+		<form class="ui form">
+			<div class="field">
+				<input class="uname" placeholder="phone number/email">
+			</div>
+			<div class="fields" style="margin-bottom: 1rem;">
+				<div class="twelve wide field">
+					<input class="vercode" placeholder="verification code">
+				</div>
+				<div class="four wide field">
+					<button type="button" class="ui basic button veri-btn" style="height: 100%; width: 100%;">Verify</button>
+				</div>
+			</div>
+			<div class="field">
+				<input type="password" class="new-pass" placeholder="new password">
+			</div>
+			<div class="field" style="text-align: center; margin-top: 2rem;">
+				<button type="button" class="ui red basic button reset-pass-btn">Delete account</button>
+			</div>
+		</form>
+	</div>
+	
+	<div class="page page-3" style="display: none;">
+		<div class="big-icon">
+			<i class="check circle icon"></i>
+		</div>
+		<div class="title">
+			Your account has been<br>
+			successfully deleted
+		</div>
+	</div>
+</div>
+
+<style>
+	#sub-forgotpass {
+		height: 100%;
+		font-family: Brandon;
+		line-height: 1.5;
+	}
+	
+	#sub-forgotpass .page {
+		margin-top: -15%;
+	}
+	
+	#sub-forgotpass .title {
+		font-weight: bold;
+		font-size: 1.7em;
+		margin-bottom: 1rem;
+	}
+	
+	#sub-forgotpass .cont {
+		font-size: 1.4em;
+	}
+	
+	#sub-forgotpass .page-1 .button {
+		margin-top: 2rem;
+	}
+	
+	#sub-forgotpass .page-1 b {
+		color: #C0392B;
+	}
+	
+	#sub-forgotpass .page-2 .form {
+		margin-top: 2rem;
+	}
+	
+	#sub-forgotpass .page-3 {
+		color: white;
+	}
+	
+	#sub-forgotpass .page-3 {
+		text-align: center;
+	}
+	
+	#sub-forgotpass .page-3 .big-icon {
+		font-size: 5em;
+	}
+	
+	@media only screen and (max-width: 640px) {
+		#sub-forgotpass {
+			font-size: 80%;
+		}
+		
+		#sub-forgotpass .page-2 .veri-btn {
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
+			margin-top: 2px;
+		}
+		
+		#sub-forgotpass .page-2 .vercode {
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+	}
+	
+	@media only screen and (max-height: 640px) {
+		#sub-forgotpass .page {
+			margin-top: 0;
+			padding-top: 2rem;
+		}
+	}
+</style>
+
+<script>
+	function init(main, args, show, cont) {
+		require([
+			"com/env", "com/util", "com/pform",
+			"com/login"
+		], function (env, util, pform, login) {
+			var tbar = env.get("tbar");
+			tbar.setTitle("Forgot Password");
+			
+			var pf = pform.init(main, [
+				{
+					cont: main.find(".page-1")
+				},
+				
+				{
+					cont: main.find(".page-2")
+				},
+				
+				{
+					cont: main.find(".page-3"),
+					onShow: function () {
+						tbar.setStyle("success");
+						pf.background("#2ECC71");
+					},
+
+					onHide: function () {
+						tbar.setStyle("");
+						pf.background("");
+					}
+				}
+			]);
+			
+			main.find(".wanna-cry-btn").click(function () {
+				pf.nextPage();
+			});
+			
+			login.vercode(main.find(".uname"), main.find(".veri-btn"), { forgot: true });
+			
+			main.find(".reset-pass-btn").click(function () {
+				var uname = main.find(".uname").val();
+				var vercode = main.find(".vercode").val();
+				var passwd = main.find(".new-pass").val();
+
+				if (vercode.length < 4) {
+					util.emsg("invalid verification code");
+					return;
+				}
+				
+				if (passwd < 6) {
+					util.emsg("password too weak");
+					return;
+				}
+				
+				main.find(".reset-pass-btn").addClass("loading");
+				
+				foci.resetPass(
+					uname, vercode, passwd, function (suc, dat) {
+					main.find(".reset-pass-btn").removeClass("loading");
+
+					if (suc) {
+						pf.nextPage();
+					} else {
+						util.emsg(dat);
+					}
+				});
+			});
+
+			show(true);
+		});
+	}
+</script>

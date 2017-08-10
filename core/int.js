@@ -55,12 +55,14 @@ var _alipay = {};
 var _smsg = {};
 
 _smsg.vercode = util.route(async env => {
-	var args = util.checkArg(env.query, { "phone": "string" });
+	var args = util.checkArg(env.query, { "phone": "string", "forgot": { opt: true, type: "bool" } });
 
-	await user.checkNewUserName(args.phone);
-
-	// TODO: check phone reg
-
+	if (!args.forgot) {
+		await user.checkNewUserName(args.phone);
+	} else {
+		await user.checkUserExist(args.phone);
+	}
+	
 	if (args.phone.length !== 11)
 		throw new err.Exc("$core.smsg.wrong_phone_format");
 
@@ -72,9 +74,14 @@ _smsg.vercode = util.route(async env => {
 var _mail = {};
 
 _mail.vercode = util.route(async env => {
-	var args = util.checkArg(env.query, { "email": "string" });
+	var args = util.checkArg(env.query, { "email": "string", "forgot": { opt: true, type: "bool" } });
 
-	await user.checkNewUserName(args.email);
+	if (!args.forgot) {
+		await user.checkNewUserName(args.email);
+	} else {
+		await user.checkUserExist(args.email);
+	}
+	
 	await mail.sendVercode(args.email);
 
 	env.qsuc();
@@ -96,6 +103,24 @@ _user.new = util.route(async env => {
 
 	var passwd = auth.rsa.dec(args.penc, args.pkey);
 	var res = await user.newUser(args.lname, args.lname, passwd);
+
+	env.qsuc();
+});
+
+// reset password
+_user.reset = util.route(async env => {
+	var args = util.checkArg(env.query, {
+		// "dname": "string",
+		"lname": "string",
+		"vercode": "string",
+		"pkey": "string",
+		"penc": "string"
+	});
+	
+	await reg.verify(args.lname, args.vercode);
+
+	var passwd = auth.rsa.dec(args.penc, args.pkey);
+	var res = await user.resetPass(args.lname, passwd);
 
 	env.qsuc();
 });
