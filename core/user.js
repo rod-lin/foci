@@ -331,7 +331,7 @@ exports.checkSession = async (uuid, enc) => {
 	var now = util.stamp();
 
 	if (!res || !res.sid)
-		throw new err.Exc("$core.illegal($core.word.sid)");
+		throw new err.Exc("$core.illegal_session");
 
 	if (now - res.stamp > config.lim.user.session_timeout) {
 		await col.updateOne(User.query.uuid(uuid), User.set.rmsession());
@@ -341,7 +341,7 @@ exports.checkSession = async (uuid, enc) => {
 	var msg = auth.aes.dec(enc, res.sid);
 
 	if (!msg)
-		throw new err.Exc("$core.illegal($core.word.sid)");
+		throw new err.Exc("$core.illegal_session");
 
 	return {
 		msg: msg,

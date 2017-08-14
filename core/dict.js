@@ -91,6 +91,7 @@ var dict = module.exports = {
 		"core.invalid_user_name": "invalid user name",
 
 		"core.session_timeout": "session timeout",
+		"core.illegal_session": "your account has been re-logged in elsewhere<br>try to re-log in",
 
 		"core.expect_argument": "expecting argument '$1'",
 		"core.expect_argument_type": "expecting argument '$1' of type $2",
