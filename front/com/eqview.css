@@ -101,7 +101,7 @@
 
 .com-eqview .cont {
 	position: relative;
-	font-size: 1.5em;
+	font-size: 1.2em;
 	line-height: 150% !important;
 	padding: 0 4em 2em 4em;
 }
@@ -125,7 +125,7 @@
     word-break: break-word;
 	overflow: hidden;
 
-	font-size: 2.5em;
+	font-size: 2.2em;
 }
 
 .com-eqview .rating {
@@ -159,7 +159,7 @@
 
 .com-eqview .descr {
 	padding: 0.5rem 0.4rem;
-	margin: 1em 0 0 0;
+	margin: 1rem 0 0 0;
 	word-wrap: break-word;
 }
 
