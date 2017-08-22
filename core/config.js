@@ -15,7 +15,23 @@ var conf = module.exports = {
 	file: {
 		max_size: 1024 * 1024 * 10,
 		// with respect to the root dir of the app
-		save_dir: "upload"
+		save_dir: "upload",
+		allowed_ct: [
+			"image/gif",
+			
+			"image/jpeg",
+			"image/pjpeg",
+			
+			"image/x-icon",
+
+			"image/png",
+			"image/x-png",
+
+			"image/tiff",
+			
+			"image/bmp",
+			"application/x-bmp",
+		]
 	},
 
 	lim: {
@@ -192,6 +208,15 @@ var conf = module.exports = {
 		pub: "/home/rodlin/alipaykey/pub.pem",
 
 		sign_type: [ "RSA-SHA256", "RSA2" ]
+	},
+	
+	oss: {
+		type: "ali",
+		region: "oss-cn-hangzhou",
+		enc: true,
+		acckey: "U2FsdGVkX19UXegeWLnG6lSTQ+O2N7JuDoYBx9CEfHLwqGMT6p0Rbef4uU2mVba5",
+		seckey: "U2FsdGVkX19L2W2PLjOYnQVONfvJEl1y6l4srETP9G+0IBZ7qMx+LLsEPjyWS2CE",
+		bucket: "foci-upload-0"
 	}
 };
 

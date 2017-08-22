@@ -278,6 +278,10 @@ _file.upload = util.route(async env => {
 	var fp = env.file.file;
 	var path = fp.path;
 	var ct = fp.headers["content-type"];
+	
+	if (config.file.allowed_ct && config.file.allowed_ct.indexOf(ct) == -1) {
+		throw new err.Exc("$core.illegal_upload_type");
+	}
 
 	var ret = await file.newFile(path, ct);
 
@@ -288,8 +292,15 @@ _file.download = util.route(async env => {
 	var args = util.checkArg(env.query, { "chsum": "string" });
 	var ret = await file.getFile(args.chsum);
 
-	env.setCT(ret.ct);
-	env.raw(ret.cont);
+	// await file.cacheFull();
+
+	if (ret.redir) {
+		// TODO: content type?
+		env.redir(ret.redir);
+	} else {
+		env.setCT(ret.ct);
+		env.raw(ret.cont);
+	}
 });
 
 exports.cover = _cover;

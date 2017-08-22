@@ -4,33 +4,43 @@
 
 define([
     "com/xfilt", "com/util", "com/tip",
-    "com/login", "com/helper"
-], function (xfilt, util, tip, login, helper) {
+    "com/login", "com/helper", "com/upload"
+], function (xfilt, util, tip, login, helper, upload) {
     var $ = jQuery;
 	foci.loadCSS("com/marki.css");
 
     function editor(cont, config) {
         cont = $(cont);
         config = $.extend({
-            placeholder: ""
+            placeholder: "",
+            use_rich: true,
+            tab: "&nbsp;&nbsp;&nbsp;&nbsp;"
         }, config);
 
         var main = $("<div class='com-marki-editor split'> \
             <div style='position: relative; height: 100%;'> \
                 <div class='editor-preview'></div> \
                 <div class='editor-text'> \
-                    <textarea class='editor-cont input-no-style'></textarea> \
+                    " +
+                    (config.use_rich
+                        ? "<div class='editor-cont input-no-style' contenteditable='true'></div>"
+                        : "<textarea class='editor-cont input-no-style'></textarea>")
+                    + " \
                 </div> \
             </div> \
             <div class='editor-toolbar'> \
-                <i class='bold icon'></i> \
-                <i class='italic icon'></i> \
-                <i class='strikethrough icon'></i> \
-                <i class='linkify icon'></i> \
-                <i class='image icon'></i> \
-                <i class='not-ordered list icon'></i> \
-                <i class='ordered list icon'></i> \
-                <i class='toggle-preview-btn wizard icon'></i> \
+                <button class='input-no-style'><i class='header icon'></i> \
+                <button class='input-no-style'><i class='bold icon'></i> \
+                <button class='input-no-style'><i class='italic icon'></i></button> \
+                <button class='input-no-style'><i class='strikethrough icon'></i></button> \
+                <button class='input-no-style'><i class='linkify icon'></i></button> \
+                <button class='input-no-style'><i class='image icon'></i></button> \
+                <button class='input-no-style'><i class='not-ordered list icon'></i></button> \
+                <button class='input-no-style'><i class='ordered list icon'></i></button> \
+                <button class='input-no-style'><i class='align left icon'></i></button> \
+                <button class='input-no-style'><i class='align center icon'></i></button> \
+                <button class='input-no-style'><i class='align right icon'></i></button> \
+                <button class='input-no-style'><i class='toggle-preview-btn wizard icon'></i></button> \
                 <span data-tooltip='About Markdown' data-position='right center'> \
                     <i class='help circle icon' style='margin-right: 0;'></i> \
                 </span> \
@@ -38,35 +48,93 @@ define([
         </div>");
 
         function updatePreview() {
-            main.find(".editor-preview").html(markdown.toHTML(xssfilt(main.find(".editor-cont").val())));
+            if (!config.use_rich)
+                main.find(".editor-preview").html(markdown.toHTML(main.find(".editor-cont").val()));
+        }
+        
+        if (config.use_rich) {
+            main.find(".toggle-preview-btn").parent().remove();
+            main.removeClass("split");
+            document.execCommand("StyleWithCSS", false, true);
+        } else {
+            main.addClass("split");
         }
 
         function refreshSize() {
-            if (main.width() <= 640) {
-                main.removeClass("split");
-            } else {
-                main.addClass("split");
+            if (!config.use_rich) {
+                if (main.width() <= 640) {
+                    main.removeClass("split");
+                } else {
+                    main.addClass("split");
+                }
             }
         }
 
-        function bindTool(dom, before, after) {
-            $(dom).click(function () {
+        function bindTool(dom, before, after, cmd, cb) {
+            $(dom).parent()[0].onclick = function (ev) {
                 var area = main.find(".editor-cont");
-                util.insertTextarea(area, before, "before");
-                util.insertTextarea(area, after, "after");
-                updatePreview();
-            });
+                
+                if (config.use_rich) {
+                    if (cb) {
+                        cb();
+                    } else if (cmd) {
+                        document.execCommand(cmd);
+                        ev.preventDefault();
+                    }
+                } else {
+                    util.insertTextarea(area, before + after, "before");
+                    // util.insertTextarea(area, after, "after");
+                    updatePreview();
+                }
+            };
         }
 
-        bindTool(main.find(".bold.icon"), "**", "**");
-        bindTool(main.find(".italic.icon"), "*", "*");
-        bindTool(main.find(".strikethrough.icon"), "~~", "~~");
+        bindTool(main.find(".bold.icon"), "**", "**", "Bold");
+        bindTool(main.find(".italic.icon"), "*", "*", "Italic");
+        bindTool(main.find(".strikethrough.icon"), "~~", "~~", "StrikeThrough");
+        
+        bindTool(main.find(".header.icon"), null, null, null, function () {
+            // console.log(document.queryCommandValue("fontSize"));
+            var size = parseInt(document.queryCommandValue("fontSize"));
+            console.log(size);
+            size = (size - 4 + 1) % 4 + 4;
+            console.log(size);
+            document.execCommand("fontSize", false, size);
+        });
 
-        bindTool(main.find(".linkify.icon"), "[", "](https://)");
-        bindTool(main.find(".image.icon"), "![](https://", ")");
+        bindTool(main.find(".linkify.icon"), "[", "](https://)", null, function () {
+            upload.field(function (url) {
+                if (url) {
+                    main.find(".editor-cont")[0].focus();
+                    document.execCommand("createLink", false, url);
+                }
+            }, { title: "Link url", icon: "linkify" });
+        });
+        
+        bindTool(main.find(".image.icon"), "![](https://", ")", null, function () {
+            // document.execCommand("insertImage", false, window.prompt('图片URL:', ''));
+            var url = window.prompt("Image url", "");
+        
+            if (url) {
+                document.execCommand("insertImage", false, url);
+            }
+            
+            return; // TODO: fix this(lose focus)
+            
+            upload.field(function (url) {
+                if (url) {
+                    main.find(".editor-cont")[0].focus();
+                    document.execCommand("insertImage", false, url);
+                }
+            }, { title: "Image url", icon: "image" });
+        });
 
-        bindTool(main.find(".not-ordered.list.icon"), "* ", "");
-        bindTool(main.find(".ordered.list.icon"), "1. ", "");
+        bindTool(main.find(".not-ordered.list.icon"), "* ", "", "InsertUnorderedList");
+        bindTool(main.find(".ordered.list.icon"), "1. ", "", "InsertOrderedList");
+
+        bindTool(main.find(".align.left.icon"), "", "", "JustifyLeft");
+        bindTool(main.find(".align.center.icon"), "", "", "JustifyCenter");
+        bindTool(main.find(".align.right.icon"), "", "", "JustifyRight");
 
         // tip.init(main.find(".help.icon"), "Markdown", "bottom center");
         // console.log(main.find("button"));
@@ -94,7 +162,10 @@ define([
 
         main.find(".editor-cont").keydown(function (e) {
             if (e.which == 9) {
-                util.insertTextarea(this, "\t", "replace");
+                if (config.use_rich)
+                    document.execCommand("insertHtml", false, config.tab);
+                else
+                    util.insertTextarea(this, "\t", "replace");
                 e.preventDefault();
             }
         }).keyup(function () {
@@ -117,16 +188,28 @@ define([
 
         ret.refreshSize = refreshSize;
         ret.clear = function () {
-            main.find(".editor-cont").val("");
-            updatePreview();
+            if (config.use_rich)
+                main.find(".editor-cont").html("");
+            else {
+                main.find(".editor-cont").val("");
+                updatePreview();
+            }
+            
             ret.removeWarning();
         };
 
         ret.val = function (text) {
             if (text === undefined) {
-                return main.find(".editor-cont").val();
+                if (config.use_rich)
+                    return main.find(".editor-cont").html();
+                else
+                    return main.find(".editor-cont").val();
             } else {
-                main.find(".editor-cont").val(text);
+                if (config.use_rich)
+                    main.find(".editor-cont").html(text);
+                else
+                    main.find(".editor-cont").val(text);
+                    
                 updatePreview();
             }
 

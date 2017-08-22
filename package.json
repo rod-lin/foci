@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/rod-lin/foci-server#readme",
   "dependencies": {
+    "ali-oss": "^4.10.0",
     "alidayu-node-sdk": "^1.0.2",
     "browserify": "^14.1.0",
     "cli-color": "^1.2.0",
@@ -46,6 +47,7 @@
     "nodemailer-wellknown": "^0.2.3",
     "pump": "^1.0.2",
     "readline": "^1.3.0",
+    "readline-sync": "^1.4.7",
     "run-sequence": "^2.1.0",
     "semantic-ui": "^2.2.10",
     "semantic-ui-calendar": "0.0.8",

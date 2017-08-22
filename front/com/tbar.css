@@ -176,7 +176,7 @@
 	width: 14em;
 
 	opacity: 1;
-	font-family: Ubuntu !important;
+	font-family: inherit !important;
 
 	transition: opacity 0.3s;
 }

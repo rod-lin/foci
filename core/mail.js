@@ -25,10 +25,17 @@ function initTransport() {
 }
 
 if (config.mail.passwd_enc) {
-    util.ask("password for mail service: ", (key) => {
-        config.mail.passwd = auth.aes.dec(config.mail.passwd, key);
+    var key = util.getPass();
+    
+    config.mail.passwd = auth.aes.dec(config.mail.passwd, key);
+    
+    if (!config.mail.passwd) {
+        util.log("mail: incorrect password", util.style.red("ERROR"));
+        process.exit();
+    } else {
+        util.log("mail: init transport", util.style.blue("INFO"));
         initTransport();
-    });
+    }
 } else {
     initTransport();
 }

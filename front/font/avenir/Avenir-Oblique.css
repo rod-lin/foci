@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "Avenir-Oblique";
+  src: url("Avenir-Oblique.woff2") format("woff2"),
+       url("Avenir-Oblique.woff") format("woff"),
+       url("Avenir-Oblique.ttf") format("truetype"),
+       url("Avenir-Oblique.eot") format("embedded-opentype"),
+       url("Avenir-Oblique.svg") format("svg"),
+       url("Avenir-Oblique.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}

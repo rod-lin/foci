@@ -56,3 +56,9 @@
 		margin-bottom: 0.5em !important;
 	}
 }
+
+.com-upload-field .user-search {
+	height: 4rem;
+	width: 100%;
+	font-size: 1.2rem;
+}

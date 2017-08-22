@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "Avenir-Heavy";
+  src: url("Avenir-Heavy.woff2") format("woff2"),
+       url("Avenir-Heavy.woff") format("woff"),
+       url("Avenir-Heavy.ttf") format("truetype"),
+       url("Avenir-Heavy.eot") format("embedded-opentype"),
+       url("Avenir-Heavy.svg") format("svg"),
+       url("Avenir-Heavy.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}

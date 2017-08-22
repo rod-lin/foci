@@ -149,22 +149,26 @@ function (util, rating, event, lang) {
                     rating.init(item.find(".resume-rating"), parsed.rating);
                     util.bgimg(item.find(".resume-cover"), parsed.cover);
 
+                    var prefix;
+
                     switch (dat.job) {
                         case "org":
-                            item.find(".resume-prompt").prepend("<b>Organized</b> event " + info.title);
+                            prefix = "<b>Organized</b> event ";
                             break;
 
                         case "partic":
-                            item.find(".resume-prompt").prepend("<b>Participated</b> event " + info.title);
+                            prefix = "<b>Participated</b> event ";
                             break;
 
                         case "staff":
-                            item.find(".resume-prompt").prepend("<b>Volunteered</b> event " + info.title);
+                            prefix = "<b>Volunteered</b> event ";
                             break;
 
                         default:
-                            item.find(".resume-prompt").prepend("Unknown job in event " + info.title);
+                            prefix = "Unknown job in event ";
                     }
+                    
+                    item.find(".resume-prompt").prepend(prefix + parsed.title);
 
                     item.click(function () {
                         main.find(".selected").removeClass("selected");

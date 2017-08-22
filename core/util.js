@@ -5,8 +5,9 @@ var NodeRSA = require("node-rsa");
 var Env = require("./env").Env;
 var err = require("./err");
 var util = require("./util");
+var config = require("./config");
 
-var readline = require("readline");
+var readline = require("readline-sync");
 
 Object.prototype.extend = function (obj) {
 	for (var k in obj) {
@@ -217,11 +218,11 @@ exports.checkArg = checkArg;
 
 exports.stamp = type => (new Date()).getTime() / (type == "unix" ? 1000 : 1);
 
-var ask_rl = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout
-});
-
 exports.ask = (ques, cb) => {
-	ask_rl.question(ques, cb);
+	return readline.question(ques).trim();
+};
+
+exports.getPass = () => {
+	if (config.pass) return config.pass;
+	else return config.pass = util.ask("password: ");
 };

@@ -7,6 +7,7 @@ var express = require("express");
 
 var db = require("./core/db");
 var err = require("./core/err");
+var mail = require("./core/mail");
 var auth = require("./core/auth");
 var user = require("./core/user");
 var util = require("./core/util");
@@ -138,3 +139,13 @@ if (config.ssl.enabled) {
 		util.log("failed to enable https: " + e.toString(), util.style.yellow("ERROR"));
 	}
 }
+
+Object.assign(require("repl").start("foci> ").context, {
+	db: require("./core/db"),
+	file: require("./core/file"),
+	util: require("./core/util"),
+	exit: function () {
+		if (util.ask("Are you sure to exit? [N/y]: ").toLowerCase() == "y")
+			process.exit();
+	}
+});

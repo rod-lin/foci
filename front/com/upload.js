@@ -6,6 +6,41 @@ define([ "com/util" ], function (util) {
 	var $ = jQuery;
 	foci.loadCSS("com/upload.css");
 
+	function field(cb, config) {
+		config = $.extend({
+			title: "Title",
+			icon: "linkify"
+		}, config);
+		
+		var main = $("<div class='com-upload-field ui small modal' style='padding: 1rem;'> \
+			<div class='ui left icon input user-search'> \
+				<input class='prompt' type='text' placeholder='" + config.title +  "'> \
+				<i class='" + config.icon  + " icon'></i> \
+			</div> \
+		</div>");
+		
+		var returned = false;
+		
+		main.find(".prompt").keydown(function (e) {
+			if (e.which == 13) {
+				returned = true;
+				main.modal("hide");
+				e.preventDefault();
+				
+				cb(main.find(".prompt").val());
+			}
+		});
+		
+		main.modal({
+			onHide: function () {
+				if (!returned)
+					cb(null);
+			}
+		}).modal("show");
+		
+		return {};
+	}
+
 	function init(cb, config) {
 		config = $.extend({
 			arg: null // { prompt }
@@ -121,6 +156,7 @@ define([ "com/util" ], function (util) {
 	}
 
 	return {
-		init: init
+		init: init,
+		field: field
 	};
 });

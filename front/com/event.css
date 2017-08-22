@@ -283,7 +283,7 @@
 }
 
 .com-event-single .status-shadow .status-prompt {
-	font-family: Ubuntu;
+	font-family: inherit;
 	font-size: 1rem;
 	line-height: normal;
 }

@@ -20,6 +20,8 @@ var Env = function (req, res) {
 	this.qjson = qjson;
 	this.qsuc = obj => qjson({ suc: true, res: obj });
 	this.qerr = msg => qjson({ suc: false, msg: msg });
+	
+	this.redir = url => res.redirect(url);
 
 	this.query = req.query;
 	this.file = {};

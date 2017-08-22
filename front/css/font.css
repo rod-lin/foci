@@ -1,0 +1,52 @@
+
+/**
+ * fonts:
+ *     foci-mono, foci-tag, foci-title
+ **/
+
+@import url(../font/avenir/import.css);
+
+body {
+    font-family: Avenir,
+                 PingFang SC, Hiragino Sans GB,
+                 Microsoft YaHei, Noto Sans CJK SC, WenQuanYi Micro Hei,
+                 sans-serif;
+    -webkit-font-smoothing: subpixel-antialiased;
+} 
+
+@font-face {
+    font-family: foci-tag;
+    src: url("../font/avenir/avenir-regular.woff2") format("woff2"),
+         url("../font/avenir/avenir-regular.woff") format("woff"),
+         url("../font/avenir/avenir-regular.ttf") format("truetype"),
+         url("../font/avenir/avenir-regular.eot") format("embedded-opentype"),
+         url("../font/avenir/avenir-regular.svg") format("svg"),
+         url("../font/avenir/avenir-regular.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+    text-transform: capitalize;
+}
+
+@font-face {
+    font-family: foci-title;
+    src: url("../font/avenir/avenir-regular.woff2") format("woff2"),
+         url("../font/avenir/avenir-regular.woff") format("woff"),
+         url("../font/avenir/avenir-regular.ttf") format("truetype"),
+         url("../font/avenir/avenir-regular.eot") format("embedded-opentype"),
+         url("../font/avenir/avenir-regular.svg") format("svg"),
+         url("../font/avenir/avenir-regular.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: foci-logo-name;
+    src: url("../font/brandon/brandon.woff2") format("woff2"),
+		 url("../font/brandon/brandon.woff") format("woff"),
+		 url("../font/brandon/brandon.ttf") format("truetype"),
+		 url("../font/brandon/brandon.eot") format("embedded-opentype"),
+		 url("../font/brandon/brandon.svg") format("svg"),
+		 url("../font/brandon/brandon.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}

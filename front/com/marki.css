@@ -44,7 +44,7 @@
     opacity: 0.8;
 }
 
-.com-marki-editor .editor-toolbar .right.icon {
+.com-marki-editor .editor-toolbar>.right.icon {
     float: right;
     margin-right: 0;
     margin-left: 0.7em;
@@ -71,7 +71,10 @@
     height: 100%;
     padding: 2rem;
     font-size: 1.3em;
-    font-family: Consolas, Ubuntu Mono, monospace;
+    font-family: foci-mono, monospace;
+    
+    overflow: auto;
+    line-height: 1.5;
 
     transition: background 0.3s, color 0.3s;
 }

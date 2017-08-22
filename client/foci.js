@@ -14,7 +14,7 @@ window.markdown = (function () {
 
 	var mod = {
 		toHTML: function (src) {
-			return "<div class='markdown-body'>" + conv.makeHtml(src) + "</div>";
+			return "<div class='markdown-body'>" + xssfilt(conv.makeHtml(src)) + "</div>";
 		},
 
 		toText: function (src) {
@@ -25,7 +25,29 @@ window.markdown = (function () {
 	return mod;
 })();
 
-window.xssfilt = require("xss");
+window.xssfilt = (function () {
+	var xss = require("xss");
+	xss.whiteList["strike"] = xss.whiteList["s"] = xss.whiteList["a"];
+	
+	for (var k in xss.whiteList) {
+		if (xss.whiteList.hasOwnProperty(k)) {
+			xss.whiteList[k].push("style");
+		}
+	}
+	
+	var filt = new xss.FilterXSS({
+		whiteList: xss.whiteList,
+		css: {
+			whiteList: {
+				"text-align": /^left|center|right$/
+		    }
+		}
+	});
+	
+	return function (cont) {
+		return filt.process(cont);
+	};
+})();
 
 (function () {
 	var global = window;

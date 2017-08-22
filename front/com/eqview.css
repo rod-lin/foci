@@ -1,7 +1,7 @@
 .com-eqview {
 	color: #262626;
 	line-height: 1.2 !important;
-	font-family: Ubuntu;
+	font-family: inherit;
 }
 
 .com-eqview .back {

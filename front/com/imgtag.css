@@ -57,9 +57,11 @@
 .com-tagbox-imgtag .imgtag .imgtag-text {
     display: inline-block;
     text-align: center;
-    font-weight: bold;
 
     padding: 0 1.3em;
     color: black;
-    font-family: Brandon;
+    font-family: foci-tag;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
 }

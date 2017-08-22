@@ -2,7 +2,7 @@
      User Global Variables
 *******************************/
 
-@fontName                  : Ubuntu;
+@fontName                  : inherit;
 
 @solidBorderColor          : rgba(0, 0, 0, 0.08);
 @defaultBorderRadius       : 3px;

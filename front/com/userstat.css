@@ -51,7 +51,7 @@
 
 .com-userstat .no-login-page .logo {
     font-size: 3rem;
-    font-family: Brandon;
+    font-family: foci-logo-name;
     font-weight: bold;
     color: #323232;
 
@@ -116,7 +116,7 @@
     color: #3C3C3C;
 
     font-size: 1.3rem;
-    font-family: Brandon;
+    font-family: inherit;
     font-weight: bold;
 
     overflow: hidden;
