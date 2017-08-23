@@ -216,14 +216,19 @@
 
 					// 7 = 4(main push board) + 3(sub slide)
 					for (i = 0; i < 7; i++) {
+						// alert(dat[i].img);
 						parsed.push(dat[i] ? {
-							img: foci.download(dat[i].img),
-							url: dat[i].url
+							img: dat[i].img ? foci.download(dat[i].img) : null,
+							url: dat[i].url,
+							setting_init: dat[i].img,
+							setting_arg_init: dat[i].url.substring(1)
 						} : {});
 					}
 
 					function settingProc(ofs) {
-						return function (n, file, url) {
+						return function (n, file, url, ph) {
+							if (!file) return;
+							
 							foci.encop(env.session(), {
 								int: "cover",
 								action: "setpboard",
@@ -237,6 +242,10 @@
 									util.emsg(dat);
 								}
 							});
+							
+							ph.img = foci.download(file);
+							ph.setting_arg_init = ph.url = url;
+							ph.setting_init = file;
 						};
 					}
 

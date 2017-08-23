@@ -525,7 +525,7 @@ exports.checkApplicant = async (euid, uuid) => {
 };
 
 exports.checkOwner = async (euid, uuid) => {
-	if (!await exports.isOwner(euid, uuid))
+	if (!await exports.isOwner(euid, uuid) && !await user.isAdmin(uuid))
 		throw new err.Exc("$core.not_event_owner");
 };
 

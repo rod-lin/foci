@@ -3,7 +3,7 @@
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	background: black;
+	background: white;
 }
 
 .com-pboard .setting-btn {
@@ -92,7 +92,7 @@
 
 .com-pboard .main-slide:hover,
 .com-pboard .preview-set .preview:hover {
-	opacity: 0.95;
+	opacity: 0.8;
 }
 
 .com-pboard .main-slide:active,
@@ -133,7 +133,7 @@
 	overflow: hidden;
 	border-radius: 3px;
 
-	background: black;
+	background: white;
 }
 
 .com-pboard-slide .right-btn,

@@ -43,7 +43,8 @@ define([ "com/util" ], function (util) {
 
 	function init(cb, config) {
 		config = $.extend({
-			arg: null // { prompt }
+			arg: null, // { prompt, placeholder, init }
+			init: null // init file md5
 		}, config);
 
 		var main = $(" \
@@ -84,6 +85,10 @@ define([ "com/util" ], function (util) {
 		if (config.arg) {
 			argfield.find(".label").html(config.arg.prompt);
 			argfield.find("input").attr("placeholder", config.arg.placeholder);
+			
+			if (config.arg.init) {
+				argfield.find("input").val(config.arg.init);
+			}
 		} else {
 			argfield.remove();
 		}
@@ -140,6 +145,11 @@ define([ "com/util" ], function (util) {
 				});
 			}
 		});
+		
+		if (config.init) {
+			selected = config.init;
+			showPreview();
+		}
 
 		main.find(".exit-btn, .exdim").click(function () {
 			main.modal("hide");

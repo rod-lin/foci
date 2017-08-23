@@ -79,6 +79,10 @@
     transition: background 0.3s, color 0.3s;
 }
 
+.com-marki-editor .editor-text .editor-cont.rich {
+    font-family: inherit;
+}
+
 .com-marki-editor.warning .editor-text .editor-cont {
     background: #FFF6F6;
     color: #9F3A38;

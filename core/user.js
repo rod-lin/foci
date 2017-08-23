@@ -205,11 +205,14 @@ exports.checkLevel = async (uuid, level) => {
 		throw new err.Exc("$core.permission_denied");
 };
 
-exports.checkAdmin = async (uuid) => {
+exports.isAdmin = async (uuid) => {
 	var col = await db.col("user");
 	var found = await col.findOne(User.query.check_level(uuid, config.lim.user.admin_level));
+	return !!found;
+};
 
-	if (!found)
+exports.checkAdmin = async (uuid) => {
+	if (!await exports.isAdmin(uuid))
 		throw new err.Exc("$core.permission_denied");
 };
 

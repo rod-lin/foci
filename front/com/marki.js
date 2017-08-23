@@ -23,7 +23,7 @@ define([
                 <div class='editor-text'> \
                     " +
                     (config.use_rich
-                        ? "<div class='editor-cont input-no-style' contenteditable='true'></div>"
+                        ? "<div class='editor-cont rich input-no-style markdown-body' contenteditable='true'></div>"
                         : "<textarea class='editor-cont input-no-style'></textarea>")
                     + " \
                 </div> \

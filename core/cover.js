@@ -61,6 +61,8 @@ exports.setPBoard = async (uuid, n, info) => {
         await col.findOneAndUpdate(Cover.query.conf(), Cover.set.init_pboard());
     }
 
+    // console.log(Cover.set.pboard(n, info));
+
     await col.findOneAndUpdate(Cover.query.conf(), Cover.set.pboard(n, info));
 };
 

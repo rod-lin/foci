@@ -145,7 +145,7 @@ Object.assign(require("repl").start("foci> ").context, {
 	file: require("./core/file"),
 	util: require("./core/util"),
 	exit: function () {
-		if (util.ask("Are you sure to exit? [N/y]: ").toLowerCase() == "y")
-			process.exit();
+		// if (util.ask("Are you sure to exit? [N/y]: ").toLowerCase() == "y")
+		process.exit();
 	}
 });

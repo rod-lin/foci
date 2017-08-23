@@ -31,10 +31,10 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 			<div class='com-pboard'> \
 				<div class='main-slide'> \
 					<div class='slide-front'> \
-						<div class='setting-btn vcenter'><i class='setting icon'></i></div> \
+						<div class='setting-btn vcenter'></div> \
 					</div> \
 					<div class='slide-back'> \
-						<div class='setting-btn vcenter'><i class='setting icon'></i></div> \
+						<div class='setting-btn vcenter'></div> \
 					</div> \
 				</div> \
 				<div class='preview-set'> \
@@ -50,9 +50,19 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 		function photoClick(ph, n) {
 			if (config.setting) {
 				upload.init(function (id, url) {
-					if (config.setting_cb)
-						config.setting_cb(n, id, url);
-				}, { arg: { prompt: "foci.me#", placeholder: "url" } });
+					if (id && config.setting_cb) {
+						config.setting_cb(n, id, url, ph);
+						util.bgimg(ph.dom, ph.img);
+					}
+				}, {
+					arg: {
+						prompt: "foci.me#",
+						placeholder: "url",
+						init: ph.setting_arg_init
+					},
+					
+					init: ph.setting_init
+				});
 			} else {
 				if (ph.url)
 					util.jump(ph.url);
@@ -68,9 +78,11 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 				(function (i) {
 					var ph = photo[i];
 					var dom = $("<div class='preview' data-id='" + i + "'> \
-						<div class='setting-btn vcenter'><i class='setting icon'></i></div> \
+						<div class='setting-btn vcenter'><!--i class='setting icon'></i--></div> \
 					</div>");
 					// var loader = $("<div class='ui small loader active'></div>");
+
+					ph.dom = dom;
 
 					dom.click(function () {
 						photoClick(ph, i);
@@ -112,18 +124,18 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 			});
 
 			function setMain(ph) {
-				if (ph.img) {
-					if (main_slide.hasClass("switch")) {
-						util.bgimg(front, ph.img, function () {
-							main_slide.toggleClass("switch");
-						});
-					} else {
-						util.bgimg(back, ph.img, function () {
-							main_slide.toggleClass("switch");
-						});
-					}
+				if (main_slide.hasClass("switch")) {
+					util.bgimg(front, ph.img, function () {
+						// alert("??");
+						main_slide.toggleClass("switch");
+					});
+				} else {
+					util.bgimg(back, ph.img, function () {
+						// alert("???");
+						main_slide.toggleClass("switch");
+					});
 				}
-			};
+			}
 
 			mod.setDir = function (dir) {
 				if (dir == "top") {
@@ -249,9 +261,18 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 				slide.dom.click(function () {
 					if (config.setting) {
 						upload.init(function (id, url) {
-							if (config.setting_cb)
-								config.setting_cb(i, id, url);
-						}, { arg: { prompt: "foci.me#", placeholder: "url" } });
+							if (id && config.setting_cb) {
+								config.setting_cb(i, id, url, slide);
+								util.bgimg(slide.dom, slide.img);
+							}
+						}, {
+							arg: {
+								prompt: "foci.me#",
+								placeholder: "url",
+								init: slide.setting_arg_init 
+							},
+							init: slide.setting_init
+						});
 					} else if (slide.url)
 						util.jump(slide.url);
 				});

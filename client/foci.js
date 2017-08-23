@@ -39,7 +39,11 @@ window.xssfilt = (function () {
 		whiteList: xss.whiteList,
 		css: {
 			whiteList: {
-				"text-align": /^left|center|right$/
+				"text-align": /^left|center|right$/,
+				"font-size": /.*/,
+				"font-weight": /.*/,
+				"font-family": /.*/,
+				"font-style": /.*/
 		    }
 		}
 	});

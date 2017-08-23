@@ -276,11 +276,16 @@ define(function () {
 	};
 
 	util.bgimg = function (obj, url, load) {
-		util.img(url, function (img) {
-			$(obj).css("background-image", "url('" + url + "')").ready(function () {
-				if (load) load(img);
+		if (url) {
+			util.img(url, function (img) {
+				$(obj).css("background-image", "url('" + url + "')").ready(function () {
+					if (load) load(img);
+				});
 			});
-		});
+		} else {
+			$(obj).css("background-image", "");
+			if (load) load();
+		}
 	};
 
 	util.localDate = function (date, short) {
