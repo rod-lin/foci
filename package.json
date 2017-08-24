@@ -27,6 +27,7 @@
     "del": "^2.2.2",
     "domready": "^1.0.8",
     "express": "^4.15.2",
+    "gt3-sdk": "^2.0.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^4.0.0",
     "gulp-clean-css": "^3.7.0",

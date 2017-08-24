@@ -125,7 +125,7 @@ window.foci = {};
 			url: url,
 			dataType: "json",
 			data: data
-		}, ext || {})).responseText;
+		}, ext)).responseText;
 
 		if (!res) return null;
 
@@ -146,24 +146,54 @@ window.foci = {};
 			error: function (req, err, exc) {
 				return cb(false, err);
 			}
-		}, ext || {}));
+		}, ext));
 	};
+	
+	// function (cap, cb) { ... show and verify recaptcha and call cb with returned parameters from captcha }
+	var captcha_handler = null;
+	
+	// set captcha handler
+	foci.captcha = function (cb) {
+		if (cb !== undefined) {
+			captcha_handler = cb;
+		} else return captcha_handler;
+	};
+	
+	function req_callback(method, url, data, cb) {
+		return function (suc, dat) {
+			if (!suc) return cb(false, "$def.network_error");
+			
+			if (!dat.suc) {
+				if (dat.cap) {
+					if (foci.captcha()) {
+						foci.captcha()(dat.dat, function (suc, ans) {
+							if (suc) {
+								// resend the request
+								method(url, $.extend(data, { capans: ans }), cb);
+							} else {
+								cb(false, ans);
+							}
+						});
+						
+						return;
+					} else
+						return cb(false, "$def.uninit_recaptcha");
+				} else
+					return cb(false, dat.msg);
+			}
+			
+			return cb(true, dat.res);
+		};
+	}
 
 	foci.sget = sendSync;
 	foci.get = function (url, data, cb) {
-		sendAsync(url, data, function (suc, dat) {
-			if (!suc) return cb(false, "$def.network_error");
-			if (!dat.suc) return cb(false, dat.msg);
-			return cb(true, dat.res);
-		});
+		sendAsync(url, data, req_callback(foci.get, url, data, cb));
 	};
 
 	foci.post = function (url, data, cb) {
-		sendAsync(url, data, function (suc, dat) {
-			if (!suc) return cb(false, "$def.network_error");
-			if (!dat.suc) return cb(false, dat.msg);
-			return cb(true, dat.res);
-		}, "POST", { cache: false, contentType: false, processData: false });
+		sendAsync(url, data, req_callback(foci.post, url, data, cb),
+				  "POST", { cache: false, contentType: false, processData: false });
 	};
 
 	foci.salt = function (len) {
@@ -208,67 +238,49 @@ window.foci = {};
 	};
 
 	foci.newUser = function (lname, vercode, passwd, cb) {
-		sendAsync(server + "/auth", {}, function (suc, dat) {
-			if (!suc) return cb(false, "$def.network_error");
-			if (!dat.suc) return cb(false, dat.msg);
-
-			var pub = dat.res;
-
-			sendAsync(server + "/user/new", {
+		foci.get("/auth", {}, function (suc, dat) {
+			if (!suc) return cb(false, dat);
+			
+			foci.get("/user/new", {
 				lname: lname,
 				vercode: vercode,
-				pkey: pub,
-				penc: foci.rsaenc(passwd, pub)
-			}, function (suc, dat) {
-				if (!suc) return cb(false, "$def.network_error");
-				if (!dat.suc) return cb(false, dat.msg);
-				return cb(true, dat.res);
-			});
+				pkey: dat,
+				penc: foci.rsaenc(passwd, dat)
+			}, cb);
 		});
 	};
 	
 	foci.resetPass = function (lname, vercode, passwd, cb) {
-		sendAsync(server + "/auth", {}, function (suc, dat) {
-			if (!suc) return cb(false, "$def.network_error");
-			if (!dat.suc) return cb(false, dat.msg);
-
-			var pub = dat.res;
-
-			sendAsync(server + "/user/reset", {
+		foci.get("/auth", {}, function (suc, dat) {
+			if (!suc) return cb(false, dat);
+			
+			foci.get("/user/reset", {
 				lname: lname,
 				vercode: vercode,
-				pkey: pub,
-				penc: foci.rsaenc(passwd, pub)
-			}, function (suc, dat) {
-				if (!suc) return cb(false, "$def.network_error");
-				if (!dat.suc) return cb(false, dat.msg);
-				return cb(true, dat.res);
-			});
+				pkey: dat,
+				penc: foci.rsaenc(passwd, dat)
+			}, cb);
 		});
 	};
 
 	// cb(suc, dat/err)
 	foci.login = function (lname, passwd, cb) {
 		var salt = foci.salt();
-
-		sendAsync(server + "/auth", {}, function (suc, dat) {
-			if (!suc) return cb(false, "$def.network_error");
-			if (!dat.suc) return cb(false, dat.msg);
-
-			var pub = dat.res;
-
-			sendAsync(server + "/user/login", {
+		
+		foci.get("/auth", {}, function (suc, dat) {
+			if (!suc) return cb(false, dat);
+			
+			foci.get("/user/login", {
 				lname: lname,
-				pkey: pub,
-				penc: foci.rsaenc(salt + ":" + passwd, pub)
+				pkey: dat,
+				penc: foci.rsaenc(salt + ":" + passwd, dat)
 			}, function (suc, dat) {
-				if (!suc) return cb(false, "$def.network_error");
-				if (!dat.suc) return cb(false, dat.msg);
-
-				var sid = foci.aesdec(dat.res.sid, salt);
+				if (!suc) return cb(false, dat);
+				
+				var sid = foci.aesdec(dat.sid, salt);
 				if (!sid) return cb(false, "$def.server_error");
 
-				var ses = new Session(lname, dat.res.uuid, sid);
+				var ses = new Session(lname, dat.uuid, sid);
 
 				foci.setLocal("session", ses);
 				return cb(true, ses);
@@ -290,20 +302,16 @@ window.foci = {};
 
 		session = new Session(session);
 
-		sendAsync(server + "/user/csid", {
+		foci.get("/user/csid", {
 			uuid: session.getUUID(),
 			enc: foci.aesenc("hello", session.getSID())
 		}, function (suc, dat) {
 			if (!suc) {
-				// clear(); no clear on network error
-				return cb(false, "$def.network_error");
+				if (dat != "$def.network_error")
+					clear();
+				return cb(false, dat);
 			}
-
-			if (!dat.suc) {
-				clear();
-				return cb(false, "$core.illegal($core.word.sid)");
-			}
-
+			
 			return cb(true, session);
 		});
 	};
@@ -311,15 +319,13 @@ window.foci = {};
 	foci.encop = function (session, query, cb) {
 		var uuid = session.getUUID();
 		var sid = session.getSID();
-
-		sendAsync(server + "/user/encop", {
+		
+		foci.get("/user/encop", {
 			uuid: uuid,
 			enc: foci.aesenc(JSON.stringify(query), sid)
 		}, function (suc, dat) {
-			if (!suc) return cb(false, "$def.network_error");
-			if (!dat.suc) return cb(false, dat.msg);
-			// console.log(foci.aesdec(dat.res, sid));
-			return cb(true, JSON.parse(foci.aesdec(dat.res, sid)));
+			if (!suc) return cb(false, dat);
+			return cb(true, JSON.parse(foci.aesdec(dat, sid)));
 		});
 	};
 

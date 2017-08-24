@@ -148,6 +148,9 @@ define(function () {
 		"def.illegal_json": "illegal JSON format",
 		"def.missing_n_field": "missing $1 field(s)",
 		"def.register_suc": "success, automatically login now",
+		"def.uninit_recaptcha": "unintialized reCaptcha handler",
+		"def.fail_show_captcha": "failed to show captcha(try refreshing the page)",
+		"def.request_cancelled": "request cancelled",
 		
 		"nat.all_cap": function (str) {
 			return str.toUpperCase();

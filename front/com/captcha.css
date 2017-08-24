@@ -1,0 +1,18 @@
+/* captcha */
+
+.com-captcha-modal {
+    text-align: center !important;
+    pointer-events: none;
+}
+
+.com-captcha-modal .captcha-field {
+    display: inline-block;
+    padding: 1rem;
+    background: #F8F8F8;
+    pointer-events: auto;
+}
+
+.com-captcha-modal .prompt {
+    color: #656565;
+    margin-bottom: 0.6rem;
+}

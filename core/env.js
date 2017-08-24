@@ -21,6 +21,10 @@ var Env = function (req, res) {
 	this.qsuc = obj => qjson({ suc: true, res: obj });
 	this.qerr = msg => qjson({ suc: false, msg: msg });
 	
+	this.ip = () => req.connection.remoteAddress;
+	
+	this.qcap = (challenge) => qjson({ suc: false, cap: true, dat: challenge });
+	
 	this.redir = url => res.redirect(url);
 
 	this.query = req.query;

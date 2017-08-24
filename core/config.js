@@ -217,6 +217,13 @@ var conf = module.exports = {
 		acckey: "U2FsdGVkX19UXegeWLnG6lSTQ+O2N7JuDoYBx9CEfHLwqGMT6p0Rbef4uU2mVba5",
 		seckey: "U2FsdGVkX19L2W2PLjOYnQVONfvJEl1y6l4srETP9G+0IBZ7qMx+LLsEPjyWS2CE",
 		bucket: "foci-upload-0"
+	},
+	
+	captcha: {
+		type: "geetest",
+		enc: true,
+		id: "U2FsdGVkX1++TSCmL3g+iT+YAU45KZOmYZSmwOPKKu9wKCtEvTCMGGnl3lf6e8J4xe67FIkNS7xpS5TLMNFOzw==",
+		key: "U2FsdGVkX1+dfM76P0oaqjPhjtvUQCwRYoyOl9bmhxJzBem8mX4qn3agqRAC8EvPAQjQk7vm4uZEFb/xf5VaSQ=="
 	}
 };
 

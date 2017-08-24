@@ -4,7 +4,6 @@ var crypto = require("crypto");
 var NodeRSA = require("node-rsa");
 var Env = require("./env").Env;
 var err = require("./err");
-var util = require("./util");
 var config = require("./config");
 
 var readline = require("readline-sync");
@@ -48,15 +47,15 @@ exports.route = (handler) => async (req, res) => {
 		} catch (e) {
 			if (e instanceof err.Exc) {
 				env.qerr(e.toString());
-				util.log(e, exports.style.yellow("EXCEPTION"));
+				exports.log(e, exports.style.yellow("EXCEPTION"));
 				if (e.exc) {
-					util.log(e.exc.stack, exports.style.yellow("ERROR"));
+					exports.log(e.exc.stack, exports.style.yellow("ERROR"));
 				} else {
-					util.log(e.stack, exports.style.blue("STACK"));
+					exports.log(e.stack, exports.style.blue("STACK"));
 				}
 			} else {
 				env.qerr("$core.internal_err");
-				util.log(e.stack, exports.style.red("ERROR"));
+				exports.log(e.stack, exports.style.red("ERROR"));
 			}
 		}
 	});
@@ -76,6 +75,11 @@ exports.sha1 = (cont, format) => {
 
 var checkArg = (args, req, opt) => {
 	var ret = {};
+	
+	// check default arg captcha answer
+	if (!req["capans"]) {
+		req["capans"] = { type: "object", opt: true };
+	}
 
 	for (var k in req) {
 		if (k[0] == "$") continue;
@@ -224,5 +228,5 @@ exports.ask = (ques, cb) => {
 
 exports.getPass = () => {
 	if (config.pass) return config.pass;
-	else return config.pass = util.ask("password: ");
+	else return config.pass = exports.ask("password: ");
 };

@@ -12,6 +12,7 @@
 		<script src="lib/foci.js"></script>
 		<script src="lib/vcent.js"></script>
 		<script src="lib/require.js"></script>
+		<script src="lib/gt.js"></script> <!-- geetest api -->
 
 		<link rel="stylesheet" href="font/fontawesome/import.css">
 		<!-- <link rel="stylesheet" href="font/ubuntu/import.css">
@@ -84,6 +85,10 @@
 		<!-- <div class="frame", style="width: 100%; height: 100%; position: fixed; top: 0; left: 0; background: #FFF;"></div> -->
 
 		<script>
+			require([ "com/captcha" ], function (captcha) {
+				foci.captcha(captcha.wrap); // set captcha event
+			});
+		
 			require([
 				"com/tbar", "com/event", "com/env",
 				"com/util", "com/pages", "com/parts",

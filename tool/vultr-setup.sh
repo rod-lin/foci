@@ -102,21 +102,33 @@ trace "Configuring nginx..."
 # config nginx server
 cat >> /etc/nginx/conf.d/foci.conf << END
 server {
-  listen 80;
-  server_name foci.me;
-  location / {
-    proxy_pass http://127.0.0.1:3138;
-    client_max_body_size 4m;
-  }
+    listen 80;
+    server_name foci.me;
+    location / {
+        proxy_pass http://127.0.0.1:3138;
+        client_max_body_size 4m;
+    
+        proxy_redirect off;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-NginX-Proxy true;
+    }
 }
 
 server {
-  listen 80;
-  server_name api.foci.me;
-  location / {
-    proxy_pass http://127.0.0.1:3138;
-    client_max_body_size 4m;
-  }
+    listen 80;
+    server_name api.foci.me;
+    location / {
+        proxy_pass http://127.0.0.1:3138;
+        client_max_body_size 4m;
+        
+        proxy_redirect off;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-NginX-Proxy true;
+    }
 }
 END
 

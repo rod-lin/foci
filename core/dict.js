@@ -55,6 +55,8 @@ var dict = module.exports = {
 		"core.file_missing": "file $1 missing(contact me if this keeps poping up)",
 		"core.file_md5_collision": "file md5 collision(DO CONTACT ME IF YOU SEE THIS)",
 
+		"core.cap_verification_failed": "captcha validation failed",
+
 		"core.account_frozen": "account frozen for an hour for repeated tries to login",
 
 		"core.fail_upload": "fail to upload file",

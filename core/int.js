@@ -18,6 +18,7 @@ var cover = require("./cover");
 var config = require("./config");
 var notice = require("./notice");
 var alipay = require("./alipay");
+var captcha = require("./captcha");
 var comment = require("./comment");
 var template = require("./template");
 
@@ -56,6 +57,8 @@ var _smsg = {};
 
 _smsg.vercode = util.route(async env => {
 	var args = util.checkArg(env.query, { "phone": "string", "forgot": { opt: true, type: "bool" } });
+
+	if (!await captcha.check(env, () => false, args.capans)) return;
 
 	if (!args.forgot) {
 		await user.checkNewUserName(args.phone);
@@ -175,6 +178,8 @@ var T_NEED_HANG = {};
 _user.encop = util.route(async env => {
 	var args = util.checkArg(env.query, { "uuid": "int", "enc": "string" });
 
+	// if (!await captcha.check(env, () => {}, args.capans)) return;
+
 	var res = await user.checkSession(args.uuid, args.enc);
 	var sid = res.sid;
 	var query;
@@ -200,6 +205,7 @@ _user.encop = util.route(async env => {
 	var proc = encop[query.int];
 	var res = await proc(env, res.usr, query, next);
 
+	// hangup for future messages
 	if (res !== T_NEED_HANG)
 		next(res);
 });
