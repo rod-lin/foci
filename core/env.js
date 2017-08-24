@@ -21,7 +21,7 @@ var Env = function (req, res) {
 	this.qsuc = obj => qjson({ suc: true, res: obj });
 	this.qerr = msg => qjson({ suc: false, msg: msg });
 	
-	this.ip = () => req.connection.remoteAddress;
+	this.ip = () => req.get("X-Real-IP") || req.get("X-Forwarded-For") || req.ip;
 	
 	this.qcap = (challenge) => qjson({ suc: false, cap: true, dat: challenge });
 	
