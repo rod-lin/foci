@@ -26,7 +26,7 @@ var Env = function (req, res) {
 			return req.get("X-Forwarded-For").split(",")[0].trim();
 		} else
 		 	return req.get("X-Real-IP") || req.ip;
-	}
+	};
 	
 	this.qcap = (challenge) => qjson({ suc: false, cap: true, dat: challenge });
 	

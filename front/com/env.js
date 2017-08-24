@@ -108,7 +108,7 @@ define([ "com/util" ], function (util) {
 
 	var proc = setInterval(function () {
 		qlogin();
-	}, 10 * 60 * 1000);
+	}, 10 * 60 * 1000); // 10 min
 
 	return {
 		init: init,

@@ -89,16 +89,16 @@ define([
             };
         }
 
-        bindTool(main.find(".bold.icon"), "**", "**", "Bold");
-        bindTool(main.find(".italic.icon"), "*", "*", "Italic");
-        bindTool(main.find(".strikethrough.icon"), "~~", "~~", "StrikeThrough");
+        bindTool(main.find(".bold.icon"), "**", "**", "bold");
+        bindTool(main.find(".italic.icon"), "*", "*", "italic");
+        bindTool(main.find(".strikethrough.icon"), "~~", "~~", "strikeThrough");
         
         bindTool(main.find(".header.icon"), null, null, null, function () {
             // console.log(document.queryCommandValue("fontSize"));
             var size = parseInt(document.queryCommandValue("fontSize"));
-            console.log(size);
+            // console.log(size);
             size = (size - 4 + 1) % 4 + 4;
-            console.log(size);
+            // console.log(size);
             document.execCommand("fontSize", false, size);
         });
 
