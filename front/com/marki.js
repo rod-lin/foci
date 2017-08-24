@@ -103,6 +103,14 @@ define([
         });
 
         bindTool(main.find(".linkify.icon"), "[", "](https://)", null, function () {
+            var url = window.prompt("Link", "");
+        
+            if (url) {
+                document.execCommand("createLink", false, url);
+            }
+            
+            return ; // TODO: fix this(lose focus)
+            
             upload.field(function (url) {
                 if (url) {
                     main.find(".editor-cont")[0].focus();
