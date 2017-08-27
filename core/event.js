@@ -851,7 +851,7 @@ exports.unpublish = async (euid, uuid) => {
 	var col = await db.col("event");
 	var ev = await exports.euid(euid, evstat.all);
 
-	if (ev.isUnpublished())
+	if (ev.isDraft())
 		throw new err.Exc("$core.event_is_draft");
 
 	await col.findOneAndUpdate(Event.query.euid(euid, evstat.all), Event.set.unpublish());
