@@ -157,7 +157,7 @@ define([
 		var ntview = notice.init(main.find(".notice-popup"));
 		
 		login.session(function (session) {
-			if (session.isAdmin())
+			if (session && session.isAdmin())
 				ntview.setAdmin();
 		});
 
