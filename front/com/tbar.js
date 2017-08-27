@@ -156,10 +156,10 @@ define([
 		var pmview = pm.qview(main.find(".pm-popup"));
 		var ntview = notice.init(main.find(".notice-popup"));
 		
-		login.session(function (session) {
-			if (session && session.isAdmin())
+		if (env.session()) {
+			if (env.session().isAdmin())
 				ntview.setAdmin();
-		});
+		}
 
 		var showMenu, hideMenu;
 
