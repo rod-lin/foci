@@ -21,6 +21,10 @@ button { padding: 0; user-select: none; -moz-user-select: none; }
 	display: block !important;
 }
 
+a {
+	cursor: pointer;
+}
+
 /*
 .uix.loader {
 	display: none;

@@ -133,6 +133,24 @@ var conf = module.exports = {
 			text: 512,
 			max_get_length: 8,
 			max_comm_per_user: 3
+		},
+		
+		// traffic control
+		traffic: {
+			default_level: "normal",
+			
+			levels: {
+				"normal": {
+					// max times to use a single interface during gc's for one ip
+					max_count_per_int_per_ip_per_gc: 512,
+					
+					// number of ip to trigger collection
+					gc_threshold: 1000,
+					
+					// cleaning threshold of an ip log
+					gc_time_threshold: 1000 * 60 * 30, // half an hour
+				}
+			}
 		}
 	},
 
@@ -199,7 +217,8 @@ var conf = module.exports = {
 	notice: {
 		system: {
 			// url relative to the front dir
-			"helper": { logo: "/img/def/helper.jpg", name: "Foci Helper" }
+			"helper": { logo: "/img/def/helper.jpg", name: "Foci Helper" },
+			"review": { logo: "/img/def/review.jpg", name: "Foci Event Review" },
 		}
 	},
 

@@ -20,7 +20,7 @@ tick
 
 	var tmp = await template.event_apply(title, job);
 
-	await notice.push(uuid, euid, {
+	await notice.push(uuid, {
 		type: "event",
 		sender: euid,
 

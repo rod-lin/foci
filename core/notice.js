@@ -73,9 +73,11 @@ async function setUpdate(uuid, val) {
 	await col.updateOne(user.User.query.uuid(uuid), Notice.set.update(uuid, val));
 }
 
-exports.push = async (uuid, sender, info) => {
+exports.push = async (uuid, info) => {
 	var nnt = new Notice(info);
 	var col = await db.col("user");
+	
+	var sender = nnt.sender;
 
 	await col.updateOne(user.User.query.uuid(uuid), Notice.set.push(sender, nnt));
 	await setUpdate(uuid, true);
@@ -94,6 +96,10 @@ exports.info = async (type, sender) => {
 	switch (type) {
 		case "system":
 			var found = config.notice.system[sender];
+			
+			if (!found) {
+				throw new err.Exc("$core.not_exist($core.word.system_sender)");
+			}
 
 			return {
 				url: true,
@@ -127,22 +133,40 @@ exports.updatel = async (uuid, next) => {
 	});
 };
 
-exports.sendGroup = async (euid, sender, uuids, info) => {
+exports.sendGroup = async (type, sender /* the claimed sender of the notice */,
+						   uuid /* actual user uuid */, uuids, info) => {
 	/*
 		check:
 		1. sender is the owner
 		2. uuids are applicants to euid
 	 */
+	
+	switch (type) {
+		case "event":
+			euid = sender;
+			event.checkOwner(euid, uuid);
 
-	event.checkOwner(euid, sender);
+			for (var i = 0; i < uuids.length; i++) {
+				await event.checkApplicant(euid, uuids[i]);
+			}
 
-	for (var i = 0; i < uuids.length; i++) {
-		await event.checkApplicant(euid, uuids[i]);
+			info.type = "event";
+			info.sender = euid;
+			
+			break;
+			
+		case "system":
+			await user.checkAdmin(uuid);
+			
+			info.type = "system";
+			info.sender = sender;
+		
+			break;
+		
+		default: throw new err.Exc("invalid sender type");
 	}
 
-	info.sender = euid;
-
 	for (var i = 0; i < uuids.length; i++) {
-		await exports.push(uuids[i], euid, info);
+		await exports.push(uuids[i], info);
 	}
 };

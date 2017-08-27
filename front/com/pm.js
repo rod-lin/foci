@@ -27,7 +27,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 
 	function chatbox(sendee, config) {
 		config = $.extend({}, config)
-
+		
 		var main = $(" \
 			<div class='com-pm-chatbox ui small modal'> \
 				<div class='cont'> \

@@ -88,11 +88,11 @@
 						<div class="ui inverted loader"></div>
 						<span class="lang" data-replace="$front.sub.event.app_cent">Application center</span>
 					</div>
-					<div class="box pad apply-setting btn" style="margin-top: 0.2rem; background: #7F8C8D; color: white; display: none;">
+					<div class="box pad apply-setting btn always-enable" style="margin-top: 0.2rem; background: #7F8C8D; color: white; display: none;">
 						<div class="ui inverted loader"></div>
 						<span class="lang" data-replace="$front.sub.event.event_setting">Settings</span>
 					</div>
-					<div class="box pad apply-terminate btn" style="margin-top: 0.2rem; background: #7F8C8D; color: white; display: none;">
+					<div class="box pad apply-terminate btn always-enable" style="margin-top: 0.2rem; background: #7F8C8D; color: white; display: none;">
 						<div class="ui inverted loader"></div>
 						<span class="lang" data-replace="$front.sub.event.term_event">End event</span>
 					</div>
@@ -403,7 +403,7 @@
 		transition: background 0.3s, opacity 0.3s;
 	}
 
-	#sub-event>.cont .disabled .box.btn,
+	#sub-event>.cont .disabled .box.btn:not(.always-enable),
 	#sub-event>.cont .box.btn.disabled {
 		color: #D9D9D9 !important;
 		background: #B3B3B3 !important;
@@ -632,8 +632,15 @@
 
 				function refreshAppBlock(session) {
 					var uuid = session.getUUID();
+					var is_org = info.org.indexOf(uuid) != -1;
 
-					if (info.org.indexOf(uuid) != -1) {
+					if (session.isAdmin() || is_org) {
+						main.find(".apply-setting").css("display", "").click(function () {
+							util.jump("#profile//new/" + euid);
+						});
+					}
+					
+					if (is_org) {
 						// organizer
 
 						setAppPrompt(m("$front.sub.event.organize"));
@@ -642,10 +649,6 @@
 
 						main.find(".apply-appcent").css("display", "").click(function () {
 							util.jump("#appcent/" + euid);
-						});
-
-						main.find(".apply-setting").css("display", "").click(function () {
-							util.jump("#profile//new/" + euid);
 						});
 
 						var termbtn = main.find(".apply-terminate").css("display", "").click(function () {

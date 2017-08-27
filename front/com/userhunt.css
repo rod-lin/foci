@@ -1,9 +1,26 @@
 .com-userhunt-modal .select-prompt {
 	color: #9C9C9C;
-	margin-bottom: 0.5rem;
+	margin-bottom: 1rem;
 }
 
 .com-userhunt-modal .close-btn {
+	float: right;
+	
+	text-align: center;
+	
+	font-size: 1.2rem;
+	color: #27AE60;
+	
+	cursor: pointer;
+	
+	transition: color 0.2s;
+}
+
+.com-userhunt-modal .close-btn:hover {
+	color: #2ECC71;
+}
+
+.com-userhunt-modal .del-btn {
 	position: absolute;
 
 	width: 18px;
@@ -28,17 +45,17 @@
 	transition: box-shadow 0.3s;
 }
 
-.com-userhunt-modal .close-btn:hover {
+.com-userhunt-modal .del-btn:hover {
 	box-shadow: 0 0 2px #E74C3C;
 }
 
-.com-userhunt-modal .close-btn i {
+.com-userhunt-modal .del-btn i {
 	line-height: 18px;
 }
 
 .com-userhunt-modal .com-avatar {
-	margin-bottom: 0.5rem;
-	margin-right: 0.5rem;
+	margin-bottom: 1rem;
+	margin-right: 1rem;
 }
 
 .com-userhunt-modal .user-search-input {

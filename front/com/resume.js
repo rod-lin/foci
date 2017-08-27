@@ -87,7 +87,7 @@ function (util, rating, event, lang) {
         }
 
         if (config.use_modal) {
-            main.removeClass("sticky").addClass("ui small modal");
+            main.removeClass("sticky").addClass("ui small modal").css("border", "none");
             main.modal();
         } else {
             main.sticky({

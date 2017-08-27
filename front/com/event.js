@@ -181,19 +181,25 @@ define([
 		dom.find(".apply_num").html(parsed.apply_num);
 
 		switch (info.state) {
-			case 0:
+			case foci.evstat.review:
+				dom.find(".flags").html("<div class='flag purple'> \
+					<div class='flag-name'>review</div> \
+				</div>");
+				break;
+			
+			case foci.evstat.draft:
 				dom.find(".flags").html("<div class='flag yellow'> \
 					<div class='flag-name'>draft</div> \
 				</div>");
 				break;
 
-			case 1:
+			case foci.evstat.published:
 				dom.find(".flags").html("<div class='flag green'> \
 					<div class='flag-name'>ongoing</div> \
 				</div>");
 				break;
 
-			case 2:
+			case foci.evstat.terminated:
 				dom.find(".flags").html("<div class='flag blue'> \
 					<div class='flag-name'>ended</div> \
 					<div class='flag-rating'>" + (util.trimFloat(info.rating, 1) || 0) + " / 10</div> \
@@ -538,7 +544,7 @@ define([
 		config = $.extend({}, lim_config, config);
 
 		var main = $(" \
-			<div class='com-eqview ui small modal'> \
+			<div class='com-eqview ui small modal' style='border: none;'> \
 				<div style='position: relative;'> \
 					<div class='cover' style='border-radius: 3px 3px 0 0;'></div> \
 					<div class='cover-edit lang' data-replace='$front.com.event.change_cover'>Change cover</div> \

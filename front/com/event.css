@@ -184,6 +184,12 @@
 	border-color: #F1C40F;
 }
 
+.com-event-single .flag.purple,
+.com-event-single .flag.purple .flag-rating {
+	color: #9B59B6;
+	border-color: #8E44AD;
+}
+
 .com-event-single .description {
 	cursor: pointer;
 	word-wrap: break-word;

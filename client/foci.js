@@ -103,7 +103,7 @@ window.foci = {};
 
 	var server = "";
 
-	var Session = function (lname, uuid, sid) {
+	var Session = function (lname, uuid, sid, is_admin) {
 		if (uuid === undefined) {
 			$.extend(this, lname);
 			return;
@@ -112,11 +112,14 @@ window.foci = {};
 		this.lname = lname;
 		this.uuid = uuid;
 		this.sid = sid;
+		
+		this.is_admin = is_admin;
 	};
 
 	Session.prototype = {};
 	Session.prototype.getUUID = function () { return this.uuid; };
 	Session.prototype.getSID = function () { return this.sid; };
+	Session.prototype.isAdmin = function () { return this.is_admin; };
 
 	var sendSync = function (url, data, method, ext) {
 		var res = $.ajax($.extend({
@@ -280,7 +283,7 @@ window.foci = {};
 				var sid = foci.aesdec(dat.sid, salt);
 				if (!sid) return cb(false, "$def.server_error");
 
-				var ses = new Session(lname, dat.uuid, sid);
+				var ses = new Session(lname, dat.uuid, sid, dat.admin);
 
 				foci.setLocal("session", ses);
 				return cb(true, ses);
@@ -352,4 +355,12 @@ window.foci = {};
 	}
 
 	foci.domready = require("domready");
+	
+	foci.evstat = {
+		all: -Infinity,
+		review: -1,
+		draft: 0,
+		published: 1,
+		terminated: 2
+	};
 })();

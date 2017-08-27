@@ -13,7 +13,8 @@ define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 			radius: "50%",
 			popdir: "top center",
 			shadow: "0 0 2px rgba(0, 0, 0, 0.4)",
-			show_name: false
+			show_name: false,
+			can_jump: true
 		}, config);
 
 		info = login.parseInfo(info || {});
@@ -43,7 +44,7 @@ define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 		});
 
 		ava.click(function () {
-			if (info.uuid) {
+			if (info.uuid && config.can_jump) {
 				if (config.onClick) config.onClick();
 				util.jump("#profile/" + info.uuid);
 			}

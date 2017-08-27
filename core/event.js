@@ -8,6 +8,21 @@ var user = require("./user");
 var tick = require("./tick");
 var config = require("./config");
 
+// the general rule is that if the state < 1, the event is unpublished
+// otherwise it's 'published', i.e., normal users can see it
+// in other circumstances, DO NOT assume the order
+
+// this table should be the same as the one in client/foci.js
+var evstat = {
+	all: -Infinity,
+	review: -1,
+	draft: 0,
+	published: 1,
+	terminated: 2
+};
+
+exports.evstat = evstat;
+
 // event
 var Event = function (euid, owner /* uuid */) {
 	if (owner === undefined) {
@@ -18,7 +33,7 @@ var Event = function (euid, owner /* uuid */) {
 	this.euid = euid;
 
 	this.org = [ owner ];
-	this.state = 0; // draft state
+	this.state = evstat.draft; // draft state
 	// 1 for published
 	// 2 for terminated
 
@@ -153,7 +168,11 @@ Event.prototype.getInfo = function (only) {
 // };
 
 Event.prototype.isDraft = function () {
-	return this.state === 0;
+	return this.state === evstat.draft;
+};
+
+Event.prototype.isUnpublished = function () {
+	return this.state < evstat.published;
 };
 
 Event.prototype.hasApp = function (uuid) {
@@ -318,10 +337,13 @@ Event.format.search = {
 }.extend(Event.format.lim);
 
 Event.query = {
-	euid: (euid, state) => ({ "euid": euid, "state": { $gte: (state == undefined ? 1 : state) } /* published state */ }),
+	euid: (euid, state) => ({
+		"euid": euid,
+		"state": { $gte: (state == undefined ? evstat.published : state) } /* published state */
+	}),
 
 	count_owner: (uuid, after) => {
-		var res = { "org.0": uuid, "state": { $gte: 1 } };
+		var res = { "org.0": uuid, "state": { $gte: evstat.published } };
 
 		if (after) {
 			res["created"] = { $gt: after };
@@ -332,7 +354,7 @@ Event.query = {
 
 	check_owner: (euid, uuid) => ({ "euid": euid, "org.0": uuid }),
 
-	org: uuid => ({ "org": uuid, "state": { $gte: 1 } }),
+	org: uuid => ({ "org": uuid, "state": { $gte: evstat.published } }),
 
 	applied: (uuid, status) => {
 		var q = {
@@ -341,7 +363,7 @@ Event.query = {
 				{ "apply_partic.uuid": uuid }
 			],
 
-			"state": { $gte: 1 }
+			"state": { $gte: evstat.published }
 		};
 
 		if (status) {
@@ -352,9 +374,10 @@ Event.query = {
 		return q;
 	},
 
-	draft: uuid => ({ "org": uuid, "state": 0 }),
+	draft: uuid => ({ "org": uuid, "state": { $lte: evstat.draft } }),
+	review: uuid => ({ /* "org": uuid, */ "state": evstat.review }),
 
-	has_favtag: tags => ({ "favtag": { $in: tags }, "state": { $gte: 1 } }),
+	has_favtag: tags => ({ "favtag": { $in: tags }, "state": { $gte: evstat.published } }),
 
 	keyword: kw => {
 		// TODO: keyword filt
@@ -365,16 +388,16 @@ Event.query = {
 				{ "descr": { $regex: reg } }
 			],
 
-			"state": { $gte: 1 }
+			"state": { $gte: evstat.published }
 		};
 	},
 
-	after: date => ({ start: { $gte: date }, "state": { $gte: 1 } }),
-	before: date => ({ end: { $lte: date }, "state": { $gte: 1 } }),
+	after: date => ({ start: { $gte: date }, "state": { $gte: evstat.published } }),
+	before: date => ({ end: { $lte: date }, "state": { $gte: evstat.published } }),
 
 	// apply
 	apply_check: (euid, type, max) => {
-		var q = { "euid": euid, "state": { $gte: 1 } };
+		var q = { "euid": euid, "state": { $gte: evstat.published } };
 		q["apply_" + type + "." + (max - 1)] = { $exists: 0 };
 		return q;
 	},
@@ -440,10 +463,11 @@ Event.set = {
 		return { $push: q, $inc: { apply_num: 1 } };
 	},
 
-	publish: () => ({ $set: { state: 1 } }),
-	unpublish: () => ({ $set: { state: 0 } }),
+	publish: () => ({ $set: { state: evstat.published } }),
+	unpublish: () => ({ $set: { state: evstat.draft } }),
+	review: () => ({ $set: { state: evstat.review } }),
 
-	terminate: () => ({ $set: { state: 2 } }),
+	terminate: () => ({ $set: { state: evstat.terminated } }),
 
 	status: (euid, uuid, type, status) => {
 		var q = {};
@@ -494,15 +518,15 @@ exports.delEvent = async (euid, uuid) => {
 
 	await exports.checkOwner(euid, uuid);
 
-	var found = await col.findOne(Event.query.euid(euid, 0));
+	var found = await col.findOne(Event.query.euid(euid, evstat.draft));
 
 	if (!found)
 		throw new err.Exc("$core.not_exist($core.word.event)");
 
-	if (found.state > 0)
+	if (found.state >= evstat.published)
 		throw new err.Exc("$core.cannot_delete_published");
 
-	await col.findOneAndDelete(Event.query.euid(euid, 0));
+	await col.findOneAndDelete(Event.query.euid(euid, evstat.draft));
 };
 
 // count how many times has a user created a event(after a certain date)
@@ -545,14 +569,14 @@ exports.checkStaff = async (euid, uuid) => {
 
 exports.exist = async (euid, state) => {
 	var col = await db.col("event");
-	if (!await col.count(Event.query.euid(euid, state == undefined ? 1 : state)))
+	if (!await col.count(Event.query.euid(euid, state == undefined ? evstat.published : state)))
 		throw new err.Exc("$core.not_exist($core.word.event)");
 };
 
 exports.setInfo = async (euid, uuid, info) => {
 	var col = await db.col("event");
 	await exports.checkOwner(euid, uuid);
-	await col.updateOne(Event.query.euid(euid, 0), Event.set.info(info));
+	await col.updateOne(Event.query.euid(euid, evstat.all), Event.set.info(info));
 };
 
 function formatStdLim(conf) {
@@ -643,8 +667,12 @@ exports.getDraft = async (uuid, conf) => {
 	return await getEventGroup(Event.query.draft(uuid), conf);
 };
 
+exports.getReview = async (uuid, conf) => {
+	return await getEventGroup(Event.query.review(uuid), conf);
+};
+
 /*
-	3 types:
+	2 types:
 	1. organizer("org")
 	2. accepted participant/staff("app")
  */
@@ -710,9 +738,9 @@ exports.genResume = async (uuid) => {
 };
 
 exports.search = async (conf, state) => {
-	state = state || 1;
+	state = state === undefined ? evstat.published : state;
 
-	var query = { "state": { $gte: 1 } };
+	var query = { "state": { $gte: state } };
 
 	if (conf.favtag) query.extend(Event.query.has_favtag(conf.favtag));
 	if (conf.kw) query.extend(Event.query.keyword(conf.kw));
@@ -782,32 +810,51 @@ exports.apply = async (euid, uuid, type, form) => {
 	await user.updateResume(uuid);
 };
 
+// only admin can publish events
 exports.publish = async (euid, uuid) => {
-	await exports.checkOwner(euid, uuid);
+	// await exports.checkOwner(euid, uuid);
+	await user.checkAdmin(uuid);
 
 	var col = await db.col("event");
-	var ev = await exports.euid(euid, 0);
+	var ev = await exports.euid(euid, evstat.all);
 
+	if (!ev.isUnpublished())
+		throw new err.Exc("$core.event_not_draft");
+
+	await col.findOneAndUpdate(Event.query.euid(euid, evstat.all), Event.set.publish());
+	await user.updateResume(uuid);
+};
+
+// mark for review
+exports.markReview = async (euid, uuid) => {
+	await exports.checkOwner(euid, uuid);
+	// await user.checkAdmin(uuid);
+
+	var col = await db.col("event");
+	var ev = await exports.euid(euid, evstat.all);
+
+	// need to be EXTACTLY a draft
 	if (!ev.isDraft())
 		throw new err.Exc("$core.event_not_draft");
 
-	await col.findOneAndUpdate(Event.query.euid(euid, 0), Event.set.publish());
+	await col.findOneAndUpdate(Event.query.euid(euid, evstat.all), Event.set.review());
 	await user.updateResume(uuid);
 };
 
 exports.unpublish = async (euid, uuid) => {
 	// TODO: fix this
-	throw new err.Exc("sorry this action is currently disabled :-/");
+	if (!user.isAdmin(uuid))
+		throw new err.Exc("sorry this action is currently disabled :-/");
 	
 	await exports.checkOwner(euid, uuid);
 
 	var col = await db.col("event");
-	var ev = await exports.euid(euid, 0);
+	var ev = await exports.euid(euid, evstat.all);
 
-	if (ev.isDraft())
+	if (ev.isUnpublished())
 		throw new err.Exc("$core.event_is_draft");
 
-	await col.findOneAndUpdate(Event.query.euid(euid, 0), Event.set.unpublish());
+	await col.findOneAndUpdate(Event.query.euid(euid, evstat.all), Event.set.unpublish());
 };
 
 // application list
@@ -844,7 +891,7 @@ exports.terminate = async (euid, uuid) => {
 	await exports.checkOwner(euid, uuid);
 	var ev = await exports.euid(euid);
 
-	if (ev.state != 1)
+	if (ev.state != evstat.published)
 		throw new err.Exc("$core.unable_to_terminate");
 
 	var col = await db.col("event");

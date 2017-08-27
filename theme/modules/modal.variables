@@ -1,3 +1,7 @@
 /*******************************
          Site Overrides
 *******************************/
+
+@border: 1px solid @borderColor;
+@boxShadow: @floatingShadow;
+

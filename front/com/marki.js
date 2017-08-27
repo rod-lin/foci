@@ -153,13 +153,18 @@ define([
         // });
 
         function helpClick() {
+            if (config.use_rich) return;
             main.find(".help.icon").off("click")
             ret.showHelp(function () {
                 main.find(".help.icon").click(helpClick);
             });
         }
-
-        main.find(".help.icon").click(helpClick);
+        
+        if (config.use_rich) {
+            main.find(".help.icon").parent().remove();
+        } else {
+            main.find(".help.icon").click(helpClick);
+        }
 
         // main.find(".help.icon").popup({
         //     content: "About Markdown",
@@ -243,6 +248,11 @@ define([
         };
 
         ret.showHelp = function (cb) {
+            if (config.use_rich) {
+                cb();
+                return;
+            }
+            
             login.session(function (session) {
                 foci.encop(session, {
                     int: "notice",

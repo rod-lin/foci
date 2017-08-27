@@ -65,7 +65,7 @@ app.get("/file/download", int.file.download);
 /* official api */
 
 app.get("/test", util.route(async env => {
-	await notice.push(23, 55, { msg: "Deadpool is coming!", type: "event" });
+	await notice.push(23, { sender: 55, msg: "Deadpool is coming!", type: "event" });
 }));
 
 app.get("/test/enc", util.route(async env => {
@@ -144,6 +144,7 @@ Object.assign(require("repl").start("foci> ").context, {
 	db: require("./core/db"),
 	file: require("./core/file"),
 	util: require("./core/util"),
+	watchdog: require("./core/watchdog"),
 	exit: function () {
 		// if (util.ask("Are you sure to exit? [N/y]: ").toLowerCase() == "y")
 		process.exit();

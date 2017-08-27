@@ -48,6 +48,7 @@ define([
 						<i class="cancel icon"></i> \
 						<a class="menu-link" href="#cover">HOME</a> \
 						<a class="menu-link" href="#search">PLAZA</a> \
+						<a class="menu-link" href="#contact">CONTACT</a> \
 					</div> \
 				</div> \
 				<div class="banner-view"> \
@@ -107,7 +108,9 @@ define([
 
 			{
 				cont: "<i class='users text outline icon'></i> Club",
-				onSelect: function () {}
+				onSelect: function () {
+					util.emsg("coming soon", "info");
+				}
 			},
 		], { position: "bottom left" });
 			// .click(function () { util.jump("#profile//new"); })
@@ -152,6 +155,11 @@ define([
 
 		var pmview = pm.qview(main.find(".pm-popup"));
 		var ntview = notice.init(main.find(".notice-popup"));
+		
+		login.session(function (session) {
+			if (session.isAdmin())
+				ntview.setAdmin();
+		});
 
 		var showMenu, hideMenu;
 

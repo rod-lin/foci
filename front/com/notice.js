@@ -2,17 +2,25 @@
 
 "use strict";
 
-define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, login, lang, xfilt) {
+define([
+	"com/util", "com/login", "com/lang",
+	"com/xfilt", "com/userhunt", "com/popselect"
+], function (util, login, lang, xfilt, userhunt, popselect) {
 	foci.loadCSS("com/notice.css");
 
 	// notice editor
 	function editor(config) {
-		config = $.extend({}, config);
+		config = $.extend({
+			is_admin: false,
+			/* onSend */
+			/* logo */
+			/* prompt */
+		}, config);
 
 		var main = $(" \
 			<div class='com-notice-edit ui small modal'> \
-				<div style='padding: 3rem; padding-bottom: 0;'> \
-					<div class='top-prompt'>Hello</div> \
+				<div style='padding: 2.5rem; padding-bottom: 0;'> \
+					<div class='top-prompt'></div> \
 					<div class='edit-header'> \
 						<div class='logo'></div> \
 						<div style='width: 100%; padding-left: 5rem;'> \
@@ -22,13 +30,57 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 					<textarea class='msg input-no-style' placeholder='Message'></textarea> \
 				</div> \
 				<div style='text-align: right;'> \
-					<div class='ui buttons' style='padding: 1rem;'> \
+					<div class='ui buttons' style='padding: 1rem 2rem 2rem 0;'> \
 						<button class='ui button cancel-btn'>Cancel</button> \
 						<button class='ui blue button send-btn'>Send</button> \
 					</div> \
 				</div> \
 			</div> \
 		");
+		
+		var selected_sender = null;
+
+		if (config.is_admin) {
+			main.find(".logo").addClass("selectable");
+			
+			function selectSender(sender) {
+				return function () {
+					login.session(function (session) {
+						foci.encop(session, {
+							int: "notice",
+							action: "info",
+							type: "system",
+							sender: sender
+						}, function (suc, dat) {
+							if (suc) {
+								if (dat.logo) {
+									if (!dat.url)
+										dat.logo = foci.download(dat.logo);
+								} else dat.logo = "/img/def/logo.jpg";
+								
+								util.bgimg(main.find(".logo"), dat.logo);
+								
+								selected_sender = sender;
+							} else {
+								util.emsg(dat);
+							}
+						});
+					});
+				};
+			}
+			
+			popselect.init(main.find(".logo"), [
+				{
+					cont: "Helper",
+					onSelect: selectSender("helper")
+				},
+				
+				{
+					cont: "Review",
+					onSelect: selectSender("review")
+				}
+			]);
+		}
 
 		if (config.logo)
 			util.bgimg(main.find(".logo"), config.logo);
@@ -62,6 +114,7 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 				main.find(".send-btn").addClass("loading");
 
 				config.onSend({
+					sender: selected_sender,
 					title: main.find(".title-input").val(),
 					msg: main.find(".msg").val()
 				}, function (suc) {
@@ -110,7 +163,7 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 				</div> \
 				<div class='cont'></div> \
 				<div style='text-align: right;'> \
-					<div class='ui right buttons' style='float: right; padding: 1rem;'> \
+					<div class='ui right buttons' style='float: right; padding: 1rem 2rem 2rem 0;'> \
 						<button class='ui button'>Contact</button> \
 						<button class='ui green button yep-btn'>Yep</button> \
 					</div> \
@@ -153,7 +206,9 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 
 	function init(cont, config) {
 		cont = $(cont);
-		config = $.extend({}, config);
+		config = $.extend({
+			is_admin: false
+		}, config);
 
 		var main = $(" \
 			<div class='com-notice'> \
@@ -171,6 +226,7 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 					<div class='ui loader'></div> \
 				</div> \
 				<div class='ui two bottom attached buttons'> \
+					<button class='ui basic button new-btn' style='display: none !important;'>new</button> \
 					<button class='ui basic button refresh-btn'>refresh</button> \
 				</div> \
 			</div> \
@@ -240,16 +296,22 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 			return item;
 		}
 
-		function genPreview(msg, hist) {
+		function genPreview(msg, hist, is_new) {
 			var item = $(" \
 				<div class='nt-item'> \
-					<div class='sender-logo'></div> \
+					<div class='sender-logo'> \
+						<div class='nt-reddot'></div> \
+					</div> \
 					<div class='nt-preview'> \
 						<div class='sender-name'></div> \
 						<div class='sender-msg'></div> \
 					</div> \
 				</div> \
 			");
+			
+			if (is_new) {
+				item.addClass("unread");
+			}
 
 			item.find(".sender-msg").html(msg.title + ": " + msg.msg);
 
@@ -268,7 +330,7 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 						if (dat.logo) {
 							if (!dat.url)
 								dat.logo = foci.download(dat.logo);
-						} else dat.logo = "/img/def/logo.jpg"
+						} else dat.logo = "/img/def/logo.jpg";
 
 						dat.name = lang.msg(dat.name);
 
@@ -276,6 +338,8 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 						item.find(".sender-name").html(dat.name);
 
 						item.click(function () {
+							item.removeClass("unread");
+							
 							util.bgimg(main.find(".nt-all .nt-tbar .sender-logo"), dat.logo);
 							main.find(".nt-all .nt-tbar .sender-name").html(dat.name);
 
@@ -296,6 +360,8 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 
 			return item;
 		}
+		
+		var new_count = 0;
 
 		function refresh() {
 			main.removeClass("view-all");
@@ -314,8 +380,10 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 						main.find(".nt-box").html("");
 
 						for (var i = 0; i < parsed.preview.length; i++) {
-							main.find(".nt-box").append(genPreview(parsed.preview[i], parsed.dat[i]));
+							main.find(".nt-box").append(genPreview(parsed.preview[i], parsed.dat[i], i < new_count));
 						}
+						
+						new_count = 0;
 
 						if (!parsed.preview.length)
 							main.find(".nt-box").html("<div class='prompt'>no notice</div>");
@@ -336,8 +404,10 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 					int: "notice",
 					action: "updatel"
 				}, function (suc, dat) {
-					if (suc) cb(true);
-					else cb(false);
+					if (suc) {
+						new_count++;
+						cb(true);
+					} else cb(false);
 
 					util.nextTick(function () {
 						keep(cb);
@@ -347,6 +417,64 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 		}
 
 		main.find(".refresh-btn").click(refresh);
+		
+		function newSystemNotice() {
+			var select_btn = $("<a>Select user</a>");
+			var selected = [];
+			
+			var edit = editor({
+				is_admin: true,
+				prompt: select_btn,
+				onSend: function (dat, cb) {
+					if (!dat.sender) {
+						util.emsg("no sender");
+						cb(false);
+						return;
+					}
+					
+					login.session(function (session) {
+						foci.encop(session, {
+							int: "notice",
+							action: "send",
+							type: "system",
+
+							sender: dat.sender,
+							uuids: selected,
+
+							title: dat.title,
+							msg: dat.msg
+						}, function (suc, dat) {
+							if (suc) {
+								util.emsg("notice has been sent", "success");
+							} else {
+								util.emsg(dat);
+							}
+
+							cb(suc);
+						});
+					});
+				}
+			});
+			
+			select_btn.click(function () {
+				userhunt.modal(selected, function (uuids) {
+					if (uuids.length) {
+						select_btn.html(uuids.length + " user" + (uuids.length > 1 ? "s" : "") + " selected");
+					} else {
+						select_btn.html("Select user");
+					}
+					
+					selected = uuids;
+				}, {
+					prompt: "Send notice to",
+					just_one: false
+				});
+			});
+		}
+		
+		if (config.is_admin) {
+			main.find(".new-btn").click(newSystemNotice);
+		}
 
 		cont.append(main);
 
@@ -364,6 +492,7 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 					action: "update"
 				}, function (suc, dat) {
 					if (suc) {
+						new_count += dat;
 						cb(dat);
 					} else {
 						util.emsg(dat);
@@ -375,6 +504,11 @@ define([ "com/util", "com/login", "com/lang", "com/xfilt" ], function (util, log
 
 		ret.keepUpdate = function (cb) {
 			keep(cb);
+		};
+
+		ret.setAdmin = function () {
+			main.find(".new-btn").css("display", "");
+			main.find(".new-btn").off("click").click(newSystemNotice);
 		};
 
 		return ret;

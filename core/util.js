@@ -1,11 +1,13 @@
 "use strict";
 
-var crypto = require("crypto");
-var NodeRSA = require("node-rsa");
 var Env = require("./env").Env;
 var err = require("./err");
 var config = require("./config");
+var watchdog = require("./watchdog");
 
+var url = require("url");
+var crypto = require("crypto");
+var NodeRSA = require("node-rsa");
 var readline = require("readline-sync");
 
 Object.prototype.extend = function (obj) {
@@ -43,6 +45,7 @@ exports.route = (handler) => async (req, res) => {
 
 	env.init(async () => {
 		try {
+			watchdog.logRequest(env.ip(), url.parse(req.url).pathname);
 			return await handler(env);
 		} catch (e) {
 			if (e instanceof err.Exc) {

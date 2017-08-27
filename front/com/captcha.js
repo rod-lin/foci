@@ -24,6 +24,7 @@ define([ "com/util" ], function (util) {
         var has_hidden = false;
         
         main.modal({
+            allowMultiple: true,
             onHide: function () {
                 if (has_hidden) return;
                 has_hidden = true;

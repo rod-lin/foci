@@ -34,6 +34,7 @@ var dict = module.exports = {
 		"core.word.school": "school name",
 		"core.word.tag": "tag",
 		"core.word.sortby": "sort condition",
+		"core.word.system_sender": "system sender",
 
 		"core.word.staff": "staff",
 		"core.word.partic": "participant",
@@ -162,7 +163,7 @@ var dict = module.exports = {
 		"front.sub.profile.new.detail": "Detail",
 		"front.sub.profile.new.detail_subtitle": "Additional info",
 		"front.sub.profile.new.publish": "Publish",
-		"front.sub.profile.new.publish_subtitle": "Publish event",
+		"front.sub.profile.new.publish_subtitle": "Submit event",
 		"front.sub.profile.new.other": "Other",
 		"front.sub.profile.new.other_subtitle": "Additional actions",
 
@@ -188,7 +189,7 @@ var dict = module.exports = {
 
 		"front.sub.profile.change_event_state": "Change event state",
 		"front.sub.profile.delete_event": "Delete event",
-		"front.sub.profile.delete_event.prompt": "ALL data will be lost. Only draft event can be deleted.<br>If you want to delete a public event, please contact us for human assistance.",
+		"front.sub.profile.delete_event.prompt": "ALL data will be lost. Only draft event can be deleted.<br>If you want to delete a public event, please contact(email) us for assistance.",
 		"front.sub.profile.delete_event_ask": "Are you sure to delete this event",
 		"front.sub.profile.delete": "Delete",
 		"front.sub.profile.help": "Help",
@@ -208,10 +209,17 @@ var dict = module.exports = {
 		"front.sub.profile.no_selected": "you haven't selected any $1",
 		"front.sub.profile.sure_to_leave": "are you sure to leave",
 		"front.sub.profile.publish_event": "publish your event now for everyone!",
+		"front.sub.profile.submit_event_review": "submit draft for review",
 		"front.sub.profile.custom_event_prompt": "click the picture to change cover and the add button below to add tags",
 		"front.sub.profile.you_can_go_tab_to_view": "you can now go to the '$1' tab to view your event",
 		"front.sub.profile.illegal_uuid": "illegal user id",
 		"front.sub.profile.save_draft": "draft/event saved",
+		
+		"front.sub.profile.under_review": "event is under review, please wait",
+		"front.sub.profile.event_published": "event is published",
+		"front.sub.profile.event_terminated": "event is terminated",
+		
+		"front.sub.profile.app_cent": "$front.sub.event.app_cent",
 
 		"front.sub.appcent.staff": "$nat.cap($core.word.staff)",
 		"front.sub.appcent.partic": "$nat.cap($core.word.partic)",
@@ -411,7 +419,7 @@ dict["chinese"] = {}.extend(dict["english"]).extend({
 		"front.sub.profile.new.detail": "详细信息",
 		"front.sub.profile.new.detail_subtitle": "活动注意事项",
 		"front.sub.profile.new.publish": "发布",
-		"front.sub.profile.new.publish_subtitle": "发布活动",
+		"front.sub.profile.new.publish_subtitle": "发布活动/活动审核",
 		"front.sub.profile.new.other": "其他",
 		"front.sub.profile.new.other_subtitle": "其他操作",
 
@@ -450,6 +458,7 @@ dict["chinese"] = {}.extend(dict["english"]).extend({
 		"front.sub.profile.no_selected": "你还没有选$1",
 		"front.sub.profile.sure_to_leave": "你确定要离开吗",
 		"front.sub.profile.publish_event": "发布活动！",
+		"front.sub.profile.submit_event_review": "提交审核",
 		"front.sub.profile.custom_event_prompt": "点击图片改封面。点击下方加号修改标签",
 		"front.sub.profile.you_can_go_tab_to_view": "你可以去'$1'标签查看发布的活动",
 		"front.sub.profile.illegal_uuid": "非法用户",

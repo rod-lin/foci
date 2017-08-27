@@ -21,8 +21,15 @@ var alipay = require("./alipay");
 var captcha = require("./captcha");
 var comment = require("./comment");
 var template = require("./template");
+var watchdog = require("./watchdog");
 
 require("./binds");
+
+var checkCaptcha = async (env) => {
+	var args = util.checkArg(env.query, {});
+	// capans is automatically scanned
+	return await captcha.check(env, () => watchdog.testTraffic(env.ip()), args.capans);
+};
 
 // var moment = require("moment");
 
@@ -37,6 +44,8 @@ exports.favtag = util.route(async env => {
 });
 
 exports.dict = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	
 	var args = util.checkArg(env.query, { "lang": "string" });
 
 	if (!dict.hasOwnProperty(args.lang))
@@ -48,6 +57,7 @@ exports.dict = util.route(async env => {
 var _cover = {};
 
 _cover.pboard = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
 	env.qsuc(await cover.getPBoard());
 });
 
@@ -79,6 +89,8 @@ var _mail = {};
 _mail.vercode = util.route(async env => {
 	var args = util.checkArg(env.query, { "email": "string", "forgot": { opt: true, type: "bool" } });
 
+	if (!await captcha.check(env, () => false, args.capans)) return;
+
 	if (!args.forgot) {
 		await user.checkNewUserName(args.email);
 	} else {
@@ -94,6 +106,8 @@ var _user = {};
 var _pub = {};
 
 _user.new = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	
 	var args = util.checkArg(env.query, {
 		// "dname": "string",
 		"lname": "string",
@@ -112,6 +126,8 @@ _user.new = util.route(async env => {
 
 // reset password
 _user.reset = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	
 	var args = util.checkArg(env.query, {
 		// "dname": "string",
 		"lname": "string",
@@ -129,6 +145,8 @@ _user.reset = util.route(async env => {
 });
 
 _user.login = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	
 	var args = util.checkArg(env.query, {
 		"lname": "string",
 		"pkey": "string",
@@ -152,7 +170,8 @@ _user.login = util.route(async env => {
 
 	env.qsuc({
 		uuid: res.uuid,
-		sid: sid
+		sid: sid,
+		admin: await user.isAdmin(res.uuid)
 	});
 });
 
@@ -176,6 +195,8 @@ _user.csid = util.route(async env => {
 var T_NEED_HANG = {};
 
 _user.encop = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	
 	var args = util.checkArg(env.query, { "uuid": "int", "enc": "string" });
 
 	// if (!await captcha.check(env, () => {}, args.capans)) return;
@@ -223,6 +244,7 @@ _user.encop = util.route(async env => {
 	}
  */
 _user.info = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
 	var args = util.checkArg(env.query, { "uuid": "int" });
 	var usr = await user.uuid(args.uuid);
 
@@ -230,6 +252,7 @@ _user.info = util.route(async env => {
 });
 
 _user.org = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
 	var args = util.checkArg(env.query, {}.extend(event.Event.format.lim).extend({
 		"uuid": "int"
 	}));
@@ -239,6 +262,7 @@ _user.org = util.route(async env => {
 });
 
 _user.applied = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
 	var args = util.checkArg(env.query, {}.extend(event.Event.format.lim).extend({
 		"uuid": "int"
 	}));
@@ -248,11 +272,13 @@ _user.applied = util.route(async env => {
 });
 
 _user.search = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
 	var args = util.checkArg(env.query, { kw: "string" });
 	env.qsuc(await user.search(args.kw));
 });
 
 _user.resume = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
 	var args = util.checkArg(env.query, { uuid: "int" });
 	env.qsuc(await user.getResumeCache(args.uuid));
 });
@@ -260,17 +286,20 @@ _user.resume = util.route(async env => {
 var _event = {};
 
 _event.info = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
 	var args = util.checkArg(env.query, { "euid": "number", "only": { type: "object", opt: true } });
 	var ev = await event.euid(args.euid);
 	env.qsuc(ev.getInfo(args.only));
 });
 
 _event.search = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
 	var args = util.checkArg(env.query, event.Event.format.search, true);
 	env.qsuc(await event.search(args));
 });
 
 _event.comment = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
 	var args = util.checkArg(env.query, { euid: "int", skip: { opt: true, type: "int" }, limit: { opt: true, type: "int" } });
 	env.qsuc(await comment.get(args.euid, { skip: args.skip, limit: args.limit }));
 });
@@ -278,6 +307,8 @@ _event.comment = util.route(async env => {
 var _file = {};
 
 _file.upload = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	
 	if (!env.file.file)
 		throw new err.Exc("no file");
 
@@ -295,6 +326,8 @@ _file.upload = util.route(async env => {
 });
 
 _file.download = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	
 	var args = util.checkArg(env.query, { "chsum": "string" });
 	var ret = await file.getFile(args.chsum);
 
@@ -370,6 +403,14 @@ encop.user = async (env, usr, query) => {
 // event
 encop.event = async (env, usr, query) => {
 	switch (query.action) {
+		case "info":
+			var args = util.checkArg(query, { euid: "int", state: { type: "int", opt: true } });
+			
+			// only admin can see all events
+			await user.checkAdmin(usr.getUUID());
+			
+			return (await event.euid(args.euid, args.state)).getInfo();
+		
 		case "new":
 			var ev = await event.newEvent(usr.getUUID());
 			return ev.getEUID();
@@ -380,6 +421,11 @@ encop.event = async (env, usr, query) => {
 			return;
 
 		case "publish":
+			var args = util.checkArg(query, { euid: "int" });
+			await event.publish(args.euid, usr.getUUID());
+			return;
+			
+		case "setreview":
 			var args = util.checkArg(query, { euid: "int" });
 
 			var lv = usr.getLevel();
@@ -392,9 +438,14 @@ encop.event = async (env, usr, query) => {
 
 			// console.log(count);
 
-			await event.publish(args.euid, uuid);
+			await event.markReview(args.euid, uuid);
 
 			return;
+			
+		case "review":
+			var args = util.checkArg(query, event.Event.format.lim);
+			await user.checkAdmin(usr.getUUID());
+			return await event.getReview(usr.getUUID(), args);
 
 		case "unpublish":
 			var args = util.checkArg(query, { euid: "int" });
@@ -423,7 +474,7 @@ encop.event = async (env, usr, query) => {
 			var args = util.checkArg(query, { euid: "int" });
 			var setq = util.checkArg(query, event.Event.format.info, true);
 
-			await event.exist(args.euid, 0);
+			await event.exist(args.euid, event.evstat.all);
 			await event.setInfo(args.euid, usr.getUUID(), setq);
 
 			return;
@@ -519,12 +570,15 @@ encop.notice = async (env, usr, query, next) => {
 		case "send":
 			var args = util.checkArg(query, {
 				type: "string",
-				uuids: "array", euid: "int",
+				uuids: "array",
+				
+				sender: "string",
+				
 				title: util.checkArg.lenlim(config.lim.notice.title, "$core.too_long($core.word.title)"),
 				msg: util.checkArg.lenlim(config.lim.notice.text, "$core.too_long($core.word.msg)")
 			});
 
-			await notice.sendGroup(args.euid, usr.getUUID(), args.uuids, args);
+			await notice.sendGroup(args.type, args.sender, usr.getUUID(), args.uuids, args);
 
 			return;
 

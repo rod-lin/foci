@@ -139,6 +139,13 @@
 								</div>
 							</div>
 						</div>
+						
+						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.enable_app">Manage</h3>
+						<div class="ui attached segment">
+							<div class="field">
+								<button class="ui blue button goto-app-cent lang" data-replace="$front.sub.profile.app_cent" type="button">Application Center</button>
+							</div>
+						</div>
 
 						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.limitation">Limitations</h3>
 						<div class="ui attached segment">
@@ -187,7 +194,7 @@
 						</style>
 						<div class="vcenter" style="display: inline-block;">
 							<div class="prompt"></div>
-							<div class="ui primary button publish-btn">Publish!</div>
+							<div class="ui primary button publish-btn">Submit</div>
 						</div>
 					</div>
 				</div>
@@ -208,7 +215,7 @@
 							<button class="ui basic button lang" data-replace="$front.sub.profile.help">Help</button>
 						</div>
 					</div>
-					<div class="ui attached segment">
+					<div class="ui attached segment admin-review-block">
 						<p>
 							<b class="lang" data-replace="$front.sub.profile.unpublish">Unpublish</b><br>
 							<span class="lang" data-replace="$front.sub.profile.unpublish_prompt">
@@ -217,7 +224,29 @@
 							</span>
 						</p>
 						<div class="ui field">
-							<button class="ui red basic button unpublish-btn lang" data-replace="$front.sub.profile.unpublish">Unpublish</button>
+							<button class="ui blue basic button unpublish-btn lang" data-replace="$front.sub.profile.unpublish">Unpublish</button>
+						</div>
+					</div>
+					<div class="ui attached segment admin-review-block">
+						<p>
+							<b class="lang">Publish</b><br>
+							<span class="lang">
+								Review passed. Publish this event.
+							</span>
+						</p>
+						<div class="ui field">
+							<button class="ui blue basic button admin-publish-btn lang">Publish</button>
+						</div>
+					</div>
+					<div class="ui attached segment admin-review-block">
+						<p>
+							<b class="lang">Notice</b><br>
+							<span class="lang">
+								Send notice to the organizer.
+							</span>
+						</p>
+						<div class="ui field">
+							<button class="ui green basic button admin-notice-btn lang">Write</button>
 						</div>
 					</div>
 				</div>
@@ -589,13 +618,13 @@
 			"com/map", "com/lang", "com/editable",
 			"com/tagbox", "com/pm", "com/tip",
 			"com/formi", "com/marki", "com/resume",
-			"com/helper"
+			"com/helper", "com/notice"
 		], function (
 			env, util, event, xfilt,
 			pages, tab, login, event,
 			upload, map, lang, editable,
 			tagbox, pm, tip, formi, marki,
-			resume, helper
+			resume, helper, notice
 		) {
 			var init = function (info, is_self, init_page, page_arg) {
 				// foci.get("/user/resume", {
@@ -1361,10 +1390,31 @@
 
 							onInit: function (info) {
 								// reset publish message
-								setPublishMsg(m("$front.sub.profile.publish_event").capital());
-
-								new_tab.find(".ev-content .protocol .publish-btn").removeClass("disabled");
-								published = false;
+								switch (info.state) {
+									case foci.evstat.review:
+										setPublishMsg(m("$front.sub.profile.under_review").capital());
+										new_tab.find(".ev-content .protocol .publish-btn").addClass("disabled");
+										published = true;
+										break;
+									
+									default:
+									case foci.evstat.draft:
+										setPublishMsg(m("$front.sub.profile.submit_event_review").capital());
+										new_tab.find(".ev-content .protocol .publish-btn").removeClass("disabled");
+										published = false;
+										break;
+										
+									case foci.evstat.published:
+										setPublishMsg(m("$front.sub.profile.event_published").capital());
+										new_tab.find(".ev-content .protocol .publish-btn").addClass("disabled");
+										published = true;
+										break;
+										
+									case foci.evstat.terminated:
+										setPublishMsg(m("$front.sub.profile.event_terminated").capital());
+										published = true;
+										break;
+								}
 
 								return false;
 							}
@@ -1391,8 +1441,8 @@
 										}
 									});
 								});
-
-								main.find(".unpublish-btn").off("click").click(function () {
+								
+								function unpublish(euid) {
 									login.session(function (session) {
 										foci.encop(session, {
 											int: "event",
@@ -1407,6 +1457,64 @@
 											}
 										});
 									});
+								}
+
+								main.find(".unpublish-btn").off("click").click(function () {
+									unpublish(euid);
+								});
+								
+								login.session(function (session) {
+									if (session.isAdmin()) {
+										main.find(".admin-review-block").css("display", "");
+										
+										main.find(".admin-publish-btn").off("click").click(function () {
+											foci.encop(session, {
+												int: "event",
+												action: "publish",
+												euid: euid
+											}, function (suc, dat) {
+												if (suc) {
+													util.emsg("event published", "info");
+												} else {
+													util.emsg(dat);
+												}
+											});
+										});
+										
+										// send notice to the organizer
+										main.find(".admin-notice-btn").off("click").click(function () {
+											var org = info.org ? info.org[0] : uuid; // no org -> I created myself(why? no idea)
+											var prompt = "To the <a href='#profile/" + org + "'>organizer</a>";
+											
+											notice.editor({
+												prompt: prompt,
+												is_admin: true,
+												onSend: function (dat, cb) {
+													foci.encop(session, {
+														int: "notice",
+														action: "send",
+														type: "system",
+
+														sender: dat.sender,
+														uuids: [ org ],
+
+														title: dat.title,
+														msg: dat.msg
+													}, function (suc, dat) {
+														if (suc) {
+															util.emsg("notice has been sent", "success");
+														} else {
+															util.emsg(dat);
+														}
+
+														cb(suc);
+													});
+												}
+											});
+										});
+									} else {
+										main.find(".admin-review-block").css("display", "none");
+									}
 								});
 							}
 						}
@@ -1596,7 +1704,7 @@
 						login.session(function (session) {
 							foci.encop(session, {
 								int: "event",
-								action: "publish",
+								action: "setreview",
 								euid: euid
 							}, function (suc, dat) {
 								btn.removeClass("loading");
@@ -1605,7 +1713,7 @@
 									btn.addClass("disabled");
 									main.find(".unpublish-btn").removeClass("disabled");
 									published = true;
-									setPublishMsg(m("$front.sub.profile.success! $front.sub.profile.you_can_go_tab_to_view($front.sub.profile.organized)").capital());
+									setPublishMsg(m("$front.sub.profile.under_review").capital());
 								} else {
 									util.emsg(dat);
 								}
@@ -1641,6 +1749,10 @@
 						onChange: function () {
 							changed.apply_open = true;
 						}
+					});
+					
+					new_tab.find(".goto-app-cent").click(function () {
+						util.jump("#appcent/" + euid);
 					});
 				};
 
@@ -1687,7 +1799,7 @@
 					};
 
 					tabs["new"] = {
-						order: 4,
+						order: 5,
 						name: m("$front.sub.profile.new"),
 						float: "right",
 						style: "transparent icon-btn",
@@ -1721,6 +1833,22 @@
 
 						onChange: onChange
 					};
+					
+					login.session(function (session) {
+						if (session.isAdmin()) {
+							tabs["review"] = {
+								order: 4,
+								name: "Review",
+								onShow: function (show) {
+									tbar.setTitle("Profile", info.dname, "Review");
+									eventTabOnShow("review", true, function (info) {
+										loadDraft(info);
+										tb.to("new");
+									}, null, show);
+								}
+							};
+						}
+					});
 
 					pt.jump(onChange);
 				} else {
@@ -1854,22 +1982,29 @@
 							if (isNaN(euid)) {
 								util.emsg("$front.sub.event.illegal_euid");
 							} else {
-								foci.get("/event/info", { euid: euid }, function (suc, dat) {
-									if (suc) {
-										if (dat.org.indexOf(uuid) == -1) {
-											loadDraft(dat, function () {
-												if (page_arg[1]) {
-													setDraftStep(page_arg[1]);
-												}
-											});
+								login.session(function (session) {
+									foci.encop(session, {
+										int: "event",
+										action: "info",
+										euid: euid,
+										state: foci.evstat.review
+									}, function (suc, dat) {
+										if (suc) {
+											if (dat.org.indexOf(uuid) == -1) {
+												loadDraft(dat, function () {
+													if (page_arg[1]) {
+														setDraftStep(page_arg[1]);
+													}
+												});
 
-											tb.to("new");
+												tb.to("new");
+											} else {
+												util.jump("#profile");
+											}
 										} else {
-											util.jump("#profile");
+											util.emsg(dat);
 										}
-									} else {
-										util.emsg(dat);
-									}
+									});
 								});
 							}
 						} else {

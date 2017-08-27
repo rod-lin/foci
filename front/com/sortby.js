@@ -50,8 +50,11 @@ define([ "com/util", "com/lang" ], function (util, lang) {
 				main.append(genCond(k, cond[k]));
 			}
 		}
-
-		cont.append(main);
+		
+		// TODO: temp fix!!!
+		setTimeout(function () {
+			cont.append(main);
+		}, 1000);
 
 		var ret = {
 			get: function () {
