@@ -1,4 +1,5 @@
 <div id="sub-cover">
+	<div class="search-box"></div>
 	<div class="main-wrap">
 		<div class="show-board border trim"></div>
 		<div class="push-board">
@@ -20,8 +21,6 @@
 <style>
 	#sub-cover {
 		text-align: center;
-		padding: 2rem;
-		
 		background: rgb(253, 253, 254);
 	}
 
@@ -29,6 +28,8 @@
 		display: inline-block;
 		width: auto;
 		max-width: 100%;
+		
+		padding: 2rem;
 	}
 
 	#sub-cover .trim {
@@ -114,7 +115,7 @@
 	}
 
 	@media only screen and (max-width: 768px) {
-		#sub-cover {
+		#sub-cover .main-wrap {
 			padding: 1rem;
 		}
 	}
@@ -152,13 +153,25 @@
 		require([
 			"com/env", "com/util", "com/pboard",
 			"com/event", "com/tagbox", "com/userstat",
-			"com/copyright"
-		], function (env, util, pboard, event, tagbox, userstat, copyright) {
+			"com/copyright", "com/search"
+		], function (env, util, pboard, event, tagbox, userstat, copyright, search) {
 			var tbar = env.get("tbar");
 			tbar.setTitle("Home");
+			
+			main.ready(function () {
+				util.scrollTop("#part", function () {
+					tbar.hideSearch();
+				}, function () {
+					tbar.showSearch();
+				}, main.find(".search-box").outerHeight(true));
+			});
+			
 			// tbar.setStyle("light-simple");
 
 			var push_board = main.find(".push-board-set");
+
+			// search init
+			var cover_search = search.cover(main.find(".search-box"));
 
 			env.favtag(function (tags) {
 				if (tags)

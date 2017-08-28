@@ -189,12 +189,14 @@ define(function () {
 		});
 	};
 
-	util.scrollTop = function (elem, cb) {
+	util.scrollTop = function (elem, cb, alt, offset) {
 		$(elem).scroll(function () {
-			if ($(elem).scrollTop() < 3) {
+			if ($(elem).scrollTop() < offset) {
 				cb();
+			} else {
+				alt();
 			}
-		});
+		}).scroll();
 	};
 
 	util.bottom = function (elem) {
@@ -212,7 +214,9 @@ define(function () {
 		var onscr = function () {
 			var now = $(this).scrollTop();
 
-			if (Math.abs(now - cur) > 20) {
+			// scrolling down need to be faster to trigger
+			if ((now > cur && now - cur > 70) ||
+				(cur > now && cur - now > 10)) {
 				cb(now - cur, cur);
 			}
 

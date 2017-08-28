@@ -104,7 +104,7 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 					<div class='top-banner'> \
 						<div class='banner-cont'> \
 							<div style='font-weight: bold;' class='lang' data-replace='$core.foci'>Foci</div> \
-							<div style='font-size: 60%; margin-top: 0.8rem;' class='lang' data-replace='$front.com.login.logo_prompt'>Experiences worth sharing</div> \
+							<div style='font-size: 60%; margin-top: 0.8rem;' class='lang' data-replace='$front.com.login.logo_prompt'>Where events begin</div> \
 						</div> \
 					</div> \
 					<!--div class='avatar' style='background-image: url(\"/img/deficon.jpg\");'></div--> \

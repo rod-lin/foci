@@ -1,0 +1,44 @@
+/* select date */
+
+.com-seledate {
+    display: inline-block;
+    padding: 0.6rem 0.8rem;
+    
+    margin-bottom: 0.5rem;
+    
+    font-size: 0.7rem;
+	line-height: 0.9rem;
+    
+    text-transform: uppercase;
+    
+    font-family: foci-tag;
+    
+    color: #666666;
+    
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 3px;
+    
+    cursor: pointer;
+    
+    transition: border-color 0.3s;
+}
+
+.com-seledate:hover {
+    border-color: rgba(0, 0, 0, 0.22);
+}
+
+.com-seledate.error {
+    border: 1px solid #E74C3C;
+    color: #E74C3C;
+}
+
+.com-seledate.error:hover {
+    border: 1px solid #E74C3C;
+}
+
+.com-seledate .cancel.icon {
+    color: #999999;
+    margin-right: 0 !important;
+    margin-left: 0.7em;
+}

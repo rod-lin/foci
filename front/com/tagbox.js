@@ -7,15 +7,6 @@ define([ "com/util" ], function (util) {
 	foci.loadCSS("com/tagbox.css");
 	foci.loadCSS("com/imgtag.css");
 
-	function genTag(id, obj) {
-		var tag = $("<div class='tag' data-value='" + id + "'>" + obj.name.toUpperCase() + "<i class='deltag cancel icon'></i></div>");
-		tag.click(function () {
-			util.jump("#search//" + id);
-		});
-		
-		return tag;
-	}
-
 	function init(cont, tags /* all tags allowed */, config) {
 		cont = $(cont);
 		config = $.extend({
@@ -43,6 +34,17 @@ define([ "com/util" ], function (util) {
 		var addtag = main.find(".addtag");
 
 		var tag_count = 0;
+		
+		function genTag(id, obj) {
+			var tag = $("<div class='tag' data-value='" + id + "'>" + obj.name.toUpperCase() + "<i class='deltag cancel icon'></i></div>");
+			
+			tag.click(function () {
+				if (!main.hasClass("edit"))
+					util.jump("#search//" + id);
+			});
+			
+			return tag;
+		}
 
 		function addTag(name) {
 			if (cur.indexOf(name) != -1) return;

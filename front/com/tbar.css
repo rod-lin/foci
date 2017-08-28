@@ -188,10 +188,20 @@
 }
 
 .com-tbar .menu-link {
+	position: relative;
 	cursor: pointer;
 	margin-left: 1em;
 	font-size: 0.8em;
 	color: white;
+}
+
+/* only when search is hidden */
+.com-tbar .search-box .menu-link {
+	color: black;
+	line-height: 2.7rem;
+	font-size: 0.9em;
+
+	left: -14rem;
 }
 
 .com-tbar .search-box .prompt {
@@ -203,6 +213,16 @@
 	font-family: inherit !important;
 
 	transition: opacity 0.3s;
+}
+
+.com-tbar .search-box {
+	opacity: 1;
+	transition: opacity 0.2s;
+}
+
+.com-tbar.hide-search .search-box {
+	opacity: 0 !important;
+	pointer-events: none;
 }
 
 .com-tbar .search-box .menu-btn {
@@ -241,6 +261,33 @@
 
 .com-tbar .search-box .menu-btn .site-logo.admin-logo {
 
+}
+
+.com-tbar .site-logo-name {
+	position: absolute;
+	font-family: foci-logo-name;
+	left: 2rem;
+	
+	font-size: 1.5rem;
+	
+	line-height: 2.7rem;
+	
+	opacity: 0;
+	pointer-events: none;
+	
+	transition: opacity: 0.2s;
+}
+
+.com-tbar .site-logo-name .foci-logo {
+	color: #3498DB;
+	margin-right: 0.2rem;
+	font-size: 95%;
+}
+
+/* shown when search has disappeared */
+.com-tbar.hide-search .site-logo-name {
+	opacity: 1;
+	pointer-events: auto;
 }
 
 .com-tbar .right-bar {
@@ -598,6 +645,13 @@
 
 	.com-tbar {
 		opacity: 1;
+	}
+	
+	.com-tbar.hide-search .site-logo-name {
+		position: absolute;
+		left: -0.5rem;
+		width: 100%;
+		text-align: center;
 	}
 }
 

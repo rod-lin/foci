@@ -42,6 +42,7 @@ define([
 						</div> \
 						<i class="filter-btn filter link icon"></i> \
 					</div> \
+					<span class="site-logo-name"><i class="foci-logo"></i><b>Foci</b> - <span class="lang" data-replace="$front.com.login.logo_prompt">Where events begin</span></span> \
 				</div> \
 				<div class="menu-view"> \
 					<div class="menu-cont"> \
@@ -527,6 +528,16 @@ define([
 
 			mod.openPM = function () {
 				main.find(".pm-btn").click();
+			};
+			
+			mod.showSearch = function () {
+				// main.find(".menu-cont").append(main.find(".search-box .menu-link"));
+				main.removeClass("hide-search");
+			};
+			
+			mod.hideSearch = function () {
+				main.addClass("hide-search");
+				// main.find(".search-box").append(main.find(".menu-cont .menu-link"));
 			};
 			
 			return mod;

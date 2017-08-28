@@ -187,6 +187,7 @@
 									break;
 
 								case "search":
+									bar.showSearch();
 									$("#main-loader").removeClass("active");
 
 									// format: #search/<kw>/tag1,tag2,tag3
@@ -199,6 +200,14 @@
 									if (args[1]) {
 										query.favtag = args[1].split(",");
 									}
+									
+									if (args[2]) {
+										query.after = args[2];
+									}
+									
+									if (args[3]) {
+										query.before = args[3];
+									}
 
 									// console.log(query);
 
@@ -207,6 +216,7 @@
 
 								default:
 									bar.setStyle("");
+									bar.showSearch();
 									$("#main-loader").removeClass("active");
 									pg.to("part");
 							}
