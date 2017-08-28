@@ -149,7 +149,7 @@
 </style>
 
 <script>
-	function init(main, args, show, cont) {
+	function init(main, args, show, cont, exit) {
 		require([
 			"com/env", "com/util", "com/pboard",
 			"com/event", "com/tagbox", "com/userstat",
@@ -159,11 +159,15 @@
 			tbar.setTitle("Home");
 			
 			main.ready(function () {
-				util.scrollTop("#part", function () {
+				var mod = util.scrollTop("#part", function () {
 					tbar.hideSearch();
 				}, function () {
 					tbar.showSearch();
 				}, main.find(".search-box").outerHeight(true));
+			
+				exit(function () {
+					mod.off();
+				});
 			});
 			
 			// tbar.setStyle("light-simple");

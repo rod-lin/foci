@@ -190,13 +190,23 @@ define(function () {
 	};
 
 	util.scrollTop = function (elem, cb, alt, offset) {
-		$(elem).scroll(function () {
+		var tool = {
+			off: function () {
+				$(elem).off("scroll", null, proc);
+			}
+		};
+		
+		var proc = function () {
 			if ($(elem).scrollTop() < offset) {
 				cb();
 			} else {
 				alt();
 			}
-		}).scroll();
+		};
+		
+		$(elem).scroll(proc).scroll();
+		
+		return tool;
 	};
 
 	util.bottom = function (elem) {

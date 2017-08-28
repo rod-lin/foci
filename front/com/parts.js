@@ -33,6 +33,8 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 
 		var main = $("<div class='com-parts'></div>");
 
+		var onExit = null;
+
 		function load(name, cb, args) {
 			var next = function (text) {
 				// var loader = $("<div class='ui active loader'></div>");
@@ -67,7 +69,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 				part.ready(function () {
 					prog.inc();
 					if (window.init) {
-						window.init($(part[0]), args, show, cont);
+						window.init($(part[0]), args, show, cont, ret.jump);
 					}
 				});
 			};
@@ -141,7 +143,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 
 		cont.append(main);
 
-		return {
+		var ret = {
 			load: load,
 			refresh: hashchange,
 			jump: function (cb) { // all jump events will be cleared after a successful jump
@@ -149,6 +151,8 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 					jump_cb.push(cb);
 			}
 		};
+
+		return ret;
 	}
 
 	return {
