@@ -91,6 +91,8 @@ var dict = module.exports = {
 		"core.action_not_exist": "no such action",
 		"core.max_event_count": "you cannot created too many events due to your level limit",
 
+		"core.too_many_drafts": "you cannot create too many drafts",
+
 		"core.out_of_range": "$1 out of range",
 
 		"core.dup_user_name": "duplicated user login name",

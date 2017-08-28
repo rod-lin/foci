@@ -25,6 +25,7 @@ var watchdog = require("./watchdog");
 
 require("./binds");
 
+// returns: -1 for no captcha but good, 0 for not good, 1 for has captcha
 var checkCaptcha = async (env) => {
 	var args = util.checkArg(env.query, {});
 	// capans is automatically scanned
@@ -193,9 +194,12 @@ _user.csid = util.route(async env => {
 	}
  */
 var T_NEED_HANG = {};
+var T_NEED_CAP = {};
 
 _user.encop = util.route(async env => {
-	if (!await checkCaptcha(env)) return;
+	var check_res = await checkCaptcha(env);
+	// console.log(check_res);
+	if (!check_res) return;
 	
 	var args = util.checkArg(env.query, { "uuid": "int", "enc": "string" });
 
@@ -224,11 +228,20 @@ _user.encop = util.route(async env => {
 	};
 
 	var proc = encop[query.int];
-	var res = await proc(env, res.usr, query, next);
+	var res = await proc(env, res.usr, query, next, check_res == 1);
 
-	// hangup for future messages
-	if (res !== T_NEED_HANG)
-		next(res);
+	switch (res) {
+		// hangup for future messages
+		case T_NEED_HANG: break;
+		
+		// need captcha
+		case T_NEED_CAP:
+			env.qcap(await captcha.register(env.ip()));
+			break;
+		
+		default:
+			next(res);
+	}
 });
 
 /*
@@ -401,7 +414,7 @@ encop.user = async (env, usr, query) => {
 // };
 
 // event
-encop.event = async (env, usr, query) => {
+encop.event = async (env, usr, query, next, has_cap) => {
 	switch (query.action) {
 		case "info":
 			var args = util.checkArg(query, { euid: "int", state: { type: "int", opt: true } });
@@ -412,7 +425,22 @@ encop.event = async (env, usr, query) => {
 			return (await event.euid(args.euid, args.state)).getInfo();
 		
 		case "new":
-			var ev = await event.newEvent(usr.getUUID());
+			var uuid = usr.getUUID();
+			
+			if (!await user.isAdmin(uuid)) {
+				var count = await event.countUnpublished(uuid);
+				
+				if (count >= config.lim.event.max_draft_num) {
+					throw new err.Exc("$core.too_many_drafts");
+				}
+				
+				if (!has_cap && count >= config.lim.event.max_safe_draft_num) {
+					return T_NEED_CAP;
+				}
+			}
+		
+			var ev = await event.newEvent(uuid);
+			
 			return ev.getEUID();
 
 		case "del":

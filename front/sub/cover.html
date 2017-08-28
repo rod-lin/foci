@@ -9,9 +9,9 @@
 				</div>
 			</div
 			><div class="side-board">
-				<div class="push-board border userstat-board"></div>
-				<div class="push-board border mini-push-board"></div>
-				<div class="push-board border copyright-board"></div>
+				<div class="push-board border userstat-board bg-white"></div>
+				<div class="push-board border mini-push-board bg-white"></div>
+				<div class="push-board border copyright-board bg-white"></div>
 			</div>
 		</div>
 	</div>
@@ -21,6 +21,8 @@
 	#sub-cover {
 		text-align: center;
 		padding: 2rem;
+		
+		background: rgb(253, 253, 254);
 	}
 
 	#sub-cover .main-wrap {
@@ -48,6 +50,10 @@
 		max-width: 100%;
 
 		text-align: left;
+	}
+	
+	#sub-cover .bg-white {
+		background: white;
 	}
 
 	#sub-cover .border {
@@ -179,7 +185,7 @@
 								skip += dat.length;
 
 								for (var i = 0; i < dat.length; i++) {
-									var push = $("<div class='push-board border'></div>");
+									var push = $("<div class='push-board border bg-white'></div>");
 									event.showcase(push, dat[i], { imgpos: "left" });
 									push_board.children(".ui.loader").before(push);
 								}

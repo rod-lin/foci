@@ -116,6 +116,9 @@ var conf = module.exports = {
 			auto_clean: true, // auto clean all empty drafts
 			auto_clean_interval: 1000 * 60 * 60 * 24 * 2, // 2 days
 
+			max_safe_draft_num: 5, // after this a captcha will be triggered every time
+			max_draft_num: 16, // no more new draft event after 16
+
 			// max days after the event ended and before auto termination
 			// max_term_delay: 1000 * 60 * 60 * 24 * 10, // 10 day
 		},

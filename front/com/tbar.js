@@ -9,7 +9,7 @@ define([
 	var $ = jQuery;
 	foci.loadCSS("com/tbar.css");
 
-	var instance = [];
+	// var instance = [];
 
 	function init(config) {
 		config = $.extend({
@@ -21,7 +21,7 @@ define([
 				<div class="left-bar"> \
 					<div class="ui left action right icon input search-box"> \
 						<button class="menu-btn"> \
-							<i class="foci-logo" style="margin: 0;"></i> \
+							<i class="site-logo foci-logo" style="margin: 0;"></i> \
 						</button> \
 						<!--div class="tags">Hi</div--> \
 						<div class="ui search fluid"> \
@@ -90,62 +90,7 @@ define([
 		';
 
 		main = $(main);
-
-		lang.update(main);
-
-		main.css("opacity", "0");
-		main.ready(function () {
-			main.css("opacity", "");
-		});
-
-		popselect.init(main.find(".new-event-btn"), [
-			{
-				cont: "<i class='flag checkered text outline icon'></i> Event",
-				onSelect: function () {
-					util.jump("#profile//new");
-				}
-			},
-
-			{
-				cont: "<i class='users text outline icon'></i> Club",
-				onSelect: function () {
-					util.emsg("coming soon", "info");
-				}
-			},
-		], { position: "bottom left" });
-			// .click(function () { util.jump("#profile//new"); })
-			// .popup({
-			// 	content: "new event"
-			// });
-
-		// main.find(".pm-btn").click(function () { util.jump("#profile//new"); });
-
-		main.find(".pm-btn").popup({
-			popup: main.find(".pm-popup"),
-			position: "bottom left",
-			on: "click",
-			lastResort: true,
-			onShow: function () {
-				main.find(".pm-btn").removeClass("unread");
-			}
-		});
-
-		main.find(".notice-btn").popup({
-			popup: main.find(".notice-popup"),
-			position: "bottom right",
-			on: "click",
-			lastResort: true,
-
-			onShow: function () {
-				main.find(".notice-btn").removeClass("unread");
-				ntview.refresh();
-			},
-
-			onHide: function () {
-				if (!ntview.canHide()) return false;
-			}
-		});
-
+		
 		function toggleAvatarUtil(dir) {
 			main.find(".avatar-util").transition({
 				animation: "scale " + (dir || ""),
@@ -153,16 +98,60 @@ define([
 			});
 		}
 
-		var pmview = pm.qview(main.find(".pm-popup"));
-		var ntview = notice.init(main.find(".notice-popup"));
-		
-		if (env.session()) {
-			if (env.session().isAdmin())
-				ntview.setAdmin();
-		}
+		var getTag, clearTag, addTag;
 
+		// tag filter
+		(function () {
+			var tag_dname = {}; // TODO: tag display name map
+			var tag_selected = {};
+			
+			getTag = function () {
+				var ret = [];
+
+				for (var k in tag_selected) {
+					if (tag_selected.hasOwnProperty(k) && tag_selected[k]) {
+						ret.push(k);
+					}
+				}
+
+				return ret;
+			}
+
+			clearTag = function () {
+				tag_selected = {};
+				main.find(".filter-btn").removeClass("active");
+				main.find(".filter-tag .scrolling.menu .tag div").removeClass("blue").addClass("grey");
+			};
+
+			addTag = function (name) {
+				var tag = $(" \
+					<div class='item tag filtered' style='display: block !important; font-weight: normal !important;'> \
+						<div class='ui grey empty circular label'></div> \
+					</div> \
+				");
+
+				tag.attr("data-value", name);
+				tag.append(tag_dname.hasOwnProperty(name) ? tag_dname[name] : name);
+				tag.click(function () {
+					main.find(".filter-btn").addClass("active");
+					tag_selected[name] = !tag_selected[name];
+					tag.find("div").toggleClass("grey").toggleClass("blue");
+				});
+
+				main.find(".filter-tag .scrolling.menu").append(tag);
+			};
+			
+			env.favtag(function (tags) {
+				if (tags) for (var k in tags) {
+					if (tags.hasOwnProperty(k))
+						addTag(k);
+				}
+			});
+		})();
+		
 		var showMenu, hideMenu;
 
+		// show/hide menu
 		(function () {
 			var proc;
 
@@ -187,77 +176,10 @@ define([
 			main.find(".menu-cont .menu-link").click(hideMenu);
 		})();
 
-		main.find(".filter-tag").dropdown({
-			hideAdditions: true,
-			transition: "scale",
-
-			onShow: function () {
-				main.find(".filter-tag").css("pointer-events", "auto");
-			},
-
-			onHide: function () {
-				main.find(".filter-tag").css("pointer-events", "none");
-			},
-
-			keys: {
-				enter: -1 // avoid enter select
-			}
-		});
-
-		var tag_dname = {}; // TODO: tag display name map
-		var tag_selected = {};
-
-		function getTag() {
-			var ret = [];
-
-			for (var k in tag_selected) {
-				if (tag_selected.hasOwnProperty(k) && tag_selected[k]) {
-					ret.push(k);
-				}
-			}
-
-			return ret;
-		}
-
-		function clearTag() {
-			tag_selected = {};
-			main.find(".filter-btn").removeClass("active");
-			main.find(".filter-tag .scrolling.menu .tag div").removeClass("blue").addClass("grey");
-		}
-
-		function addTag(name) {
-			var tag = $(" \
-				<div class='item tag filtered' style='display: block !important; font-weight: normal !important;'> \
-					<div class='ui grey empty circular label'></div> \
-				</div> \
-			");
-
-			tag.attr("data-value", name);
-			tag.append(tag_dname.hasOwnProperty(name) ? tag_dname[name] : name);
-			tag.click(function () {
-				main.find(".filter-btn").addClass("active");
-				tag_selected[name] = !tag_selected[name];
-				tag.find("div").toggleClass("grey").toggleClass("blue");
-			});
-
-			main.find(".filter-tag .scrolling.menu").append(tag);
-		}
-
-		env.favtag(function (tags) {
-			if (tags) for (var k in tags) {
-				if (tags.hasOwnProperty(k))
-					addTag(k);
-			}
-		});
-
-		main.find(".filter-btn").click(function () {
-			main.find(".filter-tag").dropdown("toggle");
-		});
-
-		/*** search util ***/
+		// search
 		var onsearch = null;
 
-		var search = function (e, kw) {
+		function search(e, kw) {
 			if (!e || e.keyCode == 13) {
 				main.find(".prompt").blur();
 
@@ -271,73 +193,12 @@ define([
 					clearTag();
 				}
 			}
-		};
-
-		main.find(".prompt").keydown(search);
-
+		}
+		
 		function hideSearchResult() {
 			main.find(".search").search("hide results");
 		}
-
-		main.find(".search").search({
-			apiSettings: {
-				url: "/event/search?kw={query}",
-				onResponse: function(resp) {
-					var ret = [];
-
-					if (resp.suc) {
-						var len =
-							config.max_search_res < resp.res.length
-							? config.max_search_res : resp.res.length;
-
-						// alert("here");
-
-						for (var i = 0; i < len; i++) {
-							// alert(resp.res[i].title);
-							ret.push({
-								title: resp.res[i].title,
-								// description: resp.res[i].descr,
-								euid: resp.res[i].euid
-							});
-						}
-
-						return { results: ret };
-					} else {
-						console.log("failed to connect to the server");
-					}
-				}
-			},
-
-			onSelect: function (arg) {
-				search(null, arg.title);
-			}
-		});
-
-		/*** login ***/
-		main.find(".login-btn").click(function () {
-			hideAvatar();
-			main.find(".login-btn .loader").addClass("active");
-			login.init(function (dat) {
-				updateAvatar();
-				if (!dat)
-					main.find(".login-btn .loader").removeClass("active");
-			});
-		});
-
-		var is_mobile = false;
-
-		var ava = main.find(".avatar");
-		ava.popup({
-			popup: main.find(".avatar-popup"),
-			position: "bottom right",
-			hoverable: true
-		})
-		// .click(function () {
-		// 	if (is_mobile) {
-		// 		toggleAvatarUtil();
-		// 	}
-		// });
-
+		
 		function showAvatar() {
 			main.find(".right-bar").addClass("logged");
 		}
@@ -346,30 +207,10 @@ define([
 			ava.popup("hide");
 			main.find(".right-bar").removeClass("logged");
 		}
-
-		main.find(".avatar-popup .pop-avatar")
-			.click(function () {
-				upload.init(function (file) {
-					if (file) {
-						login.session(function () {
-							// set avatar
-							foci.encop(session, {
-								int: "info",
-								action: "set",
-								avatar: file
-							}, function (suc, dat) {
-								if (suc) {
-									updateAvatar(file);
-								} else {
-									util.emsg(dat);
-								}
-							});
-						});
-					}
-				});
-			});
-
+		
 		var old_info = null;
+		
+		// update avatar
 		function updateAvatar(file) {
 			function refresh(info) {
 				info = login.parseInfo(info || {});
@@ -436,151 +277,297 @@ define([
 			}
 		}
 
-		var session = null;
+		function onSearchResponse(resp) {
+			var ret = [];
 
-		var styles = [ "simple", "light-simple", "shadowy", "apply", "success" ];
+			if (resp.suc) {
+				var len =
+					config.max_search_res < resp.res.length
+					? config.max_search_res : resp.res.length;
 
-		var ret = {
-			search: function (cb) {
-				onsearch = cb;
+				// alert("here");
+
+				for (var i = 0; i < len; i++) {
+					// alert(resp.res[i].title);
+					ret.push({
+						title: resp.res[i].title,
+						// description: resp.res[i].descr,
+						euid: resp.res[i].euid
+					});
+				}
+
+				return { results: ret };
+			} else {
+				console.log("failed to connect to the server");
+			}
+		}
+
+		// functions end
+		/**********************************************************************/
+		// settings begin
+
+		lang.update(main);
+
+		popselect.init(main.find(".new-event-btn"), [
+			{
+				cont: "<i class='flag checkered text outline icon'></i> Event",
+				onSelect: function () {
+					util.jump("#profile//new");
+				}
 			},
 
-			updateAvatar: function () {
+			{
+				cont: "<i class='users text outline icon'></i> Club",
+				onSelect: function () {
+					util.emsg("coming soon", "info");
+				}
+			},
+		], { position: "bottom left" });
+
+		var pmview, ntview;
+
+		// initialize personal message and notice
+		(function () {
+			main.find(".pm-btn").popup({
+				popup: main.find(".pm-popup"),
+				position: "bottom left",
+				on: "click",
+				lastResort: true,
+				onShow: function () {
+					main.find(".pm-btn").removeClass("unread");
+				}
+			});
+
+			main.find(".notice-btn").popup({
+				popup: main.find(".notice-popup"),
+				position: "bottom right",
+				on: "click",
+				lastResort: true,
+
+				onShow: function () {
+					main.find(".notice-btn").removeClass("unread");
+					ntview.refresh();
+				},
+
+				onHide: function () {
+					if (!ntview.canHide()) return false;
+				}
+			});
+
+			pmview = pm.qview(main.find(".pm-popup"));
+			ntview = notice.init(main.find(".notice-popup"));
+		})();
+
+		// init filter tag
+		(function () {
+			main.find(".filter-tag").dropdown({
+				hideAdditions: true,
+				transition: "scale",
+
+				onShow: function () {
+					main.find(".filter-tag").css("pointer-events", "auto");
+				},
+
+				onHide: function () {
+					main.find(".filter-tag").css("pointer-events", "none");
+				},
+
+				keys: {
+					enter: -1 // avoid enter select
+				}
+			});
+
+			main.find(".filter-btn").click(function () {
+				main.find(".filter-tag").dropdown("toggle");
+			});
+		})();
+
+		main.find(".prompt").keydown(search);
+
+		// init search
+		main.find(".search").search({
+			apiSettings: {
+				url: "/event/search?kw={query}",
+				onResponse: onSearchResponse
+			},
+
+			onSelect: function (arg) {
+				search(null, arg.title);
+			}
+		});
+
+		// login button
+		main.find(".login-btn").click(function () {
+			hideAvatar();
+			main.find(".login-btn .loader").addClass("active");
+			login.init(function (dat) {
+				updateAvatar();
+				if (!dat)
+					main.find(".login-btn .loader").removeClass("active");
+			});
+		});
+
+		var ava = main.find(".avatar");
+		ava.popup({
+			popup: main.find(".avatar-popup"),
+			position: "bottom right",
+			hoverable: true
+		})
+
+		main.find(".avatar-popup .pop-avatar")
+			.click(function () {
+				upload.init(function (file) {
+					if (file) {
+						login.session(function () {
+							// set avatar
+							foci.encop(session, {
+								int: "info",
+								action: "set",
+								avatar: file
+							}, function (suc, dat) {
+								if (suc) {
+									updateAvatar(file);
+								} else {
+									util.emsg(dat);
+								}
+							});
+						});
+					}
+				});
+			});
+
+		var ret = (function () {
+			var mod = {};
+			
+			var styles = [ "simple", "light-simple", "shadowy", "apply", "green" ];
+			var session = null;
+			
+			mod.search = function (cb) {
+				onsearch = cb;
+			};
+
+			mod.updateAvatar = function () {
 				if (env.session() != session) {
 					updateAvatar();
 					session = env.session();
 				}
-			},
+			};
 
-			setStyle: function (style) {
+			mod.setStyle = function (style) {
 				for (var i = 0; i < styles.length; i++) {
 					main.removeClass(styles[i]);
 				}
 
 				main.addClass(style);
-			},
+			};
 
-			applyShadow: function () {
+			mod.applyShadow = function () {
 				main.addClass("apply");
-			},
+			};
 
-			removeShadow: function () {
+			mod.removeShadow = function () {
 				main.removeClass("apply");
-			},
+			};
 
-			// setSimple: function () {
-			// 	main.addClass("simple");
-			// },
-
-			// delSimple: function () {
-			// 	main.removeClass("simple");
-			// },
-
-			// toggleSimple: function () {
-			// 	main.toggleClass("simple");
-			// },
-
-			// setShadowy: function () {
-			// 	main.addClass("shadowy");
-			// },
-
-			// delShadowy: function () {
-			// 	main.removeClass("shadowy");
-			// },
-
-			menu: function (cb) {
+			mod.menu = function (cb) {
 				// main.find(".menu-btn").click(cb);
-			},
+			};
 
-			toggleIcon: function (icon) {
+			mod.toggleIcon = function (icon) {
 				main.find(".menu-btn i")
 					.toggleClass(icon)
 					.toggleClass("content");
-			},
+			};
 
-			icon: function (icon) {
+			mod.icon = function (icon) {
 				main.find(".menu-btn i")
 					.addClass(icon)
 					.removeClass("content");
-			},
+			};
 
-			profile: function (cb) {
+			mod.profile = function (cb) {
 				main.find(".profile").click(cb);
-			},
+			};
 
-			showBanner: function () {
+			mod.showBanner = function () {
 				hideSearchResult();
 				main.addClass("show-banner");
 				hideMenu();
 				main.find(".avatar-util-box").removeClass("expand");
-			},
+			};
 
-			hideBanner: function () {
+			mod.hideBanner = function () {
 				main.removeClass("show-banner");
 				main.find(".avatar-util-box").addClass("expand");
-			},
+			};
 
-			setBanner: function (html) {
+			mod.setBanner = function (html) {
 				main.find(".banner").html(html);
-			},
+			};
 
-			setTitle: function () {
+			mod.setTitle = function () {
 				main.find(".banner").html(Array.prototype.slice.apply(arguments).join("<i class='sub caret right icon'></i>"));
 				util.setTitle.apply(util, arguments);
 
 				// ret.showBanner();
 				// setTimeout(ret.hideBanner, 3000);
-			},
+			};
 
-			showSearchLoad: function () {
+			mod.showSearchLoad = function () {
 				main.find(".search-box").addClass("loading");
-			},
+			};
 
-			hideSearchLoad: function () {
+			mod.hideSearchLoad = function () {
 				main.find(".search-box").removeClass("loading");
-			},
+			};
 
-			openNotice: function () {
+			mod.openNotice = function () {
 				main.find(".notice-btn").click();
-			},
+			};
 
-			openPM: function () {
+			mod.openPM = function () {
 				main.find(".pm-btn").click();
-			}
-		};
+			};
+			
+			return mod;
+		})();
 
+		// event bindings
+		(function () {
+			setInterval(ret.updateAvatar, 5000);
+			
+			env.on("loginchange", function () {
+				updateAvatar();
+			});
+		})();
+		
 		ret.updateAvatar();
-		setInterval(ret.updateAvatar, 5000);
-		env.on("loginchange", function () {
-			updateAvatar();
-		});
 
-		$("body").prepend(main);
-
+		main.css("opacity", "0");
 		main.ready(function () {
-			// vcent.update();
-			setTimeout(function () {
-				main.removeClass("hide");
-			}, 200);
-
-			// if (is_mobile) {
-			// 	setTimeout(function () {
-			// 		toggleAvatarUtil("out");
-			// 	}, 1000);
-			// }
+			main.css("opacity", "");
+			main.removeClass("hide");
+		});
+		
+		login.onlyAdmin(function () {
+			ntview.setAdmin();
+			
+			main.find(".site-logo").removeClass("foci-logo").addClass("admin-logo bathtub icon");
 		});
 
 		util.media(640, function () {
 			// mobile
 			main.find(".new-event-btn").attr("data-position", "top center");
-			is_mobile = true;
+			// is_mobile = true;
 		}, function () {
 			// desktop
 			main.find(".new-event-btn").attr("data-position", "bottom center");
-			is_mobile = false;
+			// is_mobile = false;
 		});
+		
+		$("body").prepend(main);
 
-		instance.push(ret);
+		// instance.push(ret);
 
 		return ret;
 	};

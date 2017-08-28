@@ -12,9 +12,25 @@
 	top: 4.7em !important;
 }
 
+.tbar-double-high .margin-tbar {
+	margin-top: 8.4em !important;
+}
+
+.tbar-double-high .padding-tbar {
+	padding-top: 8.4em !important;
+}
+
+.tbar-double-high .top-tbar {
+	top: 8.4em !important;
+}
+
 /* a weird left bar in semantic dropdown */
 .com-tbar .ui.menu .item:before {
 	display: none;
+}
+
+.tbar-double-high .com-tbar {
+	height: 8.4em;
 }
 
 .com-tbar {
@@ -87,6 +103,10 @@
 	transition: border-bottom-color 0.2s;
 }
 
+.com-tbar.show-menu .site-logo {
+	color: white !important;
+}
+
 .com-tbar .menu-view,
 .com-tbar .banner-view,
 .com-tbar .left-bar {
@@ -110,6 +130,10 @@
 
 .com-tbar.show-menu .left-bar {
 	top: 4.7em;
+}
+
+.tbar-double-high .com-tbar.show-menu .left-bar {
+	top: 3.7em !important;
 }
 
 .com-tbar .menu-view,
@@ -206,10 +230,17 @@
 	color: #262626;
 }
 
-.com-tbar .search-box .menu-btn i {
+.com-tbar .search-box .menu-btn .site-logo {
 	font-size: 1.7em;
-	vertical-align: middle;
 	color: #34495E;
+}
+
+.com-tbar .search-box .menu-btn .site-logo.foci-logo {
+	vertical-align: middle;
+}
+
+.com-tbar .search-box .menu-btn .site-logo.admin-logo {
+
 }
 
 .com-tbar .right-bar {
@@ -572,30 +603,31 @@
 
 /* styles */
 
-/* success */
-.com-tbar.success {
+/* green */
+.com-tbar.green {
 	background: #2ECC71;
+	color: white;
 	border-color: transparent;
 }
 
-.com-tbar.success .search-box .menu-btn i {
+.com-tbar.green .search-box .menu-btn i {
 	color: white;
 }
 
-.com-tbar.success .search-box .prompt {
+.com-tbar.green .search-box .prompt {
 	background: rgba(0, 0, 0, 0.08) !important;
 	color: white !important;
 }
 
-.com-tbar.success .filter-btn {
+.com-tbar.green .filter-btn {
 	color: white !important;
 }
 
-.com-tbar.success .avatar-util {
+.com-tbar.green .avatar-util {
 	color: white !important;
 }
 
-.com-tbar.success .login-btn {
+.com-tbar.green .login-btn {
 	color: white !important;
 }
 

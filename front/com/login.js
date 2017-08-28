@@ -288,11 +288,20 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 			main.modal("hide");
 		});
 	}
+	
+	function onlyAdmin(cb) {
+		if (env.session()) {
+			if (env.session().isAdmin()) {
+				cb();
+			}
+		}
+	}
 
 	return {
 		init: init,
 		parseInfo: parseInfo,
 		vercode: vercode,
+		onlyAdmin: onlyAdmin,
 		session: function (cb) {
 			if (!env.session()) {
 				this.init(cb);

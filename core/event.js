@@ -354,6 +354,11 @@ Event.query = {
 
 	check_owner: (euid, uuid) => ({ "euid": euid, "org.0": uuid }),
 
+	count_unpublished: uuid => ({
+		"org.0": uuid,
+		"state": { $lt: evstat.published }
+	}),
+
 	org: uuid => ({ "org": uuid, "state": { $gte: evstat.published } }),
 
 	applied: (uuid, status) => {
@@ -539,6 +544,12 @@ exports.countOwn = async (uuid, after) => {
 exports.isOwner = async (euid, uuid) => {
 	var col = await db.col("event");
 	return (await col.count(Event.query.check_owner(euid, uuid))) != 0;
+};
+
+// count unpublished
+exports.countUnpublished = async (uuid) => {
+	var col = await db.col("event");
+	return await col.count(Event.query.count_unpublished(uuid));
 };
 
 // check participant/staff

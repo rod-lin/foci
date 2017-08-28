@@ -196,6 +196,8 @@ define([ "com/util" ], function (util) {
 
 		// justify margins and widths so that tags can fill up the entire container
 		function justifyTag() {
+			// console.log("justify tag");
+			
 			main.children("br").remove();
 
 			var arr = main.find(".imgtag").sort(function (a, b) {
@@ -250,8 +252,25 @@ define([ "com/util" ], function (util) {
 			}
 		}
 
-		cont.ready(justifyTag);
-		// $(window).resize(justifyTag);
+		cont.ready(function () {
+			justifyTag();
+			// justifyTag();
+			
+			var justify_lock = false;
+			
+			$(window).resize(function () {
+				if (justify_lock) return;
+				justify_lock = true;
+				
+				main.find(".imgtag-text").css("width", "");
+				main.find(".imgtag").css("margin-right", "");
+				
+				setTimeout(function () {
+					justifyTag();
+					justify_lock = false;
+				}, 100);
+			});
+		});
 
 		// setTimeout(justifyTag, 5000);
 

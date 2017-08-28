@@ -58,24 +58,27 @@ exports.verify = async (ans) => {
     });
 };
 
+// returns: -1 for no captcha but good, 0 for not good, 1 for has captcha
 exports.check = async (env, check_fn, ans) => {
     if (ans) {
         if (!await exports.verify(ans)) {
             throw new err.Exc("$core.cap_verification_failed");
         }
+        
+        return 1;
     } else if (!check_fn()) {
         // need cap
         util.log("request captcha to " + env.ip(), util.style.yellow("CAPTCHA"));
         var challenge = await exports.register(env.ip());
         
         if (challenge === null) {
-            return true; // geetest is down...
+            return -1; // geetest is down...
         }
         
         await env.qcap(challenge);
         
-        return false;
+        return 0;
     }
     
-    return true;
+    return -1;
 };
