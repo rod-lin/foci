@@ -11,6 +11,8 @@ define([ "com/util" ], function (util) {
 			on: "click"
 		}, config);
 
+		var hidden = false;
+
 		cont.popup({
 			content: text,
 			position: position,
@@ -26,10 +28,12 @@ define([ "com/util" ], function (util) {
 			}
 		});
 
-		if (config.auto)
+		if (config.auto) {
 			setTimeout(function () {
-				cont.popup("show");
+				if (!hidden)
+					cont.popup("show");
 			}, 500);
+		}
 
 		util.wheel(function () {
 			cont.popup("hide");
@@ -41,6 +45,11 @@ define([ "com/util" ], function (util) {
 			});
 
 		var ret = {};
+		
+		ret.hide = function () {
+			cont.popup("hide");
+			hidden = true;
+		};
 
 		return ret;
 	}

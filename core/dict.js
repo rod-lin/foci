@@ -287,7 +287,7 @@ var dict = module.exports = {
 	}
 };
 
-dict["chinese"] = {}.extend(dict["english"]).extend({
+var chinese = {
 		"impossible": "impossible: $1",
 		"unsupported": "你的浏览器不支持一个关键组件($1)",
 
@@ -502,7 +502,7 @@ dict["chinese"] = {}.extend(dict["english"]).extend({
 		"front.com.event.change_logo": "修改图标",
 		"front.com.event.more": "更多",
 
-		"front.com.login.logo_prompt": "经验值得分享",
+		"front.com.login.logo_prompt": "活动在这里开始",
 		"front.com.login.verify": "验证",
 		"front.com.login.register": "注册",
 		"front.com.login.login": "登录",
@@ -523,4 +523,62 @@ dict["chinese"] = {}.extend(dict["english"]).extend({
 
 		"front.com.event.sortby.create": "创建日期",
 		"front.com.event.sortby.popularity": "人气",
-});
+		
+		"core.word.system_sender": "系统通知",
+		"core.permission_denied": "你的权限过低",
+		"core.illegal_upload_type": "不能上传这类文件",
+		"core.file_missing": "文件不存在",
+		"core.file_md5_collision": "文件哈希值碰撞（请务必联系管理员）",
+		"core.cap_verification_failed": "验证码错误",
+		"core.account_frozen": "你的账户已被锁定",
+		"core.not_event_partic": "你不是活动参与者",
+		"core.not_event_staff": "你不是活动组织者",
+		"core.unable_to_terminate": "无法终止这个活动（还未开始/截止日期未变）",
+		"core.app_closed": "申请通道未打开",
+		"core.too_many_drafts": "草稿过多无法新建",
+		"core.illegal_session": "非法会话",
+		"core.mail.failed_send": "无法发送邮件",
+		"core.reg.failed_verify": "验证码错误",
+		"core.reg.vercode_timeout": "验证码超时",
+		
+		"front.sub.profile.resume": "简历",
+		"front.sub.profile.new.time": "时间",
+		"front.sub.profile.new.time_subtitle": "活动起止时间",
+		
+		"front.sub.profile.start_date": "开始时间",
+		"front.sub.profile.end_date": "结束时间",
+		
+		"front.sub.profile.basic": "基本",
+		"front.sub.profile.publish": "发布",
+		"front.sub.profile.under_review": "活动正在接受审查，请耐心等待",
+		"front.sub.profile.event_published": "活动已经发布",
+		"front.sub.profile.event_terminated": "活动已经截止",
+		"front.sub.profile.organize": "管理",
+		"front.sub.profile.app_cent": "申请中心",
+		
+		"front.sub.event.thank_you": "谢谢",
+		"front.sub.event.login_first": "<span>请先<a href='javascript:void(0)'>登录</a></span>",
+		"front.sub.event.organize": "管理",
+		"front.sub.event.term_event": "结束活动",
+		"front.sub.event.event_setting": "活动设置",
+		"front.com.login.user_name": "手机/邮箱",
+		"front.com.login.illegal_user_name": "非法用户名",
+		"front.com.login.empty": "空的$1"
+};
+
+dict["chinese"] = {}.extend(dict["english"]).extend(chinese);
+
+// find difference
+function minusLang(obj1, obj2) {
+	// console.log("diff: " + lang1 + " - " + lang2);
+	
+	for (var k in obj1) {
+		// console.log(k);
+		if (obj1.hasOwnProperty(k) &&
+			!obj2.hasOwnProperty(k)) {
+			console.log("   \"" + k + "\": \"\",");
+		}
+	}
+}
+
+// minusLang(dict["english"], chinese);

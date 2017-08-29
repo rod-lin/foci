@@ -10,7 +10,7 @@ var conf = module.exports = {
 		certif: "ssl/cert.crt"
 	},
 
-	debug: true,
+	debug: false,
 
 	file: {
 		max_size: 1024 * 1024 * 10,

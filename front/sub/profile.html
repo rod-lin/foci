@@ -65,11 +65,6 @@
 					</div>
 				</div>
 				<div class="page page-time pad" style="text-align: left; overflow-x: hidden;">
-					<!-- <form class="ui form">
-						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.start_end_date">Start/End Date</h3>
-						<div class="ui attached segment">
-							<div class="fields">
-								<div class="field"> -->
 					<style>
 
 						#sub-profile .page-time>span {
@@ -110,7 +105,7 @@
 				</div>
 				<div class="page page-pay" style="text-align: center;">
 				</div>
-				<div class="page page-apply pad" style="text-align: left;">
+				<div class="page page-apply pad" style="text-align: left; overflow: auto;">
 					<style>
 						#sub-profile .page.page-apply .header,
 						#sub-profile .page.page-apply label {
@@ -140,7 +135,7 @@
 							</div>
 						</div>
 						
-						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.enable_app">Manage</h3>
+						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.organize">Manage</h3>
 						<div class="ui attached segment">
 							<div class="field">
 								<button class="ui blue button goto-app-cent lang" data-replace="$front.sub.profile.app_cent" type="button">Application Center</button>
@@ -198,7 +193,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="page page-other pad" style="text-align: left;">
+				<div class="page page-other pad" style="text-align: left; overflow: auto;">
 					<h3 class="ui top attached header lang" data-replace="$front.sub.profile.change_event_state">
 						Change event state
 					</h3>
@@ -560,7 +555,7 @@
 		color: rgba(0, 0, 0, .87) !important;
 	}
 
-	@media only screen and (max-width: 960px) {
+	@media only screen and (max-width: 1024px) {
 		#sub-profile .new-event .ui.steps .step .content .description {
 			display: none;
 		}
@@ -746,6 +741,7 @@
 					});
 				}
 
+				var org_tab_tip_proc;
 				var tabs = {
 					"applied": {
 						order: 1,
@@ -759,6 +755,14 @@
 					"org": {
 						order: 2,
 						name: m("$front.sub.profile.organized").capital(),
+						
+						onChange: function () {
+							if (org_tab_tip_proc) {
+								clearTimeout(org_tab_tip_proc);
+								org_tab_tip_proc = null;
+							}
+						},
+						
 						onShow: function (show) {
 							tbar.setTitle("Profile", info.dname, "Organized");
 							eventTabOnShow("org", false, undefined, {
@@ -781,12 +785,13 @@
 							}, show);
 
 							if (is_self) {
-								setTimeout(function () {
-									tip.init(main.find(".vuid-profile-org-event-setting")[0], "Setting is here", "top center", {
+								if (org_tab_tip_proc) clearTimeout(org_tab_tip_proc);
+								org_tab_tip_proc = setTimeout(function () {
+									org_tab_tip1 = tip.init(main.find(".vuid-profile-org-event-setting")[0], "Setting is here", "top center", {
 										scroll: $("#part")
 									});
 
-									tip.init(main.find(".vuid-profile-org-event-appcent")[0], "Application center", "bottom center", {
+									org_tab_tip2 = tip.init(main.find(".vuid-profile-org-event-appcent")[0], "Application center", "bottom center", {
 										scroll: $("#part")
 									});
 								}, 1000);

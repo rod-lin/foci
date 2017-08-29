@@ -225,7 +225,7 @@ define(function () {
 			var now = $(this).scrollTop();
 
 			// scrolling down need to be faster to trigger
-			if ((now > cur && now - cur > 70) ||
+			if ((now > cur && now - cur > 40) ||
 				(cur > now && cur - now > 10)) {
 				cb(now - cur, cur);
 			}
