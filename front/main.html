@@ -11,8 +11,14 @@
 
 		<script src="lib/foci.js?v=1"></script>
 		<script src="lib/vcent.js?v=0"></script>
-		<script src="lib/require.js?v=0"></script>
 		<script src="lib/gt.js?v=0"></script> <!-- geetest api -->
+
+		<script src="lib/require.js?v=0"></script>
+		<script>
+			require.config({
+				urlArgs: "v=0" // one version a time, keeps the cache away~~
+			});
+		</script>
 
 		<link rel="stylesheet" href="font/fontawesome/import.css?v=0">
 		<!-- <link rel="stylesheet" href="font/ubuntu/import.css">
