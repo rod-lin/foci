@@ -32,10 +32,14 @@ define([ "com/util" ], function (util) {
 			var item = $("<div class='option'></div>");
 
 			item.html(opt.cont);
-			item.click(function () {
+			item.click(function (ev) {
 				if (opt.onSelect) {
 					if (opt.onSelect() !== false) {
 						obj.popup("hide");
+						ev.stopPropagation();
+						// TODO: temp fix
+						// BUG: if the popselect is selected in a modal for the FIRST time,
+						// closing the popup will close the modal as well.
 					}
 				}
 			});

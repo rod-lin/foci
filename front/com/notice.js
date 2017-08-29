@@ -132,6 +132,7 @@ define([
 
 		main
 			.modal({
+				allowMultiple: true,
 				onHide: function () {
 					if (!can_hide) {
 						ask();

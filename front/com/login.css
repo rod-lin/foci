@@ -57,12 +57,55 @@
 .com-login .top-banner {
 	height: 10rem;
 	line-height: 10rem;
-	background: #34495E;
 	font-size: 2rem;
 
 	font-family: foci-logo-name;
+	font-weight: bold;
 
 	box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1) inset;
+	
+	animation: login-bg-anim 20s infinite;
+	-webkit-animation: login-bg-anim 20s infinite;
+}
+
+@keyframes login-bg-anim
+{
+	0% { background: #3498DB; }
+	20% { background: #2ECC71; }
+	40% { background: #F1C40F; }
+	60% { background: #E67E22; }
+	80% { background: #E74E3E; }
+	100% { background: #3498DB; }
+}
+
+@keyframes -webkit-login-bg-anim
+{
+	0% { background: #3498DB; }
+	20% { background: #2ECC71; }
+	40% { background: #F1C40F; }
+	60% { background: #E67E22; }
+	80% { background: #E74E3E; }
+	100% { background: #3498DB; }
+}
+
+@keyframes -moz-login-bg-anim
+{
+	0% { background: #3498DB; }
+	20% { background: #2ECC71; }
+	40% { background: #F1C40F; }
+	60% { background: #E67E22; }
+	80% { background: #E74E3E; }
+	100% { background: #3498DB; }
+}
+
+@keyframes -o-login-bg-anim
+{
+	0% { background: #3498DB; }
+	20% { background: #2ECC71; }
+	40% { background: #F1C40F; }
+	60% { background: #E67E22; }
+	80% { background: #E74E3E; }
+	100% { background: #3498DB; }
 }
 
 .com-login .top-banner .banner-cont {
