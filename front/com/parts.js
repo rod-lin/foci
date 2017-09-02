@@ -17,6 +17,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 		$.ajax({
 			type: "GET",
 			url: url,
+			data: { v: (new Date()).getTime() /* no cache */ },
 			success: function (dat) { suc(dat); },
 			error: function (req, exc) {
 				util.emsg("$front.com.parts.fail_get_url(" + url + "," + exc + ")");
