@@ -176,6 +176,13 @@
 
 			// search init
 			var cover_search = search.cover(main.find(".search-box"));
+			
+			$("#part").scroll(cover_search.blur);
+			exit(function () {
+				$("#part").off("scroll");
+			});
+			
+			setTimeout(cover_search.focus, 1);
 
 			env.favtag(function (tags) {
 				if (tags)

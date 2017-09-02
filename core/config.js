@@ -73,6 +73,8 @@ var conf = module.exports = {
 				icon: "microchip"
 			}
 		},
+		
+		favtag_count: undefined,
 
 		user: {
 			dname: 64,
@@ -256,3 +258,5 @@ var fs = require("fs");
 if (!fs.existsSync(conf.file.save_dir)) {
 	fs.mkdirSync(conf.file.save_dir);
 }
+
+conf.lim.favtag_count = Object.keys(conf.lim.favtag).length

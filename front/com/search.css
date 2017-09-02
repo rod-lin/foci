@@ -39,7 +39,17 @@
     
     font-size: 1.5rem;
     
-    color: rgb(120, 120, 120);
+    color: rgba(0, 0, 0, 0.2);
+    
+    transition: color 0.2s;
+}
+
+.com-cover-search .prompt:hover+.icon {
+    color: rgba(0, 0, 0, 0.3);
+}
+
+.com-cover-search .prompt:focus+.icon {
+    color: rgba(0, 0, 0, 0.4);
 }
 
 .com-cover-search .prompt {

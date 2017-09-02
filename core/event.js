@@ -753,7 +753,12 @@ exports.search = async (conf, state) => {
 
 	var query = { "state": { $gte: state } };
 
-	if (conf.favtag) query.extend(Event.query.has_favtag(conf.favtag));
+	if (conf.favtag) {
+		// NOT ALL tags are selected
+		if (conf.favtag.length != config.lim.favtag_count)
+			query.extend(Event.query.has_favtag(conf.favtag));
+	}
+	
 	if (conf.kw) query.extend(Event.query.keyword(conf.kw));
 	if (conf.after) query.extend(Event.query.after(conf.after));
 	if (conf.before) query.extend(Event.query.before(conf.before));

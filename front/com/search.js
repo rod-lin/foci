@@ -25,10 +25,8 @@ define([ "com/util", "com/tagbox", "com/env", "com/seledate" ], function (util, 
                 </div> \
             </div> \
         </div>");
-    
-        var ret = {};
         
-        main.find(".prompt").focus(function () {
+        function showFilter() {
         	main.find(".search-box-cont").css("height",
                                               main.find(".prompt-box").outerHeight(true) +
                                               main.find(".filter-box").outerHeight(true) + "px")
@@ -37,18 +35,22 @@ define([ "com/util", "com/tagbox", "com/env", "com/seledate" ], function (util, 
             setTimeout(function () {
                 main.find(".search-box-cont").css("overflow", "visible");
             }, 400);
-        });
+        }
+        
+        function hideFilter() {
+        	main.find(".search-box-cont")
+                .css("height", "")
+                .css("overflow", "hidden")
+                .removeClass("expand");
+        }
+        
+        main.find(".prompt").focus(showFilter);
         
         main.click(function (ev) {
         	ev.stopPropagation();
         });
         
-        $("body").click(function () {
-        	main.find(".search-box-cont")
-                .css("height", "")
-                .css("overflow", "hidden")
-                .removeClass("expand");
-        });
+        $("body").click(hideFilter);
         
         var tgbox;
         
@@ -108,6 +110,17 @@ define([ "com/util", "com/tagbox", "com/env", "com/seledate" ], function (util, 
         });
         
         cont.append(main);
+        
+        var ret = {};
+        
+        ret.focus = function () {
+            main.find(".prompt").focus();
+        };
+        
+        ret.blur = function () {
+            hideFilter();
+            main.find(".prompt").blur();
+        };
     
         return ret;
     }
