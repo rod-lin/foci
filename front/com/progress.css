@@ -9,3 +9,7 @@
 	
 	transition: opacity 0.3s;
 }
+
+.com-progress .bar {
+	background: #3498DB !important;
+}

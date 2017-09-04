@@ -657,32 +657,39 @@
 
 /* styles */
 
-/* green */
-.com-tbar.green {
-	background: #2ECC71;
+/* colorful */
+.com-tbar.colorful {
 	color: white;
 	border-color: transparent;
 }
 
-.com-tbar.green .search-box .menu-btn i {
+.com-tbar.colorful .search-box .menu-btn i {
 	color: white;
 }
 
-.com-tbar.green .search-box .prompt {
+.com-tbar.colorful .search-box .prompt {
 	background: rgba(0, 0, 0, 0.08) !important;
 	color: white !important;
 }
 
-.com-tbar.green .filter-btn {
+.com-tbar.colorful .filter-btn {
 	color: white !important;
 }
 
-.com-tbar.green .avatar-util {
+.com-tbar.colorful .avatar-util {
 	color: white !important;
 }
 
-.com-tbar.green .login-btn {
+.com-tbar.colorful .login-btn {
 	color: white !important;
+}
+
+.com-tbar.green {
+	background: #2ECC71;
+}
+
+.com-tbar.orange {
+	background: #F39C12;
 }
 
 /* shadowy */

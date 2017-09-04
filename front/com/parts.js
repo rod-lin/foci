@@ -117,7 +117,11 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 
 				if (!hash.length) return;
 
-				load(name, null, args);
+				load(name, function (suc) {
+					if (!suc)
+						util.jump("#e404");
+				}, args);
+				
 				jump_cb = [];
 			};
 

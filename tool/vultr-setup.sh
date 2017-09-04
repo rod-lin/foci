@@ -5,7 +5,8 @@ CONST_NODE_VERSION=v8.2.1
 CONST_ADMIN_NAME=rodlin
 CONST_ADMIN_PASSWD=
 CONST_ADMIN_HOME=/home/$CONST_ADMIN_NAME
-CONST_FOCI_REPO=https://gitlab.com/zhengyal/foci-server.git
+CONST_FOCI_REPO=git@gitlab.com:zhengyal/foci-server.git
+# https://gitlab.com/zhengyal/foci-server.git
 
 #################################################################
 
@@ -142,6 +143,13 @@ alias start-foci='cd ~/foci && npm start'
 
 alias start-all='start-mongo; start-nginx; start-foci'
 END
+
+# configure ssh for gitlab/github
+
+# generate rsa keys
+admin_run ssh-keygen -t rsa -f $CONST_ADMIN_HOME/.ssh/id_rsa -N ""
+trace "PLEASE COPY THE FOLLOWING PUBLIC KEY TO GITHUB/GITLAB TO ENABLE SSH-BASED PUSH/PULL"
+cat $CONST_ADMIN_HOME/.ssh/id_rsa.pub
 
 login $CONST_ADMIN_NAME
 

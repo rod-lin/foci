@@ -440,7 +440,7 @@ define([
 		var ret = (function () {
 			var mod = {};
 			
-			var styles = [ "simple", "light-simple", "shadowy", "apply", "green" ];
+			var styles = [ "simple", "light-simple", "shadowy", "apply", "green", "orange", "colorful" ].join(" ");
 			var session = null;
 			
 			mod.search = function (cb) {
@@ -455,10 +455,7 @@ define([
 			};
 
 			mod.setStyle = function (style) {
-				for (var i = 0; i < styles.length; i++) {
-					main.removeClass(styles[i]);
-				}
-
+				main.removeClass(styles);
 				main.addClass(style);
 			};
 

@@ -25,9 +25,9 @@ a {
 	cursor: pointer;
 }
 
-/*
 .uix.loader {
-	display: none;
+	pointer-events: none;
+	opacity: 0;
 
 	position: absolute;
 
@@ -39,46 +39,37 @@ a {
 
 	width: 3em;
 	height: 3em;
+	
+	transition: opacity 0.3s;
 }
 
 .uix.loader.active {
-	display: block;
+	opacity: 1;
+	pointer-events: auto;
 }
 
-.uix.loader>div,
-.uix.loader>div>div,
-.uix.loader>div>div>div {
-	width: 100%;
-	height: 100%;
+.uix.loader .path {
+	stroke: #3498DB;
+	stroke-linecap: round;
+	animation: uix-loader-dash 1.6s ease-in-out infinite;
+	
+	transition: stroke-dasharray 0.2s;
 }
 
-.uix.loader,
-.uix.loader>div,
-.uix.loader>div>div {
-	border-radius: 50%;
-	border: 2px solid transparent;
-	padding: 3px;
-
-	animation-name: uix-loader-rotate;
-	animation-iteration-count: infinite;
-	animation-timing-function: linear;
-	animation-duration: 2s;
+.uix.loader .circle {
+	animation: uix-loader-rotate 0.8s linear infinite;
 }
 
-.uix.loader {
-	border-top-color: #BDC3C7;
-	border-bottom-color: #7F8C8D;
+/* .uix.loader.finish .path {
+	animation: none;
+	stroke-dasharray: 100 300;
+	
+	stroke-dashoffset: -10px;
 }
 
-.uix.loader>div {
-	border-bottom-color: #BDC3C7;
-	border-top-color: #7F8C8D;
-}
-
-.uix.loader>div>div {
-	border-top-color: #BDC3C7;
-	border-bottom-color: #7F8C8D;
-}
+.uix.loader.finish .circle {
+	animation: none;
+} */
 
 @keyframes uix-loader-rotate {
 	0% {
@@ -89,7 +80,92 @@ a {
 		transform: rotate(360deg);
 	}
 }
-*/
+
+@-webkit-keyframes uix-loader-rotate {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+@-moz-keyframes uix-loader-rotate {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+@-o-keyframes uix-loader-rotate {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes uix-loader-dash {
+	0% {
+		stroke-dasharray: 1, 300;
+	}
+	
+	50% {
+		stroke-dasharray: 50, 300;
+	}
+	
+	100% {
+		stroke-dasharray: 1, 300;
+	}
+}
+
+@-webkit-keyframes uix-loader-dash {
+	0% {
+		stroke-dasharray: 1, 300;
+	}
+	
+	50% {
+		stroke-dasharray: 50, 300;
+	}
+	
+	100% {
+		stroke-dasharray: 1, 300;
+	}
+}
+
+@-moz-keyframes uix-loader-dash {
+	0% {
+		stroke-dasharray: 1, 300;
+	}
+	
+	50% {
+		stroke-dasharray: 50, 300;
+	}
+	
+	100% {
+		stroke-dasharray: 1, 300;
+	}
+}
+
+@-o-keyframes uix-loader-dash {
+	0% {
+		stroke-dasharray: 1, 300;
+	}
+	
+	50% {
+		stroke-dasharray: 50, 300;
+	}
+	
+	100% {
+		stroke-dasharray: 1, 300;
+	}
+}
 
 /*
 .uix.loader {

@@ -43,6 +43,8 @@ exports.route = (handler) => async (req, res) => {
 
 	var env = new Env(req, res);
 
+	// setTimeout(function () {
+	
 	env.init(async () => {
 		try {
 			watchdog.logRequest(env.ip(), url.parse(req.url).pathname);
@@ -62,6 +64,8 @@ exports.route = (handler) => async (req, res) => {
 			}
 		}
 	});
+	
+	// }, 1000);
 };
 
 exports.md5 = (cont, format) => {

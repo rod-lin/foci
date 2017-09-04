@@ -13,7 +13,7 @@ define([ "com/util" ], function (util) {
 			position: "absolute",
 			prepend: false,
 			height: 2,
-			color: "indicating"
+			color: ""
 		}, config);
 
 		var main = $(" \

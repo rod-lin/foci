@@ -1,0 +1,93 @@
+<div id="sub-e404"> <!-- e404 -->
+	<div class="page-1">
+		<span class="oops-prompt">OOPS_</span><br>
+		<span class="not-found-prompt">404 NOT FOUND</span>
+	</div>
+</div>
+
+<style>
+	#sub-e404 {
+		height: 100%;
+		font-size: 2em;
+	}
+	
+	#sub-e404 .not-found-prompt,
+	#sub-e404 .oops-prompt {
+		font-family: Consolas, monospace;
+		font-size: 2em;
+		font-weight: bold;
+		color: white;
+	}
+	
+	#sub-e404 .oops-prompt {
+		font-size: 4em;
+	}
+	
+	#sub-e404 .not-found-prompt,
+	#sub-e404 .oops-prompt {
+		text-shadow:
+			1px 1px 0px rgb(210, 210, 210),
+			2px 2px 0px rgb(210, 210, 210),
+			3px 3px 0px rgb(210, 210, 210),
+			4px 4px 0px rgb(210, 210, 210),
+			5px 5px 0px rgb(210, 210, 210);
+	}
+	
+	@media only screen and (max-width: 640px) {
+		#sub-e404 {
+			font-size: 1em;
+		}
+		
+		#sub-e404 .not-found-prompt,
+		#sub-e404 .oops-prompt {
+			text-shadow:
+				1px 1px 0px rgb(210, 210, 210),
+				2px 2px 0px rgb(210, 210, 210),
+				3px 3px 0px rgb(210, 210, 210);
+		}
+	}
+</style>
+
+<script>
+	function init(main, args, show, cont, exit) {
+		require([
+			"com/env", "com/util", "com/pform"
+		], function (env, util, pform) {
+			var tbar = env.get("tbar");
+			tbar.setTitle("Oops Not Found");
+
+			var pf = pform.init(main, [
+				{
+					cont: main.find(".page-1"),
+					
+					onShow: function () {
+						tbar.setStyle("colorful orange");
+						pf.background("#F39C12");
+						
+						var b = blink();
+						exit(function () {
+							clearInterval(b);
+						});
+					},
+
+					onHide: function () {
+						tbar.setStyle("");
+						pf.background("");
+					}
+				}
+			]);
+			
+			function blink() {
+				var oops = main.find(".oops-prompt");
+				var has = true;
+				
+				return setInterval(function () {
+					oops.text(has ? "OOPS " : "OOPS_");
+					has = !has;
+				}, 800);
+			}
+
+			show(true);
+		});
+	}
+</script>
