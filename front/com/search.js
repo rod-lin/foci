@@ -119,7 +119,7 @@ define([ "com/util", "com/tagbox", "com/env", "com/seledate" ], function (util, 
         
         ret.blur = function () {
             hideFilter();
-            main.find(".prompt").blur();
+            main.find(".prompt").focus();
         };
     
         return ret;

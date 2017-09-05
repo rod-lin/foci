@@ -215,18 +215,25 @@ define(function () {
 
 	// cb(n) if scroll down
 	// cb(-n) if scroll up
-	util.scroll = function (elem, cb) {
+	util.scroll = function (elem, cb, down_ofs, up_ofs) {
 		elem = $(elem);
 
 		var cur = elem.scrollTop();
 		var acc = 0;
+		
+		down_ofs = (down_ofs === undefined ? 40 : down_ofs);
+		up_ofs = (up_ofs === undefined ? 15 : up_ofs);
+		
+		var off = function () {
+			elem.off("scroll", null, onscr);
+		};
 
 		var onscr = function () {
 			var now = $(this).scrollTop();
 
 			// scrolling down need to be faster to trigger
-			if ((now > cur && now - cur > 40) ||
-				(cur > now && cur - now > 10)) {
+			if ((now > cur && now - cur > down_ofs) || // scroll down
+				(cur > now && cur - now > up_ofs)) {
 				cb(now - cur, cur);
 			}
 
@@ -239,6 +246,8 @@ define(function () {
 		};
 
 		elem.on("scroll", onscr);
+		
+		return off;
 	};
 
 	util.nextTick = function (cb) {

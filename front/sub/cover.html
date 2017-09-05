@@ -177,10 +177,8 @@
 			// search init
 			var cover_search = search.cover(main.find(".search-box"));
 			
-			$("#part").scroll(cover_search.blur);
-			exit(function () {
-				$("#part").off("scroll");
-			});
+			// var off_scroll = util.scroll("#part", cover_search.blur, 40, 40);
+			// exit(off_scroll);
 			
 			setTimeout(cover_search.focus, 1);
 

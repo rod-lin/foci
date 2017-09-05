@@ -572,34 +572,45 @@
 
 		z-index: 2;
 
-		box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+		box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
 	}
 
 	.com-tbar .logged .avatar-util-box {
 		padding-right: 0;
-		padding-left: 4rem;
+		/* padding-left: 4rem; */
+		
+		margin-right: -3.4rem;
+		padding-right: 3.4rem;
+		
+		border-radius: 1.7rem;
+		background: #363636;
 
 		height: auto;
 		line-height: normal;
 		z-index: 1;
+		
+		box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+	}
+	
+	.com-tbar .logged .avatar-util-box.expand {
+		padding-left: 1rem;
+		padding-right: 3.9rem;
 	}
 
 	.com-tbar .logged .avatar-util {
 		vertical-align: top;
-		margin-right: -3rem;
+		margin-right: -3.4rem;
 
 		font-size: 1.3rem;
 
 		width: 3.4rem;
 		height: 3.4rem;
 		line-height: 3.4rem;
-		background: #404040;
+		background: transparent;
 		color: white;
 		border-radius: 50%;
 
-		pointer-events: none;
-
-		box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+		/* box-shadow: 0 0 5px rgba(0, 0, 0, 0.4); */
 
 		transition: margin-right 0.3s, opacity 0.3s, background 0.3s;
 	}
@@ -616,16 +627,16 @@
 		opacity: 0;
 	}
 
-	.com-tbar .logged .avatar-util-box.expand .avatar-util,
-	.com-tbar .logged .avatar-util-box:hover .avatar-util {
-		margin-right: 1rem;
+	.com-tbar .logged .avatar-util-box.expand .avatar-util {
+		margin-right: 0;
 		opacity: 1;
-		background: #191919;
-		pointer-events: auto;
+	}
+	
+	.com-tbar .logged .avatar-util:active {
+		background: rgba(255, 255, 255, 0.1) !important;
 	}
 
-	.com-tbar .logged .avatar-util-box.expand .avatar-util.unread .reddot,
-	.com-tbar .logged .avatar-util-box:hover .avatar-util.unread .reddot {
+	.com-tbar .logged .avatar-util-box.expand .avatar-util.unread .reddot {
 		opacity: 1;
 	}
 
