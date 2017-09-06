@@ -65,6 +65,8 @@
 		margin-top: 3em;
 
 		background-color: #E6E6E6;
+		
+		cursor: pointer;
 
 		background-repeat: no-repeat;
 		background-size: cover;
@@ -362,6 +364,10 @@
 					// left panel
 					var parse = event.parseInfo(ev);
 					util.bgimg(left_panel.find(".logo"), parse.logo);
+
+					left_panel.find(".logo").click(function () {
+						util.jump("#event/" + euid);
+					});
 
 					// tabs
 

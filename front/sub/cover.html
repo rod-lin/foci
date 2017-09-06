@@ -177,10 +177,17 @@
 			// search init
 			var cover_search = search.cover(main.find(".search-box"));
 			
-			// var off_scroll = util.scroll("#part", cover_search.blur, 40, 40);
-			// exit(off_scroll);
+			// var scrollBlur = function () {
+			// 	cover_search.blur();
+			// };
+			// 
+			// exit(function () {
+			// 	$("#part").off("scroll", null, scrollBlur);
+			// });
+			// 
+			// $("#part").scroll(scrollBlur);
 			
-			setTimeout(cover_search.focus, 1);
+			setTimeout(cover_search.focus, 1000);
 
 			env.favtag(function (tags) {
 				if (tags)

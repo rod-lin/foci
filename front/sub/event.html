@@ -84,7 +84,7 @@
 					<div class="box pad">
 						<div class="apply-prompt">Apply for</div>
 					</div>
-					<div class="box pad apply-appcent btn" style="margin-top: 0.2rem; background: #7F8C8D; color: white; display: none;">
+					<div class="box pad apply-appcent btn always-enable" style="margin-top: 0.2rem; background: #7F8C8D; color: white; display: none;">
 						<div class="ui inverted loader"></div>
 						<span class="lang" data-replace="$front.sub.event.app_cent">Application center</span>
 					</div>
@@ -275,16 +275,17 @@
 
 	#sub-event>.cont .col-shadow {
 		position: absolute;
-		top: 0; left: 0;
+		bottom: 0; left: 0;
 
 		display: none;
 
-		height: 100%;
+		padding: 1.5rem 0;
 		width: 100%;
+		background: white;
 
 		pointer-events: none;
 
-		box-shadow: 0 -4em 1.5em rgba(255, 255, 255, 1) inset;
+		box-shadow: 0 0 50px rgba(0, 0, 0, 0.04);
 	}
 
 	#sub-event>.cont .descr.collapse+.col-shadow {
@@ -292,9 +293,9 @@
 	}
 
 	#sub-event>.cont .show-more-btn {
-		position: absolute;
-		bottom: 1.5rem;
 		pointer-events: auto;
+		
+		font-weight: bold;
 
 		width: 100%;
 
@@ -410,11 +411,21 @@
 		pointer-events: none;
 	}
 
-	@media only screen and (max-width: 720px) {
+	@media only screen and (max-width: 640px) {
 		#sub-event>.cont .cont-box {
-			max-width: 95%;
-			margin-top: 1rem;
+			max-width: 100%;
+			margin-top: -1px;
 			padding-bottom: 1rem;
+		}
+		
+		#sub-event>.cont .box {
+			border-left: 0;
+			border-right: 0;
+			border-radius: 0;
+		}
+		
+		#sub-event>.cont .box.pad {
+			padding: 2rem;
 		}
 
 		#sub-event>.cont .scover {
@@ -426,7 +437,7 @@
 		}
 
 		#sub-event>.cont .info-box {
-			padding: 1.5rem 1rem 1.5rem;
+			padding: 2rem;
 		}
 
 		#sub-event>.cont .descr {

@@ -221,8 +221,8 @@ define(function () {
 		var cur = elem.scrollTop();
 		var acc = 0;
 		
-		down_ofs = (down_ofs === undefined ? 40 : down_ofs);
-		up_ofs = (up_ofs === undefined ? 15 : up_ofs);
+		down_ofs = (down_ofs === undefined ? 5 : down_ofs);
+		up_ofs = (up_ofs === undefined ? 5 : up_ofs);
 		
 		var off = function () {
 			elem.off("scroll", null, onscr);

@@ -10,6 +10,7 @@ define([ "com/util" ], function (util) {
     
     function gen(placeholder, config) {
         config = $.extend({
+            container: null,
             pos: "bottom left"
         }, config);
         
@@ -25,24 +26,69 @@ define([ "com/util" ], function (util) {
         
         setPrompt(placeholder);
         
-        main.find(".cancel.icon").click(function () {
+        main.find(".cancel.icon").click(function (e) {
             selected = null;
             main.removeClass("error");
             setPrompt(placeholder);
+            
+            e.stopPropagation();
         });
         
-        main.calendar({
+        var cal_dom = null;
+        var onChange = null;
+        var onShow = function () {
+            if (cur_open) cur_open.hideCalendar();
+            cur_open = main;
+        };
+        
+        var inline = !!config.container;
+        
+        if (inline) {
+            cal_dom = $(config.container);
+        }
+        
+        function showCalendar() {
+            if (cur_open === main) return;
+            
+            if (inline) {
+                cal_dom.css("display", "");
+                onShow();
+            } else {
+                main.calendar("popup", "show");
+            }
+            
+            if (config.onHeightChange) {
+                setTimeout(config.onHeightChange, 100);
+            }
+        }
+        
+        function hideCalendar() {
+            if (cur_open !== main) return;
+            
+            if (inline) {
+                cal_dom.css("display", "none");
+            } else {
+                main.calendar("popup", "hide");
+            }
+            
+            cur_open = null;
+            
+            if (config.onHeightChange) {
+                setTimeout(config.onHeightChange, 100);
+            }
+        }
+        
+        (inline ? cal_dom : main).calendar({
             type: "date",
+            inline: inline,
+            
             popupOptions: {
                 hideOnScrolls: true,
                 position: config.pos,
                 lastResort: true
             },
             
-            onShow: function () {
-                if (cur_open) cur_open.calendar("popup", "hide");
-                cur_open = main;
-            },
+            onShow: onShow,
             
             onChange: function (date, text, mode) {
                 main.removeClass("error");
@@ -59,12 +105,33 @@ define([ "com/util" ], function (util) {
                         setPrompt(text);
                 } else
                     setPrompt(placeholder);
+                    
+                if (onChange)
+                    onChange();
             }
         });
         
-        main.close = function () {
-            main.calendar("popup", "hide");
-        };
+        if (inline) {
+            // inline
+            cal_dom.css("display", "none");
+            
+            main.click(function () {
+                showCalendar();
+            });
+            
+            main.find(".cancel.icon").click(function (e) {
+                hideCalendar();
+            });
+            
+            onChange = function () {
+                setTimeout(function () {
+                    hideCalendar();
+                }, 100);
+            };
+        }
+        
+        main.hideCalendar = hideCalendar;
+        main.showCalendar = showCalendar;
         
         main.date = function () {
             return selected;

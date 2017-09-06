@@ -22,19 +22,25 @@ define([ "com/util", "com/tagbox", "com/env", "com/seledate" ], function (util, 
                     <div class='tagbox' style='margin-top: 0.5rem;'></div> \
                     <div class='label'>Date</div> \
                     <div class='datebox' style='margin-top: 0.5rem;'></div> \
+                    <div class='datebox-selector-1'></div> \
+                    <div class='datebox-selector-2'></div> \
                 </div> \
             </div> \
         </div>");
         
-        function showFilter() {
-        	main.find(".search-box-cont").css("height",
+        function updateHeight() {
+            main.find(".search-box-cont").css("height",
                                               main.find(".prompt-box").outerHeight(true) +
-                                              main.find(".filter-box").outerHeight(true) + "px")
-                                         .addClass("expand");
+                                              main.find(".filter-box").outerHeight(true) + "px");
+        }
+        
+        function showFilter() {
+            updateHeight();
+        	main.find(".search-box-cont").addClass("expand");
                                          
             setTimeout(function () {
                 main.find(".search-box-cont").css("overflow", "visible");
-            }, 400);
+            }, 500);
         }
         
         function hideFilter() {
@@ -68,11 +74,15 @@ define([ "com/util", "com/tagbox", "com/env", "com/seledate" ], function (util, 
         });
         
         var start_date = seledate.gen("date a", {
-                pos: "bottom center"
+                container: main.find(".datebox-selector-1"),
+                pos: "bottom center",
+                onHeightChange: updateHeight
             }),
             
             end_date = seledate.gen("date b", {
-                pos: "bottom center"
+                container: main.find(".datebox-selector-2"),
+                pos: "bottom center",
+                onHeightChange: updateHeight
             });
             
         start_date.setEnd(end_date);
@@ -83,10 +93,7 @@ define([ "com/util", "com/tagbox", "com/env", "com/seledate" ], function (util, 
         main.find(".datebox").append(end_date);
         // main.find(".datebox").append("<spans style='margin: 0 0.5rem;'>∀ (A, B) ∈ (&lt; on set Date) </span>");
         
-        main.click(function () {
-            start_date.close();
-            end_date.close();
-        });
+        main.click();
         
         start_date.click(function (ev) {
             ev.stopPropagation();
@@ -119,7 +126,7 @@ define([ "com/util", "com/tagbox", "com/env", "com/seledate" ], function (util, 
         
         ret.blur = function () {
             hideFilter();
-            main.find(".prompt").focus();
+            main.find(".prompt").blur();
         };
     
         return ret;
