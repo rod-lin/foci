@@ -1009,7 +1009,8 @@
 									title: info.title || fields.title,
 									descr: info.descr || fields.descr,
 									cover: info.cover,
-									logo: info.logo
+									logo: info.logo,
+									favtag: info.favtag
 								}, {
 									editTag: true,
 
@@ -1017,6 +1018,7 @@
 										upload.init(function (file) {
 											if (file) {
 												fields.cover = file;
+												changed.cover = true;
 												dom.changeCover(file);
 											}
 										});
@@ -1026,6 +1028,7 @@
 										upload.init(function (file) {
 											if (file) {
 												fields.logo = file;
+												changed.logo = true;
 												dom.changeLogo(file);
 											}
 										});
@@ -1033,6 +1036,7 @@
 
 									onTagChange: function (tags) {
 										fields.favtag = tags;
+										changed.favtag = true;
 									},
 
 									max_descr_len: 64,
@@ -1043,10 +1047,11 @@
 							},
 
 							onCheck: function (cb) {
-								if (fields.cover || fields.logo) {
+								if (changed.cover || changed.logo || changed.favtag) {
 									uploadChanges({
 										cover: fields.cover || undefined,
-										logo: fields.logo || undefined
+										logo: fields.logo || undefined,
+										favtag: fields.favtag || undefined
 									}, function (suc) {
 										if (suc) {
 											new_tab.find(".cover-step").addClass("completed");
@@ -1056,12 +1061,6 @@
 										}
 									});
 								}
-
-								uploadChanges({
-									favtag: fields.favtag,
-								}, function (suc) {
-									cb(true);
-								});
 							}
 						},
 

@@ -42,6 +42,21 @@ var conf = module.exports = {
 				name: "art",
 				icon: "paint brush"
 			},
+			
+			"workshop": {
+				name: "workshop",
+				icon: "idea"
+			},
+			
+			"volunteer": {
+				name: "volunteer",
+				icon: "handshake"
+			},
+			
+			"language": {
+				name: "language",
+				icon: "talk"
+			},
 
 			"academic": {
 				name: "academic",
@@ -63,14 +78,9 @@ var conf = module.exports = {
 				icon: "music"
 			},
 
-			"developing": {
-				name: "developing",
-				icon: "bug"
-			},
-
 			"tech": {
 				name: "tech",
-				icon: "microchip"
+				icon: "rocket"
 			}
 		},
 		

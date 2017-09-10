@@ -48,6 +48,7 @@ define([ "com/util" ], function (util) {
 
 		function addTag(name) {
 			if (cur.indexOf(name) != -1) return;
+			if (!tag_dom[name]) return;
 
 			cur.push(name);
 			main.find(".addtag").before(tag_dom[name].click(tagOnClick));
@@ -130,8 +131,10 @@ define([ "com/util" ], function (util) {
 
 			cur = init;
 			for (var i = 0; i < init.length; i++) {
-				main.find(".addtag").before(tag_dom[cur[i]]);
-				tag_dom[cur[i]].click(tagOnClick);
+				if (tag_dom[cur[i]]) {
+					main.find(".addtag").before(tag_dom[cur[i]]);
+					tag_dom[cur[i]].click(tagOnClick);
+				}
 			}
 
 			if (cur.length == tag_count) {
