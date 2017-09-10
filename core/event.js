@@ -555,6 +555,7 @@ exports.countUnpublished = async (uuid) => {
 // check participant/staff
 exports.checkApplicant = async (euid, uuid) => {
 	var col = await db.col("event");
+	
 	if (!(await col.count(Event.query.is_applicant(euid, uuid))))
 		throw new err.Exc("$core.not_event_applicant");
 };

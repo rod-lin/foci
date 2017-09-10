@@ -143,8 +143,13 @@ exports.sendGroup = async (type, sender /* the claimed sender of the notice */,
 	
 	switch (type) {
 		case "event":
-			var euid = sender;
-			event.checkOwner(euid, uuid);
+			var euid = parseInt(sender);
+			
+			if (isNaN(euid)) {
+				throw new err.Exc("$core.not_exist($core.word.event)");
+			}
+			
+			await event.checkOwner(euid, uuid);
 
 			for (var i = 0; i < uuids.length; i++) {
 				await event.checkApplicant(euid, uuids[i]);
