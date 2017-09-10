@@ -143,7 +143,7 @@ exports.sendGroup = async (type, sender /* the claimed sender of the notice */,
 	
 	switch (type) {
 		case "event":
-			euid = sender;
+			var euid = sender;
 			event.checkOwner(euid, uuid);
 
 			for (var i = 0; i < uuids.length; i++) {
