@@ -627,10 +627,11 @@ define([
 				});
 			}
 
-			// check is owner
+			// check if the user is owner
 			if (env.session()) {
 				env.user(function (user) {
-					if (info.org && info.org.indexOf(user.uuid) != -1) {
+					if ((info.org && info.org.indexOf(user.uuid) != -1) ||
+						env.session().isAdmin()) {
 						main.find(".back").removeClass("not-owner");
 					} else {
 						main.find(".back").addClass("not-owner");
