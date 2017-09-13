@@ -349,7 +349,7 @@ window.foci = {};
 		$("<link>")
 			.attr({
 				rel: "stylesheet",
-				href: path
+				href: path + (foci.version ? "?v=" + foci.version : "")
 			})
 			.appendTo("head");
 	}
