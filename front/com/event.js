@@ -955,8 +955,8 @@ define([
 					<div class='show-title'>Hello, world</div> \
 					<div class='show-descr'>Light, he said.<br>Then there was light</div> \
 					<div class='show-toolbar'> \
+						<span class='info-icon loc-bar'><i class='map outline icon'></i><span class='show-loc'></span></span> \
 						<span class='info-icon' style='float: right;'><i class='user outline icon'></i><span class='show-partic'></span></span> \
-						<span class='info-icon'><i class='map outline icon'></i><span class='show-loc'></span></span> \
 					</div> \
 				</div> \
 			</div> \

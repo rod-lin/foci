@@ -78,6 +78,13 @@
 }
 
 .com-event-showcase .show-toolbar {
+    display: -webkit-flex;
+    display: flex;
+    
+    -webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+    
     position: absolute;
     left: 0;
     bottom: 0;
@@ -85,10 +92,21 @@
 
     padding-top: 0.7em;
 
-    box-shadow: 0 -5px 2em white;
+    box-shadow: 0 -5px 1em white;
 
     color: #9D9D9D;
     background: white;
+}
+
+.com-event-showcase .loc-bar {
+    -webkit-box-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+    
+    padding-right: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .com-event-showcase .info-icon {
