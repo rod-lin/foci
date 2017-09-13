@@ -26,7 +26,7 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 		parsed.dname = info.dname ? xfilt(util.short(info.dname, 12)) : lang.msg("$front.sub.profile.anonymous");
 		parsed.intro = info.intro ? xfilt(util.short(info.intro, 128)) : lang.msg("($front.sub.profile.no_intro)");
 		parsed.favtag = info.favtag ? info.favtag : [];
-		parsed.rating = info.rating ? (info.rating[0] + info.rating[1]) / 2 : 0;
+		parsed.rating = info.rating ? info.rating : 0;
 
 		return parsed;
 	}

@@ -264,6 +264,13 @@ _user.info = util.route(async env => {
 	env.qsuc(usr.getInfo());
 });
 
+_user.rating = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	var args = util.checkArg(env.query, { "uuid": "int" });
+	
+	env.qsuc(await user.calRating(args.uuid));
+});
+
 _user.org = util.route(async env => {
 	if (!await checkCaptcha(env)) return;
 	var args = util.checkArg(env.query, {}.extend(event.Event.format.lim).extend({

@@ -215,12 +215,14 @@ define(function () {
 
 	// cb(n) if scroll down
 	// cb(-n) if scroll up
-	util.scroll = function (elem, cb, down_ofs, up_ofs) {
+	util.scroll = function (elem, cb, down_ofs, up_ofs,
+							min_top /* min_top distance to trigger */) {
 		elem = $(elem);
 
 		var cur = elem.scrollTop();
 		var acc = 0;
 		
+		min_top = (min_top === undefined ? 0 : min_top);
 		down_ofs = (down_ofs === undefined ? 5 : down_ofs);
 		up_ofs = (up_ofs === undefined ? 5 : up_ofs);
 		
@@ -232,9 +234,11 @@ define(function () {
 			var now = $(this).scrollTop();
 
 			// scrolling down need to be faster to trigger
-			if ((now > cur && now - cur > down_ofs) || // scroll down
-				(cur > now && cur - now > up_ofs)) {
-				cb(now - cur, cur);
+			if (now >= min_top) {
+				if ((now > cur && now - cur > down_ofs) || // scroll down
+					(cur > now && cur - now > up_ofs)) {
+					cb(now - cur, cur);
+				}
 			}
 
 			cur = now;
@@ -405,6 +409,19 @@ define(function () {
 
 	util.setTitle = function () {
 		document.title = "Foci - " + Array.prototype.slice.apply(arguments).join(" - ");
+	};
+	
+	util.ratingOf = function (uuid, cb) {
+		foci.get("/user/rating", {
+			uuid: uuid
+		}, function (suc, dat) {
+			if (suc) {
+				cb(dat);
+			} else {
+				util.emsg(dat);
+				cb(0);
+			}
+		});
 	};
 
 	return util;

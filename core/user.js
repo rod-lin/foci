@@ -40,10 +40,14 @@ var User = function (uuid, dname, lname, passwd) {
 
 	this.notice = {};
 
-	this.rating = {
-		tot: [ 0, 0 ],
-		log: []
-	};
+	// this.rating = {
+	// 	tot: [ 0, 0 ],
+	// 	log: []
+	// };
+	
+	this.staff_rating = null; // should be []
+	
+	// rating = (event_tot * 1.1 + staff_tot) / total_job
 
 	this.club = null;
 
@@ -73,7 +77,7 @@ User.prototype.getInfo = function () {
 		dname: this.dname,
 		level: this.level,
 		favtag: this.favtag,
-		rating: this.rating.tot,
+		// rating: this.rating.tot,
 
 		club: this.club,
 
@@ -87,6 +91,19 @@ User.prototype.getInfo = function () {
 
 User.prototype.getResume = function () {
 	return this.resume;
+};
+
+User.prototype.getStaffTotalRating = function () {
+	var tot = 0;
+	var len = this.staff_rating ? this.staff_rating.length : 0;
+	
+	if (this.staff_rating) {
+		for (var i = 0; i < len; i++) {
+			tot += this.staff_rating[i];
+		}
+	}
+	
+	return [ len, tot ];
 };
 
 User.format = {};
@@ -416,4 +433,19 @@ exports.incAppUpdate = async (uuid) => {
 exports.clearAppUpdate = async (uuid) => {
 	var col = await db.col("user");
 	await col.updateOne(User.query.uuid(uuid), User.set.clear_app());
+};
+
+exports.calRating = async (uuid) => {
+	// rating = (event_tot * 1.1 + staff_tot) / total_job
+	var user = await exports.uuid(uuid);
+	var event_tot = await event.getOrgRating(uuid);
+	var staff_tot = user.getStaffTotalRating();
+	
+	var tot_job = event_tot[0] + staff_tot[0];
+	
+	if (!tot_job) return 0;
+	
+	var rat = (event_tot[1] * 1.2 + staff_tot[1]) / tot_job
+
+	return rat > 10 ? 10 : rat;
 };

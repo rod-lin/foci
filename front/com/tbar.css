@@ -116,7 +116,14 @@
 	left: 0;
 	height: 4.7em;
 	padding: 1em 0;
-	transition: top 0.2s;
+}
+
+.com-tbar .menu-view,
+.com-tbar .banner-view,
+.com-tbar .menu-cont,
+.com-tbar .banner,
+.com-tbar .left-bar {
+	transition: top 0.3s cubic-bezier(0.54, 0.35, 0, 0.86);
 }
 
 .com-tbar .menu-view {
@@ -150,7 +157,6 @@
 
 	font-size: 1.2em;
 	line-height: 2.7rem;
-	transition: top 0.2s;
 }
 
 .com-tbar .menu-cont {
@@ -220,7 +226,13 @@
 	transition: opacity 0.2s;
 }
 
-.com-tbar.hide-search .search-box {
+.com-tbar .hide-with-search {
+	opacity: 1;
+	pointer-events: auto;
+	transition: opacity 0.2s;
+}
+
+.com-tbar.hide-search .hide-with-search {
 	opacity: 0 !important;
 	pointer-events: none;
 }
@@ -263,14 +275,17 @@
 
 }
 
+.com-tbar .site-logo-prompt,
 .com-tbar .site-logo-name {
-	position: absolute;
 	font-family: foci-logo-name;
-	left: 2rem;
-	
 	font-size: 1.5rem;
-	
 	line-height: 2.7rem;
+}
+
+.com-tbar .site-logo-prompt {
+	position: absolute;
+	left: 2rem;
+	top: 1px; /* TODO: temp fix */
 	
 	opacity: 0;
 	pointer-events: none;
@@ -278,6 +293,7 @@
 	transition: opacity: 0.2s;
 }
 
+.com-tbar .site-logo-prompt .foci-logo,
 .com-tbar .site-logo-name .foci-logo {
 	color: #3498DB;
 	margin-right: 0.2rem;
@@ -285,7 +301,7 @@
 }
 
 /* shown when search has disappeared */
-.com-tbar.hide-search .site-logo-name {
+.com-tbar.hide-search .site-logo-prompt {
 	opacity: 1;
 	pointer-events: auto;
 }
@@ -318,7 +334,7 @@
 
 .com-tbar .login-btn {
 	height: 100%;
-	width: 4.7em;
+	width: 5.7em; /* 4.7 + 1(1 = 2 * 0.5(the extra width of the avatar)) */
 
 	background: transparent;
 
@@ -383,7 +399,8 @@
 	opacity: 1;
 
 	font-size: 1.8rem;
-	padding-right: 0.5rem;
+	font-weight: bold;
+	/* padding-right: 0.5rem; */
 
 	transition: opacity 0.3s;
 }
@@ -393,7 +410,7 @@
 	display: inline-block;
 	line-height: normal;
 	color: #999999;
-	margin-right: 2.5rem;
+	margin-right: 1.2em;
 	cursor: pointer;
 }
 
@@ -436,11 +453,11 @@
 }
 
 .com-tbar .avatar {
-	height: 3em;
-	width: 3em;
+	height: 2.5em;
+	width: 2.5em;
 
-	margin-top: 0.85rem;
-	margin-right: 0.85rem;
+	margin-top: 1.1rem;
+	margin-right: 1.6rem;
 
 	background-color: white;
 
@@ -660,7 +677,7 @@
 		opacity: 1;
 	}
 	
-	.com-tbar.hide-search .site-logo-name {
+	.com-tbar.hide-search .site-logo-prompt {
 		position: absolute;
 		left: 0;
 		width: 100%;
@@ -775,5 +792,6 @@
 
 	.com-tbar .search-box .menu-btn {
 		padding-left: 0;
+		padding-right: 1.2rem;
 	}
 }

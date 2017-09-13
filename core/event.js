@@ -30,6 +30,8 @@ var Event = function (euid, owner /* uuid */) {
 		return;
 	}
 
+	this.version = 1; // 0 is for the event version before this
+
 	this.euid = euid;
 
 	this.org = [ owner ];
@@ -81,6 +83,7 @@ var Event = function (euid, owner /* uuid */) {
 	this.partic = []; // participants
 
 	this.comment = [];
+	this.rating_acc = 0;
 
 	this.view = [];
 };
@@ -490,6 +493,10 @@ Event.set = {
 
 	add_view: uuid => ({
 		$addToSet: { "view": uuid }
+	}),
+	
+	add_rating: rating => ({
+		$inc: { "rating_acc": rating }
 	})
 };
 
@@ -643,8 +650,8 @@ async function getEventGroup(query, conf, filter) {
 }
 
 // events organized by a certain user(in event info)
-exports.getOrganized = async (uuid, conf) => {
-	return await getEventGroup(Event.query.org(uuid), conf);
+exports.getOrganized = async (uuid, conf, filter) => {
+	return await getEventGroup(Event.query.org(uuid), conf, filter);
 };
 
 /*
@@ -919,4 +926,21 @@ exports.terminate = async (euid, uuid) => {
 exports.incView = async (euid, uuid) => {
 	var col = await db.col("event");
 	col.updateOne(Event.query.euid(euid), Event.set.add_view(uuid));
+};
+
+exports.addRating = async (euid, rating) => {
+	var col = await db.col("event");
+	await col.updateOne(Event.query.euid(euid), Event.set.add_rating(rating));
+};
+
+// get ratings of events orgnanized by the uuid
+exports.getOrgRating = async (uuid) => {
+	var evs = await exports.getOrganized(uuid, undefined, x => x);
+	var tot = 0;
+	
+	for (var i = 0; i < evs.length; i++) {
+		tot += evs[i].getRating();
+	}
+	
+	return [ evs.length, tot ];
 };

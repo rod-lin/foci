@@ -2,7 +2,7 @@
 	<div class="left-bar">
 		<div class="avatar empty"><div><i class="fitted setting icon"></i></div></div><br>
 		<div class="dname"></div><br>
-		<div class="ui rating" data-max-rating="5"></div><br>
+		<div class="rating"></div><br>
 		<div class="intro"></div><br>
 		<!-- <div class="ui grey statistic">
 			<div class="value follows">
@@ -613,13 +613,13 @@
 			"com/map", "com/lang", "com/editable",
 			"com/tagbox", "com/pm", "com/tip",
 			"com/formi", "com/marki", "com/resume",
-			"com/helper", "com/notice"
+			"com/helper", "com/notice", "com/rating"
 		], function (
 			env, util, event, xfilt,
 			pages, tab, login, event,
 			upload, map, lang, editable,
 			tagbox, pm, tip, formi, marki,
-			resume, helper, notice
+			resume, helper, notice, rating
 		) {
 			var init = function (info, is_self, init_page, page_arg) {
 				// foci.get("/user/resume", {
@@ -649,14 +649,18 @@
 				left_bar.find(".follows").html("--");
 				left_bar.find(".followers").html("--");
 
-				left_bar.find(".rating").rating("disable").rating("set rating", 0);
+				// left_bar.find(".rating").rating("disable").rating("set rating", 0);
+				var rat = rating.init(left_bar.find(".rating"), 0);
 
 				var tgbox = null;
 
 				function setDom(info) {
 					var parsed = login.parseInfo(info);
 
-					left_bar.find(".rating").rating("set rating", 0);
+					util.ratingOf(info.uuid, function (rating) {
+						// left_bar.find(".rating").rating("set rating", Math.round(rating / 2));
+						rat.set(rating);
+					});
 
 					left_bar.find(".dname").html(parsed.dname);
 					left_bar.find(".intro").html(parsed.intro);

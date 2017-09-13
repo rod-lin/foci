@@ -24,6 +24,31 @@ define([ "com/util" ], function (util) {
 			if (cb) cb(suc, dat);
 		});
 	}
+	
+	function load_rating(cb) {
+		if (env.rating && env.session) {
+			cb(env.rating);
+			return;
+		}
+		
+		if (!env.session) {
+			cb(NaN);
+			return;
+		}
+		
+		foci.get("/user/rating", {
+			uuid: env.session.getUUID()
+		}, function (suc, dat) {
+			if (suc) {
+				env.rating = dat;
+			} else {
+				util.emsg(dat);
+				env.rating = NaN;
+			}
+
+			cb(env.rating);
+		});
+	}
 
 	function load_info(cb) {
 		if (env.user && env.session) {
@@ -46,8 +71,11 @@ define([ "com/util" ], function (util) {
 				util.emsg(dat);
 				env.user = null;
 			}
-
-			cb(env.user);
+			
+			load_rating(function (rating) {
+				env.user.rating = isNaN(rating) ? 0 : rating;
+				cb(env.user);
+			});
 		});
 	}
 

@@ -1,5 +1,18 @@
-.ui.star.rating.com-rating.disabled i.icon.selected,
-.ui.star.rating.com-rating.disabled i.icon.active {
+.ui.star.rating.disabled i.icon.selected,
+.ui.star.rating.disabled i.icon.active {
 	color: #F1C40F !important;
 	text-shadow: none !important;
+}
+
+.ui.star.rating.disabled {
+	pointer-events: auto !important;
+}
+
+.com-rating,
+.com-rating .icon {
+	cursor: pointer !important;
+}
+
+.com-rating-tip {
+	font-weight: bold;
 }

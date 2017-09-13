@@ -269,4 +269,9 @@ if (!fs.existsSync(conf.file.save_dir)) {
 	fs.mkdirSync(conf.file.save_dir);
 }
 
-conf.lim.favtag_count = Object.keys(conf.lim.favtag).length
+conf.lim.favtag_count = Object.keys(conf.lim.favtag).length;
+
+if (fs.existsSync("config.site.js")) {
+	var ext = require("../config.site.js");
+	conf.pass = ext.pass;
+}

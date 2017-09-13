@@ -4,8 +4,9 @@
 define([
 	"com/login", "com/xfilt", "com/util",
 	"com/env", "com/upload", "com/pm",
-	"com/notice", "com/lang", "com/popselect"
-], function (login, xfilt, util, env, upload, pm, notice, lang, popselect) {
+	"com/notice", "com/lang", "com/popselect",
+	"com/rating"
+], function (login, xfilt, util, env, upload, pm, notice, lang, popselect, rating) {
 	var $ = jQuery;
 	foci.loadCSS("com/tbar.css");
 
@@ -20,11 +21,14 @@ define([
 			<div class="com-tbar hide"> \
 				<div class="left-bar"> \
 					<div class="ui left action right icon input search-box"> \
-						<button class="menu-btn"> \
-							<i class="site-logo foci-logo" style="margin: 0;"></i> \
+						<button class="menu-btn hide-with-search"> \
+							<!--i class="site-logo foci-logo" style="margin: 0;"></i--> \
+							<span class="site-logo-name"> \
+								<i class="foci-logo"></i><b class="hide-in-mobile">Foci</b> \
+							</span> \
 						</button> \
 						<!--div class="tags">Hi</div--> \
-						<div class="ui search fluid"> \
+						<div class="ui search fluid hide-with-search"> \
 							<div class="filter-tag fluid ui multiple dropdown"> \
 								<div class="ui fluid menu"> ' + /* tags add here! */ ' \
 									<div class="header"> \
@@ -40,9 +44,9 @@ define([
 							</div> \
 							<input class="prompt lang" data-attr="placeholder" data-replace="$front.com.tbar.search_prompt" placeholder="Type for surprise" type="text"> \
 						</div> \
-						<i class="filter-btn filter link icon"></i> \
+						<i class="filter-btn filter link icon hide-with-search"></i> \
+						<span class="site-logo-prompt"> - <span class="lang" data-replace="$front.com.login.logo_prompt">Where events begin</span></span> \
 					</div> \
-					<span class="site-logo-name"><i class="foci-logo"></i><b>Foci</b> - <span class="lang" data-replace="$front.com.login.logo_prompt">Where events begin</span></span> \
 				</div> \
 				<div class="menu-view"> \
 					<div class="menu-cont"> \
@@ -79,7 +83,7 @@ define([
 						<div class="cont"> \
 							<div class="pop-avatar"><div><i class="setting icon"></i></div></div> \
 							<div class="pop-title header"></div> \
-							<div class="ui star mini rating bottom right" data-rating="4" data-max-rating="5"></div> \
+							<div class="rating"></div> \
 						</div> \
 						<div class="ui two bottom attached buttons"> \
 							<div class="ui basic button profile lang" data-replace="$front.com.tbar.profile">Profile</div> \
@@ -92,12 +96,16 @@ define([
 
 		main = $(main);
 		
+		main.find(".site-logo-prompt").prepend(main.find(".site-logo-name").clone());
+		
 		function toggleAvatarUtil(dir) {
 			main.find(".avatar-util").transition({
 				animation: "scale " + (dir || ""),
 				interval: 200
 			});
 		}
+		
+		var is_mobile = $(window).width() <= 640;
 
 		var getTag, clearTag, addTag;
 
@@ -211,6 +219,8 @@ define([
 		
 		var old_info = null;
 		
+		var ratobj = rating.init(main.find(".rating"), undefined, { size: "mini" });
+		
 		// update avatar
 		function updateAvatar(file) {
 			function refresh(info) {
@@ -221,10 +231,8 @@ define([
 					main.find(".avatar-popup .pop-avatar").css("background-image", "url(\'" + info.avatar + "\')");
 					return info.avatar;
 				}
-
-				main.find(".rating")
-					.attr("data-rating", info.rating.toString())
-					.rating("disable");
+					
+				ratobj.set(info.rating);
 
 				main.find(".avatar-popup .pop-title").html(info.dname);
 				main.find(".avatar-popup .logout").click(function () {
@@ -260,6 +268,8 @@ define([
 			}
 
 			if (env.session()) {
+				main.find(".login-btn .loader").addClass("active");
+				
 				env.user(function (info) {
 					if (file) {
 						info.avatar = file;
@@ -334,6 +344,8 @@ define([
 				position: "bottom left",
 				on: "click",
 				lastResort: true,
+				distanceAway: is_mobile ? 0 : 18, /* TODO: not fixed!! */
+				
 				onShow: function () {
 					main.find(".pm-btn").removeClass("unread");
 				}
@@ -344,6 +356,7 @@ define([
 				position: "bottom right",
 				on: "click",
 				lastResort: true,
+				distanceAway: is_mobile ? 0 : 18,
 
 				onShow: function () {
 					main.find(".notice-btn").removeClass("unread");
@@ -412,7 +425,8 @@ define([
 		ava.popup({
 			popup: main.find(".avatar-popup"),
 			position: "bottom right",
-			hoverable: true
+			hoverable: true,
+			distanceAway: is_mobile ? 0 : 30 // TODO: temp fix
 		})
 
 		main.find(".avatar-popup .pop-avatar")

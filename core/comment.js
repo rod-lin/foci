@@ -113,6 +113,9 @@ exports.issue = async (euid, conf) => {
 
 	if (!res.value)
 		throw new err.Exc("$core.comment.issue_failed");
+	
+	if (conf.rating != undefined)
+		await event.addRating(euid, conf.rating);
 };
 
 exports.get = async (euid, conf) => {

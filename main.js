@@ -50,6 +50,7 @@ app.get("/user/reset", int.user.reset);
 app.get("/user/login", int.user.login);
 app.get("/user/csid", int.user.csid);
 app.get("/user/info", int.user.info);
+app.get("/user/rating", int.user.rating);
 app.get("/user/org", int.user.org);
 app.get("/user/applied", int.user.applied);
 app.get("/user/encop", int.user.encop);

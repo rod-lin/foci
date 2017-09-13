@@ -440,7 +440,11 @@
 								dat = login.parseInfo(dat);
 
 								user.find(".trivial").append("<div class='user-name'>" + dat.dname + "</div>");
-								var rat = rating.init(user.find(".trivial"), dat.rating);
+								// var rat = rating.init(user.find(".trivial"), dat.rating);
+
+								util.ratingOf(app.uuid, function (rat) {
+									rating.init(user.find(".trivial"), rat);
+								});
 
 								if (cb) cb();
 							} else {
