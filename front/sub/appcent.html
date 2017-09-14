@@ -442,9 +442,9 @@
 								user.find(".trivial").append("<div class='user-name'>" + dat.dname + "</div>");
 								// var rat = rating.init(user.find(".trivial"), dat.rating);
 
-								util.ratingOf(app.uuid, function (rat) {
-									rating.init(user.find(".trivial"), rat);
-								});
+								var ratdom = rating.init(user.find(".trivial"));
+
+								util.ratingOf(app.uuid, ratdom.set);
 
 								if (cb) cb();
 							} else {

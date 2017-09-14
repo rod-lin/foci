@@ -167,6 +167,9 @@
 .com-tbar .banner {
 	top: 4.7em;
 	padding: 0 1rem;
+	
+	max-width: 30rem;
+	
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -286,6 +289,8 @@
 	position: absolute;
 	left: 2rem;
 	top: 1px; /* TODO: temp fix */
+	
+	cursor: pointer;
 	
 	opacity: 0;
 	pointer-events: none;
@@ -547,6 +552,10 @@
 		width: 100%;
 		padding-left: 0;
 	}
+	
+	.com-tbar .banner {
+		max-width: 100%;
+	}
 
 	.com-tbar .menu-view .cancel.icon {
 		position: absolute;
@@ -693,7 +702,10 @@
 	border-color: transparent;
 }
 
-.com-tbar.colorful .search-box .menu-btn i {
+.com-tbar.colorful .search-box .menu-btn,
+.com-tbar.colorful .search-box .menu-btn i,
+.com-tbar .site-logo-prompt i,
+.com-tbar .site-logo-prompt {
 	color: white;
 }
 

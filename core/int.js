@@ -426,8 +426,9 @@ encop.event = async (env, usr, query, next, has_cap) => {
 		case "info":
 			var args = util.checkArg(query, { euid: "int", state: { type: "int", opt: true } });
 			
-			// only admin can see all events
-			await user.checkAdmin(usr.getUUID());
+			// only admin/organizers can see all events
+			// await user.checkAdmin(usr.getUUID());
+			await event.checkOwner(args.euid, usr.getUUID());
 			
 			return (await event.euid(args.euid, args.state)).getInfo();
 		

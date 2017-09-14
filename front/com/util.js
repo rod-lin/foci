@@ -2,7 +2,7 @@
 
 "use strict";
 
-define(function () {
+define([ "com/xfilt" ], function (xfilt) {
 	var util = {};
 	foci.loadCSS("com/util.css");
 
@@ -234,6 +234,7 @@ define(function () {
 			var now = $(this).scrollTop();
 
 			// scrolling down need to be faster to trigger
+			// console.log(now);
 			if (now >= min_top) {
 				if ((now > cur && now - cur > down_ofs) || // scroll down
 					(cur > now && cur - now > up_ofs)) {
@@ -422,6 +423,10 @@ define(function () {
 				cb(0);
 			}
 		});
+	};
+	
+	util.htmlToText = function (html) {
+		return $("<span>" + xfilt(html) + "</span>").text();
 	};
 
 	return util;

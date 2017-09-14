@@ -181,7 +181,7 @@ define([
 			});
 		}
 
-		main.find(".nt-header .title").html(msg.title);
+		main.find(".nt-header .title").html(msg.title).attr("title", util.htmlToText(msg.title));
 
 		main.find(".nt-header .sender").html("by " + config.info.name);
 		main.find(".nt-header .date").html(util.localDate(new Date(msg.date)));
@@ -247,8 +247,8 @@ define([
 					items.push(dat[k]);
 					for (var i = 0; i < dat[k].length; i++) {
 						dat[k][i].date = new Date(dat[k][i].date);
-						dat[k][i].title = lang.msg(dat[k][i].title || "$core.notice.untitled");
-						dat[k][i].msg = lang.msg(dat[k][i].msg);
+						dat[k][i].title = xfilt(lang.msg(dat[k][i].title || "$core.notice.untitled"));
+						dat[k][i].msg = xfilt(lang.msg(dat[k][i].msg));
 					}
 				}
 			}
@@ -273,10 +273,10 @@ define([
 			var item = $(" \
 				<div class='hist-msg'> \
 					<div class='header'> \
-						<div class='title'>" + msg.title + "</div> \
+						<div class='title'>" + xfilt(msg.title) + "</div> \
 						<div class='date'>" + util.localDate(msg.date) + "</div> \
 					</div> \
-					<div class='msg'>" + msg.msg + "</div> \
+					<div class='msg'>" + xfilt(msg.msg) + "</div> \
 				</div>\
 			");
 
@@ -293,6 +293,8 @@ define([
 					logo_url: msg.type == "event" ? "#event/" + parseInt(msg.sender) : null
 				});
 			});
+			
+			item.attr("title", util.htmlToText(xfilt(msg.title)));
 
 			return item;
 		}
@@ -316,6 +318,8 @@ define([
 
 			item.find(".sender-msg").html(msg.title + ": " + msg.msg);
 
+			item.attr("title", util.htmlToText(msg.title));
+
 			// console.log(msg);
 
 			login.session(function (session) {
@@ -333,7 +337,7 @@ define([
 								dat.logo = foci.download(dat.logo);
 						} else dat.logo = "/img/def/logo.jpg";
 
-						dat.name = lang.msg(dat.name);
+						dat.name = xfilt(lang.msg(dat.name));
 
 						util.bgimg(item.find(".sender-logo"), dat.logo);
 						item.find(".sender-name").html(dat.name);

@@ -42,6 +42,7 @@ define([ "com/util" ], function (util) {
 			main.popup({
 				content: (rating === undefined ? "N/A" : util.trimFloat(rating, 2)),
 				position: "right center",
+				hoverable: true,
 				variation: "inverted"
 			});
 			

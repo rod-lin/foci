@@ -180,7 +180,7 @@ define([
 				}, 300);
 			};
 
-			main.find(".menu-btn").click(showMenu);
+			main.find(".menu-btn, .site-logo-prompt").click(showMenu);
 			main.find(".menu-cont .cancel.icon").click(hideMenu);
 			main.find(".menu-cont .menu-link").click(hideMenu);
 		})();
@@ -518,8 +518,18 @@ define([
 			};
 
 			mod.setTitle = function () {
-				main.find(".banner").html(Array.prototype.slice.apply(arguments).join("<i class='sub caret right icon'></i>"));
+				var args = Array.prototype.slice.apply(arguments);
+				
+				for (var i = 0; i < args.length; i++) {
+					args[i] = xfilt(args[i]);
+				}
+				
+				main.find(".banner")
+					.html(args.join("<i class='sub caret right icon'></i>"))
+					
 				util.setTitle.apply(util, arguments);
+				
+				main.find(".banner").attr("title", util.htmlToText($("title").text()));
 
 				// ret.showBanner();
 				// setTimeout(ret.hideBanner, 3000);

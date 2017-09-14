@@ -108,8 +108,14 @@
 				<div class="page page-apply pad" style="text-align: left; overflow: auto;">
 					<style>
 						#sub-profile .page.page-apply .header,
-						#sub-profile .page.page-apply label {
-							color: rgba(100, 100, 100, 1) !important;
+						#sub-profile .page.page-apply label,
+						#sub-profile .page.page-apply b,
+						#sub-profile .page.page-apply span {
+							color: rgba(70, 70, 70, 1) !important;
+						}
+						
+						#sub-profile .page.page-apply p {
+							margin-bottom: 0.5rem;
 						}
 					</style>
 					<form class="ui form">
@@ -126,11 +132,11 @@
 							<div class="fields">
 								<div class="field">
 									<label class="lang" data-replace="$front.sub.profile.staff_form">Staff Form</label>
-									<button class="ui blue button create-staff-form lang" data-replace="$front.sub.profile.create_edit" type="button">Create/Edit</button>
+									<button class="ui basic blue button create-staff-form lang" data-replace="$front.sub.profile.create_edit" type="button">Create/Edit</button>
 								</div>
 								<div class="field">
 									<label class="lang" data-replace="$front.sub.profile.partic_form">Participant Form</label>
-									<button class="ui green button create-partic-form lang" data-replace="$front.sub.profile.create_edit" type="button">Create/Edit</button>
+									<button class="ui basic green button create-partic-form lang" data-replace="$front.sub.profile.create_edit" type="button">Create/Edit</button>
 								</div>
 							</div>
 						</div>
@@ -138,7 +144,22 @@
 						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.organize">Manage</h3>
 						<div class="ui attached segment">
 							<div class="field">
-								<button class="ui blue button goto-app-cent lang" data-replace="$front.sub.profile.app_cent" type="button">Application Center</button>
+								<p>
+									<b class="lang" data-replace="$front.sub.profile.app_cent">Application Center</b><br>
+									<span>
+										View applicants for participants and staff.
+									</span>
+								</p>
+								<button class="ui basic blue button goto-app-cent" type="button">Open</button>
+							</div>
+							<div class="field">
+								<p>
+									<b>End Event</b><br>
+									<span>
+										End the event to enable comment and rating.
+									</span>
+								</p>
+								<button class="ui basic button goto-termev" type="button">End</button>
 							</div>
 						</div>
 
@@ -189,7 +210,7 @@
 						</style>
 						<div class="vcenter" style="display: inline-block;">
 							<div class="prompt"></div>
-							<div class="ui primary button publish-btn">Submit</div>
+							<div class="ui basic primary button publish-btn">Submit</div>
 						</div>
 					</div>
 				</div>
@@ -1008,6 +1029,8 @@
 								fields.cover = info.cover;
 								fields.favtag = info.favtag;
 								fields.logo = info.logo;
+								
+								var is_first = true;
 
 								event.setDom(event_tmp, {
 									title: info.title || fields.title,
@@ -1039,8 +1062,11 @@
 									},
 
 									onTagChange: function (tags) {
-										fields.favtag = tags;
-										changed.favtag = true;
+										if (is_first) is_first = false;
+										else {
+											fields.favtag = tags;
+											changed.favtag = true;
+										}
 									},
 
 									max_descr_len: 64,
@@ -1064,6 +1090,8 @@
 											cb(false);
 										}
 									});
+								} else {
+									cb(true);
 								}
 							}
 						},
@@ -1761,6 +1789,10 @@
 					
 					new_tab.find(".goto-app-cent").click(function () {
 						util.jump("#appcent/" + euid);
+					});
+					
+					new_tab.find(".goto-termev").click(function () {
+						util.jump("#termev/" + euid);
 					});
 				};
 

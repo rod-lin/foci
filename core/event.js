@@ -937,10 +937,17 @@ exports.addRating = async (euid, rating) => {
 exports.getOrgRating = async (uuid) => {
 	var evs = await exports.getOrganized(uuid, undefined, x => x);
 	var tot = 0;
+	var count = 0;
 	
 	for (var i = 0; i < evs.length; i++) {
-		tot += evs[i].getRating();
+		var tmp = evs[i].getRating();
+		
+		if (evs[i].getState() == evstat.terminated &&
+			tmp !== null) {
+			count++;
+			tot += tmp;
+		}
 	}
 	
-	return [ evs.length, tot ];
+	return [ count, tot ];
 };

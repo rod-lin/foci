@@ -96,7 +96,7 @@ exports.issue = async (euid, conf) => {
 
 	var ev = await event.euid(euid);
 
-	if (ev.getState() < 2)
+	if (ev.getState() != event.evstat.terminated)
 		delete conf.rating;
 		
 	// TODO: check if the user is a participant

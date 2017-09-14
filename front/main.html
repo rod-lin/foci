@@ -15,7 +15,10 @@
 
 		<script src="lib/require.js?v=0"></script>
 		<script>
-			var foci.version = 1;
+			foci.version = 1;
+			foci.config = {
+				banner_min_scroll: 500 // min scroll top to trigger banner
+			};
 		
 			require.config({
 				urlArgs: "v=5" // one version a time, keeps the cache away~~
@@ -144,7 +147,7 @@
 						} else {
 							bar.hideBanner();
 						}
-					}, undefined, undefined, 500);
+					}, undefined, undefined, foci.config.banner_min_scroll);
 
 					// var cover_loaded = false;
 					var pg = pages.init({
