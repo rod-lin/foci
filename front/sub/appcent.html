@@ -72,7 +72,7 @@
 		background-size: cover;
 		background-position: 50% 50%;
 
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+		box-shadow: 0 0 15px rgba(0, 0, 0, 0.04);
 	}
 
 	#sub-appcent .left-panel .tab-set {
@@ -736,7 +736,7 @@
 												});
 											});
 
-											if (ev.state == foci.evstat.terminated) {
+											if (type == "staff" && ev.state == foci.evstat.terminated) {
 												rating.popup(ratebtn, function (rat, cb) {
 													var uuids = getSelectedUUID(rtab);
 													
