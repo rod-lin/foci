@@ -16,3 +16,39 @@
 .com-rating-tip {
 	font-weight: bold;
 }
+
+/* popup */
+
+.com-rating-popup {
+	text-align: center;
+}
+
+.com-rating-popup .rating-prompt {
+	color: #C1C1C1;
+	font-weight: bold;
+	margin-bottom: 0.7rem;
+}
+
+.com-rating-popup .rating-cont {
+	margin-bottom: 0.7rem;
+}
+
+.com-rating-popup .rating-confirm {
+	color: #27AE60;
+	font-size: 1.3rem;
+	cursor: pointer;
+	font-weight: bold;
+	transition: color 0.3s;
+}
+
+.com-rating-popup .rating-confirm:hover {
+	color: #2ECC71;
+}
+
+.com-rating-popup .rating-confirm:active {
+	color: #209652;
+}
+
+.com-rating-popup .ui.loader.active+.rating-confirm {
+	visibility: hidden;
+}

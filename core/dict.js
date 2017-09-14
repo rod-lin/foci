@@ -58,6 +58,8 @@ var dict = module.exports = {
 
 		"core.cap_verification_failed": "captcha validation failed",
 
+		"core.staff_already_rated": "you've alreay rated this staff",
+
 		"core.account_frozen": "account frozen for an hour for repeated tries to login",
 
 		"core.fail_upload": "fail to upload file",
@@ -66,10 +68,10 @@ var dict = module.exports = {
 		"core.illegal_expect_partic": "illegal expected participant number",
 		"core.too_many": "too many $1s",
 		"core.not_exist": "no such $1",
-		"core.not_event_owner": "you're not the owner of this event",
+		"core.not_event_owner": "not the owner of this event",
 		"core.not_event_applicant": "someone in the list is not an applicant",
-		"core.not_event_partic": "you're not a participant of this event",
-		"core.not_event_staff": "you're not a staff of this event",
+		"core.not_event_partic": "not a participant of this event",
+		"core.not_event_staff": "not a staff of this event",
 		"core.unable_to_terminate": "unable to terminate event in this state",
 
 		"core.illegal_app_type": "illegal type of application",
@@ -230,6 +232,7 @@ var dict = module.exports = {
 		"front.sub.appcent.accept": "Accept",
 		"front.sub.appcent.decline": "Decline",
 		"front.sub.appcent.notice": "Notice",
+		"front.sub.appcent.rate": "Rate",
 
 		"front.sub.appcent.status": "Status",
 		"front.sub.appcent.user": "User",

@@ -468,25 +468,25 @@
 						switch (status) {
 							case "accept":
 								dom.addClass("positive");
-								dom.find(".icon").addClass("checkmark");
+								dom.find(".icon").removeClass("circle cancel check").addClass("check");
 								dom.find(".status-prompt").html("Accepted");
 								break;
 
 							case "auto":
 								dom.addClass("positive");
-								dom.find(".icon").addClass("checkmark");
+								dom.find(".icon").removeClass("circle cancel check").addClass("check");
 								dom.find(".status-prompt").html("Auto");
 								break;
 
 							case "decline":
 								dom.addClass("negative");
-								dom.find(".icon").addClass("cancel");
+								dom.find(".icon").removeClass("circle cancel check").addClass("cancel");
 								dom.find(".status-prompt").html("Declined");
 								break;
 
 							default:
 								dom.addClass("pending");
-								dom.find(".icon").addClass("circle");
+								dom.find(".icon").removeClass("circle cancel check").addClass("circle");
 								dom.find(".status-prompt").html("Pending");
 						}
 					}
@@ -561,55 +561,63 @@
 						if (selected.length) {
 							var uuids = [];
 
-							var fail = false;
+							var nonpend = false;
 
 							for (var i = 0; i < selected.length; i++) {
 								var cur_status = $(selected[i]).attr("data-status");
 								if (cur_status !== "pending" && cur_status !== undefined) {
 									// already accepted/declined
-									if (!fail) {
-										fail = true;
-										util.emsg("Unable to change some of the statuses because they have already been settled");
-									}
-
+									nonpend = true;
 									$(selected[i]).addClass("negative");
-								} else {
-									uuids.push(parseInt($(selected[i]).attr("data-uuid")));
 								}
+								
+								uuids.push(parseInt($(selected[i]).attr("data-uuid")));
 							}
 
-							if (fail) return;
+							// if (fail) return;
+							
+							var next = function () {
+								btn.addClass("loading");
 
-							btn.addClass("loading");
+								foci.encop(session, {
+									int: "event",
+									action: "appstatus",
+									euid: euid,
+									uuids: uuids,
+									type: type,
+									status: status
+								}, function (suc, dat) {
+									btn.removeClass("loading");
 
-							foci.encop(session, {
-								int: "event",
-								action: "appstatus",
-								euid: euid,
-								uuids: uuids,
-								type: type,
-								status: status
-							}, function (suc, dat) {
-								btn.removeClass("loading");
+									if (suc) {
+										// update statuses
+										var statuses = selected.find(".status");
 
-								if (suc) {
-									// update statuses
-									var statuses = selected.find(".status");
+										for (var i = 0; i < statuses.length; i++) {
+											setStatus($(statuses[i]), status);
+										}
 
-									for (var i = 0; i < statuses.length; i++) {
-										setStatus($(statuses[i]), status);
+										selected.attr("data-status", status);
+
+										table.updateHeader(rtab);
+
+										uncheckAll(rtab);
+										updateOption(rtab);
+									} else {
+										util.emsg(dat);
 									}
-
-									selected.attr("data-status", status);
-
-									table.updateHeader(rtab);
-
-									uncheckAll(rtab);
-									updateOption(rtab);
-								} else {
-									util.emsg(dat);
-								}
-							});
+								});
+							};
+							
+							if (nonpend) {
+								util.ask("Some of chosen users has already been accepted/declined. Are you sure to continue?",
+										 function (yes) {
+											 if (yes) {
+												rtab.find("tbody tr.negative").removeClass("negative");
+												next();
+											 }
+										 });
+							} else next();
 						}
 					}
 
@@ -653,6 +661,13 @@
 												<button class='option-btn ui basic blue icon button' style='box-shadow: none !important;'> \
 													<i class='bell outline icon'></i> \
 													<span class='lang' data-replace='$front.sub.appcent.notice'>Notice</span> \
+												</button> \
+											");
+											
+											var ratebtn = $(" \
+												<button class='option-btn ui basic yellow icon button' style='box-shadow: none !important;'> \
+													<i class='empty star icon'></i> \
+													<span class='lang' data-replace='$front.sub.appcent.rate'>Rate</span> \
 												</button> \
 											");
 
@@ -721,6 +736,30 @@
 												});
 											});
 
+											if (ev.state == foci.evstat.terminated) {
+												rating.popup(ratebtn, function (rat, cb) {
+													var uuids = getSelectedUUID(rtab);
+													
+													login.session(function (session) {
+														foci.encop(session, {
+															int: "user",
+															action: "ratestaff",
+															euid: euid,
+															uuids: uuids,
+															rating: rat
+														}, function (suc, dat) {
+															if (!suc) {
+																util.emsg(dat);
+															}
+															
+															cb(suc);
+														});
+													});
+												});
+												
+												opt.prepend(ratebtn);
+											}
+											
 											opt.prepend(ntbtn);
 											opt.prepend(decline);
 											opt.prepend(accept);

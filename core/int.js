@@ -396,6 +396,18 @@ encop.user = async (env, usr, query) => {
 		case "logout":
 			await user.logout(usr.getUUID());
 			return;
+			
+		case "ratestaff":
+			var args = util.checkArg(query, {
+				euid: "int", /* related event */
+				uuids: "array", /* staff to rate */
+				rating: util.checkArg.posint(10)
+			});
+			
+			await user.checkUUIDs(args.uuids);
+			await user.rateStaff(args.euid, usr.getUUID(), args.uuids, args.rating);
+			
+			return;
 
 		default:
 			throw new err.Exc("$core.action_not_exist");
@@ -539,7 +551,6 @@ encop.event = async (env, usr, query, next, has_cap) => {
 		case "appstatus":
 			var args = util.checkArg(query, { euid: "int", type: "string", uuids: "array", status: "string" });
 			await event.changeAppStatus(args.euid, args.uuids, args.type, args.status);
-
 			return;
 
 		case "view":

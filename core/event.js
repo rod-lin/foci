@@ -485,7 +485,10 @@ Event.set = {
 	
 		if (status == "accept") {
 			q.$addToSet = {};
-			q.$addToSet[type] = uuid
+			q.$addToSet[type] = uuid;
+		} else if (status == "decline") {
+			q.$pull = {};
+			q.$pull[type] = uuid; // remove from the set
 		}
 		
 		return q;
@@ -903,11 +906,14 @@ exports.changeAppStatus = async (euid, uuids, type, status) => {
 
 	var col = await db.col("event");
 
+	// console.log(uuids.length);
+
 	for (var i = 0; i < uuids.length; i++) {
 		await col.updateOne(Event.query.applicant(euid, uuids[i], type),
 							Event.set.status(euid, uuids[i], type, status));
 							// this will push the uuid to partic/staff if status == "accept"
-		user.incAppUpdate(uuids[i]);
+		// console.log(Event.set.status(euid, uuids[i], type, status));
+		await user.incAppUpdate(uuids[i]);
 	}
 };
 

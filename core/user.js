@@ -45,7 +45,8 @@ var User = function (uuid, dname, lname, passwd) {
 	// 	log: []
 	// };
 	
-	this.staff_rating = null; // should be []
+	// this.staff_rating = null; // should be []
+	// [ { euid, rating } ]
 	
 	// rating = (event_tot * 1.1 + staff_tot) / total_job
 
@@ -97,9 +98,11 @@ User.prototype.getStaffTotalRating = function () {
 	var tot = 0;
 	var len = this.staff_rating ? this.staff_rating.length : 0;
 	
+	// console.log(this.uuid + ": ", this.staff_rating);
+	
 	if (this.staff_rating) {
 		for (var i = 0; i < len; i++) {
-			tot += this.staff_rating[i];
+			tot += this.staff_rating[i].rating;
 		}
 	}
 	
@@ -162,10 +165,15 @@ User.query = {
 	check_admin: (uuid, level) => ({ "uuid": uuid, "level": { $lte: level } }),
 
 	// too many failed login tries
-	check_exceed_try: (lname) => ({
+	check_exceed_try: lname => ({
 		"lname": lname,
 		"login_fail_count": { $gt: config.lim.user.max_login_try },
 		"login_fail_last": { $gt: new Date(new Date() - config.lim.user.account_freeze_time) }
+	}),
+	
+	check_staff_rated: (uuid, euid) => ({
+		"uuid": uuid,
+		"staff_rating.euid": euid
 	})
 };
 
@@ -194,6 +202,15 @@ User.set = {
 			"login_fail_count": 0,
 			"login_fail_last": new Date(0)
 		}
+	}),
+	
+	push_staff_rating: (euid, rating) => ({
+		$push: {
+			"staff_rating": {
+				euid: euid,
+				rating: rating
+			}
+		}
 	})
 };
 
@@ -207,6 +224,20 @@ exports.uuid = async (uuid) => {
 		throw new err.Exc("$core.not_exist($core.word.user)");
 
 	return new User(found);
+};
+
+exports.checkUUID = async (uuid) => {
+	var col = await db.col("user");
+	var found = await col.findOne(User.query.uuid(uuid));
+
+	if (!found)
+		throw new err.Exc("$core.not_exist($core.word.user)");
+};
+
+exports.checkUUIDs = async (uuids) => {
+	for (var i = 0; i < uuids.length; i++) {
+		await exports.checkUUID(uuids[i]);
+	}
 };
 
 exports.hasLName = async (lname) => {
@@ -448,4 +479,29 @@ exports.calRating = async (uuid) => {
 	var rat = (event_tot[1] * 1.2 + staff_tot[1]) / tot_job
 
 	return rat > 10 ? 10 : rat;
+};
+
+exports.checkStaffRated = async (uuid, euid) => {
+	var col = await db.col("user");
+	var found = await col.find(User.query.check_staff_rated(uuid, euid)).count();
+	
+	if (found != 0)
+		throw new err.Exc("$core.staff_already_rated");
+};
+
+exports.rateStaff = async (euid, self, uuids, rating) => {
+	var col = await db.col("user");
+	
+	await event.checkOwner(euid, self);
+	
+	for (var i = 0; i < uuids.length; i++) {
+		await event.checkStaff(euid, uuids[i]);
+		await exports.checkStaffRated(uuids[i], euid);
+	}
+	
+	// all check done
+	
+	for (var i = 0; i < uuids.length; i++) {
+		await col.updateOne(User.query.uuid(uuids[i]), User.set.push_staff_rating(euid, rating));
+	}
 };

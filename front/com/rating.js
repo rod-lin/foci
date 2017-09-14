@@ -28,6 +28,14 @@ define([ "com/util" ], function (util) {
 
 			get: function () {
 				return main.rating("get rating") / config.total * config.max;
+			},
+			
+			freeze: function () {
+				main.rating("disable");
+			},
+			
+			unfreeze: function () {
+				main.rating("enable");
 			}
 		};
 
@@ -54,8 +62,66 @@ define([ "com/util" ], function (util) {
 
 		return ret;
 	}
+	
+	function popup(btn, cb, config) {
+		btn = $(btn);
+		config = $.extend({
+			prompt: "Choose a rating"
+		}, config);
+	
+		var main = $("<div class='com-rating-popup ui popup'> \
+		 	<div class='rating-prompt'></div> \
+			<div class='rating-cont'></div> \
+			<div style='position: relative;'> \
+				<div class='ui tiny loader'></div> \
+				<i class='rating-confirm check icon fitted'></i> \
+			</div> \
+		</div>");
+		
+		$("body").append(main);
+		
+		main.find(".rating-prompt").html(config.prompt);
+		var rat = init(main.find(".rating-cont"), undefined, { freeze: false, size: "large" });
+		
+		var loading = false;
+		
+		btn.popup({
+			popup: main,
+			position: "bottom center",
+			on: "click",
+			
+			onHide: function () {
+				// no hiding when loading
+				if (loading) {
+					main.transition("pulse");
+					return false;
+				}
+			}
+		});
+		
+		main.find(".rating-confirm").click(function () {
+			main.find(".loader").addClass("active");
+			loading = true;
+			
+			rat.freeze();
+			
+			cb(rat.get(), function (suc) {
+				main.find(".loader").removeClass("active");
+				loading = false;
+				
+				if (suc) {
+					btn.popup("hide");
+				} else {
+					rat.unfreeze();
+				}
+			});
+		});
+	
+		return {};
+	}
 
 	return {
-		init: init
+		init: init,
+		popup: popup
 	};
 })
