@@ -87,7 +87,8 @@ var checkCommCount = async (comm, uuid) => {
 			count++;
 	}
 
-	if (count >= config.lim.comment.max_comm_per_user)
+	if (count >= config.lim.comment.max_comm_per_user &&
+		!await user.isAdmin(uuid))
 		throw new err.Exc("$core.comment.max_comm_reached");
 };
 
@@ -99,8 +100,9 @@ exports.issue = async (euid, conf) => {
 	if (ev.getState() != event.evstat.terminated)
 		delete conf.rating;
 		
-	// TODO: check if the user is a participant
-	await event.checkPartic(euid, conf.uuid);
+	if (!await user.isAdmin(conf.uuid)) {
+		await event.checkPartic(euid, conf.uuid);
+	}
 
 	var ncomm = new Comment(conf);
 	var comm = ev.getComment();
