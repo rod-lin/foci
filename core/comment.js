@@ -5,6 +5,7 @@
 var db = require("./db");
 var err = require("./err");
 var util = require("./util");
+var user = require("./user");
 var event = require("./event");
 var config = require("./config");
 
