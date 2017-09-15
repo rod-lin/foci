@@ -1,0 +1,129 @@
+/* draggable window */
+
+.com-dragi-platform {
+    position: absolute;
+    
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    overflow: hidden;
+}
+
+.com-dragi-window {
+    position: relative;
+    
+    display: block;
+    z-index: 5;
+    
+    background: rgb(252, 252, 252);
+    
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+}
+
+.com-dragi-window>.nav {
+    display: -webkit-flex;
+	display: flex;
+
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+    
+    padding: 1.3rem;
+    background: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 1.3rem;
+    
+    color: rgb(80, 80, 80);
+    
+    cursor: move;
+    
+    user-select: none;
+    -moz-user-select: none;
+}
+
+.com-dragi-window>.nav .resize-btn {
+    cursor: pointer;
+}
+
+.com-dragi-window>.nav .title {
+    margin-right: 1rem;
+    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    -webkit-box-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+}
+
+.com-dragi-window>.resize-point {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+}
+
+.com-dragi-window>.resize-point.right.bottom {
+    right: -10px;
+    bottom: -10px;
+    cursor: se-resize;
+}
+
+.com-dragi-window>.resize-point.left.bottom {
+    left: -10px;
+    bottom: -10px;
+    cursor: sw-resize;
+}
+
+.com-dragi-window>.resize-point.right.top {
+    right: -10px;
+    top: -10px;
+    cursor: ne-resize;
+}
+
+.com-dragi-window>.resize-point.left.top {
+    left: -10px;
+    top: -10px;
+    cursor: nw-resize;
+}
+
+.com-dragi-window>.resize-point.top.only,
+.com-dragi-window>.resize-point.bottom.only {
+    width: 100%;
+    left: 0;
+}
+
+.com-dragi-window>.resize-point.top.only {
+    top: -10px;
+    cursor: n-resize;
+}
+
+.com-dragi-window>.resize-point.bottom.only {
+    bottom: -10px;
+    cursor: s-resize;
+}
+
+.com-dragi-window>.resize-point.left.only,
+.com-dragi-window>.resize-point.right.only {
+    height: 100%;
+    top: 0;
+}
+
+.com-dragi-window>.resize-point.left.only {
+    left: -10px;
+    cursor: w-resize;
+}
+
+.com-dragi-window>.resize-point.right.only {
+    right: -10px;
+    cursor: e-resize;
+}
+
+.com-dragi-window>.cont {
+    overflow: auto;
+}

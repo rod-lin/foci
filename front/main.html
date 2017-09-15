@@ -108,8 +108,8 @@
 				"com/tbar", "com/event", "com/env",
 				"com/util", "com/pages", "com/parts",
 				"com/lang", "com/formi", "com/pm",
-				"com/map", "lib/fastclick"
-			], function (tbar, event, env, util, pages, parts, lang, formi, pm, map, fastclick) {
+				"com/map", "lib/fastclick", "com/dragi"
+			], function (tbar, event, env, util, pages, parts, lang, formi, pm, map, fastclick, dragi) {
 				fastclick.attach(document.body);
 				
 				lang.loadDict("english", util, function () {
@@ -121,6 +121,9 @@
 
 				// var cover = [ "img/cover1.jpg", "img/cover2.jpg", "img/cover3.jpg" ].choose();
 				// $("#cover").css("background-image", "url(" + cover + ")");
+				
+				// var platform = dragi.platform("#part");
+				// dragi.window(platform.dom);
 
 				env.init(function () {
 					// map.init();
