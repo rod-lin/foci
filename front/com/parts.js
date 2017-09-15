@@ -6,11 +6,11 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 	var $ = jQuery;
 	foci.loadCSS("com/parts.css");
 
-	var prog;
+	var global_prog;
 	var cache = {};
 
 	$("body").ready(function () {
-		prog = progress.init("body", { top: true, position: "fixed" });
+		global_prog = progress.init("body", { top: true, position: "fixed" });
 	});
 
 	function fetch(url, suc, err) {
@@ -29,12 +29,23 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 	function init(cont, config) {
 		cont = $(cont);
 		config = $.extend({
-			base: "sub"
+			penv: {},
+			base: "sub",
+			global_progress: true
 		}, config);
 
-		var main = $("<div class='com-parts'></div>");
+		var main = $("<div class='com-parts'><div class='part-cont'></div></div>");
+		var main_cont = main.children(".part-cont");
 
 		var onExit = null;
+		
+		var prog;
+		
+		if (config.global_progress) {
+			prog = global_prog;
+		} else {
+			prog = progress.init(main, { top: true, position: "absolute" });
+		}
 
 		function load(name, cb, args) {
 			var next = function (text) {
@@ -61,7 +72,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 				};
 
 				var part = $(text);
-				main.html(part);
+				main_cont.html(part);
 
 				cont.scrollTop(0);
 
@@ -70,7 +81,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 				part.ready(function () {
 					prog.inc();
 					if (window.init) {
-						window.init($(part[0]), args, show, cont, ret.jump);
+						window.init($(part[0]), args, show, cont, ret.jump, config.penv);
 					}
 				});
 			};

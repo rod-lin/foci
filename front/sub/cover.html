@@ -1,4 +1,4 @@
-<div id="sub-cover">
+<div class="sub-cover">
 	<div class="search-box"></div>
 	<div class="main-wrap">
 		<div class="show-board border trim"></div>
@@ -19,12 +19,12 @@
 </div>
 
 <style>
-	#sub-cover {
+	.sub-cover {
 		text-align: center;
 		background: rgb(254, 254, 254);
 	}
 
-	#sub-cover .main-wrap {
+	.sub-cover .main-wrap {
 		display: inline-block;
 		width: auto;
 		max-width: 100%;
@@ -32,18 +32,18 @@
 		padding: 2rem;
 	}
 
-	#sub-cover .trim {
+	.sub-cover .trim {
 		overflow: hidden;
 	}
 
-	#sub-cover .fake-cont {
+	.sub-cover .fake-cont {
 		height: 20rem;
 		width: 100%;
 		background: rgba(250, 250, 250, 1);
 	}
 
-	#sub-cover .push-board,
-	#sub-cover .show-board {
+	.sub-cover .push-board,
+	.sub-cover .show-board {
 		position: relative;
 
 		width: 70rem;
@@ -53,31 +53,31 @@
 		text-align: left;
 	}
 	
-	#sub-cover .bg-white {
+	.sub-cover .bg-white {
 		background: white;
 	}
 
-	#sub-cover .border {
+	.sub-cover .border {
 		overflow: hidden;
 		border-radius: 5px;
 		border: 1px solid rgba(0, 0, 0, 0.08);
 		box-shadow: -1px 1px 15px rgba(0, 0, 0, 0.04);
 	}
 
-	#sub-cover .show-board {
+	.sub-cover .show-board {
 		margin-bottom: 1rem;
 	}
 
-	#sub-cover .push-board {
+	.sub-cover .push-board {
 		height: auto;
 		margin-bottom: 1rem;
 	}
 
-	#sub-cover .push-board:last-child {
+	.sub-cover .push-board:last-child {
 		margin-bottom: 0;
 	}
 
-	#sub-cover .tag-board-cont {
+	.sub-cover .tag-board-cont {
 		display: inline-block;
 
 		padding: 0;
@@ -88,11 +88,11 @@
 		padding-right: 1rem;
 	}
 
-	#sub-cover .tag-board {
+	.sub-cover .tag-board {
 		margin-top: 1rem;
 	}
 
-	#sub-cover .side-board {
+	.sub-cover .side-board {
 		display: inline-block;
 		width: 30%;
 
@@ -100,56 +100,60 @@
 		padding-left: 1rem;
 	}
 
-	#sub-cover .extra-margin {
+	.sub-cover .extra-margin {
 		margin-top: 3rem;
 		margin-bottom: 2rem;
 	}
 
-	#sub-cover .push-board-set {
+	.sub-cover .push-board-set {
 		margin-top: 1rem;
 		text-align: center;
 	}
 
-	#sub-cover .push-board-set>.ui.loader {
+	.sub-cover .push-board-set>.ui.loader {
 		margin-top: 2em;
 	}
 
 	@media only screen and (max-width: 768px) {
-		#sub-cover .main-wrap {
+		.sub-cover .main-wrap {
 			padding: 1rem;
 		}
 	}
 
 	@media only screen and (max-width: 640px) {
-		#sub-cover .tag-board-cont {
+		.sub-cover .tag-board-cont {
 			width: 100%;
 			padding-right: 0;
 		}
 
-		#sub-cover .side-board {
+		.sub-cover .side-board {
 			width: 100%;
 			padding-left: 0;
 			margin-top: 0;
 		}
 
-		#sub-cover .side-board .copyright-board {
+		.sub-cover .side-board .copyright-board {
 			display: none;
 		}
 
-		#sub-cover .tag-board,
-		#sub-cover .push-board-set {
+		.sub-cover .tag-board,
+		.sub-cover .push-board-set {
 			margin-top: 0;
 		}
 
-		#sub-cover .extra-margin {
+		.sub-cover .extra-margin {
 			margin-top: 1rem;
 			margin-bottom: 0;
+		}
+		
+		.sub-cover .mini-push-board {
+			display: none;
 		}
 	}
 </style>
 
 <script>
-	function init(main, args, show, cont, exit) {
+	function init(main, args, show, cont, exit, penv) {
 		require([
 			"com/env", "com/util", "com/pboard",
 			"com/event", "com/tagbox", "com/userstat",
@@ -159,7 +163,7 @@
 			tbar.setTitle("Home");
 			
 			main.ready(function () {
-				var mod = util.scrollTop("#part", function () {
+				var mod = util.scrollTop(penv.part, function () {
 					tbar.hideSearch();
 				}, function () {
 					tbar.showSearch();
@@ -182,12 +186,13 @@
 			// };
 			// 
 			// exit(function () {
-			// 	$("#part").off("scroll", null, scrollBlur);
+			// 	penv.part.off("scroll", null, scrollBlur);
 			// });
 			// 
-			// $("#part").scroll(scrollBlur);
+			// penv.part.scroll(scrollBlur);
 			
-			setTimeout(cover_search.focus, 1000);
+			if ($(window).width() > 640)
+				setTimeout(cover_search.focus, 1000);
 
 			env.favtag(function (tags) {
 				if (tags)
@@ -227,7 +232,7 @@
 			})();
 
 			fetch_push();
-			util.scrollBottom("#part", 3, function (com) {
+			util.scrollBottom(penv.part, 3, function (com) {
 				fetch_push();
 			});
 

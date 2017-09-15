@@ -121,7 +121,9 @@ function (util, rating, event, lang) {
 
     function init(cont, uuid, config) {
         cont = $(cont);
-        config = $.extend({}, config);
+        config = $.extend({
+            scroll: "#part"
+        }, config);
 
         var main = $("<div class='com-resume'> \
             <div class='resume-list'></div \
@@ -204,6 +206,7 @@ function (util, rating, event, lang) {
         });
 
         var prev = preview(main.find(".resume-preview"), {
+            scroll: config.scroll,
             use_modal: util.windowWidth() <= 640
         });
 

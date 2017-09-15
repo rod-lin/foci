@@ -80,6 +80,8 @@ define([ "com/util" ], function (util) {
 			main.progress("complete")
 				.progress("set error");
 		};
+		
+		ret.dom = main;
 
 		return ret;
 	}

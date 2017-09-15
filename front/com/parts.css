@@ -1,14 +1,25 @@
 .com-parts {
+	position: relative;
+	
 	width: 100%;
 	height: 100%;
+}
 
+.com-parts>.part-cont {
+	position: absolute;
+	
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	
 	opacity: 0;
 	pointer-events: none;
 	
 	transition: opacity 0.5s;
 }
 
-.com-parts.show {
+.com-parts.show>.part-cont {
 	opacity: 1;
 	pointer-events: auto;
 }

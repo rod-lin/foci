@@ -190,6 +190,10 @@
 					}, { init: "search" });
 
 					var pt = parts.init("#part", {
+						penv: {
+							part: $("#part")
+						},
+						
 						onJump: function (name, args) {
 							bar.hideBanner();
 							$("body").addClass("padding-tbar");

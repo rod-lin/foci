@@ -1,4 +1,4 @@
-<div id="sub-appcent">
+<div class="sub-appcent">
 	<div class="left-panel">
 		<div class="logo"></div>
 		<div class="tab-set">
@@ -39,7 +39,7 @@
 </div>
 
 <style>
-	#sub-appcent .left-panel {
+	.sub-appcent .left-panel {
 		position: fixed;
 
 		z-index: 1;
@@ -55,7 +55,7 @@
 		text-align: center;
 	}
 
-	#sub-appcent .left-panel .logo {
+	.sub-appcent .left-panel .logo {
 		display: inline-block;
 
 		width: 7rem;
@@ -75,7 +75,7 @@
 		box-shadow: 0 0 15px rgba(0, 0, 0, 0.04);
 	}
 
-	#sub-appcent .left-panel .tab-set {
+	.sub-appcent .left-panel .tab-set {
 		margin-top: 3em;
 		width: 100%;
 	}
@@ -88,7 +88,7 @@
 		color: rgba(0, 0, 0, .87) !important;
 	}
 
-	#sub-appcent .tabs {
+	.sub-appcent .tabs {
 		position: absolute;
 
 		top: 0;
@@ -97,7 +97,7 @@
 		height: 100%;
 	}
 
-	#sub-appcent .tabs .tab {
+	.sub-appcent .tabs .tab {
 		position: absolute;
 
 		width: 100%;
@@ -110,16 +110,16 @@
 		transition: opacity 0.3s;
 	}
 
-	#sub-appcent .tabs .tab.show {
+	.sub-appcent .tabs .tab.show {
 		opacity: 1;
 		visibility: visible;
 	}
 
-	#sub-appcent .tabs .tab .no-more {
+	.sub-appcent .tabs .tab .no-more {
 		display: none;
 	}
 
-	#sub-appcent .tabs .empty .no-more {
+	.sub-appcent .tabs .empty .no-more {
 		display: block;
 		width: 100%;
 
@@ -130,25 +130,25 @@
 		padding: 1rem;
 	}
 
-	#sub-appcent .tabs table {
+	.sub-appcent .tabs table {
 		transition: margin-top 0.2s;
 	}
 
-	#sub-appcent .tabs .empty table {
+	.sub-appcent .tabs .empty table {
 		border: 0 !important;
 	}
 
-	#sub-appcent .tabs .user-name {
+	.sub-appcent .tabs .user-name {
 		margin-left: 0.2rem;
 		margin-bottom: 0.2rem;
 		font-weight: bold;
 	}
 
-	#sub-appcent .tabs .status {
+	.sub-appcent .tabs .status {
 
 	}
 
-	#sub-appcent .tabs .option-bar {
+	.sub-appcent .tabs .option-bar {
 		padding: 1.5em;
 		background: #F9FAFB;
 
@@ -159,23 +159,23 @@
 		transition: margin-top 0.2s, opacity 0.2s 0.2s;
 	}
 
-	#sub-appcent .tabs .option-bar.show {
+	.sub-appcent .tabs .option-bar.show {
 		margin-top: 0 !important;
 		opacity: 1;
 
 		transition: margin-top 0.2s, opacity 0s;
 	}
 
-	#sub-appcent .tabs .item {
+	.sub-appcent .tabs .item {
 		cursor: pointer;
 	}
 
-	#sub-appcent .tabs .item.selected,
-	#sub-appcent .tabs .item:hover {
+	.sub-appcent .tabs .item.selected,
+	.sub-appcent .tabs .item:hover {
 		background: rgba(0, 0, 0, 0.007);
 	}
 
-	#sub-appcent .tabs .option-btn {
+	.sub-appcent .tabs .option-btn {
 		border: none !important;
 		box-shadow: none !important;
 		padding: 0 !important;
@@ -183,47 +183,47 @@
 		margin-right: 1rem;
 	}
 
-	#sub-appcent .tabs .option-prompt {
+	.sub-appcent .tabs .option-prompt {
 		color: #CCCCCC;
 	}
 
-	#sub-appcent .tabs table td.pending {
+	.sub-appcent .tabs table td.pending {
 		background: #FDFEFF !important;
 		color: #216897;
 	}
 
 	@media only screen and (max-width: 640px) {
-		#sub-appcent .left-panel {
+		.sub-appcent .left-panel {
 			width: 4rem;
 			font-size: 50%;
 		}
 
-		#sub-appcent .left-panel .logo {
+		.sub-appcent .left-panel .logo {
 			width: 3rem;
 			height: 3rem;
 		}
 
-		#sub-appcent .tab-set .step {
+		.sub-appcent .tab-set .step {
 			font-size: 120%;
 		}
 
-		#sub-appcent .tab-set .step .icon {
+		.sub-appcent .tab-set .step .icon {
 			margin-bottom: 0.4em;
 		}
 
-		#sub-appcent .tabs {
+		.sub-appcent .tabs {
 			left: 4em;
 		}
 
-		#sub-appcent .tabs .option-bar {
+		.sub-appcent .tabs .option-bar {
 			padding-top: 1rem;
 		}
 
-		#sub-appcent .tabs .option-btn {
+		.sub-appcent .tabs .option-btn {
 			margin-top: 0.5rem;
 		}
 
-		#sub-appcent .tabs .option-prompt {
+		.sub-appcent .tabs .option-prompt {
 			display: block;
 			margin-top: 1rem;
 		}

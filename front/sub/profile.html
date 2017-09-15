@@ -1,4 +1,4 @@
-<div id="sub-profile">
+<div class="sub-profile">
 	<div class="left-bar">
 		<div class="avatar empty"><div><i class="fitted setting icon"></i></div></div><br>
 		<div class="dname"></div><br>
@@ -52,7 +52,7 @@
 						<div class="ui compact black inline message" style="min-width: 50%; max-width: 95%; pointer-events: auto;">
 
 							<style>
-								#sub-profile .loc-search-btn {
+								.sub-profile .loc-search-btn {
 									float: right;
 									display: inline-block;
 									cursor: pointer;
@@ -67,7 +67,7 @@
 				<div class="page page-time pad" style="text-align: left; overflow-x: hidden;">
 					<style>
 
-						#sub-profile .page-time>span {
+						.sub-profile .page-time>span {
 							display: inline-block;
 
 							width: 100%;
@@ -82,12 +82,12 @@
 							border-bottom-width: 0;
 						}
 
-						#sub-profile .page-time>.calendar {
+						.sub-profile .page-time>.calendar {
 							margin-bottom: 1rem;
 							overflow: auto;
 						}
 
-						#sub-profile .page-time>.calendar table {
+						.sub-profile .page-time>.calendar table {
 							border-radius: 0 0 3px 3px !important;
 						}
 
@@ -107,14 +107,14 @@
 				</div>
 				<div class="page page-apply pad" style="text-align: left; overflow: auto;">
 					<style>
-						#sub-profile .page.page-apply .header,
-						#sub-profile .page.page-apply label,
-						#sub-profile .page.page-apply b,
-						#sub-profile .page.page-apply span {
+						.sub-profile .page.page-apply .header,
+						.sub-profile .page.page-apply label,
+						.sub-profile .page.page-apply b,
+						.sub-profile .page.page-apply span {
 							color: rgba(70, 70, 70, 1) !important;
 						}
 						
-						#sub-profile .page.page-apply p {
+						.sub-profile .page.page-apply p {
 							margin-bottom: 0.5rem;
 						}
 					</style>
@@ -196,12 +196,12 @@
 					<div class="protocol">
 						<style>
 
-							#sub-profile .new-event .ev-content .page-pub .protocol {
+							.sub-profile .new-event .ev-content .page-pub .protocol {
 								padding: 0 2rem;
 								height: 100%;
 							}
 
-							#sub-profile .new-event .ev-content .page-pub .protocol .prompt {
+							.sub-profile .new-event .ev-content .page-pub .protocol .prompt {
 								font-size: 2em;
 								margin-bottom: 1rem;
 								margin-top: -5rem;
@@ -272,11 +272,11 @@
 </div>
 
 <style>
-	#sub-profile {
+	.sub-profile {
 		height: 100%;
 	}
 
-	#sub-profile .left-bar {
+	.sub-profile .left-bar {
 		position: fixed;
 		width: 20em;
 		height: 100%;
@@ -291,15 +291,15 @@
 		overflow: auto;
 	}
 
-	#sub-profile:not(.logged) .left-bar .login-only {
+	.sub-profile:not(.logged) .left-bar .login-only {
 		display: none;
 	}
 
-	#sub-profile.logged .left-bar .no-login-only {
+	.sub-profile.logged .left-bar .no-login-only {
 		display: none;
 	}
 
-	#sub-profile .left-bar .profile-util-box {
+	.sub-profile .left-bar .profile-util-box {
 		display: block;
 
 		position: absolute;
@@ -311,12 +311,12 @@
 		cursor: pointer;
 	}
 
-	#sub-profile .left-bar .profile-util {
+	.sub-profile .left-bar .profile-util {
 		display: inline-block;
 		margin-left: 0.5rem;
 	}
 
-	#sub-profile .left-bar .avatar {
+	.sub-profile .left-bar .avatar {
 		display: inline-block;
 
 		width: 9em;
@@ -339,21 +339,21 @@
 		transition: box-shadow 0.3s;
 	}
 
-	#sub-profile .left-bar .avatar:hover {
+	.sub-profile .left-bar .avatar:hover {
 		box-shadow:
 			0 0 1px rgba(0, 0, 0, 0.2),
 			0 0 10px rgba(0, 0, 0, 0.08);
 	}
 
-	#sub-profile .left-bar .avatar.empty {
+	.sub-profile .left-bar .avatar.empty {
 		background: rgba(0, 0, 0, 0.2);
 	}
 
-	#sub-profile .left-bar .avatar div {
+	.sub-profile .left-bar .avatar div {
 		display: none;
 	}
 
-	#sub-profile.logged .left-bar .avatar div {
+	.sub-profile.logged .left-bar .avatar div {
 		display: block;
 
 		color: #F3F3F3;
@@ -371,16 +371,16 @@
 		transition: opacity 0.5s;
 	}
 
-	#sub-profile.logged .left-bar .avatar.explicit div,
-	#sub-profile.logged .left-bar .avatar:hover div {
+	.sub-profile.logged .left-bar .avatar.explicit div,
+	.sub-profile.logged .left-bar .avatar:hover div {
 		opacity: 0.7;
 	}
 
-	#sub-profile.logged .left-bar .avatar:hover div:active {
+	.sub-profile.logged .left-bar .avatar:hover div:active {
 		opacity: 1;
 	}
 
-	#sub-profile .left-bar .dname {
+	.sub-profile .left-bar .dname {
 		display: inline-block;
 
 		font-size: 2em;
@@ -395,11 +395,11 @@
 		color: #262626;
 	}
 
-	#sub-profile .left-bar .rating {
+	.sub-profile .left-bar .rating {
 		margin: 0.5rem 0 0 0;
 	}
 
-	#sub-profile .left-bar .intro {
+	.sub-profile .left-bar .intro {
 		display: inline-block;
 
 		margin: 0.5rem 0 0.5rem 0;
@@ -411,29 +411,29 @@
 		color: #999999;
 	}
 
-	#sub-profile .left-bar .favtag {
+	.sub-profile .left-bar .favtag {
 		width: 100%;
 		padding-top: 1rem;
 		margin-bottom: 1rem;
 	}
 
-	#sub-profile .left-bar .favtag-prompt {
+	.sub-profile .left-bar .favtag-prompt {
 		color: #CCCCCC;
 		font-weight: bold;
 	}
 
-	#sub-profile .right-bar {
+	.sub-profile .right-bar {
 		position: relative;
 		margin-left: 20em;
 		height: 100%;
 	}
 
-	#sub-profile .right-bar.main-tab {
+	.sub-profile .right-bar.main-tab {
 		height: 100%;
 	}
 
 	@media only screen and (max-width: 767px) {
-		#sub-profile .left-bar {
+		.sub-profile .left-bar {
 			position: relative;
 			height: auto;
 			width: 100%;
@@ -441,28 +441,28 @@
 			border-width: 0 0 1px 0;
 		}
 
-		#sub-profile .left-bar .favtag {
+		.sub-profile .left-bar .favtag {
 			padding-right: 1rem;
 			padding-left: 1rem;
 		}
 
-		#sub-profile .left-bar .profile-util-box {
+		.sub-profile .left-bar .profile-util-box {
 			right: 1.1rem;
 			top: 1.1rem;
 			font-size: 1.5rem;
 		}
 
-		#sub-profile .right-bar {
+		.sub-profile .right-bar {
 			margin-left: 0;
 			border-top: 1px solid rgba(0, 0, 0, 0.08);
 		}
 
-		#sub-profile .right-bar .right-bar-left-step {
+		.sub-profile .right-bar .right-bar-left-step {
 			overflow: auto;
 		}
 	}
 
-	#sub-profile .new-event .ev-content {
+	.sub-profile .new-event .ev-content {
 		position: absolute;
 		width: 70%;
 
@@ -473,7 +473,7 @@
 		border-width: 0 0 0 1px;
 	}
 
-	#sub-profile .new-event .ev-step {
+	.sub-profile .new-event .ev-step {
 		position: absolute;
 		width: 30%;
 
@@ -481,7 +481,7 @@
 		left: 0;
 	}
 
-	#sub-profile .new-event .ev-title {
+	.sub-profile .new-event .ev-title {
 		width: 100%;
 		padding: 2rem;
 		background: white;
@@ -494,7 +494,7 @@
 		border-width: 0 0 1px 0;
 	}
 
-	/* #sub-profile .new-event .ev-descr {
+	/* .sub-profile .new-event .ev-descr {
 		width: 100%;
 		padding: 2rem;
 		background: white;
@@ -503,12 +503,12 @@
 		font-size: 1.5em;
 	} */
 
-	#sub-profile .new-event .ui.steps {
+	.sub-profile .new-event .ui.steps {
 		border-width: 0 0 1px 0 !important;
 		border-radius: 0 !important;
 	}
 
-	#sub-profile .new-event .ui.steps .step {
+	.sub-profile .new-event .ui.steps .step {
 		border-radius: 0 !important;
 
 		display: -webkit-flex !important;
@@ -519,13 +519,13 @@
 		align-items: center;
 	}
 
-	#sub-profile .new-event .ui.steps .step .icon {
+	.sub-profile .new-event .ui.steps .step .icon {
 		display: inline-block;
 		width: 4rem;
 		color: #323232;
 	}
 
-	#sub-profile .new-event .ui.steps .step .content {
+	.sub-profile .new-event .ui.steps .step .content {
 		flex: 1 !important;
 		flex-grow: 1;
 		flex-shrink: 1;
@@ -533,16 +533,16 @@
 		overflow: hidden;
 	}
 
-	#sub-profile .new-event .ui.steps .step .content .title {
+	.sub-profile .new-event .ui.steps .step .content .title {
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
-	#sub-profile .new-event .ev-content .page {
+	.sub-profile .new-event .ev-content .page {
 		display: none;
 	}
 
-	#sub-profile .new-event .ev-content .page.need-width {
+	.sub-profile .new-event .ev-content .page.need-width {
 		display: block;
 		visibility: hidden;
 
@@ -553,21 +553,21 @@
 		width: 100%;
 	}
 
-	#sub-profile .new-event .ev-content .page.pad {
+	.sub-profile .new-event .ev-content .page.pad {
 		padding: 2rem;
 	}
 
-	#sub-profile .new-event .ev-content .page.active {
+	.sub-profile .new-event .ev-content .page.active {
 		display: block;
 	}
 
-	#sub-profile .new-event .ev-content .page.need-width.active {
+	.sub-profile .new-event .ev-content .page.need-width.active {
 		visibility: visible;
 
 		position: static;
 	}
 
-	#sub-profile .new-event .ev-content .warning {
+	.sub-profile .new-event .ev-content .warning {
 		background: #FFF6F6;
 		color: #9F3A38;
 	}
@@ -577,56 +577,56 @@
 	}
 
 	@media only screen and (max-width: 1024px) {
-		#sub-profile .new-event .ui.steps .step .content .description {
+		.sub-profile .new-event .ui.steps .step .content .description {
 			display: none;
 		}
 	}
 
 	@media only screen and (max-width: 640px) {
-		#sub-profile .new-event .ev-content {
+		.sub-profile .new-event .ev-content {
 			left: 18%;
 			width: 82%;
 		}
 
-		#sub-profile .new-event .ev-step {
+		.sub-profile .new-event .ev-step {
 			width: 18%;
 		}
 
-		#sub-profile .new-event .ev-step .description {
+		.sub-profile .new-event .ev-step .description {
 			display: none;
 		}
 
-		#sub-profile .new-event .ev-title {
+		.sub-profile .new-event .ev-title {
 			padding: 1.4rem;
 			font-size: 1.5em;
 		}
 
-		/* #sub-profile .new-event .ev-descr {
+		/* .sub-profile .new-event .ev-descr {
 			padding: 1.4rem;
 			font-size: 1.2em;
 		} */
 
-		#sub-profile .new-event .ev-step .step {
+		.sub-profile .new-event .ev-step .step {
 			font-size: 0.7em;
 			padding: 1rem 1rem;
 		}
 
-		#sub-profile .new-event .ev-step .step .icon {
+		.sub-profile .new-event .ev-step .step .icon {
 			margin-bottom: 0.1em;
 		}
 		
-		#sub-profile .new-event .ev-step .step .title {
+		.sub-profile .new-event .ev-step .step .title {
 			font-size: 0.8rem;
 		}
 
-		#sub-profile .new-event .ev-content .page.pad {
+		.sub-profile .new-event .ev-content .page.pad {
 			padding: 1rem;
 		}
 	}
 </style>
 
 <script>
-	function init(main, args, show, cont) {
+	function init(main, args, show, cont, exit, penv) {
 		require([
 			"com/env", "com/util", "com/event",
 			"com/xfilt", "com/pages", "com/tab",
@@ -813,11 +813,11 @@
 								if (org_tab_tip_proc) clearTimeout(org_tab_tip_proc);
 								org_tab_tip_proc = setTimeout(function () {
 									org_tab_tip1 = tip.init(main.find(".vuid-profile-org-event-setting")[0], "Setting is here", "top center", {
-										scroll: $("#part")
+										scroll: penv.part
 									});
 
 									org_tab_tip2 = tip.init(main.find(".vuid-profile-org-event-appcent")[0], "Application center", "bottom center", {
-										scroll: $("#part")
+										scroll: penv.part
 									});
 								}, 1000);
 							}
@@ -1130,8 +1130,8 @@
 											// TODO: temp fix!
 											// if (display_mode == "mobile")
 											// bmap.pan(0, main.parent().scrollTop());
-											$("#part").scroll(function () {
-												bmap.pan(0, $("#part").scrollTop());
+											penv.part.scroll(function () {
+												bmap.pan(0, penv.part.scrollTop());
 											}).scroll();
 
 											steps["loc"].onShow = function () {
@@ -1901,7 +1901,7 @@
 								if (!init) {
 									init = true;
 									var	rtab = tb.getTab("resume");
-									resume.init(rtab, uuid);
+									resume.init(rtab, uuid, { scroll: penv.part });
 								}
 								show();
 							}
