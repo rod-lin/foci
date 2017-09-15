@@ -365,6 +365,8 @@
 					var parse = event.parseInfo(ev);
 					util.bgimg(left_panel.find(".logo"), parse.logo);
 
+					var enable_rating = ev.state == foci.evstat.terminated;
+
 					left_panel.find(".logo").click(function () {
 						util.jump("#event/" + euid);
 					});
@@ -404,10 +406,18 @@
 						");
 						// var rattd = $("<td class='single line collapsing'></td>");
 
+						var ratdom = $(" \
+							<td class='single line collapsing rating-val' style='text-align: center;'> \
+								" + (app.rating ? app.rating.rating + "/10" : "N/A") + " \
+							</td> \
+						");
+
 						var check = $(" \
-							<td class='collapsing item-check'><div class='ui fitted checkbox' style='pointer-events: none;'> \
-								<input type='checkbox'><label></label> \
-							</div></td> \
+							<td class='collapsing item-check'> \
+								<div class='ui fitted checkbox' style='pointer-events: none;'> \
+									<input type='checkbox'><label></label> \
+								</div> \
+							</td> \
 						");
 
 						var status = genStatus(app);
@@ -422,10 +432,17 @@
 						var item = [
 							check, status, user, applyfor
 						];
+						
+						var use_rating = type == "staff" && enable_rating;
+						
+						if (use_rating) {
+							item.splice(1, 0, ratdom);
+						}
 
 						var form = app.form;
 
-						for (var i = init_header.length; i < list.length; i++) {
+						for (var i = init_header.length + (use_rating ? 1 : 0);
+							 i < list.length; i++) {
 							if (form && form.hasOwnProperty(list[i].iname)) {
 								item.push("<td>" + form[list[i].iname].val + "</td>");
 							} else {
@@ -565,6 +582,7 @@
 
 							for (var i = 0; i < selected.length; i++) {
 								var cur_status = $(selected[i]).attr("data-status");
+								
 								if (cur_status !== "pending" && cur_status !== undefined) {
 									// already accepted/declined
 									nonpend = true;
@@ -626,6 +644,11 @@
 						var form = formi.genForm(util.json(app[type + "_form"]));
 
 						var hlist = headerList(form.fields);
+
+						if (type == "staff" && enable_rating) {
+							// console.log(hlist);
+							hlist.splice(1, 0, "Rating");
+						}
 
 						var header = table.setHeader(rtab, hlist);
 
@@ -736,25 +759,50 @@
 												});
 											});
 
-											if (type == "staff" && ev.state == foci.evstat.terminated) {
+											if (type == "staff" && enable_rating) {
 												rating.popup(ratebtn, function (rat, cb) {
 													var uuids = getSelectedUUID(rtab);
+													var selected = rtab.find("tbody tr.selected");
+													var rewrite = false;
 													
-													login.session(function (session) {
-														foci.encop(session, {
-															int: "user",
-															action: "ratestaff",
-															euid: euid,
-															uuids: uuids,
-															rating: rat
-														}, function (suc, dat) {
-															if (!suc) {
-																util.emsg(dat);
-															}
-															
-															cb(suc);
-														});
+													selected.each(function (i, dom) {
+														if ($(dom).attr("data-hasrating") == "true") {
+															rewrite = true;
+														}
 													});
+													
+													var next = function () {
+														login.session(function (session) {
+															foci.encop(session, {
+																int: "user",
+																action: "ratestaff",
+																euid: euid,
+																uuids: uuids,
+																rating: rat
+															}, function (suc, dat) {
+																if (!suc) {
+																	util.emsg(dat);
+																}
+																
+																cb(suc);
+																
+																if (suc) {
+																	selected.each(function (i, dom) {
+																		$(dom).find(".rating-val").html(rat + "/10");
+																		$(dom).attr("data-hasrating", true);
+																	});
+																}
+															});
+														});
+													};
+													
+													if (rewrite) {
+														util.ask("You are overwriting some of the staff's rating(s). Are you sure to continue?",
+																 function (yes) {
+																 	if (yes) next();
+																	else cb(true);
+																 });
+													} else next();
 												});
 												
 												opt.prepend(ratebtn);
@@ -794,6 +842,7 @@
 
 									dom.attr("data-uuid", app[type][i].uuid);
 									dom.attr("data-status", app[type][i].status);
+									dom.attr("data-hasrating", !!app[type][i].rating);
 
 									// single checkbox
 									dom.click(function () {

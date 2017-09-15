@@ -500,6 +500,12 @@ Event.set = {
 	
 	add_rating: rating => ({
 		$inc: { "rating_acc": rating }
+	}),
+	
+	set_app_rating: (type, rating) => ({
+		$set: {
+			["apply_" + type + ".$.rating"]: rating
+		}
 	})
 };
 
@@ -931,7 +937,7 @@ exports.terminate = async (euid, uuid) => {
 
 exports.incView = async (euid, uuid) => {
 	var col = await db.col("event");
-	col.updateOne(Event.query.euid(euid), Event.set.add_view(uuid));
+	await col.updateOne(Event.query.euid(euid), Event.set.add_view(uuid));
 };
 
 exports.addRating = async (euid, rating) => {
@@ -956,4 +962,11 @@ exports.getOrgRating = async (uuid) => {
 	}
 	
 	return [ count, tot ];
+};
+
+// add a rating field in the application
+exports.setAppRating = async (euid, uuid, type, rating) => {
+	var col = await db.col("event");
+	await col.updateOne(Event.query.applicant(euid, uuid, type),
+						Event.set.set_app_rating(type, rating));
 };

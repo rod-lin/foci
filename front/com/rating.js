@@ -111,9 +111,9 @@ define([ "com/util" ], function (util) {
 				
 				if (suc) {
 					btn.popup("hide");
-				} else {
-					rat.unfreeze();
 				}
+				
+				rat.unfreeze();
 			});
 		});
 	

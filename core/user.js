@@ -47,6 +47,7 @@ var User = function (uuid, dname, lname, passwd) {
 	
 	// this.staff_rating = null; // should be []
 	// [ { euid, rating } ]
+	this.staff_rating = {};
 	
 	// rating = (event_tot * 1.1 + staff_tot) / total_job
 
@@ -96,16 +97,19 @@ User.prototype.getResume = function () {
 
 User.prototype.getStaffTotalRating = function () {
 	var tot = 0;
-	var len = this.staff_rating ? this.staff_rating.length : 0;
+	var len = 0;
 	
 	// console.log(this.uuid + ": ", this.staff_rating);
 	
 	if (this.staff_rating) {
-		for (var i = 0; i < len; i++) {
-			tot += this.staff_rating[i].rating;
+		for (var euid in this.staff_rating) {
+			if (this.staff_rating.hasOwnProperty(euid)) {
+				len++;
+				tot += this.staff_rating[euid].rating;
+			}
 		}
 	}
-	
+
 	return [ len, tot ];
 };
 
@@ -173,7 +177,7 @@ User.query = {
 	
 	check_staff_rated: (uuid, euid) => ({
 		"uuid": uuid,
-		"staff_rating.euid": euid
+		["staff_rating." + euid]: { $exists: true }
 	})
 };
 
@@ -204,10 +208,9 @@ User.set = {
 		}
 	}),
 	
-	push_staff_rating: (euid, rating) => ({
-		$push: {
-			"staff_rating": {
-				euid: euid,
+	set_staff_rating: (euid, rating) => ({
+		$set: {
+			["staff_rating." + euid]: {
 				rating: rating
 			}
 		}
@@ -481,7 +484,7 @@ exports.calRating = async (uuid) => {
 	return rat > 10 ? 10 : rat;
 };
 
-exports.checkStaffRated = async (uuid, euid) => {
+exports.checkStaffUnrated = async (uuid, euid) => {
 	var col = await db.col("user");
 	var found = await col.find(User.query.check_staff_rated(uuid, euid)).count();
 	
@@ -496,12 +499,14 @@ exports.rateStaff = async (euid, self, uuids, rating) => {
 	
 	for (var i = 0; i < uuids.length; i++) {
 		await event.checkStaff(euid, uuids[i]);
-		await exports.checkStaffRated(uuids[i], euid);
+		// TODO: allow re-rating
+		// await exports.checkStaffUnrated(uuids[i], euid);
 	}
 	
 	// all check done
 	
 	for (var i = 0; i < uuids.length; i++) {
-		await col.updateOne(User.query.uuid(uuids[i]), User.set.push_staff_rating(euid, rating));
+		await col.updateOne(User.query.uuid(uuids[i]), User.set.set_staff_rating(euid, rating));
+		await event.setAppRating(euid, uuids[i], "staff", { rating: rating });
 	}
 };
