@@ -479,7 +479,7 @@ exports.calRating = async (uuid) => {
 	
 	if (!tot_job) return 0;
 	
-	var rat = (event_tot[1] * 1.2 + staff_tot[1]) / tot_job
+	var rat = (event_tot[1] * 1.05 + staff_tot[1]) / tot_job
 
 	return rat > 10 ? 10 : rat;
 };
