@@ -24,6 +24,18 @@
 	top: 8.4em !important;
 }
 
+html.foci-nested .margin-tbar {
+	margin-top: 0 !important;
+}
+
+html.foci-nested .padding-tbar {
+	padding-top: 0 !important;
+}
+
+html.foci-nested .top-tbar {
+	top: 0 !important;
+}
+
 /* a weird left bar in semantic dropdown */
 .com-tbar .ui.menu .item:before {
 	display: none;

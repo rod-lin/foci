@@ -9,9 +9,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 	var global_prog;
 	var cache = {};
 
-	$("body").ready(function () {
-		global_prog = progress.init("body", { top: true, position: "fixed" });
-	});
+	global_prog = progress.init("body", { top: true, position: "fixed" });
 
 	function fetch(url, suc, err) {
 		$.ajax({

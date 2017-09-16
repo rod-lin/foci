@@ -529,7 +529,7 @@ define([
 					
 				util.setTitle.apply(util, arguments);
 				
-				main.find(".banner").attr("title", util.htmlToText($("title").text()));
+				main.find(".banner").attr("title", util.htmlToText(document.title));
 
 				// ret.showBanner();
 				// setTimeout(ret.hideBanner, 3000);
@@ -559,6 +559,14 @@ define([
 			mod.hideSearch = function () {
 				main.addClass("hide-search");
 				// main.find(".search-box").append(main.find(".menu-cont .menu-link"));
+			};
+			
+			mod.hide = function () {
+				main.css("display", "none");
+			};
+			
+			mod.show = function () {
+				main.css("display", "");
 			};
 			
 			return mod;

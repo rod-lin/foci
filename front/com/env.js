@@ -2,12 +2,12 @@
 
 "use strict";
 
-if (!window.top.env)
-	window.top.env = {};
+if (!window.env)
+	window.env = {};
 
 define([ "com/util" ], function (util) {
 	var $ = jQuery;
-	var env = window.top.env;
+	var env = window.env;
 
 	if (!env.storage) {
 		env.storage = {};

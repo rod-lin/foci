@@ -19,6 +19,8 @@
 			foci.config = {
 				banner_min_scroll: 500 // min scroll top to trigger banner
 			};
+			
+			foci.nested = top != window;
 		
 			require.config({
 				urlArgs: "v=" + foci.version // one version a time, keeps the cache away~~
@@ -78,6 +80,7 @@
 
 	<body class="padding-tbar">
 		<div id="main">
+			<div id="platform"></div>
 			<div id="part"></div>
 			<div id="search">
 				<!-- <div class="header">
@@ -100,6 +103,10 @@
 		<!-- <div class="frame", style="width: 100%; height: 100%; position: fixed; top: 0; left: 0; background: #FFF;"></div> -->
 
 		<script>
+			if (foci.nested) {
+				$("html").addClass("foci-nested");
+			}
+		
 			require([ "com/captcha" ], function (captcha) {
 				foci.captcha(captcha.wrap); // set captcha event
 			});
@@ -122,14 +129,26 @@
 				// var cover = [ "img/cover1.jpg", "img/cover2.jpg", "img/cover3.jpg" ].choose();
 				// $("#cover").css("background-image", "url(" + cover + ")");
 				
-				// var platform = dragi.platform("#part");
-				// dragi.window(platform.dom);
+				// init dragi platform
+				if (!foci.nested) {
+					foci.platform = dragi.platform("#platform");
+					// dragi.window(foci.platform);
+					// dragi.iframe(foci.platform, "/");
+					// $("<div style='width: 500px; height: 500px; background: black'></div>").dragi();
+				} else {
+					foci.platform = top.foci.platform;
+				}
 
 				env.init(function () {
 					// map.init();
 					// console.log(lang.expand("hola"));
 
 					var bar = tbar.init();
+					
+					if (foci.nested) {
+						bar.hide();
+						// $("body").removeClass("padding-tbar");
+					}
 
 					bar.menu(function () {
 						util.jump("#cover");

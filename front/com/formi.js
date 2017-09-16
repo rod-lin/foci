@@ -361,7 +361,9 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		config = $.extend({
 			uid: "no_uid",
 			auto_save: true,
-			leave_ask: true
+			leave_ask: true,
+			preview: false,
+			use_dragi: false
 		}, config);
 
 		var main = $(" \
@@ -381,6 +383,12 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 		var gen = initForm(main.find(".form"), form, config);
 
+		if (config.preview) {
+			main.find(".restore").addClass("disabled");
+			main.find(".save").addClass("disabled");
+			main.find(".submit").addClass("disabled");
+		}
+
 		main.find(".title").html(form.name || "(untitled)");
 
 		main.find(".save").click(function () {
@@ -395,7 +403,10 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		});
 
 		main.find(".cancel").click(function () {
-			main.modal("hide");
+			if (config.use_dragi)
+				main.dragi("close");
+			else
+				main.modal("hide");
 		});
 
 		var submitted = false;
@@ -407,7 +418,10 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 				if (suc) {
 					can_hide = true;
-					main.modal("hide");
+					if (config.use_dragi)
+						main.dragi("close");
+					else
+						main.modal("hide");
 				}
 			};
 
@@ -420,7 +434,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 			}
 		});
 
-		if (gen.hasSave(config.uid)) {
+		if (!config.preview && gen.hasSave(config.uid)) {
 			setTimeout(function () {
 				if (config.auto_save)
 					main.find(".restore").popup({ on: "click" }).popup("show");
@@ -442,24 +456,40 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 		var exited = false;
 
-		main.modal({
-			onHide: function () {
-				if (!can_hide && config.leave_ask) {
-					askCancel();
-					return false;
-				}
+		if (config.use_dragi) {
+			main.removeClass("ui small modal")
+				.dragi({
+					height: "auto",
+					onClose: function () {
+						if (!submitted) {
+							if (config.auto_save)
+								main.find(".save").click();
+							if (config.cancel) config.cancel();
+						}
+					}
+				})
+				.dragi("enable resize")
+				.dragi("title", form.name);
+		} else {
+			main.modal({
+				onHide: function () {
+					if (!can_hide && config.leave_ask) {
+						askCancel();
+						return false;
+					}
 
-				if (exited) return;
-				exited = true;
+					if (exited) return;
+					exited = true;
 
-				main.find(".restore").popup("hide");
-				if (!submitted) {
-					if (config.auto_save)
-						main.find(".save").click();
-					if (config.cancel) config.cancel();
+					main.find(".restore").popup("hide");
+					if (!submitted) {
+						if (config.auto_save)
+							main.find(".save").click();
+						if (config.cancel) config.cancel();
+					}
 				}
-			}
-		}).modal("show");
+			}).modal("show");
+		}
 
 		var ret = {};
 
@@ -492,7 +522,10 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 			main.find(".btn-set").html(btnset);
 
 			btnset.find(".cancel-btn").click(function () {
-				main.modal("hide");
+				if (config.use_dragi)
+					main.dragi("close");
+				else
+					main.modal("hide");
 			});
 
 			btnset.find(".preview-btn").click(function () {
@@ -500,10 +533,21 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 				can_hide = true;
 
-				main.modal("hide");
+				if (config.use_dragi)
+					main.dragi("hide");
+				else
+					main.modal("hide");
+					
 				modal(nform, {
-					cancel: function () { main.modal("show"); can_hide = false; },
-					auto_save: false, leave_ask: false
+					cancel: function () {
+						if (config.use_dragi)
+							main.dragi("show");
+						else
+							main.modal("show");
+							
+						can_hide = false;
+					},
+					auto_save: false, leave_ask: false, preview: true
 				});
 			});
 
@@ -511,7 +555,12 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				if (onSave)
 					if (onSave(ret.genForm()) !== false) {
 						can_hide = true;
-						main.modal("hide");
+						
+						if (config.use_dragi)
+							main.dragi("close");
+						else
+							main.modal("hide");
+						
 						form.find(".checkbox").checkbox("set enabled");
 					}
 			});
@@ -528,7 +577,8 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 						}
 					}));
 
-					main.modal("refresh");
+					if (!config.use_dragi)
+						main.modal("refresh");
 				}, 100);
 			}
 
@@ -622,7 +672,8 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 						header.remove();
 					}));
 
-					main.modal("refresh");
+					if (!config.use_dragi)
+						main.modal("refresh");
 				});
 			}
 
