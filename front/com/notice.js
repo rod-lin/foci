@@ -563,7 +563,6 @@ define([
 		};
 
 		ret.setAdmin = function () {
-			alert("wow");
 			main.find(".new-btn").css("display", "");
 			main.find(".new-btn").off("click").click(newSystemNotice);
 		};
