@@ -28,7 +28,9 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		if (allow_dragi && foci.use_dragi) {
 			dragi.iframe(foci.platform, url);
 		} else {
-			window.location = url;
+			if (window.location.hash === url) {
+				util.emsg("already here", "info");
+			} else window.location = url;
 		}
 	};
 

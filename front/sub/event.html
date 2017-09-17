@@ -727,10 +727,11 @@
 			foci.get("/event/info", { euid: euid }, function (suc, dat) {
 				if (suc) {
 					display.render(dat);
-					show(true);
 				} else {
 					util.emsg(dat);
 				}
+				
+				show(suc);
 			});
 
 			// util.blur(main.find(".dim"), 10);

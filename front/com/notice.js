@@ -449,9 +449,13 @@ define([
 			});
 		}
 
+		var keep_err = 0;
+
 		function keep(cb) {
 			login.session(function (session) {
 				if (!session) return;
+				
+				var now = new Date();
 
 				foci.encop(session, {
 					int: "notice",
@@ -460,11 +464,23 @@ define([
 					if (suc) {
 						new_count++;
 						cb(true);
-					} else cb(false);
+						keep_err = 0;
+					} else {
+						cb(false);
+						keep_err++;
+					}
 
-					util.nextTick(function () {
-						keep(cb);
-					});
+					if (keep_err < 5 &&
+						(new Date()) - now < 3000) {
+						// request time less than 3 sec
+						setTimeout(function () {
+							keep(cb);
+						}, 60000);
+					} else {
+						util.nextTick(function () {
+							keep(cb);
+						});
+					}
 				});
 			});
 		}

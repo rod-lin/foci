@@ -52,9 +52,8 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 
 				var show = function (suc) {
 					setTimeout(function () {
-						main.addClass("show");
-
 						if (suc) {
+							main.addClass("show");
 							prog.complete();
 							setTimeout(prog.hide, 1000);
 
@@ -92,7 +91,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 			} else {
 				var url = config.base + "/" + name + ".html";
 				fetch(url, next, function () {
-					if (cb) cb(false);
+					if (cb) cb(false, true /* not found */);
 					prog.err();
 				});
 			}
@@ -126,8 +125,8 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 
 				if (!hash.length) return;
 
-				load(name, function (suc) {
-					if (!suc)
+				load(name, function (suc, notfound) {
+					if (notfound)
 						util.jump("#e404");
 				}, args);
 				

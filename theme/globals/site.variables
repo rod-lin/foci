@@ -17,3 +17,5 @@
 @selectedBorderColor       : rgba(0, 0, 0, 0.1);
 @strongSelectedBorderColor : rgba(0, 0, 0, 0.2);
 @disabledBorderColor       : rgba(0, 0, 0, 0.2);
+
+@importGoogleFonts         : false;

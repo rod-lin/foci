@@ -283,9 +283,7 @@ define([
 					}
 				});
 				
-				login.onlyAdmin(function () {
-					ntview.setAdmin();
-				});
+				login.onlyAdmin(adminSetting);
 			} else {
 				hideAvatar();
 				old_info = null;
@@ -315,6 +313,11 @@ define([
 			} else {
 				console.log("failed to connect to the server");
 			}
+		}
+		
+		function adminSetting() {
+			ntview.setAdmin();
+			// main.find(".site-logo").removeClass("foci-logo").addClass("admin-logo bathtub icon");
 		}
 
 		// functions end
@@ -598,11 +601,7 @@ define([
 			main.removeClass("hide");
 		});
 		
-		login.onlyAdmin(function () {
-			ntview.setAdmin();
-			
-			// main.find(".site-logo").removeClass("foci-logo").addClass("admin-logo bathtub icon");
-		});
+		login.onlyAdmin(adminSetting);
 
 		util.media(640, function () {
 			// mobile
