@@ -188,7 +188,7 @@ var dict = module.exports = {
 		"front.sub.profile.max_staff": "Max staff number",
 		"front.sub.profile.max_partic": "Max participant number",
 		"front.sub.profile.detail": "Details",
-		"front.sub.profile.trivial_notice": "Trivial notice",
+		"front.sub.profile.trivial_notice": "Trivial tips",
 		"front.sub.profile.trivial_notice_prompt": "This notice will be shown on the event page",
 
 		"front.sub.profile.change_event_state": "Change event state",

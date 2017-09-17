@@ -23,7 +23,7 @@ define([ "com/util" ], function (util) {
 		var ret = {
 			set: function (r) {
 				main.rating("set rating", Math.round(r / config.max * config.total));
-				main.attr("data-html", "<span class='com-rating-tip'>" + util.trimFloat(r, 2) + "</span>");
+				main.attr("data-html", "<span class='com-rating-tip'>" + util.trimFloat(r, 1) + "</span>");
 			},
 
 			get: function () {
@@ -48,14 +48,14 @@ define([ "com/util" ], function (util) {
 		if (config.freeze) {
 			main.rating("disable");
 			main.popup({
-				content: (rating === undefined ? "N/A" : util.trimFloat(rating, 2)),
+				content: (rating === undefined ? "N/A" : util.trimFloat(rating, 1)),
 				position: "right center",
 				hoverable: true,
 				variation: "inverted"
 			});
 			
 			// alert(rating === undefined ? "N/A" : util.trimFloat(rating, 2));
-			main.attr("data-html", "<span class='com-rating-tip'>" + (rating === undefined ? "N/A" : util.trimFloat(rating, 2)) + "</span>");
+			main.attr("data-html", "<span class='com-rating-tip'>" + (rating === undefined ? "N/A" : util.trimFloat(rating, 1)) + "</span>");
 		}
 		
 		// });

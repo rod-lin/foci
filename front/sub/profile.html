@@ -184,10 +184,10 @@
 						<div class="ui attached segment">
 							<div class="field">
 								<p>
-									<b class="lang" data-replace="$front.sub.profile.trivial_notice">Trivial notice</b><br>
+									<b class="lang" data-replace="$front.sub.profile.trivial_notice">Trivial tips</b><br>
 									<span class="lang" data-replace="$front.sub.profile.trivial_notice_prompt">This notice will be shown on the event page</span>
 								</p>
-								<textarea class="ev-detail"></textarea>
+								<div class="ev-detail"></div>
 							</div>
 						</div>
 					</form>
@@ -502,6 +502,13 @@
 
 		font-size: 1.5em;
 	} */
+
+	.sub-profile .new-event .ev-detail {
+		height: 20rem;
+		border: 1px solid rgba(0, 0, 0, 0.08);
+		border-radius: 3px;
+		overflow: hidden;
+	}
 
 	.sub-profile .new-event .ui.steps {
 		border-width: 0 0 1px 0 !important;
@@ -842,6 +849,8 @@
 				editor_descr.focus(function () {
 					util.localOnce("sub-profile-descr-editor", editor_descr.showHelp);
 				});
+				
+				var editor_detail = marki.editor(new_tab.find(".ev-detail"), {});
 
 				/*
 					To add a step, you need to:
@@ -1392,9 +1401,9 @@
 							onInit: function (info) {
 								fields.detail = info.detail;
 
-								new_tab.find(".ev-detail")
-									.val(info.detail)
-									.off("change").change(function () {
+								editor_detail
+									.val(info.detail ? info.detail : "")
+									.keyup(function () {
 										changed.detail = true;
 									});
 
@@ -1404,7 +1413,7 @@
 							onCheck: function (cb) {
 								if (changed.detail) {
 									uploadChanges({
-										detail: fields.detail = new_tab.find(".ev-detail").val()
+										detail: fields.detail = editor_detail.val()
 									}, function (suc) {
 										if (suc) {
 											new_tab.find(".detail-step").addClass("completed");

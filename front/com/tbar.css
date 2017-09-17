@@ -663,7 +663,10 @@ html.foci-nested .top-tbar {
 	.com-tbar .logged .avatar-util .reddot {
 		height: 12px;
 		width: 12px;
-		right: 0;
+		
+		top: 8px;
+		right: 8px;
+		
 		opacity: 0;
 	}
 
