@@ -368,8 +368,13 @@ define([
 				}
 			});
 
-			pmview = pm.qview(main.find(".pm-popup"));
-			ntview = notice.init(main.find(".notice-popup"));
+			pmview = pm.qview(main.find(".pm-popup"), {
+				use_dragi: foci.use_dragi
+			});
+			
+			ntview = notice.init(main.find(".notice-popup"), {
+				use_dragi: foci.use_dragi
+			});
 		})();
 
 		// init filter tag

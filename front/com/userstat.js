@@ -85,7 +85,7 @@ define([ "com/env", "com/util", "com/login" ], function (env, util, login) {
         main.find(".reg-btn, .login-btn").click(function () {
             login.init(function () {
                 refresh();
-            });
+            }, { reg: true });
         });
 
         cont.append(main);

@@ -92,10 +92,14 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 		return {};
 	}
 
-	function init(cb) {
+	function init(cb, config) {
 		if (cb) all_cb.push(cb);
 
 		if (opened) return;
+		
+		config = $.extend({
+			reg: false
+		}, config);
 
 		var main = $(" \
 			<div class='ui basic modal com-login'> \
@@ -271,7 +275,7 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 		login_btn.click(loginProc);
 		
 		main.find(".forgot-btn").click(function () {
-			util.jump("#forgotpass");
+			util.jump("#forgotpass", true);
 			main.modal("hide");
 		});
 
@@ -285,6 +289,10 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 
 		opened = true;
 		main.modal("show");
+		
+		if (config.reg) {
+			main.find(".reg.button").click();
+		}
 
 		main.find(".exdim").click(function () {
 			main.modal("hide");

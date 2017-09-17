@@ -133,11 +133,12 @@
 				if (!foci.nested) {
 					foci.platform = dragi.platform("#platform");
 					// dragi.window(foci.platform);
-					// dragi.iframe(foci.platform, "/");
 					// $("<div style='width: 500px; height: 500px; background: black'></div>").dragi();
 				} else {
 					foci.platform = top.foci.platform;
 				}
+				
+				foci.use_dragi = true && !util.isMobile();
 
 				env.init(function () {
 					// map.init();

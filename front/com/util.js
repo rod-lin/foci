@@ -2,7 +2,7 @@
 
 "use strict";
 
-define([ "com/xfilt" ], function (xfilt) {
+define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 	var util = {};
 	foci.loadCSS("com/util.css");
 
@@ -19,9 +19,17 @@ define([ "com/xfilt" ], function (xfilt) {
 	util.mfilt = function (str) {
 		return str;
 	};
+	
+	util.isMobile = function () {
+		return $(window).width() <= 640;
+	};
 
-	util.jump = function (url) {
-		window.location = url;
+	util.jump = function (url, allow_dragi) {
+		if (allow_dragi && foci.use_dragi) {
+			dragi.iframe(foci.platform, url);
+		} else {
+			window.location = url;
+		}
 	};
 
 	util.refresh = function () {

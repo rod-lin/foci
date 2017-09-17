@@ -12,7 +12,7 @@ define([], function () {
     dragi.platform = function (cont, config) {
         cont = $(cont);
         config = $.extend({
-            default_zindex: 1001
+            default_zindex: 101
         }, config);
         
         var main = $("<div class='com-dragi-platform'></div>");
@@ -371,7 +371,7 @@ define([], function () {
         iframe[0].onload = function () {
             setInterval(function () {
                 win.title(iframe[0].contentWindow.document.title);
-            }, 2000);
+            }, 1000);
         };
         
         win.cont.append(iframe);

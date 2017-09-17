@@ -15,6 +15,8 @@ define([
 			/* onSend */
 			/* logo */
 			/* prompt */
+			
+			use_dragi: false
 		}, config);
 
 		var main = $(" \
@@ -88,18 +90,26 @@ define([
 		if (config.prompt)
 			main.find(".top-prompt").html(config.prompt);
 
+		function hide() {
+			if (config.use_dragi) {
+				main.dragi("close");
+			} else {
+				main.modal("hide");
+			}
+		}
+
 		function ask() {
 			if (main.find(".title-input").val() || main.find(".msg").val())
 				util.ask("Are you sure to discard this message?", function (ans) {
 					can_hide = ans;
 
 					if (ans) {
-						main.modal("hide");
+						hide();
 					}
-				});
+				}, { use_dragi: config.use_dragi });
 			else {
 				can_hide = true;
-				main.modal("hide");
+				hide();
 			}
 		}
 
@@ -122,7 +132,7 @@ define([
 
 					if (suc) {
 						can_hide = true;
-						main.modal("hide");
+						hide();
 					}
 				});
 			}
@@ -130,17 +140,30 @@ define([
 
 		var can_hide = false;
 
-		main
-			.modal({
-				allowMultiple: true,
-				onHide: function () {
-					if (!can_hide) {
-						ask();
-						return false;
+		if (config.use_dragi) {
+			main.removeClass("ui small modal")
+				.dragi({
+					height: "auto",
+					title: "New Notice",
+					onClose: function () {
+						if (!can_hide) {
+							ask();
+							return false;
+						}
 					}
-				}
-			})
-			.modal("show");
+				});
+		} else {
+			main.modal({
+					allowMultiple: true,
+					onHide: function () {
+						if (!can_hide) {
+							ask();
+							return false;
+						}
+					}
+				})
+				.modal("show");
+		}
 
 		var ret = {};
 
@@ -149,7 +172,8 @@ define([
 
 	function modal(msg, config) {
 		config = $.extend({
-			logo_url: null
+			logo_url: null,
+			use_dragi: false
 		}, config);
 
 		var main = $(" \
@@ -186,19 +210,40 @@ define([
 		main.find(".nt-header .sender").html("by " + config.info.name);
 		main.find(".nt-header .date").html(util.localDate(new Date(msg.date)));
 		main.find(".cont").html(xfilt(msg.msg));
-
-		main.modal({
-			onHide: function () {
-				if (config.onHide)
-					config.onHide();
+		
+		function hide() {
+			if (config.use_dragi) {
+				main.dragi("close");
+			} else {
+				main.modal("hide");
 			}
-		});
-
+		}
+		
 		main.find(".yep-btn").click(function () {
-			main.modal("hide");
+			hide();
 		});
 
-		main.modal("show");
+		if (config.use_dragi) {
+			main.removeClass("ui small modal")
+				.dragi({
+					height: "auto",
+					onClose: function () {
+						if (config.onHide)
+							config.onHide();
+					},
+					
+					title: util.htmlToText(msg.title)
+				});
+		} else {
+			main.modal({
+				onHide: function () {
+					if (config.onHide)
+						config.onHide();
+				}
+			});
+
+			main.modal("show");
+		}
 
 		var ret = {};
 
@@ -208,7 +253,8 @@ define([
 	function init(cont, config) {
 		cont = $(cont);
 		config = $.extend({
-			is_admin: false
+			is_admin: false,
+			use_dragi: false
 		}, config);
 
 		var main = $(" \
@@ -289,6 +335,8 @@ define([
 							no_hide = false;
 						});
 					},
+					
+					use_dragi: config.use_dragi,
 					
 					logo_url: msg.type == "event" ? "#event/" + parseInt(msg.sender) : null
 				});
@@ -458,7 +506,9 @@ define([
 							cb(suc);
 						});
 					});
-				}
+				},
+				
+				use_dragi: config.use_dragi
 			});
 			
 			select_btn.click(function () {
@@ -472,7 +522,8 @@ define([
 					selected = uuids;
 				}, {
 					prompt: "Send notice to",
-					just_one: false
+					just_one: false,
+					use_dragi: config.use_dragi
 				});
 			});
 		}

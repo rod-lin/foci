@@ -128,7 +128,7 @@
 	<div class="page-4" style="display: none;">
 		<div class="title">Rate your staff</div>
 		<div class="msg">
-			You can rate your staff in the <b>application center</b><br>
+			You can rate your staff in the <a class="appcent-link">application center</a><br>
 			(select a staff and click 'Rate' in the util bar)
 		</div>
 		<button class="ui green button gotit-btn">Got it</button>
@@ -303,6 +303,10 @@
 				
 				main.find(".page-4 .gotit-btn").click(function () {
 					pf.nextPage();
+				});
+				
+				main.find(".page-4 .appcent-link").click(function () {
+					util.jump("#appcent/" + euid, true);
 				});
 
 				// pf.nextPage();

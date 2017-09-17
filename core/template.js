@@ -2,7 +2,7 @@ var user = require("./user");
 
 exports.event_apply = async (title, job) => ({
 	title: `You just applied for ${title}`,
-	msg: `Thank you for applying for ${title} as a ${job}. You can find further info about the application status in your profile.`
+	msg: `Thank you for applying to ${title} as a ${job}. You can find further info about the application status in your profile.`
 });
 
 var wrap = a => a;

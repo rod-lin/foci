@@ -26,7 +26,9 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 	}
 
 	function chatbox(sendee, config) {
-		config = $.extend({}, config)
+		config = $.extend({
+			use_dragi: false
+		}, config)
 		
 		var main = $(" \
 			<div class='com-pm-chatbox ui small modal'> \
@@ -260,21 +262,43 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 
 		checkUpdate();
 
-		main.modal({
-			onHide: function () {
-				clearTimeout(update_proc);
-				exit = true;
+		function hide() {
+			if (config.use_dragi) {
+				main.dragi("close");
+			} else {
+				main.modal("hide");
 			}
-		});
-		main.modal("show");
+		}
 
+		if (config.use_dragi) {
+			main.removeClass("ui small modal")
+				.dragi({
+					height: "auto",
+					onClose: function () {
+						clearTimeout(update_proc);
+						exit = true;
+					},
+					
+					title: "Chat"
+				})
+		} else {
+			main.modal({
+				onHide: function () {
+					clearTimeout(update_proc);
+					exit = true;
+				}
+			});
+			
+			main.modal("show");
+		}
+		
 		main.find(".send-btn").click(send);
 		main.find(".back-btn").click(function () {
-			main.modal("hide");
+			hide();
 		});
 
 		main.find(".sendee-avatar").click(function () {
-			main.modal("hide");
+			hide();
 			util.jump("#profile/" + sendee);
 		});
 
@@ -308,7 +332,9 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 
 	function qview(cont, config) {
 		cont = $(cont);
-		config = $.extend({}, config)
+		config = $.extend({
+			use_dragi: false
+		}, config)
 
 		var main = $(" \
 			<div class='com-pm-qview'> \
@@ -359,7 +385,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 				msg.find(".msg-cont").html(text);
 
 				msg.click(function () {
-					chatbox(sender);
+					chatbox(sender, { use_dragi: config.use_dragi });
 				});
 			});
 
@@ -396,7 +422,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 			login.session(function (session) {
 				uh.modal([], function (uuid) {
 					if (uuid.length)
-						chatbox(uuid[0]);
+						chatbox(uuid[0], { use_dragi: config.use_dragi });
 				}, { just_one: true, prompt: "User to chat", exclude: [ session.getUUID() ] });
 			});
 		});
