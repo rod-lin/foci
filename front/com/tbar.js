@@ -597,7 +597,7 @@ define([
 		login.onlyAdmin(function () {
 			ntview.setAdmin();
 			
-			main.find(".site-logo").removeClass("foci-logo").addClass("admin-logo bathtub icon");
+			// main.find(".site-logo").removeClass("foci-logo").addClass("admin-logo bathtub icon");
 		});
 
 		util.media(640, function () {
