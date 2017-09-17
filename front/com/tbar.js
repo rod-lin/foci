@@ -282,6 +282,10 @@ define([
 						}
 					}
 				});
+				
+				login.onlyAdmin(function () {
+					ntview.setAdmin();
+				});
 			} else {
 				hideAvatar();
 				old_info = null;
