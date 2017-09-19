@@ -363,4 +363,9 @@ window.foci = {};
 		published: 1,
 		terminated: 2
 	};
+	
+	foci.clubstat = {
+		review: 0,
+	    operate: 1,
+	};
 })();

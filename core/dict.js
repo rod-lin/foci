@@ -26,6 +26,8 @@ var dict = module.exports = {
 
 		"core.word.event": "event",
 		"core.word.draft": "draft",
+		
+		"core.word.club": "club",
 
 		"core.word.user": "user",
 		"core.word.dname": "display name",
@@ -312,6 +314,8 @@ var chinese = {
 
 		"core.word.event": "活动",
 		"core.word.draft": "草稿",
+		
+		"core.word.club": "社团",
 
 		"core.word.user": "用户",
 		"core.word.dname": "用户名",
@@ -396,6 +400,14 @@ var chinese = {
 		"core.comment.empty": "(没有评论)",
 		"core.comment.already_voted": "你已经赞过了",
 		"core.comment.max_comm_reached": "已达到最大评论数",
+		
+		"core.club.illegal_name": "illegal club name",
+		"core.club.already_reviewed": "the club is already reviewed",
+		"core.club.member_not_exist": "club member does not exist",
+		"core.club.member_exist": "club member already exists",
+		"core.club.apply_not_exist": "applicant not exist",
+		"core.club.apply_exist": "already applied",
+		"core.club.not_club_owner": "not club owner",
 
 		"front.com.parts.fail_get_url": "fail to get url $1: $2",
 		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",

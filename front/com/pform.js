@@ -17,6 +17,7 @@ define([ "com/util" ], function (util) {
         /*
             form {
                 cont: "<html>",
+                vcenter: true/false,
                 [onInit]
                 [onShow]
                 [onHide]
@@ -27,6 +28,10 @@ define([ "com/util" ], function (util) {
             var fcont = $(form.cont);
 
             fcont.css("display", "");
+            
+            if (form.vcenter === false) {
+                dom.find(".pform-cont").removeClass("vcenter");
+            }
 
             dom.find(".pform-cont").append(fcont);
             form.dom = dom;

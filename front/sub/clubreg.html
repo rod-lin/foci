@@ -1,4 +1,106 @@
 <div class="sub-clubreg"> <!-- club registration -->
+	<style>
+		.sub-clubreg .title {
+			font-size: 1.5rem;
+			font-weight: bold;
+		}
+		
+		.sub-clubreg .subtitle {
+			font-size: 1.2rem;
+			margin-top: 0.5rem;
+		}
+		
+		.sub-clubreg .page-1 {
+			width: 50rem;
+			max-width: 95%;
+		}
+		
+		.sub-clubreg .page-1,
+		.sub-clubreg .page-1 h3 {
+			color: rgb(60, 60, 60) !important;
+		}
+		
+		.sub-clubreg .page-2 {
+			text-align: center;
+			margin-top: -2rem;
+		}
+		
+		.sub-clubreg .page-2 .big-icon {
+			font-size: 5rem;
+		}
+		
+		.sub-clubreg .page-2 .white {
+			color: white;
+		}
+	
+		.sub-clubreg .page-2 .yep-btn {
+			margin-top: 1rem;
+		}
+		
+		@media only screen and (max-width: 640px) {
+			.sub-clubreg .page-1 {
+				width: 100%;
+				max-width: 100%;
+			}
+		}
+	</style>
+	
+	<div class="page-1" style="display: none;">
+		<div class="title">Create New Club</div>
+		<div class="subtitle">Fill out the following form for club review</div>
+		<form class="ui form" style="margin-top: 2rem;">
+			<h3 class="ui top attached header">Basic Info</h3>
+			<div class="ui attached segment">
+				<div class="ui field club-name-field">
+					<label>Club type and name</label>
+					<div class="ui left action input">
+						<div class="ui basic floating dropdown button club-type" name="type">
+							<div class="text">Type</div>
+							<i class="dropdown icon"></i>
+							<div class="menu">
+								<div class="item" data-value="1">Student Org</div>
+								<div class="item" data-value="2">Company</div>
+								<div class="item" data-value="0">Other</div>
+							</div>
+						</div>
+						<input class="club-name" name="name" type="text">
+					</div>
+				</div>
+				<div class="ui field club-descr-field">
+					<label>Club description</label>
+					<textarea class="club-descr" name="descr" placeholder="Describe your club"></textarea>
+				</div>
+				<div class="ui two fields">
+					<div class="ui field">
+						<label>School</label>
+						<input class="club-school" placeholder="optional">
+					</div>
+					<div class="ui field">
+						<label>Registration number</label>
+						<input class="club-regnum" placeholder="optional">
+					</div>
+				</div>
+				<button type="button" class="ui primary button club-submit">Submit</button>
+			</div>
+			
+			<!-- <h3 class="ui top attached header">Additional</h3>
+			<div class="ui attached segment">
+				
+			</div>	 -->
+		</form>
+	</div>
+	
+	<div class="page-2" style="display: none;">
+		<div class="white big-icon">
+			<i class="check circle icon"></i>
+		</div>
+		<div class="white title">Submitted</div>
+		<div class="white subtitle">
+			Please wait patiently as the review<br>
+			process will take several days
+		</div>
+		<button class="ui basic inverted button yep-btn">Yep</button>
+	</div>
 </div>
 
 <style>
@@ -10,11 +112,105 @@
 <script>
 	function init(main, args, show, cont, exit) {
 		require([
-			"com/env", "com/util", "com/pform"
-		], function (env, util, pform) {
+			"com/env", "com/util", "com/pform",
+			"com/login"
+		], function (env, util, pform, login) {
 			var tbar = env.get("tbar");
 			tbar.setTitle("Club Registration");
 
+			var pf = pform.init(main, [
+				{
+					vcenter: false,
+					cont: main.find(".page-1")
+				},
+				
+				{
+					cont: main.find(".page-2"),
+					
+					onShow: function () {
+						tbar.setStyle("colorful green");
+						pf.background("#2ECC71");
+					},
+
+					onHide: function () {
+						tbar.setStyle("");
+						pf.background("");
+					}
+				}
+			]);
+		
+			main.find(".page-1 .club-type").dropdown();
+			
+			main.find(".page-1 .form").form({
+				on: "blur",
+				fields: {
+					name: {
+						identifier: "name",
+						rules: [
+							{
+								type: "empty",
+								prompt: "empty name"
+							}
+						]
+					},
+					
+					type: {
+						identifier: "type",
+						rules: [
+							{
+								type: "empty",
+								prompt: "empty type"
+							}
+						]
+					},
+					
+					descr: {
+						identifier: "descr",
+						rules: [
+							{
+								type: "empty",
+								prompt: "empty description"
+							}
+						]
+					}
+				}
+			});
+			
+			main.find(".page-1 .club-submit").click(function () {
+				main.find(".page-1 .form").form("validate form");
+				if (!main.find(".page-1 .form").form("is valid"))
+					return;
+				
+				var name = main.find(".page-1 .club-name").val();
+				var type = main.find(".page-1 .club-type").dropdown("get value");
+				var descr = main.find(".page-1 .club-descr").val();
+				
+				// TODO: !!!
+				var regnum = main.find(".page-1 .club-regnum").val();
+				var school = main.find(".page-1 .club-school").val();
+				
+				login.session(function (session) {
+					foci.encop(session, {
+						int: "club",
+						action: "new",
+						
+						dname: name,
+						type: parseInt(type),
+						descr: descr
+					}, function (suc, dat) {
+						if (suc) {
+							pf.nextPage();
+						} else {
+							util.emsg(dat);
+						}
+					});
+				});
+			});
+			
+			main.find(".yep-btn").click(function () {
+				util.jump("#profile");
+			});
+			
 			show(true);
 		});
 	}

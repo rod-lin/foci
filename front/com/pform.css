@@ -46,3 +46,15 @@
 
     line-height: normal;
 }
+
+@media only screen and (max-width: 640px) {
+    .com-pform .pform-page .pform-cont {
+        padding: 2rem;
+    }
+}
+
+@media only screen and (max-width: 360px) {
+    .com-pform .pform-page .pform-cont {
+        padding: 1rem;
+    }
+}

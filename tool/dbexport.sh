@@ -30,6 +30,7 @@ function doexport() {
 }
 
 doexport user
+doexport club
 doexport event
 doexport uid
 doexport file

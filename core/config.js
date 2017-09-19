@@ -134,6 +134,10 @@ var conf = module.exports = {
 			// max days after the event ended and before auto termination
 			// max_term_delay: 1000 * 60 * 60 * 24 * 10, // 10 day
 		},
+		
+		club: {
+			max_name_len: 64
+		},
 
 		pm: {
 			text: 256

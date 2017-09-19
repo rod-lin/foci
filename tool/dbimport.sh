@@ -30,6 +30,7 @@ function doimport() {
 }
 
 doimport user
+doimport club
 doimport event
 doimport uid
 doimport file

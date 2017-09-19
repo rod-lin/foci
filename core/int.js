@@ -8,6 +8,7 @@ var err = require("./err");
 var reg = require("./reg");
 var auth = require("./auth");
 var user = require("./user");
+var club = require("./club");
 var util = require("./util");
 var file = require("./file");
 var dict = require("./dict");
@@ -699,6 +700,36 @@ encop.cover = async (env, usr, query, next) => {
 			await cover.setPBoard(usr.getUUID(), args.n, args.info);
 			return;
 
+		default:
+			throw new err.Exc("$core.action_not_exist");
+	}
+};
+
+encop.club = async (env, usr, query, next) => {
+	switch (query.action) {
+		case "new":
+			var args = util.checkArg(query, { dname: "string", type: "int", descr: "string" });
+			var clb = await club.newClub(usr.getUUID(), args.dname, args.type, args.descr);
+			return clb.getCUID();
+			
+		case "publish":
+			var args = util.checkArg(query, { cuid: "int" });
+			await club.publish(args.cuid, usr.getUUID());
+			return;
+			
+		case "applyjoin":
+			var args = util.checkArg(query, { cuid: "int", comment: "" });
+			await club.applyMember(args.cuid, usr.getUUID(), args.comment);
+			return;
+			
+		case "changeapply":
+			var args = util.checkArg(query, { cuid: "int", uuid: "int", accept: "bool" });
+			await club.changeApply(args.cuid, usr.getUUID(), args.uuid, args.accept);
+			return;
+			
+		case "getrelated":
+			return await club.getRelatedClub(usr.getUUID());
+			
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}

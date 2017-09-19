@@ -115,8 +115,9 @@
 				"com/tbar", "com/event", "com/env",
 				"com/util", "com/pages", "com/parts",
 				"com/lang", "com/formi", "com/pm",
-				"com/map", "lib/fastclick", "com/dragi"
-			], function (tbar, event, env, util, pages, parts, lang, formi, pm, map, fastclick, dragi) {
+				"com/map", "lib/fastclick", "com/dragi",
+				"com/club"
+			], function (tbar, event, env, util, pages, parts, lang, formi, pm, map, fastclick, dragi, club) {
 				// fastclick.attach(document.body);
 				
 				lang.loadDict("english", util, function () {
@@ -143,6 +144,8 @@
 				env.init(function () {
 					// map.init();
 					// console.log(lang.expand("hola"));
+					
+					club.popview({});
 
 					var bar = tbar.init();
 					

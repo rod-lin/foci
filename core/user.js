@@ -9,10 +9,10 @@ var config = require("./config");
 var event = require("./event");
 
 var User = function (uuid, dname, lname, passwd) {
-	if (dname === undefined) {
-		this.extend(uuid); // extend the first argument
-		return;
-	}
+	if (arguments.length == 1) {
+        this.extend(arguments[0]); // called with only one argument
+        return;
+    }
 
 	// err.assert(typeof uuid === "number" && uuid > 0, "illegal uuid");
 	// err.assert(typeof dname === "string" && dname.length <= config.lim.user.dname,
