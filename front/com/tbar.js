@@ -522,7 +522,7 @@ define([
 
 			mod.hideBanner = function () {
 				main.removeClass("show-banner");
-				main.find(".avatar-util-box").addClass("expand");
+				main.find(".avatar-util-box").removeClass("expand");
 			};
 
 			mod.setBanner = function (html) {

@@ -21,6 +21,7 @@ var notice = require("./notice");
 var alipay = require("./alipay");
 var captcha = require("./captcha");
 var comment = require("./comment");
+var invcode = require("./invcode");
 var template = require("./template");
 var watchdog = require("./watchdog");
 
@@ -409,6 +410,52 @@ encop.user = async (env, usr, query) => {
 			await user.rateStaff(args.euid, usr.getUUID(), args.uuids, args.rating);
 			
 			return;
+			
+		case "resetpass":
+			var args = util.checkArg(query, {
+				oldpass: "string",
+				newpass: "string"
+			});
+			
+			await user.checkPass(usr.getLName(), args.oldpass);
+			await user.resetPass(usr.getLName(), args.newpass);
+
+			return;
+			
+		case "submitrealname":
+			var args = util.checkArg(query, {
+				name: "string",
+				school: "string",
+				grade: "int",
+				
+				invcode: {
+					type: "string",
+					opt: true
+				}
+			});
+			
+			await user.checkRealname(usr.getUUID(), args);
+		
+			return;
+
+		case "geninvcode":
+			var args = util.checkArg(query, {
+				type: "string",
+				number: util.checkArg.posint(128, "too many invcode to generate"),
+				limit: "int"
+			});
+			
+			var ret = [];
+			
+			for (var i = 0; i < args.number; i++) {
+				ret.push({
+					code: await invcode.insertInvcode(args.type, { valid: args.limit }),
+					type: args.type,
+					limit: args.limit
+				});
+			}
+			
+			return ret;
 
 		default:
 			throw new err.Exc("$core.action_not_exist");

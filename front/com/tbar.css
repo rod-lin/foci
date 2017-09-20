@@ -630,6 +630,7 @@ html.foci-nested .top-tbar {
 		box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 	}
 	
+	.com-tbar .right-bar:hover .avatar-util-box,
 	.com-tbar .logged .avatar-util-box.expand {
 		padding-left: 1rem;
 		padding-right: 3.9rem;
@@ -670,6 +671,7 @@ html.foci-nested .top-tbar {
 		opacity: 0;
 	}
 
+	.com-tbar .right-bar:hover .avatar-util,
 	.com-tbar .logged .avatar-util-box.expand .avatar-util {
 		margin-right: 0;
 		opacity: 1;
@@ -679,6 +681,7 @@ html.foci-nested .top-tbar {
 		background: rgba(255, 255, 255, 0.1) !important;
 	}
 
+	.com-tbar .right-bar:hover .avatar-util.unread .reddot,
 	.com-tbar .logged .avatar-util-box.expand .avatar-util.unread .reddot {
 		opacity: 1;
 	}

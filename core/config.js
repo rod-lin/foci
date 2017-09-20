@@ -170,6 +170,16 @@ var conf = module.exports = {
 					gc_time_threshold: 1000 * 60 * 30, // half an hour
 				}
 			}
+		},
+		
+		realname: {
+			name_reg: /^.{2,64}$/,
+			school_reg: /^.{5,64}$/,
+			max_grade: 8
+		},
+		
+		invcode: {
+			allowed_type: [ "realname" ]
 		}
 	},
 

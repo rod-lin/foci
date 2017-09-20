@@ -36,3 +36,4 @@ doimport uid
 doimport file
 doimport pm
 doimport cover
+doimport invcode

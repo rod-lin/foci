@@ -1,0 +1,552 @@
+<div class="sub-setting-user">
+    <!--
+        to define a setting:
+            1. need a wrapper div
+            2. a .main-menu div
+            3. several form-set with names defined in the data-form-set attr in menu items
+            4. avoid all sorts of naming duplication
+    -->
+    <div class="main-menu">
+        <div class="menu-group">
+            <div class="header">Basic</div>
+            <div class="menu-item" data-form-set="profile">Profile</div>
+            <div class="menu-item" data-form-set="realname">Real-name auth</div>
+        </div>
+        
+        <div class="menu-group only-admin">
+            <div class="header">Admin</div>
+            <div class="menu-item" data-form-set="invcode">Invitation code</div>
+        </div>
+    </div>
+    
+    <div class="form-set form-set-invcode">
+        <form class="form-gen-invcode ui form">
+            <h3 class="ui top attached block header">Generate invitation code</h3>
+            <div class="ui attached segment">
+                <div class="three fields">
+                    <div class="field">
+                        <label>Invitation type</label>
+                        <select class="ui dropdown field-type" name="type">
+                            <option value="">Select a type</option>
+                            <option value="realname">Real-name auth</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Number</label>
+                        <input class="field-number" name="number" placeholder="How many codes to generate">
+                    </div>
+                    <div class="field">
+                        <label>Limit</label>
+                        <input class="field-limit" name="limit" placeholder="How many times each can be used">
+                    </div>
+                </div>
+                
+                <button type="button" class="ui blue basic button gen-btn">Generate</button>
+                
+                <style>
+                    .sub-setting .form-gen-invcode .field-result {
+                        max-height: 30rem;
+                        overflow: auto;
+                        
+                        border-radius: 3px;
+                        border: 1px solid rgba(0, 0, 0, 0.08);
+                        border-width: 1px 0 1px 0;
+                    }
+                    
+                    .sub-setting .form-gen-invcode .field-result table {
+                        border-width: 0 1px 0 1px !important;
+                    }
+                </style>
+                
+                <div class="field">
+                    <div class="field-result" style="display: none; margin-top: 1rem;">
+                        <table class="ui celled padded table">
+                            <thead>
+                                <tr>
+                                    <th class="single line">Code</th>
+                                    <th>Type</th>
+                                    <th>Limit</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <div class="form-set form-set-profile">
+        <form class="form-basic-info ui form">
+            <h3 class="ui top attached block header">Basic info</h3>
+            <div class="ui attached segment">
+                <div class="ui field">
+                    <label>Dsiplay name</label>
+                    <input class="field-dname" name="dname">
+                </div>
+                
+                <div class="ui field">
+                    <label>Self introduction</label>
+                    <textarea class="field-intro" name="intro"></textarea>
+                </div>
+                
+                <div class="ui field">
+                    <label>Favorite tags</label>
+                    <div class="field-favtag"></div>
+                </div>
+                
+                <button type="button" class="ui green basic button update-btn">Update</button>
+            </div>
+        </form>
+        
+        <form class="form-passwd ui form">
+            <h3 class="ui top attached block header">Change password</h3>
+            <div class="ui attached segment">
+                <div class="ui field">
+                    <label>Old password</label>
+                    <input class="field-oldpass" type="password" name="oldpass">
+                </div>
+                
+                <div class="ui field">
+                    <label>New password</label>
+                    <input class="field-newpass" type="password" name="newpass">
+                </div>    
+                
+                <div class="ui field">
+                    <label>Repeat</label>
+                    <input class="field-reppass" type="password" name="reppass">
+                </div>
+                
+                <button type="button" class="ui yellow basic button change-btn">Change</button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="form-set form-set-realname">
+        <style>
+            .sub-setting .form-realname.already-realname .segment>* {
+                display: none;
+            }
+            
+            .sub-setting .form-realname.already-realname .segment>.realname-show {
+                display: block !important;
+            }
+            
+            .sub-setting .form-realname .segment>.realname-show {
+                display: none;
+            }
+        </style>
+        <form class="form-realname ui form">
+            <h3 class="ui top attached block header">Real-name authentication</h3>
+            <div class="ui attached segment">
+                <div class="ui field">
+                    <label>Real name</label>
+                    <input class="field-realname" name="realname">
+                </div>
+                
+                <div class="ui field">
+                    <label>School</label>
+                    <input class="field-school" name="school">
+                </div>
+                
+                <div class="ui field">
+                    <label>Grade</label>
+                    <select class="ui dropdown field-grade" name="grade">
+                        <option value="">Current grade(in the current school)</option>
+                        <option value="1">First year</option>
+                        <option value="2">Second year</option>
+                        <option value="3">Third year</option>
+                        <option value="4">More than 3 years</option>
+                    </select>
+                </div>
+                
+                <div class="ui field">
+                    <label>Invitation code(optional)</label>
+                    <input class="field-invcode" name="invcode">
+                </div>
+                
+                <button type="button" class="ui green basic button submit-btn">Submit</button>
+                
+                <div class="realname-show">
+                    <div class="ui large positive message">
+                        <i class="check icon"></i> Already authenticated
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .sub-setting .ui.selection.dropdown {
+        min-width: auto;
+    }
+</style>
+
+<script>
+    function initSetting(main, args, show, mod) {
+        require([
+            "com/env", "com/login", "com/tagbox",
+            "com/util"
+        ], function (env, login, tagbox, util) {
+            login.session(function (session) {
+                if (!session) {
+                    util.emsg("you have not logged in");
+                    show(false);
+                    return;
+                }
+                
+                var uuid = session.getUUID();
+                
+                env.user(function (info) {
+                    var parsed = login.parseInfo(info);
+                    
+                    function fvalid(dom) {
+                        dom.form("validate form");
+                        if (!dom.form("is valid"))
+                            return false;
+                            
+                        return true;
+                    }
+                    
+                    /*************** profile form beg ***************/
+                    
+                    (function () {
+                        var form_profile = main.find(".form-set-profile");
+                        var form_binfo = form_profile.find(".form-basic-info");
+                        var form_passwd = form_profile.find(".form-passwd");
+                        
+                        var tgbox = null;
+                        
+                        form_binfo.find(".field-dname").val(info.dname);
+                        form_binfo.find(".field-intro").val(info.intro);
+                        
+                        env.favtag(function (tags) {
+                            tgbox = tagbox.init(form_binfo.find(".field-favtag"), tags, {
+                                init: parsed.favtag
+                            });
+                            tgbox.openEdit();
+                        });
+                        
+                        form_binfo.form({
+                            on: "blur",
+                            keyboardShortcuts: false,
+                            fields: {
+            					dname: {
+            						identifier: "dname",
+            						rules: [
+            							{
+            								type: "empty",
+            								prompt: "Empty name"
+            							}
+            						]
+            					},
+            					
+            					intro: {
+            						identifier: "intro",
+            						rules: [
+            							{
+            								type: "empty",
+            								prompt: "Empty introduction"
+            							}
+            						]
+            					},
+                            }
+                        });
+                        
+                        form_binfo.find(".update-btn").click(function () {
+                            if (!tgbox) {
+                                util.emsg("tag box not ready");
+                                return;
+                            }
+                                
+                            if (!fvalid(form_binfo)) return;
+                                
+                            var dname = form_binfo.find(".field-dname").val();
+                            var intro = form_binfo.find(".field-intro").val();
+                            var favtag = tgbox.cur();
+                            
+                            // console.log(dname, intro, tags);
+                            // return;
+                            
+                            form_binfo.find(".update-btn").addClass("loading");
+                            
+                            foci.encop(session, {
+                                int: "info",
+                                action: "set",
+                                dname: dname,
+                                intro: intro,
+                                favtag: favtag
+                            }, function (suc, dat) {
+                                form_binfo.find(".update-btn").removeClass("loading");
+                                
+                                if (suc) {
+                                    util.emsg("updated", "success");
+                                } else {
+                                    util.emsg(dat);
+                                }
+                            });
+                        });
+                        
+                        form_passwd.form({
+                            on: "blur",
+                            keyboardShortcuts: false,
+                            fields: {
+                                oldpass: {
+            						identifier: "oldpass",
+            						rules: [
+            							{
+            								type: "empty",
+            								prompt: "Empty password"
+            							}
+            						]
+            					},
+                                
+                                newpass: {
+            						identifier: "newpass",
+            						rules: [
+            							{
+            								type: "empty",
+            								prompt: "Empty new password"
+            							}
+            						]
+            					},
+                                
+                                reppass: {
+            						identifier: "reppass",
+            						rules: [
+            							{
+            								type: "match[newpass]",
+            								prompt: "No same password"
+            							}
+            						]
+            					}
+                            }
+                        });
+                        
+                        form_passwd.find(".change-btn").click(function () {
+                            if (!fvalid(form_passwd)) return;
+                            
+                            var oldpass = form_passwd.find(".field-oldpass").val();
+                            var newpass = form_passwd.find(".field-newpass").val();
+                        
+                            form_passwd.find(".change-btn").addClass("loading");
+                        
+                            foci.encop(session, {
+                                int: "user",
+                                action: "resetpass",
+                                oldpass: oldpass,
+                                newpass: newpass
+                            }, function (suc, dat) {
+                                form_passwd.find(".change-btn").removeClass("loading");
+                                if (suc) {
+                                    util.emsg("changed", "success");
+                                    form_passwd.find(".field-oldpass").val("");
+                                    form_passwd.find(".field-newpass").val("");
+                                    form_passwd.find(".field-reppass").val("");
+                                } else {
+                                    util.emsg(dat);
+                                }
+                            });
+                        });
+                    })();
+                    
+                    /*************** profile form end ***************/
+
+                    /*************** realname form beg ***************/
+                    
+                    (function () {
+                        var form_realname = main.find(".form-set-realname");
+                        var form_realname_auth = form_realname.find(".form-realname");
+                        
+                        form_realname_auth.find(".field-grade").dropdown();
+                        
+                        form_realname_auth.form({
+                            on: "blur",
+                            keyboardShortcuts: false,
+                            fields: {
+            					realname: {
+            						identifier: "realname",
+            						rules: [
+            							{
+                                            type: "regExp",
+            								value: /^.{2,64}$/
+            							}
+            						]
+            					},
+                                
+                                school: {
+            						identifier: "school",
+            						rules: [
+            							{
+                                            type: "regExp",
+            								value: /^.{5,64}$/
+            							}
+            						]
+            					},
+                                
+                                grade: {
+            						identifier: "grade",
+            						rules: [
+            							{
+            								type: "empty",
+            								prompt: "Empty grade"
+            							}
+            						]
+            					},
+                                
+                                invcode: {
+            						identifier: "invcode",
+            						rules: [
+            							{
+            								type: "regExp",
+            								value: /(^$)|(^[#\$\da-zA-Z]{8,8}$)/
+            							}
+            						]
+            					},
+                            }
+                        });
+                        
+                        form_realname_auth.find(".submit-btn").click(function () {
+                            if (!fvalid(form_realname_auth)) return;
+                            
+                            var realname = form_realname_auth.find(".field-realname").val();
+                            var school = form_realname_auth.find(".field-school").val();
+                            var grade = form_realname_auth.find(".field-grade").dropdown("get value");
+                            var invcode = form_realname_auth.find(".field-invcode").val();
+                            
+                            form_realname_auth.find(".submit-btn").addClass("loading");
+                            
+                            foci.encop(session, {
+                                int: "user",
+                                action: "submitrealname",
+                                
+                                name: realname,
+                                school: school,
+                                grade: parseInt(grade),
+                                invcode: invcode ? invcode.toLowerCase() : undefined
+                            }, function (suc, dat) {
+                                form_realname_auth.find(".submit-btn").removeClass("loading");
+                                
+                                if (suc) {
+                                    util.emsg("submitted. please wait for up to 3 work days", "success");
+                                } else {
+                                    util.emsg(dat);
+                                }
+                            });
+                        });
+                        
+                        if (info.realname) {
+                            form_realname_auth.addClass("already-realname");
+                        }
+                    })();
+                    
+                    /*************** realname form end ***************/
+                    
+                    /*************** invcode form end ***************/
+                    
+                    (function () {
+                        var form_gen_invcode = main.find(".form-set-invcode").find(".form-gen-invcode");
+                    
+                        form_gen_invcode.find(".field-type").dropdown();
+                        
+                        form_gen_invcode.form({
+                            on: "blur",
+                            fields: {
+                                type: {
+                                    identifier: "type",
+                                    rules: [
+                                        {
+                                            type: "empty",
+                                            prompt: "Empty type"
+                                        }
+                                    ]
+                                },
+                                
+                                nmuber: {
+                                    identifier: "number",
+                                    rules: [
+                                        {
+                                            type: "integer[1..128]",
+                                            prompt: "Empty number"
+                                        }
+                                    ]
+                                },
+                                
+                                limit: {
+                                    identifier: "limit",
+                                    rules: [
+                                        {
+                                            type: "integer[0..1024]",
+                                            prompt: "Empty limit"
+                                        }
+                                    ]
+                                }
+                            }
+                        });
+                        
+                        form_gen_invcode.find(".gen-btn").click(function () {
+                            if (!fvalid(form_gen_invcode)) return;
+                            
+                            var type = form_gen_invcode.find(".field-type").dropdown("get value");
+                            var number = form_gen_invcode.find(".field-number").val();
+                            var limit = form_gen_invcode.find(".field-limit").val();
+                        
+                            form_gen_invcode.find(".gen-btn").addClass("loading");
+                        
+                            function genResult(dat) {
+                                var res = $("<tr></tr>");
+                                
+                                res.append("<td>" + dat.code + "</td>");
+                                res.append("<td>" + dat.type + "</td>");
+                                res.append("<td>" + dat.limit + "</td>");
+                                
+                                return res;
+                            }
+                        
+                            foci.encop(session, {
+                                int: "user",
+                                action: "geninvcode",
+                                
+                                type: type,
+                                number: parseInt(number),
+                                limit: parseInt(limit)
+                            }, function (suc, dat) {
+                                form_gen_invcode.find(".gen-btn").removeClass("loading");
+                            
+                                if (suc) {
+                                    var result_box =
+                                        form_gen_invcode.find(".field-result")
+                                                        .css("display", "")
+                                                        .find("tbody");
+                                    
+                                    result_box.html("");                    
+                                    
+                                    for (var i = 0; i < dat.length; i++) {
+                                        result_box.append(genResult(dat[i]));
+                                    }
+                                } else {
+                                    util.emsg(dat);
+                                }
+                            });
+                        });
+                    })();
+                    
+                    if (!session.isAdmin())
+                        main.find(".menu-group.only-admin").css("display", "none");
+                    
+                    if (args[0]) {
+                        mod.showFormSet(args[0]);
+                    } else
+                        mod.showFormSet("profile");
+                    
+                    show(true);
+                });
+            });
+        });
+        
+        show(true);
+    }
+</script>

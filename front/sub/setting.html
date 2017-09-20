@@ -1,0 +1,310 @@
+<div class="sub-setting">
+    <div class="left-menu">
+        <div class="ui fluid search local-search">
+            <div class="ui icon input">
+                <input class="prompt" type="text" placeholder="Search settings">
+                <i class="search icon"></i>
+            </div>
+            <div class="results"></div>
+        </div>
+    </div>
+    <div class="right-form">
+        <div class="form-cont">
+        </div>
+    </div>
+    <div class="show-menu-btn">
+        <i class="content fitted icon"></i>
+    </div>
+    
+    <div class="no-show">
+    </div>
+</div>
+
+<style>
+    .sub-setting {
+        height: 100%;
+        position: relative;
+    }
+    
+    .sub-setting .no-show {
+        display: none;
+    }
+    
+    .sub-setting .ui.form .field>label {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .sub-setting .ui.block.header {
+        background: rgba(250, 250, 250, 1) !important;
+    }
+    
+    .sub-setting .ui.form {
+        margin-bottom: 2rem;
+    }
+    
+    .sub-setting .ui.form:last-child {
+        margin-bottom: 0;
+    }
+    
+    .sub-setting .left-menu {
+        z-index: 1;
+        position: absolute;
+        
+        background: rgba(253, 253, 253, 1);
+        color: rgba(70, 70, 70, 1);
+        
+        left: 0; top: 0;
+        width: 20rem;
+        height: 100%;
+        
+        border-right: 1px solid rgba(0, 0, 0, 0.08); 
+        
+        transition: left 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    
+    .sub-setting .show-menu-btn {
+        z-index: 0;
+        position: absolute;
+        left: -1px; top: 1rem;
+        height: 3rem;
+        padding: 0 1rem;
+        line-height: 3rem;
+        
+        background: rgba(253, 253, 253, 1);
+        color: rgb(100, 100, 100);
+        
+        cursor: pointer;
+        
+        border-radius: 0 3px 3px 0;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    
+    .sub-setting .local-search {
+        position: absolute;
+        padding: 1rem;
+        left: 0; top: 0;
+        width: 100%;
+        
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        
+        background: rgba(253, 253, 253, 1);
+    }
+    
+    .sub-setting .local-search .input {
+        width: 100%;
+        height: 3rem;
+    }
+    
+    .sub-setting .left-menu .main-menu {
+        height: 100%;
+        padding-top: 5rem;
+        
+        overflow: auto;
+        overflow-x: hidden;
+    }
+    
+    .sub-setting .left-menu .menu-group {
+        width: 100%;
+        font-size: 1rem;
+    }
+    
+    .sub-setting .left-menu .menu-group .header,
+    .sub-setting .left-menu .menu-group .menu-item {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    
+    .sub-setting .left-menu .menu-group .header {
+        padding: 1rem;
+        font-weight: bold;
+    }
+    
+    .sub-setting .left-menu .menu-group .menu-item {
+        padding: 1rem;
+        padding-left: 2rem;
+    
+        cursor: pointer;
+        background: rgba(253, 253, 253, 1);
+        
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        
+        transition: background 0.3s;
+    }
+    
+    .sub-setting .left-menu .menu-group .menu-item.selected {
+        background: rgba(250, 250, 250, 1);
+    }
+    
+    .sub-setting .show-menu-btn:hover,
+    .sub-setting .left-menu .menu-group .menu-item:hover {
+        background: rgba(250, 250, 250, 1);
+    }
+    
+    .sub-setting .show-menu-btn:active,
+    .sub-setting .left-menu .menu-group .menu-item:active {
+        background: rgba(247, 247, 247, 1);
+    }
+    
+    .sub-setting .right-form {
+        z-index: 0;
+        
+        width: 100%;
+        height: 100%;
+        padding-left: 20rem;
+        
+        overflow: auto;
+        overflow-x: hidden;
+    }
+    
+    .sub-setting .right-form .form-cont {
+        padding: 2rem;
+    }
+    
+    .sub-setting .form-set {
+        display: none;
+    }
+    
+    .sub-setting .right-form .form-cont .form-set {
+        display: block;
+    }
+    
+    @media only screen and (max-width: 640px) {
+        .sub-setting .left-menu {
+            left: -20rem;
+        }
+        
+        .sub-setting.show-menu .left-menu {
+            left: 0;
+        }
+        
+        .sub-setting .right-form .form-cont {
+            padding: 1rem;
+            padding-top: 5rem;
+        }
+        
+        .sub-setting .right-form {
+            padding-left: 0;
+        }
+        
+        .sub-setting .ui.form {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<script>
+	function init(main, args, show, cont, exit) {
+		require([
+			"com/util"
+		], function (util) {
+            if (!args.length) {
+                util.emsg("no enough argument");
+                show(false);
+                return;
+            }
+            
+            var setting_name = args[0];
+            
+            function fetch(name, suc, err) {
+                $.ajax({
+        			type: "GET",
+        			url: "/sub/setting/" + name + ".html",
+        			data: { v: (new Date()).getTime() /* no cache */ },
+        			success: function (dat) { suc(dat); },
+        			error: function (req, exc) {
+        				util.emsg("failed to get setting '" + name + "'");
+        				err();
+        			}
+        		});
+            }
+            
+            var menu_items = {};
+            var mod = {};
+            
+            mod.setCurFormSet = function (dom) {
+                var old = main.find(".right-form .form-set");
+                
+                if (old.triggerHandler("hide") === false)
+                    return false; // prevented
+                
+                main.find(".no-show").append(old);
+                
+                main.find(".right-form .form-cont").append(dom);
+                dom.triggerHandler("show");
+            };
+            
+            mod.showMenu = function () {
+                main.addClass("show-menu");
+            };
+            
+            mod.hideMenu = function () {
+                main.removeClass("show-menu");
+            };
+            
+            mod.getFormSet = function (name) {
+                return main.find(".form-set.form-set-" + name);
+            };
+            
+            mod.showFormSet = function (name) {
+                if (menu_items[name])
+                    menu_items[name].click();
+                else
+                    util.emsg("form set " + name + " does not exist");
+            };
+            
+            function initMenu(dom) {
+                dom.find(".menu-item").each(function (i, obj) {
+                    obj = $(obj);
+                    var name = obj.attr("data-form-set");
+                    
+                    menu_items[name] = obj;
+                    
+                    obj.click(function () {
+                        if (mod.setCurFormSet(mod.getFormSet(name)) !== false) {
+                            dom.find(".menu-item.selected").removeClass("selected");
+                            obj.addClass("selected");
+                        }
+                        
+                        mod.hideMenu();
+                    });
+                });
+            }
+            
+            function bind() {
+                // general bindings
+                
+                main.find(".show-menu-btn").click(function () {
+                    mod.showMenu();
+                });
+                
+                main.find(".right-form").click(function () {
+                    mod.hideMenu();
+                });
+                
+                initMenu(main.find(".left-menu"));
+            }
+            
+            fetch(setting_name, function (dat) {
+                var cont = $(dat);
+                
+                main.find(".no-show").html(cont);
+                
+                cont.ready(function () {
+                    if (!window.initSetting) {
+                        util.emsg("invalid setting page");
+                        show(false);
+                        return;
+                    }
+                    
+                    main.find(".left-menu").append(cont.find(".main-menu"));
+                    
+                    // init form
+                    bind();
+                    
+                    window.initSetting(main, args.slice(1), show, mod);
+                });
+            }, function () { show(false); });
+        });
+    }
+</script>

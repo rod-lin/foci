@@ -138,6 +138,9 @@ var dict = module.exports = {
 		"core.comment.empty": "(no comment)",
 		"core.comment.already_voted": "you've already upvoted",
 		"core.comment.max_comm_reached": "max comment count reached",
+		
+		"core.realname.invalid_check_data": "real-name check data invalid",
+		"core.realname.invalid_invcode": "invalid invitation code",
 
 		"front.com.parts.fail_get_url": "fail to get url $1: $2",
 		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",

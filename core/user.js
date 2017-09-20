@@ -5,8 +5,9 @@ var err = require("./err");
 var uid = require("./uid");
 var auth = require("./auth");
 var util = require("./util");
-var config = require("./config");
 var event = require("./event");
+var config = require("./config");
+var invcode = require("./invcode");
 
 var User = function (uuid, dname, lname, passwd) {
 	if (arguments.length == 1) {
@@ -60,12 +61,16 @@ var User = function (uuid, dname, lname, passwd) {
 
 	this.login_fail_last = null;
 	this.login_fail_count = 0;
+	
+	this.realname = null; // { name, school, grade }
+	this.realname_review = null; // { name, school, grade, invcode }
 };
 
 exports.User = User;
 User.prototype = {};
 User.prototype.getUUID = function () { return this.uuid; };
 User.prototype.getDName = function () { return this.dname; };
+User.prototype.getLName = function () { return this.lname; };
 // User.prototype.getInfo = function () { return this.info; };
 User.prototype.getTag = function () { return this.favtag; };
 User.prototype.getLevel = function () { return this.level; };
@@ -87,7 +92,9 @@ User.prototype.getInfo = function () {
 
 		age: this.age,
 		intro: this.intro,
-		school: this.school
+		school: this.school,
+		
+		realname: !!this.realname
 	};
 };
 
@@ -214,6 +221,10 @@ User.set = {
 				rating: rating
 			}
 		}
+	}),
+	
+	set_realname: dat => ({
+		$set: { realname: dat }
 	})
 };
 
@@ -509,4 +520,41 @@ exports.rateStaff = async (euid, self, uuids, rating) => {
 		await col.updateOne(User.query.uuid(uuids[i]), User.set.set_staff_rating(euid, rating));
 		await event.setAppRating(euid, uuids[i], "staff", { rating: rating });
 	}
+};
+
+exports.checkRealname = async (uuid, dat) => {
+	var col = await db.col("user");
+
+	if (!dat.name || !config.lim.realname.name_reg.test(dat.name) ||
+		!dat.school || !config.lim.realname.school_reg.test(dat.school) ||
+		!dat.grade || dat.grade <= 0 || dat.grade > config.lim.realname.max_grade)
+		throw new err.Exc("$core.realname.invalid_check_data");
+		
+	if (dat.invcode) {
+		var invdat = await invcode.findInvcode("realname", dat.invcode);
+		
+		if (!invdat || (invdat.name && invdat.name != dat.name))
+			throw new err.Exc("$core.realname.invalid_invcode");
+			
+		// good invitation
+		
+		await col.updateOne(User.query.uuid(uuid), User.set.set_realname({
+			name: dat.name,
+			school: dat.school,
+			grade: dat.grade
+		}));
+		
+		await invcode.invalidate("realname", dat.invcode);
+	} else {
+		throw new err.Exc("an invitation code is required for now");
+		
+		/*
+			await col.updateOne(User.query.uuid(uuid), User.set.set_realname_review({
+				name: dat.realname,
+				school: dat.school,
+				grade: dat.grade
+			}));
+		*/
+	}
+		
 };
