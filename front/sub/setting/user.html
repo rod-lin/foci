@@ -144,6 +144,10 @@
         <form class="form-realname ui form">
             <h3 class="ui top attached block header">Real-name authentication</h3>
             <div class="ui attached segment">
+                <div class="ui message">
+                    <p><b>Note:</b> Your personal information(name and school) will only be given to oragnizers of the events you've applied for.</p>
+                </div>    
+                
                 <div class="ui field">
                     <label>Real name</label>
                     <input class="field-realname" name="realname">
@@ -176,6 +180,8 @@
                     <div class="ui large visible positive message">
                         <i class="check icon"></i> Already authenticated
                     </div>
+                    
+                    <button type="button" class="ui red basic button reset-btn">Reset</button>
                 </div>
                 
                 <div class="review-show">
@@ -195,6 +201,10 @@
     
     .sub-setting .menu-group.only-admin {
         display: none;
+    }
+    
+    .sub-setting .menu-group.only-admin.show {
+        display: block;
     }
 </style>
 
@@ -422,6 +432,28 @@
                             }
                         });
                         
+                        form_realname_auth.find(".reset-btn").click(function () {
+                            form_realname_auth.find(".reset-btn").addClass("loading");
+                            
+                            util.ask("Are you sure to abandon this identity?", function (ans) {
+                                if (ans) {
+                                    foci.encop(session, {
+                                        int: "user",
+                                        action: "resetrealname"
+                                    }, function (suc, dat) {
+                                        form_realname_auth.find(".reset-btn").removeClass("loading");
+                                        
+                                        if (suc) {
+                                            util.emsg("deleted", "success");
+                                            form_realname_auth.removeClass("already-realname");
+                                        } else {
+                                            util.emsg(dat);
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                        
                         form_realname_auth.find(".submit-btn").click(function () {
                             if (!fvalid(form_realname_auth)) return;
                             
@@ -550,7 +582,7 @@
                     })();
                     
                     if (session.isAdmin())
-                        main.find(".menu-group.only-admin").css("display", "block");
+                        main.find(".menu-group.only-admin").addClass("show");
                     
                     if (args[0]) {
                         mod.showFormSet(args[0]);

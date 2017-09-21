@@ -395,9 +395,12 @@ encop.info = async (env, usr, query) => {
 			return;
 			
 		case "realname":
-			var args = util.checkArg(query, { uuid: "int", euid: "int" });
+			var args = util.checkArg(query, {
+				uuid: "int", euid: { type: "int", opt: true }
+			});
 			
-			if (!await user.isAdmin(usr.getUUID())) {
+			if (use.getUUID() != args.uuid &&
+				!await user.isAdmin(usr.getUUID())) {
 				// is the viewer allowed to view the real name
 				await event.checkOwner(args.euid, usr.getUUID());
 				await event.checkApplicant(args.euid, args.uuid);
@@ -455,6 +458,10 @@ encop.user = async (env, usr, query) => {
 			
 			await user.checkRealname(usr.getUUID(), args);
 		
+			return;
+			
+		case "resetrealname":
+			await user.resetRealname(usr.getUUID());
 			return;
 
 		case "geninvcode":

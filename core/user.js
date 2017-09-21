@@ -574,3 +574,8 @@ exports.isRealname = async (uuid) => {
 	var col = await db.col("user");
 	return await col.count(User.query.check_realname(uuid)) != 0;
 };
+
+exports.resetRealname = async (uuid) => {
+	var col = await db.col("user");
+	await col.updateOne(User.query.uuid(uuid), User.set.set_realname(null));
+};

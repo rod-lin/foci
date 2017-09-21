@@ -22,7 +22,7 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
             <span class='name'></span> \
         </div>");
         
-        var popup = $("<div class='com-realname-badge-popup only-state'> \
+        var popup = $("<div class='com-realname-badge-popup'> \
             <div class='name'></div><div class='school'></div> \
         </div>");
         
@@ -36,6 +36,8 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
         }
         
         if (config.only_state) {
+            popup.addClass("only-state");
+            
             // don't show the name
             foci.get("/user/realname", { uuid: uuid }, function (suc, dat) {
                 main.find(".loader").removeClass("active");

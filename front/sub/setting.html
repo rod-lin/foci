@@ -1,6 +1,6 @@
 <div class="sub-setting">
     <div class="left-menu">
-        <div class="ui fluid search local-search">
+        <div class="ui fluid search main-local-search">
             <div class="ui icon input">
                 <input class="prompt" type="text" placeholder="Search settings">
                 <i class="search icon"></i>
@@ -79,7 +79,7 @@
         border: 1px solid rgba(0, 0, 0, 0.08);
     }
     
-    .sub-setting .local-search {
+    .sub-setting .main-local-search {
         position: absolute;
         padding: 1rem;
         left: 0; top: 0;
@@ -90,7 +90,7 @@
         background: rgba(253, 253, 253, 1);
     }
     
-    .sub-setting .local-search .input {
+    .sub-setting .main-local-search .input {
         width: 100%;
         height: 3rem;
     }
@@ -106,6 +106,10 @@
     .sub-setting .left-menu .menu-group {
         width: 100%;
         font-size: 1rem;
+    }
+    
+    .sub-setting .left-menu .menu-group.hidden {
+        display: none;
     }
     
     .sub-setting .left-menu .menu-group .header,
@@ -130,6 +134,10 @@
         text-overflow: ellipsis;
         
         transition: background 0.3s;
+    }
+    
+    .sub-setting .left-menu .menu-group .menu-item.hidden {
+        display: none;
     }
     
     .sub-setting .left-menu .menu-group .menu-item.selected {
@@ -271,6 +279,38 @@
                 });
             }
             
+            function search(kw) {
+                var kws = $.trim(kw).split(/\s+/);
+                var reg = new RegExp(kws.join(".*"), "i");
+                
+                for (var k in menu_items) {
+                    if (menu_items.hasOwnProperty(k)) {
+                        var item = menu_items[k];
+                        var form_set = mod.getFormSet(item.attr("data-form-set"));
+                        
+                        var text = item.text() + (form_set.length ? form_set.text() : "");
+                        
+                        text = text.replace("\n", " ");
+                        
+                        if (reg.test(text)) {
+                            item.removeClass("hidden");
+                        } else {
+                            item.addClass("hidden");
+                        }
+                    }
+                }
+                
+                main.find(".menu-group").each(function (i, group) {
+                    group = $(group);
+
+                    console.log(group, group.find(".menu-item").not(".hidden").length);
+                    if (group.find(".menu-item").not(".hidden").length == 0)
+                        group.addClass("hidden");
+                    else
+                        group.removeClass("hidden");
+                });
+            }
+            
             function bind() {
                 // general bindings
                 
@@ -280,6 +320,17 @@
                 
                 main.find(".right-form").click(function () {
                     mod.hideMenu();
+                });
+                
+                var search_handler = null;
+                
+                main.find(".main-local-search .prompt").keydown(function () {
+                    if (search_handler)
+                        clearTimeout(search_handler);
+                        
+                    search_handler = setTimeout(function () {
+                        search(main.find(".main-local-search .prompt").val());
+                    }, 100);
                 });
                 
                 initMenu(main.find(".left-menu"));

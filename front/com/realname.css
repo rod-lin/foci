@@ -4,6 +4,12 @@
     position: relative;
     display: inline-block;
     color: #B5B5B5;
+    
+    margin-right: 0.3rem;
+}
+
+.com-realname-badge.fitted {
+    margin-right: 0;
 }
 
 .com-realname-badge.auth {
