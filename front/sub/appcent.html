@@ -368,6 +368,8 @@
 
 						return item;
 					};
+					
+					var thead_height = 0;
 
 					ret.fixHeader = function (tab, cb) {
 						tab.ready(function () {
@@ -377,10 +379,14 @@
 							tab.find("thead").css("visibility", "hidden");
 
 							scroll.append(copy);
+							
+							// one of the header has to be shown at first
+							if (tab.find("thead").height())
+								thead_height = tab.find("thead").height();
 
 							scroll.css({
 								"overflow": "hidden",
-								"height": tab.find("thead").height() + "px",
+								"height": thead_height + "px",
 								"margin": "0"
 							});
 
@@ -932,9 +938,9 @@
 					show(true);
 				}
 
-				$(window).resize(function () {
-					// main.children(".tabs").width(main.width() - main.children(".left-panel").width());
-				}).resize();
+				// $(window).resize(function () {
+				// 	// main.children(".tabs").width(main.width() - main.children(".left-panel").width());
+				// }).resize();
 
 				foci.get("/event/info", { euid: euid }, function (suc, dat) {
 					if (suc) {
