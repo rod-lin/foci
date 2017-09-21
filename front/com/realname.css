@@ -1,0 +1,34 @@
+/* realname util */
+
+.com-realname-badge {
+    position: relative;
+    display: inline-block;
+    color: #B5B5B5;
+}
+
+.com-realname-badge.auth {
+    color: #27AE60;
+}
+
+.com-realname-badge.not-realname {
+    display: none;
+}
+
+.com-realname-badge-popup .name,
+.com-realname-badge-popup .school {
+    display: inline-block;
+}
+
+.com-realname-badge-popup .name {
+    margin-right: 1rem;
+}
+
+.com-realname-badge-popup.only-state {
+    color: #27AE60;
+    font-weight: bold;
+}
+
+.com-realname-badge-popup.not-realname {
+    color: #B5B5B5;
+    font-weight: bold;
+}

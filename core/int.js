@@ -305,6 +305,12 @@ _user.resume = util.route(async env => {
 	env.qsuc(await user.getResumeCache(args.uuid));
 });
 
+_user.realname = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	var args = util.checkArg(env.query, { uuid: "int" });
+	env.qsuc(await user.isRealname(args.uuid));
+});
+
 var _event = {};
 
 _event.info = util.route(async env => {
@@ -387,6 +393,19 @@ encop.info = async (env, usr, query) => {
 			var setq = util.checkArg(query, user.User.format.info, true);
 			await user.setInfo(usr.getUUID(), setq);
 			return;
+			
+		case "realname":
+			var args = util.checkArg(query, { uuid: "int", euid: "int" });
+			
+			if (!await user.isAdmin(usr.getUUID())) {
+				// is the viewer allowed to view the real name
+				await event.checkOwner(args.euid, usr.getUUID());
+				await event.checkApplicant(args.euid, args.uuid);
+			}
+			
+			var dest = await user.uuid(args.uuid);
+			
+			return dest.getRealname();
 
 		default:
 			throw new err.Exc("$core.action_not_exist");
@@ -444,6 +463,8 @@ encop.user = async (env, usr, query) => {
 				number: util.checkArg.posint(128, "too many invcode to generate"),
 				limit: "int"
 			});
+			
+			await user.checkAdmin(usr.getUUID());
 			
 			var ret = [];
 			

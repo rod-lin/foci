@@ -126,14 +126,17 @@
     
     <div class="form-set form-set-realname">
         <style>
+            .sub-setting .form-realname.under-review .segment>*,
             .sub-setting .form-realname.already-realname .segment>* {
                 display: none;
             }
             
+            .sub-setting .form-realname.under-review .segment>.review-show,
             .sub-setting .form-realname.already-realname .segment>.realname-show {
                 display: block !important;
             }
             
+            .sub-setting .form-realname .segment>.review-show,
             .sub-setting .form-realname .segment>.realname-show {
                 display: none;
             }
@@ -170,8 +173,14 @@
                 <button type="button" class="ui green basic button submit-btn">Submit</button>
                 
                 <div class="realname-show">
-                    <div class="ui large positive message">
+                    <div class="ui large visible positive message">
                         <i class="check icon"></i> Already authenticated
+                    </div>
+                </div>
+                
+                <div class="review-show">
+                    <div class="ui large visible warning message">
+                        <i class="hourglass half icon"></i> Under review
                     </div>
                 </div>
             </div>
@@ -182,6 +191,10 @@
 <style>
     .sub-setting .ui.selection.dropdown {
         min-width: auto;
+    }
+    
+    .sub-setting .menu-group.only-admin {
+        display: none;
     }
 </style>
 
@@ -440,6 +453,8 @@
                         
                         if (info.realname) {
                             form_realname_auth.addClass("already-realname");
+                        } else if (info.realname_review) {
+                            form_realname_auth.addClass("under-review");
                         }
                     })();
                     
@@ -534,8 +549,8 @@
                         });
                     })();
                     
-                    if (!session.isAdmin())
-                        main.find(".menu-group.only-admin").css("display", "none");
+                    if (session.isAdmin())
+                        main.find(".menu-group.only-admin").css("display", "block");
                     
                     if (args[0]) {
                         mod.showFormSet(args[0]);

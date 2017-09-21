@@ -1,7 +1,11 @@
 <div class="sub-profile">
 	<div class="left-bar">
-		<div class="avatar empty"><div><i class="fitted setting icon"></i></div></div><br>
-		<div class="dname"></div><br>
+		<div class="avatar-box">
+			<div class="avatar empty">
+				<div class="avatar-setting"><i class="fitted setting icon"></i></div>
+			</div>
+		</div><br>
+		<div class="dname"></div><div class="realname-badge"></div><br>
 		<div class="rating"></div><br>
 		<div class="intro"></div><br>
 		<!-- <div class="ui grey statistic">
@@ -315,14 +319,17 @@
 		display: inline-block;
 		margin-left: 0.5rem;
 	}
-
-	.sub-profile .left-bar .avatar {
+	
+	.sub-profile .left-bar .avatar-box {
+		position: relative;
 		display: inline-block;
-
+		
 		width: 9em;
 		height: 9em;
 		margin-top: 4em;
+	}
 
+	.sub-profile .left-bar .avatar {
 		border-radius: 50%;
 		overflow: hidden;
 
@@ -338,6 +345,19 @@
 
 		transition: box-shadow 0.3s;
 	}
+	
+	.sub-profile .left-bar .realname-badge {
+		display: inline-block;
+		
+		height: auto;
+		width: auto;
+		
+		margin-left: 0.3rem;
+		
+		cursor: pointer;
+		
+		font-size: 1.5rem;
+	}
 
 	.sub-profile .left-bar .avatar:hover {
 		box-shadow:
@@ -349,11 +369,11 @@
 		background: rgba(0, 0, 0, 0.2);
 	}
 
-	.sub-profile .left-bar .avatar div {
+	.sub-profile .left-bar .avatar .avatar-setting {
 		display: none;
 	}
 
-	.sub-profile.logged .left-bar .avatar div {
+	.sub-profile.logged .left-bar .avatar .avatar-setting {
 		display: block;
 
 		color: #F3F3F3;
@@ -386,7 +406,7 @@
 		font-size: 2em;
 		font-weight: bold;
 
-		padding: 0.3rem 0.7rem;
+		padding: 0.3rem 0.3rem;
 		margin: 1rem 0 0 0;
 
 		max-width: 100%;
@@ -641,13 +661,15 @@
 			"com/map", "com/lang", "com/editable",
 			"com/tagbox", "com/pm", "com/tip",
 			"com/formi", "com/marki", "com/resume",
-			"com/helper", "com/notice", "com/rating"
+			"com/helper", "com/notice", "com/rating",
+			"com/realname"
 		], function (
 			env, util, event, xfilt,
 			pages, tab, login, event,
 			upload, map, lang, editable,
 			tagbox, pm, tip, formi, marki,
-			resume, helper, notice, rating
+			resume, helper, notice, rating,
+			realname
 		) {
 			var init = function (info, is_self, init_page, page_arg) {
 				// foci.get("/user/resume", {
@@ -693,6 +715,11 @@
 					left_bar.find(".dname").html(parsed.dname);
 					left_bar.find(".intro").html(parsed.intro);
 					left_bar.find(".avatar").css("background-image", "url('" + parsed.avatar + "')").removeClass("empty");
+
+					left_bar.find(".realname-badge").append(realname.badge(info.uuid, null, {
+						only_state: true,
+						show_norealname: true
+					}));
 
 					if (!tgbox) {
 						env.favtag(function (tags) {
@@ -1966,6 +1993,9 @@
 					});
 
 					left_bar.find(".setting-btn").click(function () {
+						util.jump("#setting/user");
+						return;
+						
 						if (left_bar.find(".com-editable").hasClass("explicit")) {
 							left_bar.find(".com-editable, .avatar").removeClass("explicit");
 						} else {

@@ -237,8 +237,9 @@
 			"com/env", "com/util", "com/event",
 			"com/xfilt", "com/login", "com/event",
 			"com/map", "com/lang", "com/avatar",
-			"com/formi", "com/rating", "com/notice"
-		], function (env, util, event, xfilt, login, event, map, lang, avatar, formi, rating, notice) {
+			"com/formi", "com/rating", "com/notice",
+			"com/realname"
+		], function (env, util, event, xfilt, login, event, map, lang, avatar, formi, rating, notice, realname) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
 				return;
@@ -424,7 +425,7 @@
 
 						var applyfor = $("<td class='center aligned collapsing'>" + (type == "staff" ? "Staff" : "Participant") + "</td>");
 
-						if (list.length == init_header.length) {
+						if (list.length <= init_header.length + 1) {
 							// no other fields
 							applyfor.removeClass("collapsing");
 						}
@@ -456,14 +457,23 @@
 
 								dat = login.parseInfo(dat);
 
-								user.find(".trivial").append("<div class='user-name'>" + dat.dname + "</div>");
+								var uname = $("<div class='user-name'></div>");
+
+								uname.append(realname.badge(app.uuid, euid, {
+									onLoad: function () {
+										if (cb) cb();
+									}
+								}));
+								
+								uname.append("<span style='margin-left: 0.3em;'>" +
+											 xfilt(dat.dname) + "</span>");
+
+								user.find(".trivial").append(uname);
 								// var rat = rating.init(user.find(".trivial"), dat.rating);
 
 								var ratdom = rating.init(user.find(".trivial"));
 
 								util.ratingOf(app.uuid, ratdom.set);
-
-								if (cb) cb();
 							} else {
 								util.emsg(dat);
 							}

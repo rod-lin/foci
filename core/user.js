@@ -94,7 +94,8 @@ User.prototype.getInfo = function () {
 		intro: this.intro,
 		school: this.school,
 		
-		realname: !!this.realname
+		realname: !!this.realname,
+		realname_review: !!this.realname_review
 	};
 };
 
@@ -118,6 +119,10 @@ User.prototype.getStaffTotalRating = function () {
 	}
 
 	return [ len, tot ];
+};
+
+User.prototype.getRealname = function () {
+	return this.realname ? this.realname : null;
 };
 
 User.format = {};
@@ -185,6 +190,11 @@ User.query = {
 	check_staff_rated: (uuid, euid) => ({
 		"uuid": uuid,
 		["staff_rating." + euid]: { $exists: true }
+	}),
+	
+	check_realname: uuid => ({
+		"uuid": uuid,
+		"realname": { $ne: null }
 	})
 };
 
@@ -541,7 +551,8 @@ exports.checkRealname = async (uuid, dat) => {
 		await col.updateOne(User.query.uuid(uuid), User.set.set_realname({
 			name: dat.name,
 			school: dat.school,
-			grade: dat.grade
+			grade: dat.grade,
+			time: new Date()
 		}));
 		
 		await invcode.invalidate("realname", dat.invcode);
@@ -557,4 +568,9 @@ exports.checkRealname = async (uuid, dat) => {
 		*/
 	}
 		
+};
+
+exports.isRealname = async (uuid) => {
+	var col = await db.col("user");
+	return await col.count(User.query.check_realname(uuid)) != 0;
 };
