@@ -399,7 +399,7 @@ encop.info = async (env, usr, query) => {
 				uuid: "int", euid: { type: "int", opt: true }
 			});
 			
-			if (use.getUUID() != args.uuid &&
+			if (usr.getUUID() != args.uuid &&
 				!await user.isAdmin(usr.getUUID())) {
 				// is the viewer allowed to view the real name
 				await event.checkOwner(args.euid, usr.getUUID());
