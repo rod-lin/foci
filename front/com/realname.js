@@ -11,7 +11,7 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
     realname.badge = function (uuid, euid, config) {
         config = $.extend({
             show_name: true,
-            only_state: true,
+            only_state: false,
             show_norealname: false // show when the user is not authenticated
             // onLoad
         }, config);
@@ -29,6 +29,10 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
         function check() {
             main.addClass("auth");
             main.find(".badge-icon").removeClass("help").addClass("check");
+        }
+        
+        function callLoad() {
+            if (config.onLoad) config.onLoad();
         }
         
         if (config.only_state) {
@@ -51,6 +55,8 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
                 } else {
                     util.emsg(dat);
                 }
+                
+                callLoad();
             });
         } else {
             login.session(function (session) {
@@ -81,11 +87,11 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
                             util.emsg(dat);
                         }
                         
-                        if (config.onLoad) config.onLoad();
+                        callLoad();
                     });
                 } else {
                     main.find(".loader").removeClass("active");
-                    if (config.onLoad) config.onLoad();
+                    callLoad();
                 }
             });
         }

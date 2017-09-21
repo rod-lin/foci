@@ -458,12 +458,14 @@
 								dat = login.parseInfo(dat);
 
 								var uname = $("<div class='user-name'></div>");
+								var loaded = false;
+								var load = function () {
+									if (loaded) return;
+									loaded = true;
+									if (cb) cb();
+								};
 
-								uname.append(realname.badge(app.uuid, euid, {
-									onLoad: function () {
-										if (cb) cb();
-									}
-								}));
+								uname.append(realname.badge(app.uuid, euid, { onLoad: load }));
 								
 								uname.append("<span style='margin-left: 0.3em;'>" +
 											 xfilt(dat.dname) + "</span>");
@@ -474,6 +476,8 @@
 								var ratdom = rating.init(user.find(".trivial"));
 
 								util.ratingOf(app.uuid, ratdom.set);
+								
+								setTimeout(load, 3000);
 							} else {
 								util.emsg(dat);
 							}
