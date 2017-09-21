@@ -676,21 +676,43 @@
 						} else if (!info.apply_open) {
 							disableApp("Application disabled");
 						} else {
+							function checkRealname(cb) {
+								if (info.apply_only_realname) {
+									env.user(function (info) {
+										if (!info.realname) {
+											// not realname
+											util.ask("This event requires real-name authentication. Do you want to request an authentication now?",
+													 function (ans) {
+													     if (ans) {
+															 util.jump("#setting/user/realname");
+														 }
+													 });
+										} else {
+											cb();
+										}
+									});
+								} else cb();
+							}
+							
 							main.find(".apply-staff").click(function () {
-								main.find(".apply-staff .loader").addClass("active");
+								checkRealname(function () {
+									main.find(".apply-staff .loader").addClass("active");
 
-								apply(session, "staff", function (suc) {
-									main.find(".apply-staff" + " .loader").removeClass("active");
-									if (suc) disableApp();
+									apply(session, "staff", function (suc) {
+										main.find(".apply-staff" + " .loader").removeClass("active");
+										if (suc) disableApp();
+									});
 								});
 							});
 
 							main.find(".apply-partic").click(function () {
-								main.find(".apply-partic .loader").addClass("active");
+								checkRealname(function () {
+									main.find(".apply-partic .loader").addClass("active");
 
-								apply(session, "partic", function (suc) {
-									main.find(".apply-partic" + " .loader").removeClass("active");
-									if (suc) disableApp();
+									apply(session, "partic", function (suc) {
+										main.find(".apply-partic" + " .loader").removeClass("active");
+										if (suc) disableApp();
+									});
 								});
 							});
 						}

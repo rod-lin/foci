@@ -126,7 +126,7 @@
 						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.enable_app">Enable application</h3>
 						<div class="ui attached segment">
 							<div class="ui toggle checkbox enable-app-check">
-								<input type="checkbox" name="public">
+								<input type="checkbox">
 								<label>Start application process</label>
 							</div>
 						</div>
@@ -169,6 +169,15 @@
 
 						<h3 class="ui top attached header lang" data-replace="$front.sub.profile.limitation">Limitations</h3>
 						<div class="ui attached segment">
+							<div class="field">
+								<div class="ui toggle checkbox only-realname-check">
+									<input type="checkbox">
+									<label>Only allow real-name applicants</label>
+								</div>
+							</div>
+							
+							<div class="ui divider"></div>
+							
 							<div class="fields">
 								<div class="field">
 									<label class="lang" data-replace="$front.sub.profile.max_staff">Max Staff</label>
@@ -1298,6 +1307,12 @@
 								} else {
 									new_tab.find(".enable-app-check").checkbox("uncheck");
 								}
+								
+								if (info.apply_only_realname) {
+									new_tab.find(".only-realname-check").checkbox("check");
+								} else {
+									new_tab.find(".only-realname-check").checkbox("uncheck");
+								}
 
 								info.apply_staff_form = util.json(info.apply_staff_form);
 								info.apply_partic_form = util.json(info.apply_partic_form);
@@ -1395,6 +1410,11 @@
 
 								if (changed.apply_open) {
 									q.apply_open = new_tab.find(".enable-app-check").checkbox("is checked");
+									has_field = true;
+								}
+								
+								if (changed.apply_only_realname) {
+									q.apply_only_realname = new_tab.find(".only-realname-check").checkbox("is checked");
 									has_field = true;
 								}
 
@@ -1820,6 +1840,12 @@
 					new_tab.find(".enable-app-check").checkbox({
 						onChange: function () {
 							changed.apply_open = true;
+						}
+					});
+					
+					new_tab.find(".only-realname-check").checkbox({
+						onChange: function () {
+							changed.apply_only_realname = true;
 						}
 					});
 					

@@ -72,6 +72,8 @@ var Event = function (euid, owner /* uuid */) {
 	this.apply_partic = [];
 
 	this.apply_open = null;
+	
+	this.apply_only_realname = null;
 
 	this.apply_num = 0;
 
@@ -131,6 +133,7 @@ Event.prototype.getInfo = function (only) {
 		cover: this.cover,
 
 		apply_open: this.apply_open,
+		apply_only_realname: this.apply_only_realname,
 
 		state: this.state,
 
@@ -236,6 +239,10 @@ Event.prototype.isAppOpen = function () {
 	return !!this.apply_open;
 };
 
+Event.prototype.isOnlyRealname = function () {
+	return !!this.apply_only_realname;
+};
+
 Event.format = {};
 
 Event.format.info = {
@@ -274,6 +281,7 @@ Event.format.info = {
 	favtag: { type: "json", lim: tags => user.checkTag(tags) },
 
 	apply_open: "bool",
+	apply_only_realname: "bool",
 
 	apply_staff_lim: {
 		type: "int",
@@ -818,6 +826,9 @@ exports.apply = async (euid, uuid, type, form) => {
 
 	if (!ev.isAppOpen())
 		throw new err.Exc("$core.app_closed");
+		
+	if (ev.isOnlyRealname() && !user.isRealname(uuid))
+		throw new err.Exc("$core.require_realname");
 
 	var max = ev.getAppLimit(type);
 	var cur = ev.countApp(type);

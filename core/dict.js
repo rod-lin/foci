@@ -82,6 +82,7 @@ var dict = module.exports = {
 		"core.dup_app": "duplicated applications",
 		"core.app_own_event": "you can't apply for your own event",
 		"core.app_closed": "Application is currently closed",
+		"core.require_realname": "This event requires <a href='#setting/user/realname'>real-name authentication</a>",
 
 		"core.event_not_draft": "event not a draft",
 		"core.event_is_draft": "event is not published",
