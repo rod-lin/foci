@@ -124,18 +124,22 @@
 	}
 
 	.sub-appcent .tabs .tab {
+		position: absolute;
+		
 		width: 100%;
 		height: 100%;
 
 		overflow: auto;
 	
-		display: none;
+		opacity: 0;
+		visibility: hidden;
 
 		transition: opacity 0.3s;
 	}
 
 	.sub-appcent .tabs .tab.show {
-		display: block;
+		opacity: 1;
+		visibility: visible;
 	}
 
 	.sub-appcent .tabs .tab .no-more {
@@ -337,7 +341,7 @@
 						return $(main.find(".tabs .tab")[n]);
 					};
 
-					$(tabset.find(".step, .item")[0]).click();
+					$(tabset.find(".step, .item")[1]).click();
 
 					return ret;
 				})();
@@ -369,8 +373,6 @@
 						return item;
 					};
 					
-					var thead_height = 0;
-
 					ret.fixHeader = function (tab, cb) {
 						tab.ready(function () {
 							var copy = tab.clone();
@@ -379,14 +381,10 @@
 							tab.find("thead").css("visibility", "hidden");
 
 							scroll.append(copy);
-							
-							// one of the header has to be shown at first
-							if (tab.find("thead").height())
-								thead_height = tab.find("thead").height();
 
 							scroll.css({
 								"overflow": "hidden",
-								"height": thead_height + "px",
+								"height": tab.find("thead").height() + "px",
 								"margin": "0"
 							});
 

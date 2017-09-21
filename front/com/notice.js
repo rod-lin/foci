@@ -470,16 +470,16 @@ define([
 						keep_err++;
 					}
 
-					if (keep_err < 5 &&
+					if (keep_err > 5 &&
 						(new Date()) - now < 3000) {
 						// request time less than 3 sec
 						setTimeout(function () {
 							keep(cb);
 						}, 60000);
 					} else {
-						util.nextTick(function () {
+						setTimeout(function () {
 							keep(cb);
-						});
+						}, 1000);
 					}
 				});
 			});
