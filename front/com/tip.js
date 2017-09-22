@@ -8,6 +8,7 @@ define([ "com/util" ], function (util) {
 		config = $.extend({
 			style: "black",
 			auto: true,
+			distanceAway: 0,
 			on: "click"
 		}, config);
 
@@ -19,7 +20,9 @@ define([ "com/util" ], function (util) {
 			lastResort: true,
 			on: config.on,
 			scrollContext: config.scroll,
+			distanceAway: config.distanceAway,
 			variation: config.style == "white" ? "" : "inverted",
+			
 			onHide: function () {
 				if (config.auto)
 					setTimeout(function () {

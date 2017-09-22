@@ -49,7 +49,7 @@
 		<div class="title">Create New Club</div>
 		<div class="subtitle">Fill out the following form for club review</div>
 		<form class="ui form" style="margin-top: 2rem;">
-			<h3 class="ui top attached header">Basic Info</h3>
+			<h3 class="ui top attached block header">Basic Info</h3>
 			<div class="ui attached segment">
 				<div class="ui field club-name-field">
 					<label>Club type and name</label>
@@ -76,8 +76,8 @@
 						<input class="club-school" placeholder="optional">
 					</div>
 					<div class="ui field">
-						<label>Registration number</label>
-						<input class="club-regnum" placeholder="optional">
+						<label>Invitation code(optional)</label>
+						<input class="club-invcode" placeholder="optional">
 					</div>
 				</div>
 				<button type="button" class="ui primary basic button club-submit">Submit</button>
@@ -95,7 +95,7 @@
 			<i class="check circle icon"></i>
 		</div>
 		<div class="white title">Submitted</div>
-		<div class="white subtitle">
+		<div class="white subtitle prompt">
 			Please wait patiently as the review<br>
 			process will take several days
 		</div>
@@ -186,8 +186,10 @@
 				var descr = main.find(".page-1 .club-descr").val();
 				
 				// TODO: !!!
-				var regnum = main.find(".page-1 .club-regnum").val();
+				var invcode = main.find(".page-1 .club-invcode").val();
 				var school = main.find(".page-1 .club-school").val();
+				
+				main.find(".page-1 .club-submit").addClass("loading");
 				
 				login.session(function (session) {
 					foci.encop(session, {
@@ -196,9 +198,19 @@
 						
 						dname: name,
 						type: parseInt(type),
-						descr: descr
+						descr: descr,
+						school: school ? school : undefined,
+						
+						invcode: invcode ? invcode : undefined,
 					}, function (suc, dat) {
+						main.find(".page-1 .club-submit").removeClass("loading");
+						
 						if (suc) {
+							if (dat.published) {
+								main.find(".page-2 .title").html("Success");
+								main.find(".page-2 .prompt").html("Club published");
+							}
+							
 							pf.nextPage();
 						} else {
 							util.emsg(dat);

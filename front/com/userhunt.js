@@ -8,7 +8,10 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 	function modal(init /* init user list */, cb, config) {
 		config = $.extend({
 			prompt: "Selected user(s)",
-			just_one: false
+			just_one: false,
+			use_dragi: false,
+			
+			title: "Find user"
 		}, config);
 
 		var main = $(" \
@@ -18,7 +21,7 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 					<div class='user-list'></div> \
 					<div class='ui search user-search'> \
 						<div class='ui icon input user-search-input'> \
-							<input class='prompt' type='text' placeholder='Type to search user'> \
+							<input class='prompt' type='text' placeholder='Type to search'> \
 							<i class='search icon'></i> \
 						</div> \
 						<div class='results' style='width: 100%; position: static; box-shadow: none;'></div> \
@@ -46,31 +49,48 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 		}
 
 		var once = false;
+		var onHide = function () {
+			if (once) return;
+			once = true;
 
-		main
-			.modal({
-				allowMultiple: true,
-				onHide: function () {
-					if (once) return;
-					once = true;
+			var final = [];
 
-					var final = [];
-
-					for (var k in selected) {
-						if (selected.hasOwnProperty(k)) {
-							// alert("hi");
-							final.push(parseInt(k));
-						}
-					}
-
-					if (cb) cb(final);
+			for (var k in selected) {
+				if (selected.hasOwnProperty(k)) {
+					// alert("hi");
+					final.push(parseInt(k));
 				}
-			})
-			.modal("show");
+			}
+
+			if (cb) cb(final);
+		}
+		
+		function hide() {
+			if (config.use_dragi) {
+				main.dragi("close");
+			} else {
+				main.modal("hide");
+			}
+		}
+
+		if (config.use_dragi) {
+			main.removeClass("ui small modal")
+				.dragi({
+					height: "auto",
+					title: config.title,
+					onClose: onHide
+				});
+		} else {
+			main.modal({
+					allowMultiple: true,
+					onHide: onHide
+				})
+				.modal("show");
+		}
 
 		main.find(".select-prompt").prepend(config.prompt);
 		main.find(".close-btn").click(function () {
-			main.modal("hide");
+			hide();
 		});
 
 		$.fn.search.settings.templates.withicon = function (res) {
@@ -109,7 +129,7 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 			selected[dat.uuid] = dat;
 			
 			if (config.just_one) {
-				main.modal("hide");
+				hide();
 				return;
 			}
 			
@@ -143,9 +163,11 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 					main.find(".ui.search .prompt").val("").focus();
 				});
 
-				setTimeout(function () {
-					main.modal("refresh");
-				}, 500);
+				if (!config.use_dragi) {
+					setTimeout(function () {
+						main.modal("refresh");
+					}, 500);
+				}
 				
 				return addSelected(res);
 			}

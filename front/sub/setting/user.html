@@ -29,6 +29,7 @@
                         <select class="ui dropdown field-type" name="type">
                             <option value="">Select a type</option>
                             <option value="realname">Real-name auth</option>
+                            <option value="clubreg">Club registration</option>
                         </select>
                     </div>
                     <div class="field">
@@ -476,7 +477,13 @@
                                 form_realname_auth.find(".submit-btn").removeClass("loading");
                                 
                                 if (suc) {
-                                    util.emsg("submitted. please wait for up to 3 work days", "success");
+                                    if (dat) {
+                                        util.emsg("authentication passed", "success");
+                                        form_realname_auth.addClass("already-realname");
+                                    } else {
+                                        util.emsg("submitted. please wait for up to 3 work days", "success");
+                                        form_realname_auth.addClass("under-review");
+                                    }
                                 } else {
                                     util.emsg(dat);
                                 }

@@ -237,3 +237,7 @@ exports.getPass = () => {
 	if (config.pass) return config.pass;
 	else return config.pass = exports.ask("password: ");
 };
+
+exports.regEscape = str => str.replace(/[\^\$\(\)\[\]\{\}*+\.\?\\\|]/g, "\\$1");
+
+exports.keywordRegExp = kw => new RegExp(exports.regEscape(kw.trim()).split(/\s+/).join("|"), "i");

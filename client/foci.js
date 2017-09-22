@@ -365,7 +365,8 @@ window.foci = {};
 	};
 	
 	foci.clubstat = {
+		all: -Infinity,
 		review: 0,
-	    operate: 1,
+	    operate: 1
 	};
 })();

@@ -397,7 +397,7 @@ Event.query = {
 
 	keyword: kw => {
 		// TODO: keyword filt
-		var reg = new RegExp(kw, "i");
+		var reg = util.keywordRegExp(kw);
 		return {
 			$or: [
 				{ "title": { $regex: reg } },

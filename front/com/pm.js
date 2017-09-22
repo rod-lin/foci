@@ -423,7 +423,12 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 				uh.modal([], function (uuid) {
 					if (uuid.length)
 						chatbox(uuid[0], { use_dragi: config.use_dragi });
-				}, { just_one: true, prompt: "User to chat", exclude: [ session.getUUID() ] });
+				}, {
+					just_one: true,
+					prompt: "User to chat",
+					exclude: [ session.getUUID() ],
+				 	use_dragi: config.use_dragi
+				});
 			});
 		});
 

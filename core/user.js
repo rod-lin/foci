@@ -160,7 +160,7 @@ User.query = {
 
 	// fuzzy search(all)
 	fuzzy: kw => {
-		var reg = new RegExp(kw, "i");
+		var reg = util.keywordRegExp(kw);
 		return {
 			$or: [
 				{ "dname": { $regex: reg } },
@@ -544,7 +544,7 @@ exports.checkRealname = async (uuid, dat) => {
 		var invdat = await invcode.findInvcode("realname", dat.invcode);
 		
 		if (!invdat || (invdat.name && invdat.name != dat.name))
-			throw new err.Exc("$core.realname.invalid_invcode");
+			throw new err.Exc("$core.invalid_invcode");
 			
 		// good invitation
 		
@@ -556,6 +556,8 @@ exports.checkRealname = async (uuid, dat) => {
 		}));
 		
 		await invcode.invalidate("realname", dat.invcode);
+		
+		return true;
 	} else {
 		throw new err.Exc("an invitation code is required for now");
 		
@@ -567,7 +569,8 @@ exports.checkRealname = async (uuid, dat) => {
 			}));
 		*/
 	}
-		
+	
+	return false;	
 };
 
 exports.isRealname = async (uuid) => {

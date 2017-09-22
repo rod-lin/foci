@@ -136,7 +136,9 @@ var conf = module.exports = {
 		},
 		
 		club: {
-			max_name_len: 64
+			dname_reg: /^.{5,64}$/,
+			max_review_count: 8, // max review club count per user
+			max_search_results: 8
 		},
 
 		pm: {
@@ -179,7 +181,7 @@ var conf = module.exports = {
 		},
 		
 		invcode: {
-			allowed_type: [ "realname" ]
+			allowed_type: [ "realname", "clubreg" ]
 		}
 	},
 

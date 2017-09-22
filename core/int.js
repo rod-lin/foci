@@ -455,10 +455,8 @@ encop.user = async (env, usr, query) => {
 					opt: true
 				}
 			});
-			
-			await user.checkRealname(usr.getUUID(), args);
 		
-			return;
+			return await user.checkRealname(usr.getUUID(), args);
 			
 		case "resetrealname":
 			await user.resetRealname(usr.getUUID());
@@ -783,9 +781,41 @@ encop.cover = async (env, usr, query, next) => {
 encop.club = async (env, usr, query, next) => {
 	switch (query.action) {
 		case "new":
-			var args = util.checkArg(query, { dname: "string", type: "int", descr: "string" });
-			var clb = await club.newClub(usr.getUUID(), args.dname, args.type, args.descr);
-			return clb.getCUID();
+			var args = util.checkArg(query, {
+				dname: "string",
+				type: "int",
+				descr: "string",
+				
+				school: {
+					type: "string",
+					opt: true
+				},
+				
+				invcode: {
+					type: "string",
+					opt: true
+				}
+			});
+			
+			var clb = await club.newClub(usr.getUUID(), args);
+			var published = false;
+			
+			if (args.invcode) {
+				var invdat = await invcode.findInvcode("clubreg", args.invcode);
+				
+				if (!invdat)
+					throw new err.Exc("$core.invalid_invcode");
+
+				await club.publish(clb.getCUID(), null, true);
+				await invcode.invalidate("clubreg", args.invcode);
+				
+				published = true;
+			}
+			
+			return {
+				cuid: clb.getCUID(),
+				published: published
+			};
 			
 		case "publish":
 			var args = util.checkArg(query, { cuid: "int" });
@@ -804,6 +834,15 @@ encop.club = async (env, usr, query, next) => {
 			
 		case "getrelated":
 			return await club.getRelatedClub(usr.getUUID());
+			
+		case "delete":
+			var args = util.checkArg(query, { cuid: "int" });
+			await club.delete(args.cuid, usr.getUUID());
+			return;
+			
+		case "search":
+			var args = util.checkArg(query, { kw: "string" });
+			return club.search(usr.getUUID(), { kw: args.kw });
 			
 		default:
 			throw new err.Exc("$core.action_not_exist");

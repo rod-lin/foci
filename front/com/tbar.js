@@ -5,8 +5,8 @@ define([
 	"com/login", "com/xfilt", "com/util",
 	"com/env", "com/upload", "com/pm",
 	"com/notice", "com/lang", "com/popselect",
-	"com/rating"
-], function (login, xfilt, util, env, upload, pm, notice, lang, popselect, rating) {
+	"com/rating", "com/club", "com/tip"
+], function (login, xfilt, util, env, upload, pm, notice, lang, popselect, rating, club, tip) {
 	var $ = jQuery;
 	foci.loadCSS("com/tbar.css");
 
@@ -62,7 +62,7 @@ define([
 				<div class="right-bar"> \
 					<div class="avatar-box"> \
 						<div class="avatar-util-box expand"> \
-							<div class="avatar-util new-event-btn"> \
+							<div class="avatar-util man-club-btn"> \
 								<i class="fitted flag outline icon"></i> \
 							</div><div class="avatar-util notice-btn"> \
 								<i class="fitted alarm outline icon" style="font-size: 95%;"></i> \
@@ -326,21 +326,33 @@ define([
 
 		lang.update(main);
 
-		popselect.init(main.find(".new-event-btn"), [
-			{
-				cont: "<i class='flag checkered text outline icon'></i> Event",
-				onSelect: function () {
-					util.jump("#profile//new");
-				}
-			},
+		main.find(".man-club-btn").click(function () {
+			club.popview({ use_dragi: foci.use_dragi });
+		});
+		
+		tip.init(main.find(".man-club-btn"), "Manage club", "bottom center", {
+			on: "hover",
+			style: "white",
+			auto: false,
+			
+			distanceAway: is_mobile ? 0 : 18
+		});
 
-			{
-				cont: "<i class='users text outline icon'></i> Club",
-				onSelect: function () {
-					util.emsg("coming soon", "info");
-				}
-			},
-		], { position: "bottom left" });
+		// popselect.init(main.find(".new-event-btn"), [
+		// 	{
+		// 		cont: "<i class='flag checkered text outline icon'></i> Event",
+		// 		onSelect: function () {
+		// 			util.jump("#profile//new");
+		// 		}
+		// 	},
+		// 
+		// 	{
+		// 		cont: "<i class='users text outline icon'></i> Club",
+		// 		onSelect: function () {
+		// 			util.emsg("coming soon", "info");
+		// 		}
+		// 	},
+		// ], { position: "bottom left" });
 
 		var pmview, ntview;
 
@@ -605,11 +617,11 @@ define([
 
 		util.media(640, function () {
 			// mobile
-			main.find(".new-event-btn").attr("data-position", "top center");
+			// main.find(".new-event-btn").attr("data-position", "top center");
 			// is_mobile = true;
 		}, function () {
 			// desktop
-			main.find(".new-event-btn").attr("data-position", "bottom center");
+			// main.find(".new-event-btn").attr("data-position", "bottom center");
 			// is_mobile = false;
 		});
 		

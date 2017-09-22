@@ -140,8 +140,18 @@ var dict = module.exports = {
 		"core.comment.already_voted": "you've already upvoted",
 		"core.comment.max_comm_reached": "max comment count reached",
 		
+		"core.club.illegal_name": "illegal club name",
+		"core.club.already_reviewed": "the club is already reviewed",
+		"core.club.member_not_exist": "club member does not exist",
+		"core.club.member_exist": "club member already exists",
+		"core.club.apply_not_exist": "applicant not exist",
+		"core.club.apply_exist": "already applied",
+		"core.club.not_club_owner": "not club owner",
+		"core.club.max_review_reached": "max review count reached",
+		"core.club.club_not_review": "cannot delete a club in operation",
+		
 		"core.realname.invalid_check_data": "real-name check data invalid",
-		"core.realname.invalid_invcode": "invalid invitation code",
+		"core.invalid_invcode": "invalid invitation code",
 
 		"front.com.parts.fail_get_url": "fail to get url $1: $2",
 		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",
@@ -404,14 +414,6 @@ var chinese = {
 		"core.comment.empty": "(没有评论)",
 		"core.comment.already_voted": "你已经赞过了",
 		"core.comment.max_comm_reached": "已达到最大评论数",
-		
-		"core.club.illegal_name": "illegal club name",
-		"core.club.already_reviewed": "the club is already reviewed",
-		"core.club.member_not_exist": "club member does not exist",
-		"core.club.member_exist": "club member already exists",
-		"core.club.apply_not_exist": "applicant not exist",
-		"core.club.apply_exist": "already applied",
-		"core.club.not_club_owner": "not club owner",
 
 		"front.com.parts.fail_get_url": "fail to get url $1: $2",
 		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",
