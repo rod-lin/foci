@@ -138,7 +138,10 @@ var conf = module.exports = {
 		club: {
 			dname_reg: /^.{5,64}$/,
 			max_review_count: 8, // max review club count per user
-			max_search_results: 8
+			max_search_results: 8,
+			
+			max_descr: 1024,
+			max_school: 128
 		},
 
 		pm: {

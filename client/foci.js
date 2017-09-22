@@ -172,7 +172,13 @@ window.foci = {};
 						foci.captcha()(dat.dat, function (suc, ans) {
 							if (suc) {
 								// resend the request
-								method(url, $.extend(data, { capans: ans }), cb);
+								if (data instanceof FormData) {
+									data.append("capans", JSON.stringify(ans));
+								} else {
+									data = $.extend(data, { capans: ans });
+								}
+								
+								method(url, data, cb);
 							} else {
 								cb(false, ans);
 							}

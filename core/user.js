@@ -5,6 +5,7 @@ var err = require("./err");
 var uid = require("./uid");
 var auth = require("./auth");
 var util = require("./util");
+var file = require("./file");
 var event = require("./event");
 var config = require("./config");
 var invcode = require("./invcode");
@@ -141,7 +142,7 @@ User.format.info = {
 
 	avatar: {
 		type: "string", lim: chsum => {
-			if (!chsum.length > 32)
+			if (!file.isLegalID(chsum))
 				throw new err.Exc("$core.illegal($core.word.file_id)");
 			return chsum;
 		}

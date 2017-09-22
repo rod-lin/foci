@@ -6,40 +6,117 @@ define([ "com/util" ], function (util) {
 	var $ = jQuery;
 	foci.loadCSS("com/upload.css");
 
-	function field(cb, config) {
+	function field(cont, config) {
+		cont = $(cont);
 		config = $.extend({
-			title: "Title",
-			icon: "linkify"
+			width: "5em",
+			height: "5em",
+			
+			prompt: "Upload image",
+			
+			style: {}
 		}, config);
 		
-		var main = $("<div class='com-upload-field ui small modal' style='padding: 1rem;'> \
-			<div class='ui left icon input user-search'> \
-				<input class='prompt' type='text' placeholder='" + config.title +  "'> \
-				<i class='" + config.icon  + " icon'></i> \
+		var main = $("<div class='com-upload-field'> \
+			<div class='display'> \
+				<span class='upload-prompt'></span> \
+				<div class='ui loader'></div> \
+			</div> \
+			<div class='remove-btn'> \
+				<i class='fitted cancel icon'></i> \
 			</div> \
 		</div>");
 		
-		var returned = false;
+		var prompt = main.find(".upload-prompt");
+		var display = main.find(".display");
 		
-		main.find(".prompt").keydown(function (e) {
-			if (e.which == 13) {
-				returned = true;
-				main.modal("hide");
-				e.preventDefault();
+		var uploaded = undefined;
+		
+		display.css($.extend(config.style, {
+			width: config.width,
+			height: config.height,
+			"line-height": config.height
+		}));
+		
+		prompt.html(config.prompt);
+		
+		function setVal(md5) {
+			if (md5) {
+				uploaded = md5;
+				main.addClass("loaded");
+				display.find(".loader").addClass("active");
 				
-				cb(main.find(".prompt").val());
+				util.bgimg(display, foci.download(md5), function () {
+					display.find(".loader").removeClass("active");
+				});
+			} else {
+				uploaded = undefined;
+				main.removeClass("loaded");
+				util.bgimg(display, null);
 			}
+		}
+		
+		display.click(function () {
+			init(function (md5) {
+				if (md5) {
+					setVal(md5);
+				}
+			});
 		});
 		
-		main.modal({
-			onHide: function () {
-				if (!returned)
-					cb(null);
-			}
-		}).modal("show");
+		main.find(".remove-btn").click(function () {
+			setVal(null);
+		});
 		
-		return {};
+		cont.append(main);
+	
+		var mod = {};
+		
+		mod.val = function (v) {
+			if (v === undefined) {
+				return uploaded;
+			} else {
+				setVal(v);
+			}
+		};
+	
+		return mod;
 	}
+
+	// function field(cb, config) {
+	// 	config = $.extend({
+	// 		title: "Title",
+	// 		icon: "linkify"
+	// 	}, config);
+	// 	
+	// 	var main = $("<div class='com-upload-field ui small modal' style='padding: 1rem;'> \
+	// 		<div class='ui left icon input user-search'> \
+	// 			<input class='prompt' type='text' placeholder='" + config.title +  "'> \
+	// 			<i class='" + config.icon  + " icon'></i> \
+	// 		</div> \
+	// 	</div>");
+	// 	
+	// 	var returned = false;
+	// 	
+	// 	main.find(".prompt").keydown(function (e) {
+	// 		if (e.which == 13) {
+	// 			returned = true;
+	// 			main.modal("hide");
+	// 			e.preventDefault();
+	// 			
+	// 			cb(main.find(".prompt").val());
+	// 		}
+	// 	});
+	// 	
+	// 	main.modal({
+	// 		onHide: function () {
+	// 			if (!returned)
+	// 				cb(null);
+	// 		}
+	// 	}).modal("show");
+	// 	
+	// 	return {};
+	// }
 
 	function init(cb, config) {
 		config = $.extend({

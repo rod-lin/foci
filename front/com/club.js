@@ -40,23 +40,25 @@ define([ "com/util", "com/login", "com/xfilt", "com/userhunt" ], function (util,
     
         var main = $("<div class='com-club-popview ui small modal'> \
             <div class='pop-cont'> \
-                <div class='ui fluid search local-search'> \
-                    <div class='ui icon input'> \
-                        <input class='prompt' type='text' placeholder='Search club'> \
-                        <i class='search icon'></i> \
+                <div style='padding-right: 1rem;'> \
+                    <div class='ui fluid search local-search'> \
+                        <div class='ui icon input'> \
+                            <input class='prompt' type='text' placeholder='Search club'> \
+                            <i class='search icon'></i> \
+                        </div> \
+                        <div class='results'></div> \
                     </div> \
-                    <div class='results'></div> \
                 </div> \
                 <div class='club-list club-self-list'> \
                     <div class='club-entry find-club-entry'> \
                         <div class='club-logo'><i class='search fitted icon'></i></div> \
                         <div class='club-name'>Find club</div> \
-                    </div> \
-                    <div class='club-entry add-club-entry'> \
+                    </div \
+                    ><div class='club-entry add-club-entry'> \
                         <div class='club-logo'><i class='add fitted icon'></i></div> \
                         <div class='club-name'>New club</div> \
-                    </div> \
-                </div> \
+                    </div \
+                ></div> \
                 <div class='club-list club-find-list'> \
                     <div class='club-entry return-entry'> \
                         <div class='club-logo'><i class='chevron left fitted icon'></i></div> \
@@ -105,7 +107,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/userhunt" ], function (util,
             
             entry.find(".delete-btn").click(function () {
                 if (parsed.state == foci.clubstat.review) {
-                    util.ask("Are you sure to delete this club under review?", function (ans) {
+                    util.ask("Are you sure to delete this club(under review)?", function (ans) {
                         if (ans) {
                             login.session(function (session) {
                                 foci.encop(session, {
@@ -177,6 +179,13 @@ define([ "com/util", "com/login", "com/xfilt", "com/userhunt" ], function (util,
                 if (is_self)
                     all_club.push(dom);
             }
+            
+            if (!config.use_dragi)
+                main.modal("refresh");
+        }
+        
+        function clearSearch() {
+            main.find(".local-search input").val("");
         }
         
         var mode = "normal"; // or "find"
@@ -186,6 +195,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/userhunt" ], function (util,
             main.find(".return-entry").click(function () {
                 mode = "normal";
                 main.removeClass("find-mode");
+                clearSearch();
             });
             
             function clearResult() {
@@ -230,8 +240,6 @@ define([ "com/util", "com/login", "com/xfilt", "com/userhunt" ], function (util,
             }
             
             main.find(".local-search input").keydown(searchKeyDown);
-            main.find(".local-search input").change(searchKeyDown);
-            main.find(".local-search input").keypress(searchKeyDown);
         })();
         
         (function () {
@@ -267,6 +275,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/userhunt" ], function (util,
             main.find(".find-club-entry").click(function () {
                 mode = "find";
                 main.addClass("find-mode");
+                clearSearch();
                 
                 // userhunt.modal([], function () {
                 //     

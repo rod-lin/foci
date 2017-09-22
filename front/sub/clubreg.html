@@ -47,10 +47,15 @@
 	
 	<div class="page-1" style="display: none;">
 		<div class="title">Create New Club</div>
-		<div class="subtitle">Fill out the following form for club review</div>
+		<div class="subtitle">Fill out the following form to create a new club(but a review may be required)</div>
 		<form class="ui form" style="margin-top: 2rem;">
 			<h3 class="ui top attached block header">Basic Info</h3>
 			<div class="ui attached segment">
+				<div class="ui field club-logo-field">
+					<label>Club logo</label>
+					<div class="club-logo"></div>
+				</div>
+				
 				<div class="ui field club-name-field">
 					<label>Club type and name</label>
 					<div class="ui left action input">
@@ -58,7 +63,7 @@
 							<div class="text">Type</div>
 							<i class="dropdown icon"></i>
 							<div class="menu">
-								<div class="item" data-value="1">Student Org</div>
+								<div class="item" data-value="1">School</div>
 								<div class="item" data-value="2">Company</div>
 								<div class="item" data-value="0">Other</div>
 							</div>
@@ -113,8 +118,8 @@
 	function init(main, args, show, cont, exit) {
 		require([
 			"com/env", "com/util", "com/pform",
-			"com/login"
-		], function (env, util, pform, login) {
+			"com/login", "com/upload"
+		], function (env, util, pform, login, upload) {
 			var tbar = env.get("tbar");
 			tbar.setTitle("Club Registration");
 
@@ -176,6 +181,11 @@
 				}
 			});
 			
+			var logo_field = upload.field(main.find(".page-1 .club-logo"), {
+				width: "10rem",
+				height: "10rem"
+			});
+			
 			main.find(".page-1 .club-submit").click(function () {
 				main.find(".page-1 .form").form("validate form");
 				if (!main.find(".page-1 .form").form("is valid"))
@@ -185,7 +195,8 @@
 				var type = main.find(".page-1 .club-type").dropdown("get value");
 				var descr = main.find(".page-1 .club-descr").val();
 				
-				// TODO: !!!
+				var logo = logo_field.val();
+				
 				var invcode = main.find(".page-1 .club-invcode").val();
 				var school = main.find(".page-1 .club-school").val();
 				
@@ -200,6 +211,8 @@
 						type: parseInt(type),
 						descr: descr,
 						school: school ? school : undefined,
+						
+						logo: logo,
 						
 						invcode: invcode ? invcode : undefined,
 					}, function (suc, dat) {

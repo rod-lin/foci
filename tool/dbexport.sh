@@ -25,15 +25,17 @@ fi
 DATABASE=$1
 OUTPUT=$2
 
-function doexport() {
-	mongoexport -d $DATABASE -c $1 -o $OUTPUT/$1.json --type json -h $SERV
-}
+mongodump -h $SERV -d $DATABASE -o $OUTPUT
 
-doexport user
-doexport club
-doexport event
-doexport uid
-doexport file
-doexport pm
-doexport cover
-doexport invcode
+# function doexport() {
+# 	mongoexport -d $DATABASE -c $1 -o $OUTPUT/$1.json --type json -h $SERV
+# }
+# 
+# doexport user
+# doexport club
+# doexport event
+# doexport uid
+# doexport file
+# doexport pm
+# doexport cover
+# doexport invcode

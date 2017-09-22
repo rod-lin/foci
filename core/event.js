@@ -5,6 +5,7 @@ var err = require("./err");
 var uid = require("./uid");
 var util = require("./util");
 var user = require("./user");
+var file = require("./file");
 var tick = require("./tick");
 var config = require("./config");
 
@@ -262,7 +263,7 @@ Event.format.info = {
 
 	cover: {
 		type: "string", lim: chsum => {
-			if (!chsum.length > 32)
+			if (!file.isLegalID(chsum))
 				throw new err.Exc("$core.illegal($core.word.file_id)");
 			return chsum;
 		}
@@ -270,7 +271,7 @@ Event.format.info = {
 
 	logo: {
 		type: "string", lim: chsum => {
-			if (!chsum.length > 32)
+			if (!file.isLegalID(chsum))
 				throw new err.Exc("$core.illegal($core.word.file_id)");
 			return chsum;
 		}

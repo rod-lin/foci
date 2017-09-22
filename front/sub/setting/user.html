@@ -84,6 +84,11 @@
             <h3 class="ui top attached block header">Basic info</h3>
             <div class="ui attached segment">
                 <div class="ui field">
+                    <label>Avatar</label>
+                    <div class="field-avatar"></div>
+                </div>
+                
+                <div class="ui field">
                     <label>Dsiplay name</label>
                     <input class="field-dname" name="dname">
                 </div>
@@ -213,8 +218,8 @@
     function initSetting(main, args, show, mod) {
         require([
             "com/env", "com/login", "com/tagbox",
-            "com/util"
-        ], function (env, login, tagbox, util) {
+            "com/util", "com/upload"
+        ], function (env, login, tagbox, util, upload) {
             login.session(function (session) {
                 if (!session) {
                     util.emsg("you have not logged in");
@@ -246,6 +251,13 @@
                         
                         form_binfo.find(".field-dname").val(info.dname);
                         form_binfo.find(".field-intro").val(info.intro);
+                        
+                        var avatar_field = upload.field(form_binfo.find(".field-avatar"), {
+                            width: "10rem",
+                            height: "10rem"
+                        });
+                        
+                        avatar_field.val(info.avatar);
                         
                         env.favtag(function (tags) {
                             tgbox = tagbox.init(form_binfo.find(".field-favtag"), tags, {
@@ -287,7 +299,8 @@
                             }
                                 
                             if (!fvalid(form_binfo)) return;
-                                
+                            
+                            var avatar = avatar_field.val();
                             var dname = form_binfo.find(".field-dname").val();
                             var intro = form_binfo.find(".field-intro").val();
                             var favtag = tgbox.cur();
@@ -300,8 +313,10 @@
                             foci.encop(session, {
                                 int: "info",
                                 action: "set",
+                                
                                 dname: dname,
                                 intro: intro,
+                                avatar: avatar,
                                 favtag: favtag
                             }, function (suc, dat) {
                                 form_binfo.find(".update-btn").removeClass("loading");
@@ -451,6 +466,8 @@
                                             util.emsg(dat);
                                         }
                                     });
+                                } else {
+                                    form_realname_auth.find(".reset-btn").removeClass("loading");
                                 }
                             });
                         });

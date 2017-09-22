@@ -7,6 +7,7 @@ var err = require("./err");
 var uid = require("./uid");
 var util = require("./util");
 var user = require("./user");
+var file = require("./file");
 var config = require("./config");
 
 var clubtype = exports.clubtype = {
@@ -39,7 +40,7 @@ var Club = function (cuid, creator, conf) {
     this.type = conf.type !== undefined ? conf.type : clubtype.stuorg;
     this.state = clubstat.review;
     
-    this.logo = null;
+    this.logo = conf.logo || null;
 
     // NOTE: how title works
     // title in the member object can be a arbitrary string defined by the owner
@@ -103,6 +104,30 @@ Club.prototype.getRelatedInfo = function (uuid) {
 };
 
 exports.Club = Club;
+
+Club.format = {};
+Club.format.info = {
+    dname: {
+		type: "string", lim: dname => {
+			if (!config.lim.club.dname_reg.test(dname))
+				throw new err.Exc("$core.illegal($core.word.dname)");
+			return dname.replace(/\n/g, "");
+		}
+	},
+    
+    descr: util.checkArg.lenlim(config.lim.club.max_descr, "$core.too_long($core.word.descr)"),
+	school: util.checkArg.lenlim(config.lim.club.max_detail, "$core.too_long($core.word.school)"),
+
+    type: "int",
+
+    logo: {
+		type: "string", lim: chsum => {
+			if (!file.isLegalID(chsum))
+				throw new err.Exc("$core.illegal($core.word.file_id)");
+			return chsum;
+		}
+	},
+};
 
 Club.query = {
     cuid: cuid => ({ "cuid": cuid }),

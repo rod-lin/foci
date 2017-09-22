@@ -85,7 +85,7 @@ var checkArg = (args, req, opt) => {
 	
 	// check default arg captcha answer
 	if (!req["capans"]) {
-		req["capans"] = { type: "object", opt: true };
+		req["capans"] = { type: "json", opt: true };
 	}
 
 	for (var k in req) {

@@ -315,7 +315,7 @@ var _event = {};
 
 _event.info = util.route(async env => {
 	if (!await checkCaptcha(env)) return;
-	var args = util.checkArg(env.query, { "euid": "number", "only": { type: "object", opt: true } });
+	var args = util.checkArg(env.query, { "euid": "number", "only": { type: "json", opt: true } });
 	var ev = await event.euid(args.euid);
 	env.qsuc(ev.getInfo(args.only));
 });
@@ -335,7 +335,11 @@ _event.comment = util.route(async env => {
 var _file = {};
 
 _file.upload = util.route(async env => {
-	if (!await checkCaptcha(env)) return;
+	// if (!await checkCaptcha(env)) return;
+	// forced captcha check
+	var args = util.checkArg(env.query, {});
+
+	if (!await captcha.check(env, () => false, args.capans)) return;
 	
 	if (!env.file.file)
 		throw new err.Exc("no file");
@@ -584,7 +588,7 @@ encop.event = async (env, usr, query, next, has_cap) => {
 			return await event.isOwner(args.euid, usr.getUUID());
 
 		case "apply":
-			var args = util.checkArg(query, { euid: "int", type: "string", form: { type: "object", opt: true } });
+			var args = util.checkArg(query, { euid: "int", type: "string", form: { type: "json", opt: true } });
 			return await event.apply(args.euid, usr.getUUID(), args.type, args.form);
 
 		case "draft":
@@ -797,9 +801,13 @@ encop.club = async (env, usr, query, next) => {
 				}
 			});
 			
-			var clb = await club.newClub(usr.getUUID(), args);
+			// allow other trivial settings too
+			var info = util.checkArg(query, club.Club.format.info, true);
+			
+			var clb = await club.newClub(usr.getUUID(), info);
 			var published = false;
 			
+			// check invitation code
 			if (args.invcode) {
 				var invdat = await invcode.findInvcode("clubreg", args.invcode);
 				

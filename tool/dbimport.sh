@@ -25,15 +25,17 @@ fi
 DATABASE=$1
 INPUT=$2
 
-function doimport() {
-	mongoimport -d $DATABASE -c $1 --type json -h $SERV $INPUT/$1.json
-}
+mongorestore -h $SERV -d $DATABASE --dir=$INPUT
 
-doimport user
-doimport club
-doimport event
-doimport uid
-doimport file
-doimport pm
-doimport cover
-doimport invcode
+# function doimport() {
+# 	mongoimport -d $DATABASE -c $1 --type json -h $SERV $INPUT/$1.json
+# }
+# 
+# doimport user
+# doimport club
+# doimport event
+# doimport uid
+# doimport file
+# doimport pm
+# doimport cover
+# doimport invcode

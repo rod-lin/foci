@@ -111,12 +111,12 @@ define([
             
             return ; // TODO: fix this(lose focus)
             
-            upload.field(function (url) {
-                if (url) {
-                    main.find(".editor-cont")[0].focus();
-                    document.execCommand("createLink", false, url);
-                }
-            }, { title: "Link url", icon: "linkify" });
+            // upload.field(function (url) {
+            //     if (url) {
+            //         main.find(".editor-cont")[0].focus();
+            //         document.execCommand("createLink", false, url);
+            //     }
+            // }, { title: "Link url", icon: "linkify" });
         });
         
         bindTool(main.find(".image.icon"), "![](https://", ")", null, function () {
@@ -129,12 +129,12 @@ define([
             
             return; // TODO: fix this(lose focus)
             
-            upload.field(function (url) {
-                if (url) {
-                    main.find(".editor-cont")[0].focus();
-                    document.execCommand("insertImage", false, url);
-                }
-            }, { title: "Image url", icon: "image" });
+            // upload.field(function (url) {
+            //     if (url) {
+            //         main.find(".editor-cont")[0].focus();
+            //         document.execCommand("insertImage", false, url);
+            //     }
+            // }, { title: "Image url", icon: "image" });
         });
 
         bindTool(main.find(".not-ordered.list.icon"), "* ", "", "InsertUnorderedList");

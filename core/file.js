@@ -208,3 +208,7 @@ exports.cacheFull = async () => {
 		exports.cacheOne(files[i].chsum);
 	}
 };
+
+exports.isLegalID = async (id) => {
+	return /^(([0-9a-z]{32})|([0-9a-z]{64}))$/i.test(id);
+};

@@ -725,7 +725,7 @@
 					left_bar.find(".intro").html(parsed.intro);
 					left_bar.find(".avatar").css("background-image", "url('" + parsed.avatar + "')").removeClass("empty");
 
-					left_bar.find(".realname-badge").append(realname.badge(info.uuid, null, {
+					left_bar.find(".realname-badge").html(realname.badge(info.uuid, null, {
 						only_state: true,
 						show_norealname: true
 					}));
