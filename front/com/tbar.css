@@ -768,13 +768,13 @@ html.foci-nested .top-tbar {
 	border-width: 0;
 }
 
-.com-tbar.simple .prompt {
+.com-tbar.simple .search-box .prompt {
 	border-color: rgba(0, 0, 0, 0) !important;
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
 	transition: box-shadow 0.3s
 }
 
-.com-tbar.simple .prompt:focus {
+.com-tbar.simple .search-box .prompt:focus {
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
@@ -799,9 +799,12 @@ html.foci-nested .top-tbar {
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
-.com-tbar.simple .avatar-util-box {
-	opacity: 0;
-	visibility: hidden;
+.com-tbar.simple .avatar-util-box .avatar-util {
+	color: rgb(237, 237, 237);
+}
+
+.com-tbar.simple .banner {
+	color: white;
 }
 
 .com-tbar.simple .login-btn {

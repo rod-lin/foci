@@ -5,6 +5,50 @@
 define(function () {
 	var $ = jQuery;
 	foci.loadCSS("com/tab.css");
+	
+	function common(items, tabs, config) {
+		items = $(items);
+		tabs = $(tabs);
+		
+		config = $.extend({
+			active: "active",
+			init: 0
+		}, config);
+		
+		var cur = config.init;
+		
+		function switchTo(i) {
+			items.filter("." + config.active).removeClass(config.active);
+			$(items[i]).addClass(config.active);
+			
+			$(tabs[cur]).css("display", "none");
+			$(tabs[i]).css("display", "");
+			
+			if (cur != i) {
+				$(tabs[cur]).triggerHandler("tab:hide");
+				cur = i;
+				$(tabs[i]).triggerHandeler("tab:show");
+			}
+		}
+		
+		tabs.each(function (i, dom) {
+			$(dom).css("display", "none");
+		});
+
+		items.each(function (i, dom) {
+			$(dom).click(function () {
+				switchTo(i);
+			});
+		});
+		
+		switchTo(config.init);
+		
+		var mod = {};
+		
+		mod.switchTo = switchTo;
+		
+		return mod;
+	}
 
 	function init(cont, tabs, config) {
 		cont = $(cont);
@@ -149,6 +193,7 @@ define(function () {
 	}
 
 	return {
-		init: init
+		init: init,
+		common: common
 	};
 });

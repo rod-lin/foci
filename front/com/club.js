@@ -12,9 +12,14 @@ define([ "com/util", "com/login", "com/xfilt", "com/userhunt" ], function (util,
         var parsed = {};
         
         parsed.cuid = info.cuid;
+        
         parsed.dname = info.dname ? xfilt(info.dname) : "(unnamed)";
         parsed.logo = info.logo ? foci.download(info.logo) : "/img/def/logo.jpg";
+        parsed.school = info.school ? xfilt(info.school) : "(no school)";
         parsed.descr = info.descr ? xfilt(info.descr) : "(no description)";
+        
+        parsed.member_count = info.member_count ? info.member_count : 0;
+        
         parsed.state = info.state;
         
         return parsed;
@@ -102,7 +107,12 @@ define([ "com/util", "com/login", "com/xfilt", "com/userhunt" ], function (util,
             entry.find(".club-name").html(parsed.dname);
             
             entry.click(function () {
-                // TODO: jump to club page
+                if (parsed.state == foci.clubstat.review)
+                    util.emsg("club not ready");
+                else {
+                    hide();
+                    util.jump("#clubcent/" + info.cuid);
+                }
             });
             
             entry.find(".delete-btn").click(function () {

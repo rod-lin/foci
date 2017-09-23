@@ -20,6 +20,10 @@ Object.prototype.extend = function (obj) {
 	return this;
 };
 
+Object.prototype.fieldCount = function () {
+	return Object.keys(this).length;
+};
+
 exports.salt = (len) => {
 	var static_buf = new Buffer(len || 16);
 	var tab = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

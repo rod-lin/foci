@@ -74,6 +74,10 @@
     opacity: 1;
 }
 
+.com-club-popview .club-entry.review {
+    cursor: default;
+}
+
 .com-club-popview .club-entry .club-logo {
     position: relative;
     

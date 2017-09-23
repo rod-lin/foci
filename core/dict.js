@@ -37,6 +37,8 @@ var dict = module.exports = {
 		"core.word.tag": "tag",
 		"core.word.sortby": "sort condition",
 		"core.word.system_sender": "system sender",
+		
+		"core.word.uuid": "user id",
 
 		"core.word.staff": "staff",
 		"core.word.partic": "participant",
@@ -64,6 +66,8 @@ var dict = module.exports = {
 
 		"core.account_frozen": "account frozen for an hour for repeated tries to login",
 
+		"core.empty_event_org": "an event cannot have no organizer",
+		
 		"core.fail_upload": "fail to upload file",
 		"core.too_long": "$1 too long",
 		"core.illegal": "illegal $1",

@@ -1,0 +1,307 @@
+<div class="sub-clubcent"> <!-- club center -->
+    <!-- <div class="float-cont padding-tbar">
+        <div class="bg"></div>
+    </div> -->
+    <div class="main-scroll">
+        <div class="info-header">
+            <div class="shadow"></div>
+            <div class="bg"></div>
+            <div class="info">
+                <div class="cont-width">
+                    <div class="info-cont">
+                        <div class="logo field-logo"></div>
+                        <div class="info-box">
+                            <div class="field-dname dname"></div>
+                            <div class="stat">
+                                <span class="stat-item"><i class="student icon"></i> <span class="field-school"></span></span>
+                                <span class="stat-item"><i class="user outline icon"></i> <span class="field-member-count"></span> member(s)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="nav-bar">
+            <div class="cont-width">
+                <div style="display:inline-block; padding-right: 1rem;">
+                    <div class="ui secondary menu">
+                        <a class="item"><i class="calendar icon"></i>Events</a>
+                        <a class="item"><i class="talk outline icon"></i>Forum</a>
+                        <a class="item"><i class="user outline icon"></i>Members</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tabs cont-width">
+            <div class="tab"><div style="height: 70rem;"></div></div>
+            <div class="tab"><div style="height: 50rem;"></div></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .sub-clubcent {
+    }
+    
+    .sub-clubcent .main-scroll {
+        text-align: center;
+        position: relative;
+    }
+    
+    .sub-clubcent .main-scroll .info-header {
+        position: relative;
+        
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        width: 100%;
+        
+        height: 25rem;
+        
+        text-align: center;
+    }
+    
+    .sub-clubcent .main-scroll .info-header .info {
+        position: absolute;
+        
+        bottom: 0;
+        left: 0;
+        
+        width: 100%;
+        padding: 2rem 0;
+    }
+    
+    .sub-clubcent .main-scroll .info-header .info .logo {
+        display: inline-block;
+        
+        width: 10rem;
+        height: 10rem;
+        
+        border-radius: 5px;
+        
+        margin-right: 2rem;
+        
+        background-color: rgba(250, 250, 250, 1);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        
+        vertical-align: top;
+        
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .sub-clubcent .main-scroll .info-header .info .info-box {
+        display: inline-block;
+        color: white;
+        
+        overflow: hidden;
+        
+        -webkit-box-flex: 1;
+    	-ms-flex: 1;
+    	flex: 1;
+    }
+    
+    .sub-clubcent .main-scroll .info-header .info .info-box .dname {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .sub-clubcent .main-scroll .info-header .info .info-box .stat {
+
+    }
+    
+    .sub-clubcent .main-scroll .info-header .info .info-box .stat-item {
+        margin-right: 0.5rem;
+    }
+    
+    .sub-clubcent .main-scroll .info-header .info .info-cont {
+        display: -webkit-flex;
+        display: flex;
+        
+        -webkit-box-align: center;
+    	-ms-flex-align: center;
+    	align-items: center;
+    }
+    
+    .sub-clubcent .main-scroll .info-header .shadow {
+        position: absolute;
+        height: 100%;
+        width: 150%;
+        
+        left: -25%;
+        top: 0;
+        
+        background: rgba(0, 0, 0, 0.6);
+        /* box-shadow: 0 5rem 3rem rgba(0, 0, 0, 0.4); */
+    }
+    
+    .sub-clubcent .main-scroll .info-header .bg {
+        width: 100%;
+        height: 100%;
+        
+        background-image: url("img/cover/5.jpg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+    
+    .sub-clubcent .main-scroll .nav-bar {
+        width: 100%;
+        
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        padding: 1rem 0;
+        background: rgb(252, 252, 252);
+        
+        overflow: auto;
+        overflow-y: hidden;
+        
+        transition: padding 0.2s;
+    }
+    
+    .sub-clubcent .main-scroll .nav-bar.floating {
+        position: fixed;
+        top: 4.7rem;
+        left: 0;
+        
+        /* padding: 0.5rem 0; */
+    }
+    
+    .sub-clubcent .main-scroll .nav-bar .ui.secondary.menu a {
+        color: rgb(70, 70, 70);
+    }
+    
+    .sub-clubcent .main-scroll .tabs {
+    }
+    
+    .sub-clubcent .main-scroll .tabs .tab {
+        text-align: left;
+        padding: 2rem 0;
+    }
+    
+    .sub-clubcent .cont-width {
+        display: inline-block;
+        width: 70rem;
+        max-width: 100%;
+        text-align: left;
+        
+        padding: 0 1rem;
+    }
+    
+    .sub-clubcent .float-cont {
+        position: fixed;
+        left: 0; top: 0;
+        height: 100%;
+        width: 100%;
+        
+        background: rgb(252, 252, 252);
+    }
+    
+    .sub-clubcent .float-cont .bg {
+        height: 100%;
+        width: 100%;
+        
+        opacity: 0.7;
+        
+        /* background-image: url("img/cover/2.jpg"); */
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+    
+    @media only screen and (max-width: 640px) {
+        .sub-clubcent .main-scroll .info-header .info {
+            padding: 1rem 0;
+        }
+        
+        .sub-clubcent .main-scroll .info-header .info .logo {
+            width: 5rem;
+            height: 5rem;
+            margin-right: 1rem;
+        }
+        
+        .sub-clubcent .main-scroll .info-header .info .info-box .dname {
+            font-size: 1.4rem;
+            margin-bottom: 0;
+        }
+        
+        .sub-clubcent .main-scroll .info-header .info .info-box .stat-item {
+            display: block;
+        }
+    }
+</style>
+
+<script>
+    function init(main, args, show, cont, exit, penv) {
+        require([
+            "com/env", "com/util", "com/login",
+            "com/tab", "com/club"
+        ], function (env, util, login, tab, club) {
+            if (!args || !args.length) {
+				util.emsg("require one argument");
+				return;
+			}
+            
+            var cuid = parseInt(args[0]);
+            
+            if (isNaN(cuid)) {
+				util.emsg("illegal club id");
+				return;
+			}
+            
+            function render(info) {
+                var parsed = club.parseInfo(info);
+                var info_dom = main.find(".info");
+            
+                info_dom.find(".field-dname").html(parsed.dname);
+                info_dom.find(".field-school").html(parsed.school);
+                info_dom.find(".field-member-count").html(parsed.member_count);
+                
+                util.bgimg(info_dom.find(".field-logo"), parsed.logo);
+            
+                // scroll effect
+                penv.part.scroll(function () {                
+                    var top = penv.part.scrollTop();
+                    
+                    var bar_height = tbar.height();
+                    var dist = main.find(".info-header").height() - bar_height;
+                    
+                    if (top < dist) {
+                        tbar.setStyle("simple");
+                        main.find(".nav-bar").removeClass("floating");
+                    } else {
+                        // scroll reaches menu
+                        tbar.setStyle("");
+                        main.find(".nav-bar").addClass("floating");
+                    }
+                }).scroll();
+                
+                main.find(".nav-bar .item").on("tab:show", function () {
+                    if (main.find(".nav-bar").hasClass("floating")) {
+                        penv.part.scrollTop(main.find(".info-header").height() - tbar.height());
+                    }
+                });
+            }
+            
+            var tbar = env.get("tbar");
+            
+            $("body").removeClass("padding-tbar");
+            // tbar.applyShadow();
+            
+            var main_tab = tab.common(main.find(".nav-bar .item"), main.find(".tabs .tab"));
+            
+            foci.get("/club/info", { cuid: cuid }, function (suc, dat) {
+                if (suc) {
+                    render(dat);
+                } else {
+                    util.emsg(dat);
+                }
+                
+                show(suc);
+            });
+        });
+    }
+</script>

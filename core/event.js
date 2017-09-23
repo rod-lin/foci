@@ -36,6 +36,7 @@ var Event = function (euid, owner /* uuid */) {
 	this.euid = euid;
 
 	this.org = [ owner ];
+	this.org_club = []; // organizing clubs
 	this.state = evstat.draft; // draft state
 	// 1 for published
 	// 2 for terminated
@@ -276,6 +277,25 @@ Event.format.info = {
 			return chsum;
 		}
 	},
+	
+	org: {
+		type: "array", lim: org => {
+			for (var i = 0; i < org.length; i++) {
+				if (typeof org[i] != "number") {
+					org[i] = parseInt(org[i]);
+				}
+				
+				if (isNaN(org[i]) || org[i] < 0) {
+					throw new err.Exc("$core.illegal($core.word.uuid)");
+				}
+			}
+			
+			if (i == 0)
+				throw new err.Exc("$core.empty_event_org");
+			
+			return org;
+		}
+	},
 
 	start: { type: "int", lim: time => new Date(time) },
 	end: { type: "int", lim: time => new Date(time) },
@@ -355,7 +375,7 @@ Event.query = {
 	}),
 
 	count_owner: (uuid, after) => {
-		var res = { "org.0": uuid, "state": { $gte: evstat.published } };
+		var res = { "org": uuid, "state": { $gte: evstat.published } };
 
 		if (after) {
 			res["created"] = { $gt: after };
@@ -364,10 +384,10 @@ Event.query = {
 		return res;
 	},
 
-	check_owner: (euid, uuid) => ({ "euid": euid, "org.0": uuid }),
+	check_owner: (euid, uuid) => ({ "euid": euid, "org": uuid }),
 
 	count_unpublished: uuid => ({
-		"org.0": uuid,
+		"org": uuid,
 		"state": { $lt: evstat.published }
 	}),
 

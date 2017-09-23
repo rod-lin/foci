@@ -80,6 +80,24 @@ Club.prototype.getState = function () {
     return this.state;
 };
 
+// public info
+Club.prototype.getInfo = function () {
+    return {
+        cuid: this.cuid,
+        type: this.type,
+        
+        dname: this.dname,
+        descr: this.descr,
+        school: this.school,
+        
+        member_count: this.member.fieldCount(),
+        
+        logo: this.logo,
+        
+        state: this.state,
+    };
+};
+
 // get info related to a user
 Club.prototype.getRelatedInfo = function (uuid) {
     return {
@@ -130,7 +148,7 @@ Club.format.info = {
 };
 
 Club.query = {
-    cuid: cuid => ({ "cuid": cuid }),
+    cuid: (cuid, state) => ({ "cuid": cuid, "state": { $gte: state === undefined ? clubstat.operate : state } }),
     member_exist: (cuid, uuid) => ({ "cuid": cuid, ["member." + uuid]: { $exists: true } }),
     apply_exist: (cuid, uuid) => ({ "cuid": cuid, ["apply_member." + uuid]: { $exists: true } }),
     
@@ -258,9 +276,9 @@ exports.checkAdmin = async (cuid, uuid) => {
             throw new err.Exc("$core.club.not_club_owner");
 };
 
-exports.cuid = async (cuid) => {
+exports.cuid = async (cuid, state) => {
     var col = await db.col("club");
-	var found = await col.findOne(Club.query.cuid(cuid));
+	var found = await col.findOne(Club.query.cuid(cuid, state));
 
 	if (!found)
 		throw new err.Exc("$core.not_exist($core.word.club)");
@@ -288,7 +306,7 @@ exports.getRelatedClub = async (uuid) => {
 };
 
 exports.publish = async (cuid, uuid, forced) => {
-    var club = await exports.cuid(cuid);
+    var club = await exports.cuid(cuid, clubstat.all);
     
     if (!forced)
         await user.checkAdmin(uuid);
@@ -298,21 +316,21 @@ exports.publish = async (cuid, uuid, forced) => {
     
     var col = await db.col("club");
     
-    await col.updateOne(Club.query.cuid(cuid), Club.set.publish());
+    await col.updateOne(Club.query.cuid(cuid, clubstat.all), Club.set.publish());
 };
 
 exports.delete = async (cuid, uuid) => {
     // only creator can delete an event(under review)
     await exports.checkCreator(cuid, uuid);
     
-    var club = await exports.cuid(cuid);
+    var club = await exports.cuid(cuid, clubstat.all);
 
     if (club.getState() != clubstat.review)
         throw new err.Exc("$core.club.club_not_review");
         
     var col = await db.col("club");
     
-    await col.deleteOne(Club.query.cuid(cuid));
+    await col.deleteOne(Club.query.cuid(cuid, clubstat.all));
 };
 
 exports.checkMemberExist = async (cuid, uuid, should_exist) => {

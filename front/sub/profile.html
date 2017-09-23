@@ -228,6 +228,20 @@
 					</div>
 				</div>
 				<div class="page page-other pad" style="text-align: left; overflow: auto;">
+					<h3 class="ui top attached header lang">
+						Organizers
+					</h3>
+					<div class="ui attached segment">
+						<p>
+							<b>Organizers</b><br>
+							<span>Edit organizers of the club</span>
+						</p>
+						
+						<div class="ui field">
+							<button class="ui blue basic button edit-org-btn">Edit</button>
+						</div>
+					</div>
+					
 					<h3 class="ui top attached header lang" data-replace="$front.sub.profile.change_event_state">
 						Change event state
 					</h3>
@@ -671,14 +685,14 @@
 			"com/tagbox", "com/pm", "com/tip",
 			"com/formi", "com/marki", "com/resume",
 			"com/helper", "com/notice", "com/rating",
-			"com/realname"
+			"com/realname", "com/userhunt"
 		], function (
 			env, util, event, xfilt,
 			pages, tab, login, event,
 			upload, map, lang, editable,
 			tagbox, pm, tip, formi, marki,
 			resume, helper, notice, rating,
-			realname
+			realname, uh
 		) {
 			var init = function (info, is_self, init_page, page_arg) {
 				// foci.get("/user/resume", {
@@ -1534,6 +1548,18 @@
 									});
 								});
 								
+								new_tab.find(".edit-org-btn").off("click").click(function () {
+									uh.modal(fields.org || info.org || [], function (selected) {
+										if (!selected.length) {
+											util.emsg("no user selected");
+											return false;
+										}
+										
+										changed.org = true;
+										fields.org = selected;
+									}, {});
+								});
+								
 								function unpublish(euid) {
 									login.session(function (session) {
 										foci.encop(session, {
@@ -1608,6 +1634,34 @@
 										main.find(".admin-review-block").css("display", "none");
 									}
 								});
+							},
+							
+							onCheck: function (cb) {
+								if (changed.org) {
+									var next = function () {
+										uploadChanges({
+											org: fields.org
+										}, function (suc) {
+											if (suc) {
+												cb(true);
+											} else {
+												cb(false);
+											}
+										});
+									};
+									
+									if (fields.org.indexOf(uuid) == -1) {
+										util.ask("You did not include yourself in the organizer list. " +
+												 "This change will <b>REMOVE</b> your identity as an organizer or administrator of this event, " +
+												 "and you will <b>NOT BE ABLE TO EDIT</b> it again. " +
+												 "Are you sure to continue?",
+												 function (ans) {
+													 if (ans) next();
+												 });
+									} else next();
+								} else {
+									cb(true);
+								}
 							}
 						}
 					};
@@ -2095,7 +2149,7 @@
 										state: foci.evstat.review
 									}, function (suc, dat) {
 										if (suc) {
-											if (dat.org.indexOf(uuid) == -1) {
+											if (dat.org.indexOf(uuid) != -1) {
 												loadDraft(dat, function () {
 													if (page_arg[1]) {
 														setDraftStep(page_arg[1]);
@@ -2125,9 +2179,11 @@
 
 				setDom(info);
 			};
+			
+			var uuid;
 
 			if (args && args[0]) {
-				var uuid = parseInt(args[0]);
+				uuid = parseInt(args[0]);
 
 				if (isNaN(uuid)) {
 					util.emsg("$front.sub.profile.illegal_uuid");
@@ -2147,6 +2203,7 @@
 			} else {
 				login.session(function (session) {
 					if (session) {
+						uuid = session.getUUID();
 						env.user(function (info) { init(info, true, args[1], args.slice(2)); });
 					} else {
 						show(false);

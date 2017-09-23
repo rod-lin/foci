@@ -31,7 +31,12 @@ require("./binds");
 var checkCaptcha = async (env) => {
 	var args = util.checkArg(env.query, {});
 	// capans is automatically scanned
-	return await captcha.check(env, () => watchdog.testTraffic(env.ip()), args.capans);
+	var ret = await captcha.check(env, () => watchdog.testTraffic(env.ip()), args.capans);
+
+	if (ret == 1) // has captcha
+		watchdog.clearTrafficFor(env.ip());
+
+	return ret;
 };
 
 // var moment = require("moment");
@@ -328,8 +333,19 @@ _event.search = util.route(async env => {
 
 _event.comment = util.route(async env => {
 	if (!await checkCaptcha(env)) return;
-	var args = util.checkArg(env.query, { euid: "int", skip: { opt: true, type: "int" }, limit: { opt: true, type: "int" } });
+	var args = util.checkArg(env.query, { "euid": "int", "skip": { opt: true, type: "int" }, "limit": { opt: true, type: "int" } });
 	env.qsuc(await comment.get(args.euid, { skip: args.skip, limit: args.limit }));
+});
+
+var _club = {};
+
+_club.info = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	
+	var args = util.checkArg(env.query, { "cuid": "int" });
+	var clb = await club.cuid(args.cuid);
+	
+	env.qsuc(clb.getInfo());
 });
 
 var _file = {};
@@ -380,6 +396,7 @@ exports.smsg = _smsg;
 exports.mail = _mail;
 exports.user = _user;
 exports.event = _event;
+exports.club = _club;
 exports.file = _file;
 
 /* encrypted operations */

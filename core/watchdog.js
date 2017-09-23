@@ -48,12 +48,15 @@ exports.testTraffic = ip => {
     if (now - rec["$last"] < curConf().gc_time_threshold &&
         rec["$total"] > curConf().max_count_per_int_per_ip_per_gc) {
         controlLog("ip " + ip + " triggered a captcha check");
-        
-        delete traffic_map[ip];
+        // delete traffic_map[ip];
         return false;
     }
     
     return true;
+};
+
+exports.clearTrafficFor = ip => {
+    delete traffic_map[ip];
 };
 
 exports.logRequest = (ip, page) => {

@@ -245,11 +245,9 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 
 			// scrolling down need to be faster to trigger
 			// console.log(now);
-			if (now >= min_top) {
-				if ((now > cur && now - cur > down_ofs) || // scroll down
-					(cur > now && cur - now > up_ofs)) {
-					cb(now - cur, cur);
-				}
+			if ((now >= min_top && now > cur && now - cur > down_ofs) || // scroll down
+				(cur > now && cur - now > up_ofs)) {
+				cb(now - cur, cur);
 			}
 
 			cur = now;

@@ -593,6 +593,10 @@ define([
 				main.css("display", "");
 			};
 			
+			mod.height = function () {
+				return main.height();
+			};
+			
 			return mod;
 		})();
 

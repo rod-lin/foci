@@ -51,7 +51,6 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 		var once = false;
 		var onHide = function () {
 			if (once) return;
-			once = true;
 
 			var final = [];
 
@@ -62,7 +61,12 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 				}
 			}
 
-			if (cb) cb(final);
+			if (cb) {
+				if (cb(final) === false)
+					return false;
+			}
+			
+			once = true;
 		}
 		
 		function hide() {
