@@ -328,9 +328,12 @@
                     
                     event_tab.clear(function () {
                         event_tab.fetch(function () {
-                            event_tab.update();
                             main.find(".org-event-cont").removeClass("hide");
                             main.find(".org-event-tab .loader").removeClass("active");
+                            
+                            setTimeout(function () {
+                                event_tab.update();
+                            }, 0);
                         });
                     });
                 });

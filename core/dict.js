@@ -264,6 +264,7 @@ var dict = module.exports = {
 		"front.sub.event.view": "View",
 
 		"front.sub.event.organizer": "$nat.cap($core.word.org)",
+		"front.sub.event.organizers": "$nat.cap($core.word.org)s",
 		"front.sub.event.apply_for": "Apply for",
 		"front.sub.event.thank_you": "Thank you",
 		"front.sub.event.login_first": "<span><a href='javascript:void(0)'>Login</a> first</span>",

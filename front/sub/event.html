@@ -67,13 +67,17 @@
 				.ui.active.loader+span {
 					opacity: 0;
 				}
+				
+				.sub-event .org .com-avatar {
+					margin-right: 1.5rem;
+				}
 
 			</style>
 
 			<div class="row">
 				<div class="col col-7 col-mid-full">
 					<div class="box pad" style="padding-bottom: 2.5rem;">
-						<div class="sub-title lang" data-replace="$front.sub.event.organizer">Organizers</div>
+						<div class="sub-title lang" data-replace="$front.sub.event.organizers">Organizers</div>
 						<div class="org" style="margin-top: 1rem;">
 							<img class="com-util-cont-fill" src="img/paragraph.png"></img>
 						</div>
@@ -562,7 +566,7 @@
 				switch (info.org.length) {
 					case 1: size = "5em"; break;
 					case 2: size = "4em"; break;
-					default: size = "3em";
+					default: size = "4em";
 				}
 
 				for (var i = 0; i < parsed.org.length; i++) {
