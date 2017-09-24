@@ -25,16 +25,31 @@
             <div class="cont-width">
                 <div style="display:inline-block; padding-right: 1rem;">
                     <div class="ui secondary menu">
-                        <a class="item"><i class="calendar icon"></i>Events</a>
-                        <a class="item"><i class="talk outline icon"></i>Forum</a>
-                        <a class="item"><i class="user outline icon"></i>Members</a>
+                        <a class="item item-event"><i class="calendar icon"></i>Events</a>
+                        <a class="item item-forum only-member"><i class="talk outline icon"></i>Forum</a>
+                        <a class="item item-member"><i class="user outline icon"></i>Members</a>
+                        <a class="item item-setting only-admin"><i class="setting icon"></i>Settings</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="tabs cont-width">
-            <div class="tab"><div style="height: 70rem;"></div></div>
-            <div class="tab"><div style="height: 50rem;"></div></div>
+            <!-- events -->
+            <div class="tab org-event-tab">
+                <div class="org-event-cont"></div>
+                <div class="ui loader"></div>
+            </div>
+            
+            <!-- forum -->
+            <div class="tab"></div>
+            
+            <!-- members -->
+            <div class="tab">
+                
+            </div>
+            
+            <!-- settings -->
+            <div class="tab"></div>
         </div>
     </div>
 </div>
@@ -54,7 +69,7 @@
         border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         width: 100%;
         
-        height: 25rem;
+        height: 20rem;
         
         text-align: center;
     }
@@ -167,6 +182,8 @@
         top: 4.7rem;
         left: 0;
         
+        z-index: 3;
+        
         /* padding: 0.5rem 0; */
     }
     
@@ -178,8 +195,18 @@
     }
     
     .sub-clubcent .main-scroll .tabs .tab {
+        position: relative;
+        
         text-align: left;
         padding: 2rem 0;
+    }
+    
+    .sub-clubcent .main-scroll .tabs .tab.org-event-tab {
+        padding: 0;
+    }
+    
+    .sub-clubcent .main-scroll .tabs .org-event-cont.hide {
+        display: none;
     }
     
     .sub-clubcent .cont-width {
@@ -191,28 +218,19 @@
         padding: 0 1rem;
     }
     
-    .sub-clubcent .float-cont {
-        position: fixed;
-        left: 0; top: 0;
-        height: 100%;
-        width: 100%;
-        
-        background: rgb(252, 252, 252);
+    .sub-clubcent:not(.member) .only-member {
+        display: none !important;
     }
     
-    .sub-clubcent .float-cont .bg {
-        height: 100%;
-        width: 100%;
-        
-        opacity: 0.7;
-        
-        /* background-image: url("img/cover/2.jpg"); */
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: cover;
+    .sub-clubcent:not(.admin) .only-admin {
+        display: none !important;
     }
     
     @media only screen and (max-width: 640px) {
+        .sub-clubcent .main-scroll .info-header {
+            height: 15rem;
+        }
+        
         .sub-clubcent .main-scroll .info-header .info {
             padding: 1rem 0;
         }
@@ -238,14 +256,16 @@
     function init(main, args, show, cont, exit, penv) {
         require([
             "com/env", "com/util", "com/login",
-            "com/tab", "com/club"
-        ], function (env, util, login, tab, club) {
+            "com/tab", "com/club", "com/event",
+            "com/lang"
+        ], function (env, util, login, tab, club, event, lang) {
             if (!args || !args.length) {
 				util.emsg("require one argument");
 				return;
 			}
             
             var cuid = parseInt(args[0]);
+            var m = lang.msg;
             
             if (isNaN(cuid)) {
 				util.emsg("illegal club id");
@@ -272,26 +292,90 @@
                     if (top < dist) {
                         tbar.setStyle("simple");
                         main.find(".nav-bar").removeClass("floating");
+                        main.find(".tabs").css("margin-top", "");
                     } else {
                         // scroll reaches menu
                         tbar.setStyle("");
                         main.find(".nav-bar").addClass("floating");
+                        main.find(".tabs").css("margin-top", main.find(".nav-bar").outerHeight() + "px");
                     }
                 }).scroll();
                 
-                main.find(".nav-bar .item").on("tab:show", function () {
+                main.find(".tabs .tab").on("tab:show", function () {
                     if (main.find(".nav-bar").hasClass("floating")) {
-                        penv.part.scrollTop(main.find(".info-header").height() - tbar.height());
+                        penv.part.scrollTop(main.find(".info-header").height() - tbar.height() + 1);
                     }
                 });
+                
+                var event_tab = event.init(main.find(".org-event-cont"), {
+                    view: function (info) {
+                        util.jump("#event/" + info.euid);
+                    },
+                    
+                    fetch: {
+                        fetch: function (skip, sortby, cb) {
+                            foci.get("/club/org", $.extend({ cuid: cuid, skip: skip }, sortby), cb);
+                        },
+
+                        cont: penv.part,
+                        no_more_prompt: "no more events"
+                    }
+                });
+                
+                main.find(".org-event-tab").on("tab:show", function () {
+                    main.find(".org-event-cont").addClass("hide");
+                    main.find(".org-event-tab .loader").addClass("active");
+                    
+                    event_tab.clear(function () {
+                        event_tab.fetch(function () {
+                            event_tab.update();
+                            main.find(".org-event-cont").removeClass("hide");
+                            main.find(".org-event-tab .loader").removeClass("active");
+                        });
+                    });
+                });
+                
+                var main_tab = tab.common(main.find(".nav-bar .item"), main.find(".tabs .tab"));
+            
+                $(window).resize(function () {
+                    main.find(".tabs .tab").css("min-height",
+                                                $(window).height() -
+                                                main.find(".info-header").outerHeight(true) -
+                                                main.find(".nav-bar").outerHeight(true) - 3);
+                }).resize();
+                
+                if (env.session()) {
+                    foci.encop(env.session(), {
+                        int: "club",
+                        action: "relation",
+                        cuid: cuid
+                    }, function (suc, dat) {
+                        if (suc) {
+                            switch (dat) {
+                                case "admin":
+                                case "creator":
+                                    main.addClass("admin");
+                                
+                                case "member":
+                                    main.addClass("member");
+                                    break;
+                                
+                                default: ;
+                            }
+                        } else {
+                            util.emsg(dat);
+                        }
+                    });
+                }
+                
+                if (args[1])
+                    main.find(".item-" + args[1]).click();
             }
             
             var tbar = env.get("tbar");
             
             $("body").removeClass("padding-tbar");
             // tbar.applyShadow();
-            
-            var main_tab = tab.common(main.find(".nav-bar .item"), main.find(".tabs .tab"));
             
             foci.get("/club/info", { cuid: cuid }, function (suc, dat) {
                 if (suc) {

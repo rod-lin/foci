@@ -39,6 +39,7 @@ var dict = module.exports = {
 		"core.word.system_sender": "system sender",
 		
 		"core.word.uuid": "user id",
+		"core.word.cuid": "club id",
 
 		"core.word.staff": "staff",
 		"core.word.partic": "participant",

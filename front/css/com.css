@@ -4,6 +4,8 @@ body {
 	tab-size: 4;
 }
 
+* { -webkit-overflow-scrolling: touch; }
+
 * { outline: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
 button { padding: 0; user-select: none; -moz-user-select: none; }
 
@@ -15,6 +17,8 @@ button { padding: 0; user-select: none; -moz-user-select: none; }
 	border: 0;
 	resize: none;
 	border-radius: 0;
+	
+	-webkit-appearance: none;
 }
 
 .ui.two.buttons>.button {

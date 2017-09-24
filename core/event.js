@@ -140,6 +140,7 @@ Event.prototype.getInfo = function (only) {
 		state: this.state,
 
 		org: this.org,
+		org_club: this.org_club,
 
 		start: this.start ? this.start.getTime() : null,
 		end: this.end ? this.end.getTime() : null,
@@ -296,6 +297,22 @@ Event.format.info = {
 			return org;
 		}
 	},
+	
+	org_club: {
+		type: "array", lim: org => {
+			for (var i = 0; i < org.length; i++) {
+				if (typeof org[i] != "number") {
+					org[i] = parseInt(org[i]);
+				}
+				
+				if (isNaN(org[i]) || org[i] < 0) {
+					throw new err.Exc("$core.illegal($core.word.cuid)");
+				}
+			}
+			
+			return org;
+		}
+	},
 
 	start: { type: "int", lim: time => new Date(time) },
 	end: { type: "int", lim: time => new Date(time) },
@@ -392,6 +409,7 @@ Event.query = {
 	}),
 
 	org: uuid => ({ "org": uuid, "state": { $gte: evstat.published } }),
+	org_club: cuid => ({ "org_club": cuid, "state": { $gte: evstat.published } }),
 
 	applied: (uuid, status) => {
 		var q = {
@@ -660,7 +678,6 @@ function formatStdLim(conf) {
 }
 
 async function getEventGroup(query, conf, filter) {
-
 	var col = await db.col("event");
 	var arr = await col.find(query);
 
@@ -690,6 +707,10 @@ async function getEventGroup(query, conf, filter) {
 // events organized by a certain user(in event info)
 exports.getOrganized = async (uuid, conf, filter) => {
 	return await getEventGroup(Event.query.org(uuid), conf, filter);
+};
+
+exports.getClubOrganized = async (cuid, conf) => {
+	return await getEventGroup(Event.query.org_club(cuid), conf);
 };
 
 /*

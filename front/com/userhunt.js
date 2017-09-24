@@ -5,13 +5,100 @@
 define([ "com/util", "com/avatar" ], function (util, avatar) {
 	foci.loadCSS("com/userhunt.css");
 
+	$.fn.search.settings.templates.withicon = function (res) {
+		res = res.results;
+
+		var ret = "";
+
+		if (res) {
+			for (var i = 0; i < res.length; i++) {
+				ret += " \
+					<div class='result'> \
+						<div class='result-avatar' style='background-image: url(\"" + foci.download(res[i].avatar) + "\");'></div> \
+						<div class='result-info'> \
+							<div class='result-name title'>" + res[i].dname + "</div> \
+							<div class='result-intro'>" + res[i].intro + "</div> \
+						</div> \
+					</div> \
+				";
+			}
+		}
+
+		return ret;
+	};
+	
+	var api = {};
+	
+	api.user = {
+		url: "/user/search?kw={query}",
+
+		onResponse: function (dat) {
+			// console.log(dat);
+
+			if (!dat.suc || !dat.res.length) return null;
+
+			// console.log(ret);
+
+			return { results: dat.res };
+		},
+		
+		onInfo: function (uid, cb) {
+			foci.get("/user/info", { uuid: uid }, function (suc, dat) {
+				if (suc) {
+					cb(dat);
+				} else {
+					util.emsg(dat);
+				}
+			});
+		}
+	};
+	
+	api.club = {
+		url: "/club/search?kw={query}",
+	
+		onResponse: function (dat) {
+			if (!dat.suc || !dat.res.length) return null;
+			
+			for (var i = 0; i < dat.res.length; i++) {
+				dat.res[i] = {
+					uuid: dat.res[i].cuid,
+					dname: dat.res[i].dname,
+					intro: dat.res[i].school,
+					avatar: dat.res[i].logo
+				};
+			}
+			
+			return { results: dat.res };
+		},
+		
+		onInfo: function (uid, cb) {
+			foci.get("/club/info", { cuid: uid }, function (suc, dat) {
+				if (suc) {
+					cb({
+						uuid: dat.cuid,
+						dname: dat.dname,
+						intro: dat.school,
+						avatar: dat.logo
+					});
+				} else {
+					util.emsg(dat);
+				}
+			});
+		}
+	};
+
 	function modal(init /* init user list */, cb, config) {
 		config = $.extend({
 			prompt: "Selected user(s)",
 			just_one: false,
 			use_dragi: false,
 			
-			title: "Find user"
+			title: "Find user",
+			
+			// if defined otherwise, the dat should have { uuid, dname, avatar, intro(opt) }
+			api: api.user,
+			
+			avatar_config: {}
 		}, config);
 
 		var main = $(" \
@@ -32,17 +119,20 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 
 		var delbtn = $("<div class='del-btn'><i class='fitted minus icon'></i></div>");
 
-		var selected = {};
+		// var selected = {};
+		var selected = [];
 
 		if (init) {
 			for (var i = 0; i < init.length; i++) {
-				foci.get("/user/info", { uuid: init[i] }, function (suc, dat) {
-					if (suc) {
-						addSelected(dat);
-					} else {
-						util.emsg(dat);
-					}
-				});
+				// foci.get("/user/info", { uuid: init[i] }, function (suc, dat) {
+				// 	if (suc) {
+				// 		addSelected(dat);
+				// 	} else {
+				// 		util.emsg(dat);
+				// 	}
+				// });
+				
+				config.api.onInfo(init[i], addSelected);
 				
 				// selected[init[i]] = true;
 			}
@@ -52,17 +142,8 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 		var onHide = function () {
 			if (once) return;
 
-			var final = [];
-
-			for (var k in selected) {
-				if (selected.hasOwnProperty(k)) {
-					// alert("hi");
-					final.push(parseInt(k));
-				}
-			}
-
 			if (cb) {
-				if (cb(final) === false)
+				if (cb(selected) === false)
 					return false;
 			}
 			
@@ -96,31 +177,9 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 		main.find(".close-btn").click(function () {
 			hide();
 		});
-
-		$.fn.search.settings.templates.withicon = function (res) {
-			res = res.results;
-
-			var ret = "";
-
-			if (res) {
-				for (var i = 0; i < res.length; i++) {
-					ret += " \
-						<div class='result'> \
-							<div class='result-avatar' style='background-image: url(\"" + foci.download(res[i].avatar) + "\");'></div> \
-							<div class='result-info'> \
-								<div class='result-name title'>" + res[i].dname + "</div> \
-								<div class='result-intro'>" + res[i].intro + "</div> \
-							</div> \
-						</div> \
-					";
-				}
-			}
-
-			return ret;
-		};
 		
 		function addSelected(dat) {
-			if (selected[dat.uuid]) {
+			if (selected.indexOf(dat.uuid) != -1) {
 				util.emsg("already selected");
 				return false;
 			}
@@ -130,37 +189,29 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 				return false;
 			}
 			
-			selected[dat.uuid] = dat;
+			// selected[dat.uuid] = dat;
+			selected.push(dat.uuid);
 			
 			if (config.just_one) {
 				hide();
 				return;
 			}
 			
-			var ava = avatar.init(main.find(".user-list"), dat, { size: "4rem", can_jump: false });
+			var ava = avatar.init(main.find(".user-list"), dat,
+								  $.extend({ size: "4rem", can_jump: false }, config.avatar_config));
 
 			ava.dom.append(delbtn.clone().click(function () {
 				ava.dom.remove();
-				delete selected[dat.uuid];
+				
+				var i = selected.indexOf(dat.uuid);
+				selected.splice(i, 1);
 			}));
 		}
 
 		main.find(".ui.search").search({
 			type: "withicon",
 
-			apiSettings: {
-				url: "/user/search?kw={query}",
-
-				onResponse: function (dat) {
-					// console.log(dat);
-
-					if (!dat.suc || !dat.res.length) return null;
-
-					// console.log(ret);
-
-					return { results: dat.res };
-				}
-			},
+			apiSettings: config.api,
 
 			onSelect: function (res) {
 				util.nextTick(function () {
@@ -182,5 +233,8 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 		return ret;
 	}
 
-	return { modal: modal };
+	return {
+		modal: modal,
+		api: api
+	};
 });

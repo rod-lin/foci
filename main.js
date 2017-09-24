@@ -63,6 +63,8 @@ app.get("/event/search", int.event.search);
 app.get("/event/comment", int.event.comment);
 
 app.get("/club/info", int.club.info);
+app.get("/club/search", int.club.search);
+app.get("/club/org", int.club.org);
 
 app.post("/file/upload", int.file.upload);
 app.get("/file/download", int.file.download);

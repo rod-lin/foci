@@ -27,7 +27,7 @@ define(function () {
 			if (cur != i) {
 				$(tabs[cur]).triggerHandler("tab:hide");
 				cur = i;
-				$(tabs[i]).triggerHandeler("tab:show");
+				$(tabs[i]).triggerHandler("tab:show");
 			}
 		}
 		
@@ -42,6 +42,7 @@ define(function () {
 		});
 		
 		switchTo(config.init);
+		$(tabs[config.init]).triggerHandler("tab:show");
 		
 		var mod = {};
 		

@@ -234,11 +234,21 @@
 					<div class="ui attached segment">
 						<p>
 							<b>Organizers</b><br>
-							<span>Edit organizers of the club</span>
+							<span>Edit organizers of this event</span>
 						</p>
 						
 						<div class="ui field">
 							<button class="ui blue basic button edit-org-btn">Edit</button>
+						</div>
+					</div>
+					<div class="ui attached segment">
+						<p>
+							<b>Related club</b><br>
+							<span>Add/edit related club of this event</span>
+						</p>
+						
+						<div class="ui field">
+							<button class="ui green basic button edit-club-btn">Edit</button>
 						</div>
 					</div>
 					
@@ -1557,7 +1567,25 @@
 										
 										changed.org = true;
 										fields.org = selected;
-									}, {});
+									}, {
+										use_dragi: foci.use_dragi
+									});
+								});
+								
+								new_tab.find(".edit-club-btn").off("click").click(function () {
+									uh.modal(fields.org_club || info.org_club || [], function (selected) {
+										changed.org_club = true;
+										fields.org_club = selected;
+									}, {
+										api: uh.api.club,
+										title: "Find club",
+										prompt: "Selected club(s)",
+										use_dragi: foci.use_dragi,
+										
+										avatar_config: {
+											radius: "5px"
+										}
+									});
 								});
 								
 								function unpublish(euid) {
@@ -1637,10 +1665,11 @@
 							},
 							
 							onCheck: function (cb) {
-								if (changed.org) {
+								if (changed.org || changed.org_club) {
 									var next = function () {
 										uploadChanges({
-											org: fields.org
+											org: fields.org,
+											org_club: fields.org_club
 										}, function (suc) {
 											if (suc) {
 												cb(true);
@@ -1650,7 +1679,7 @@
 										});
 									};
 									
-									if (fields.org.indexOf(uuid) == -1) {
+									if (fields.org && fields.org.indexOf(uuid) == -1) {
 										util.ask("You did not include yourself in the organizer list. " +
 												 "This change will <b>REMOVE</b> your identity as an organizer or administrator of this event, " +
 												 "and you will <b>NOT BE ABLE TO EDIT</b> it again. " +
@@ -1672,10 +1701,7 @@
 
 					/* loader icon on the New/Save button */
 					function setLoader() {
-						tb.getItem("new").html("<div class='ui active inverted " + (
-							display_mode == "normal"
-							? "small" : "tiny"
-						) + " inline loader'></div>");
+						tb.getItem("new").html("<div class='ui active small inline loader'></div>");
 					}
 
 					function delLoader() {
@@ -1692,7 +1718,7 @@
 								action: "setinfo",
 								euid: euid
 							}, changes), function (suc, dat) {
-								delLoader();
+								setTimeout(delLoader, 300);
 
 								if (!suc) {
 									util.emsg(dat);
@@ -1797,7 +1823,7 @@
 					saveDraft = function (cb) {
 						setLoader();
 						checkStep(function (suc) {
-							delLoader();
+							setTimeout(delLoader, 300);
 							cb(suc);
 						});
 					};
@@ -1976,7 +2002,7 @@
 										action: "new"
 									}, function (suc, dat) {
 										if (suc) {
-											loadDraft({ euid: dat });
+											loadDraft(dat);
 											updateAllPos();
 											show();
 										} else {

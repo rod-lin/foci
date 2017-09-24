@@ -98,6 +98,20 @@ Club.prototype.getInfo = function () {
     };
 };
 
+Club.prototype.getRelation = function (uuid) {
+    if (this.apply_member[uuid])
+        return "app";
+    else if (this.creator == uuid)
+        return "creator";
+    else if (this.member[uuid]) {
+        if (this.member[uuid].is_admin)
+            return "admin";
+        else
+            return "member";
+    } else
+        return null;
+};
+
 // get info related to a user
 Club.prototype.getRelatedInfo = function (uuid) {
     return {
@@ -105,19 +119,7 @@ Club.prototype.getRelatedInfo = function (uuid) {
         dname: this.dname,
         logo: this.logo,
         state: this.state,
-        relation: (() => {
-            if (this.apply_member[uuid])
-                return "app";
-            else if (this.creator == uuid)
-                return "creator";
-            else if (this.member[uuid]) {
-                if (this.member[uuid].is_admin)
-                    return "admin";
-                else
-                    return "member";
-            } else
-                return null;
-        })()
+        relation: this.getRelation(uuid)
     }
 };
 
@@ -393,7 +395,10 @@ exports.search = async (uuid, conf) => {
                        
     var ret = [];
 
-    res.forEach(clb => ret.push(new Club(clb).getRelatedInfo(uuid)));
+    if (uuid)
+        res.forEach(clb => ret.push(new Club(clb).getRelatedInfo(uuid)));
+    else
+        res.forEach(clb => ret.push(new Club(clb).getInfo()));
 
     return ret;
 };

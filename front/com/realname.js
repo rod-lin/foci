@@ -52,6 +52,9 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
                         else {
                             popup.addClass("not-realname");
                             popup.html("Not authenticated");
+                            main.click(function () {
+                                util.jump("#setting/user/realname");
+                            });
                         }
                     }
                 } else {

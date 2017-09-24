@@ -348,6 +348,24 @@ _club.info = util.route(async env => {
 	env.qsuc(clb.getInfo());
 });
 
+_club.search = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	
+	var args = util.checkArg(env.query, { "kw": "string" });
+	
+	env.qsuc(await club.search(null, { kw: args.kw }));	
+});
+
+_club.org = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	
+	var args = util.checkArg(env.query, {}.extend(event.Event.format.lim).extend({
+		"cuid": "int"
+	}));
+	
+	env.qsuc(await event.getClubOrganized(args.cuid, args));	
+});
+
 var _file = {};
 
 _file.upload = util.route(async env => {
@@ -556,7 +574,7 @@ encop.event = async (env, usr, query, next, has_cap) => {
 		
 			var ev = await event.newEvent(uuid);
 			
-			return ev.getEUID();
+			return ev.getInfo();
 
 		case "del":
 			var args = util.checkArg(query, { euid: "int" });
@@ -860,6 +878,10 @@ encop.club = async (env, usr, query, next) => {
 		case "getrelated":
 			return await club.getRelatedClub(usr.getUUID());
 			
+		case "relation":
+			var args = util.checkArg(query, { cuid: "int" });
+			return (await club.cuid(args.cuid)).getRelation(usr.getUUID());
+			
 		case "delete":
 			var args = util.checkArg(query, { cuid: "int" });
 			await club.delete(args.cuid, usr.getUUID());
@@ -867,8 +889,8 @@ encop.club = async (env, usr, query, next) => {
 			
 		case "search":
 			var args = util.checkArg(query, { kw: "string" });
-			return club.search(usr.getUUID(), { kw: args.kw });
-			
+			return await club.search(usr.getUUID(), { kw: args.kw });
+		
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}
