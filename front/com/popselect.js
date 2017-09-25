@@ -5,6 +5,62 @@
 define([ "com/util" ], function (util) {
 	foci.loadCSS("com/popselect.css");
 
+	function text(obj, config) {
+		obj = $(obj);
+		config = $.extend({
+			position: "bottom center",
+			prompt: "Text"
+		}, config);
+		
+		var main = $("<div class='com-popselect-text'> \
+			<div class='ui form'> \
+				<div class='ui field'> \
+					<textarea type='text' style='width: 15rem; height: 8rem;'></textarea> \
+				</div> \
+				<div style='position: relative;'> \
+					<div class='ui inline loader tiny'></div> \
+					<i class='submit-btn check icon'></i> \
+				</div> \
+			\</div> \
+		</div>");
+		
+		main.find("textarea").attr("placeholder", config.prompt);
+		
+		main.find(".submit-btn").click(function () {
+			if (config.onSubmit) {
+				main.find(".loader").addClass("active");
+				config.onSubmit(function () {
+					main.find(".loader").removeClass("active");
+				});
+			}
+		});
+		
+		obj.popup({
+			html: main,
+			lastResort: true,
+			on: "click",
+
+			position: config.position,
+			
+			onHide: function () {
+				if (config.onHide)
+					return config.onHide();
+			}
+		});
+		
+		var mod = {};
+		
+		mod.hide = function () {
+			obj.popup("hide");
+		};
+		
+		mod.val = function () {
+			return main.find("textarea").val();
+		};
+		
+		return mod;
+	}
+
 	/*
 		option: [
 			{
@@ -75,5 +131,5 @@ define([ "com/util" ], function (util) {
 		return ret;
 	}
 
-	return { init: init };
+	return { init: init, text: text };
 });

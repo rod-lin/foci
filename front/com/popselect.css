@@ -34,3 +34,25 @@
 .com-popselect .option:last-child {
 	border: none !important;
 }
+
+.com-popselect-text textarea {
+	resize: none !important;
+}
+
+.com-popselect-text .submit-btn {
+	color: #27AE60;
+	cursor: pointer;
+	transition: color 0.3s;
+}
+
+.com-popselect-text .submit-btn:hover {
+	color: #2ECC71;
+}
+
+.com-popselect-text .submit-btn:active {
+	color: #27B061;
+}
+
+.com-popselect-text .ui.loader.active+.submit-btn {
+	display: none;
+}

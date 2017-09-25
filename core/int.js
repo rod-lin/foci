@@ -866,7 +866,7 @@ encop.club = async (env, usr, query, next) => {
 			return;
 			
 		case "applyjoin":
-			var args = util.checkArg(query, { cuid: "int", comment: "" });
+			var args = util.checkArg(query, { cuid: "int", comment: "string" });
 			await club.applyMember(args.cuid, usr.getUUID(), args.comment);
 			return;
 			
@@ -890,6 +890,10 @@ encop.club = async (env, usr, query, next) => {
 		case "search":
 			var args = util.checkArg(query, { kw: "string" });
 			return await club.search(usr.getUUID(), { kw: args.kw });
+			
+		case "member":
+			var args = util.checkArg(query, { cuid: "int" });
+			return await club.getMember(args.cuid, await club.isAdmin(args.cuid, usr.getUUID()));
 		
 		default:
 			throw new err.Exc("$core.action_not_exist");

@@ -57,7 +57,8 @@ var Club = function (cuid, creator, conf) {
         [creator]: {
             title: null,
             join_time: new Date(),
-            is_admin: true
+            is_admin: true,
+            is_creator: true
         }
     };
     
@@ -121,6 +122,24 @@ Club.prototype.getRelatedInfo = function (uuid) {
         state: this.state,
         relation: this.getRelation(uuid)
     }
+};
+
+Club.prototype.getMember = function (include_apply) {
+    if (include_apply) {
+        for (var k in this.apply_member) {
+            if (this.apply_member.hasOwnProperty(k)) {
+                this.apply_member[k].is_app = true;
+            }
+        }
+    }
+    
+    var ret = include_apply
+              ? {}.extend(this.apply_member).extend(this.member) // overwrite applying member
+              : this.member;
+              
+    ret[this.creator].is_creator = true;
+    
+    return ret;
 };
 
 exports.Club = Club;
@@ -270,12 +289,16 @@ exports.checkCreator = async (cuid, uuid) => {
             throw new err.Exc("$core.club.not_club_owner");
 };
 
-exports.checkAdmin = async (cuid, uuid) => {
+exports.isAdmin = async (cuid, uuid) => {
     var col = await db.col("club");
     
-    if (!await user.isAdmin(uuid))
-        if (!await col.count(Club.query.check_admin(cuid, uuid)))
-            throw new err.Exc("$core.club.not_club_owner");
+    return await user.isAdmin(uuid) ||
+           await col.count(Club.query.check_admin(cuid, uuid));
+};
+
+exports.checkAdmin = async (cuid, uuid) => {
+    if (!await exports.isAdmin(cuid, uuid))
+        throw new err.Exc("$core.club.not_club_owner");
 };
 
 exports.cuid = async (cuid, state) => {
@@ -401,4 +424,10 @@ exports.search = async (uuid, conf) => {
         res.forEach(clb => ret.push(new Club(clb).getInfo()));
 
     return ret;
+};
+
+exports.getMember = async (cuid, include_apply) => {
+    var club = await exports.cuid(cuid);
+
+    return club.getMember(include_apply);
 };

@@ -2,7 +2,11 @@
 
 "use strict";
 
-define([ "com/util", "com/login", "com/xfilt", "com/userhunt" ], function (util, login, xfilt, userhunt) {
+define([
+    "com/util", "com/login", "com/xfilt",
+    "com/userhunt", "com/env", "com/pm",
+    "com/popselect"
+], function (util, login, xfilt, userhunt, env, pm, popselect) {
     var $ = jQuery;
     foci.loadCSS("com/club.css");
     
@@ -38,6 +42,266 @@ define([ "com/util", "com/login", "com/xfilt", "com/userhunt" ], function (util,
         return ret;
     };
     
+    function local_search(config) {
+        config = $.extend({
+            prompt: "Search club"
+        }, config);
+        
+        var search = $("<div class='com-club-search ui fluid search'> \
+            <div class='ui icon input'> \
+                <input class='prompt' type='text'> \
+                <i class='search icon'></i> \
+            </div> \
+            <div class='results'></div> \
+        </div>");
+        
+        search.find(".prompt").attr("placeholder", config.prompt);
+        
+        return search;
+    }
+    
+    // member list
+    club.memlist = function (cont, cuid, config) {
+        cont = $(cont);
+        config = $.extend({
+            use_dragi: false
+        }, config);
+    
+        var main = $("<div class='com-club-memlist'> \
+            <div class='member-search' style='display: none;'> \
+                <div></div> \
+            </div> \
+            <div class='action-bar'> \
+                <button class='join-btn ui green basic button'><i class='user outline icon'></i>Join</button> \
+                <button class='ui blue basic button'><i class='add icon'></i>Invite</button> \
+            </div> \
+            <div class='apply-member only-admin'></div> \
+            <div class='members'></div> \
+            <div class='no-login-prompt'>Please <a class='login-link'>login</a> first</div> \
+        </div>");
+        
+        function changeApplyProc(accept, uuid, cb) {
+            return function () {
+                login.session(function (session) {
+                    if (session) foci.encop(session, {
+                        int: "club",
+                        action: "changeapply",
+                        
+                        cuid: cuid,
+                        uuid: uuid,
+                        
+                        accept: accept
+                    }, function (suc, dat) {
+                        if (suc) {
+                            cb(accept);
+                        } else {
+                            util.emsg(dat);
+                        }
+                    });
+                });
+            };
+        }
+    
+        function genMember(uuid, mem, session) {
+            var member = $("<div class='member-item'> \
+                <div class='bar'> \
+                    <div class='avatar'></div> \
+                    <div class='dname'>loading</div> \
+                    <div class='badge'></div> \
+                    <div class='expand'></div> \
+                    <div class='toolbar'> \
+                        <i class='toolbtn chat-btn comments outline icon'></i> \
+                        <i class='toolbtn setting icon only-admin not-apply'></i> \
+                        <i class='toolbtn remove icon only-admin not-apply'></i> \
+                        <i class='toolbtn check icon only-apply'></i> \
+                    </div> \
+                </div> \
+                <div class='expand-cont'> \
+                    <div class='comment-box only-apply'> \
+                        <span class='prompt'>Comment</span> \
+                        <span class='comment'></span> \
+                        <div style='margin-top: 1rem;'> \
+                            <button class='dec-btn ui basic red button'>Decline</button> \
+                            <button class='acc-btn ui basic green button'>Accept</button> \
+                        </div> \
+                    </div> \
+                    <div class='setting-box only-admin not-apply'> \
+                        <span class='prompt'>Settings</span> \
+                    </div> \
+                </div> \
+            </div>");
+            
+            foci.get("/user/info", { uuid: uuid }, function (suc, dat) {
+                if (suc) {
+                    var parsed = login.parseInfo(dat);
+                    
+                    util.bgimg(member.find(".avatar"), parsed.avatar);
+                    member.find(".dname").html(parsed.dname);
+                    
+                    if (mem.is_app) {
+                        member.find(".comment").html(xfilt(mem.comment ? mem.comment : "(no comment)"));
+                        member.addClass("apply");
+                        member.find(".badge").addClass("apply").html("Applicant");
+                    } else if (mem.is_creator) {
+                        member.find(".badge").addClass("creator").html("Creator");
+                    } else if (mem.is_admin) {
+                        member.find(".badge").addClass("admin").html("Admin");
+                    }
+                } else {
+                    util.emsg(dat);
+                }
+            });
+            
+            if (session.getUUID() == uuid) {
+                member.find(".chat-btn").remove();
+            } else {
+                member.find(".chat-btn").click(function () {
+                    pm.chatbox(uuid, { use_dragi: config.use_dragi });
+                });
+            }
+            
+            member.find(".avatar").click(function () {
+                util.jump("#profile/" + uuid);
+            });
+            
+            member.click(function () {
+                member.toggleClass("selected");
+                
+                if (member.hasClass("selected")) {
+                    member.css("height", member.outerHeight() + member.find(".expand-cont").outerHeight() + "px");
+                } else {
+                    member.css("height", "");
+                }
+            });
+            
+            member.find(".expand-cont").click(function (e) {
+                e.stopPropagation();
+            });
+            
+            var update = function (accept) {
+                if (accept) {
+                    mem.is_app = false;
+                    member.after(genMember(uuid, mem));
+                    member.remove();
+                } else {
+                    member.remove();
+                }
+            };
+        
+            if (mem.is_app) {
+                member.find(".dec-btn").click(changeApplyProc(false, uuid, update));
+                member.find(".acc-btn").click(changeApplyProc(true, uuid, update));
+            }
+                
+            return member;
+        }
+        
+        function sortMember(dat) {
+            var res = [];
+            
+            var filt_id = function (id) {
+                for (var k in dat) {
+                    if (dat.hasOwnProperty(k)) {
+                        if (dat[k] && (!id || dat[k][id])) {
+                            dat[k].uuid = k;
+                            res.push(dat[k]);
+                            delete dat[k];
+                        }
+                    }
+                }
+            }
+            
+            filt_id("is_app");
+            filt_id("is_creator");
+            filt_id("is_admin");
+            filt_id("");
+            
+            return res;
+        }
+        
+        function loadAllMember(session) {
+            main.removeClass("no-login");
+            foci.encop(session, {
+                int: "club",
+                action: "member",
+                cuid: cuid
+            }, function (suc, dat) {
+                if (suc) {
+                    if (dat[session.getUUID()] && dat[session.getUUID()].is_admin)
+                        main.addClass("admin");
+                    
+                    var filt = sortMember(dat);
+                    
+                    for (var i = 0; i < filt.length; i++) {
+                        main.find(".members").append(genMember(filt[i].uuid, filt[i], session));
+                    }
+                } else {
+                    util.emsg(dat);
+                }
+            });
+        }
+    
+        (function () {
+            var search = local_search({ prompt: "Search member" });
+        
+            main.find(".login-link").click(function () {
+                login.session(function (session) {
+                    loadAllMember(session);
+                });
+            });
+            
+            main.find(".member-search").append(search);
+            
+            if (env.session()) {
+                loadAllMember(env.session());
+            } else {
+                main.addClass("no-login");
+            }
+            
+            var no_hide = false;
+            
+            var reqtext = popselect.text(main.find(".join-btn"), {
+                prompt: "Comment(your identity and relation with this club)",
+            
+                onSubmit: function (cb) {
+                    no_hide = true;
+                    
+                    login.session(function (session) {
+                        if (session)
+                            foci.encop(session, {
+                                int: "club",
+                                action: "applyjoin",
+                                cuid: cuid,
+                                comment: reqtext.val()
+                            }, function (suc, dat) {
+                                no_hide = false;
+                                
+                                if (suc) {
+                                    util.emsg("request sent", "success");
+                                    reqtext.hide();
+                                } else {
+                                    util.emsg(dat);
+                                }
+                                
+                                cb();
+                            });
+                        else no_hide = false;
+                    });
+                },
+                
+                onHide: function () {
+                    return !no_hide;
+                }
+            });
+        })();
+    
+        cont.append(main);
+    
+        var mod = {};
+    
+        return mod;
+    };
+    
     club.popview = function (config) {
         config = $.extend({
             use_dragi: false
@@ -45,15 +309,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/userhunt" ], function (util,
     
         var main = $("<div class='com-club-popview ui small modal'> \
             <div class='pop-cont'> \
-                <div style='padding-right: 1rem;'> \
-                    <div class='ui fluid search local-search'> \
-                        <div class='ui icon input'> \
-                            <input class='prompt' type='text' placeholder='Search club'> \
-                            <i class='search icon'></i> \
-                        </div> \
-                        <div class='results'></div> \
-                    </div> \
-                </div> \
+                <div class='local-search' style='padding-right: 1rem;'></div> \
                 <div class='club-list club-self-list'> \
                     <div class='club-entry find-club-entry'> \
                         <div class='club-logo'><i class='search fitted icon'></i></div> \
@@ -72,6 +328,8 @@ define([ "com/util", "com/login", "com/xfilt", "com/userhunt" ], function (util,
                 </div> \
             </div> \
         </div>");
+        
+        main.find(".local-search").append(local_search());
         
         function hide() {
             if (config.use_dragi) {

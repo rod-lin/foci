@@ -44,9 +44,7 @@
             <div class="tab"></div>
             
             <!-- members -->
-            <div class="tab">
-                
-            </div>
+            <div class="tab member-tab"></div>
             
             <!-- settings -->
             <div class="tab"></div>
@@ -61,6 +59,8 @@
     .sub-clubcent .main-scroll {
         text-align: center;
         position: relative;
+        
+        background: rgba(253, 253, 253, 1);
     }
     
     .sub-clubcent .main-scroll .info-header {
@@ -249,6 +249,14 @@
         .sub-clubcent .main-scroll .info-header .info .info-box .stat-item {
             display: block;
         }
+        
+        .sub-clubcent .main-scroll .tabs .tab {
+            padding: 1rem 0;
+        }
+        
+        .sub-clubcent .main-scroll .tabs .tab.member-tab {
+            padding-bottom: 7rem; /* to leave enough space for the avatar */
+        }
     }
 </style>
 
@@ -275,6 +283,8 @@
             function render(info) {
                 var parsed = club.parseInfo(info);
                 var info_dom = main.find(".info");
+                
+                tbar.setTitle("Club", parsed.dname);
             
                 info_dom.find(".field-dname").html(parsed.dname);
                 info_dom.find(".field-school").html(parsed.school);
@@ -380,6 +390,8 @@
             $("body").removeClass("padding-tbar");
             // tbar.applyShadow();
             
+            tbar.setTitle("Club");
+            
             foci.get("/club/info", { cuid: cuid }, function (suc, dat) {
                 if (suc) {
                     render(dat);
@@ -388,6 +400,10 @@
                 }
                 
                 show(suc);
+            });
+            
+            club.memlist(main.find(".member-tab"), cuid, {
+                use_dragi: foci.use_dragi
             });
         });
     }

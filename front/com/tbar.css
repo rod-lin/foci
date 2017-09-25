@@ -808,8 +808,7 @@ html.foci-nested .top-tbar {
 }
 
 .com-tbar.simple .login-btn {
-	opacity: 0;
-	visibility: hidden;
+	color: white;
 }
 
 .com-tbar.light-simple .avatar-box,
