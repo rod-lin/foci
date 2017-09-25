@@ -64,8 +64,11 @@ define([
     club.memlist = function (cont, cuid, config) {
         cont = $(cont);
         config = $.extend({
+            info: {},
             use_dragi: false
         }, config);
+        
+        config.info = club.parseInfo(config.info);
     
         var main = $("<div class='com-club-memlist'> \
             <div class='member-search' style='display: none;'> \
@@ -156,11 +159,11 @@ define([
                         <span class='prompt'>Settings</span> \
                         <div class='ui form' style='margin-top: 1rem;'> \
                             <div class='fields' style='margin-bottom: 0;'> \
-                                <div class='field' style='margin-bottom: 1rem;'> \
+                                <div class='field'> \
                                     <label>Title</label> \
                                     <input class='field-mem-title'> \
                                 </div> \
-                                <div class='field' style='margin-bottom: 1rem;'> \
+                                <div class='field' style='margin-top: 1rem;'> \
                                     <label>Admin</label> \
                                     <div class='ui toggle checkbox field-mem-is-admin'> \
         								<input type='checkbox'> \
@@ -168,7 +171,8 @@ define([
         							</div> \
                                 </div> \
                             </div> \
-                            <button class='save-btn ui basic green button'>Save</button> \
+                            <button class='save-btn ui basic green button' style='margin-top: 1rem;'>Save</button> \
+                            <button class='remove-btn ui basic red button not-self' style='margin-top: 1rem;'>Remove this member</button> \
                         </div> \
                     </div> \
                 </div> \
@@ -206,6 +210,7 @@ define([
             
             if (uuid == session.getUUID()) {
                 member.find(".badges").append(badge("self"));
+                member.addClass("self");
             }
             
             if (mem.title) {
@@ -261,8 +266,13 @@ define([
                 member.find(".acc-btn").click(changeApplyProc(true, uuid, update));
             }
             
+            // settings
             (function () {
                 member.find(".field-mem-is-admin").checkbox();
+                
+                if (mem.is_creator) {
+                    member.find(".field-mem-is-admin").checkbox("set disabled");
+                }
                 
                 if (mem.is_admin) {
                     member.find(".field-mem-is-admin").checkbox("set checked");
@@ -296,6 +306,29 @@ define([
                                 util.emsg(dat);
                             }
                         });
+                    });
+                });
+                
+                member.find(".remove-btn").click(function () {
+                    util.ask("Are you sure to REMOVE this member? This action is not reversible", function (ans) {
+                        if (ans) {
+                            login.session(function (session) {
+                                foci.encop(session, {
+                                    int: "club",
+                                    action: "delmember",
+                                    
+                                    cuid: cuid,
+                                    uuid: uuid
+                                }, function (suc, dat) {
+                                    if (suc) {
+                                        update(false);
+                                        util.emsg("removed", "warning");
+                                    } else {
+                                        util.emsg(dat);
+                                    }
+                                });
+                            });
+                        }
                     });
                 });
             })();
@@ -409,6 +442,32 @@ define([
                 onHide: function () {
                     return !no_hide;
                 }
+            });
+            
+            main.find(".invite-btn").click(function () {
+                userhunt.modal([], function (selected) {
+                    if (!selected.length) {
+                        util.emsg("no user chosen", "info");
+                        return;
+                    }
+                    
+                    login.session(function (session) {
+                        foci.encop(session, {
+                            int: "club",
+                            action: "invite",
+                            cuid: cuid,
+                            uuids: selected
+                        }, function (suc, dat) {
+                            if (suc) {
+                                util.emsg("invitation sent", "success");
+                            } else {
+                                util.emsg(dat);
+                            }
+                        });
+                    });
+                }, {
+                    use_dragi: config.use_dragi
+                });
             });
         })();
     

@@ -209,7 +209,11 @@ define([
 
 		main.find(".nt-header .sender").html("by " + config.info.name);
 		main.find(".nt-header .date").html(util.localDate(new Date(msg.date)));
-		main.find(".cont").html(xfilt(msg.msg));
+		
+		if (msg.format == "html")
+			main.find(".cont").html(msg.raw);
+		else
+			main.find(".cont").html(xfilt(msg.msg));
 		
 		function hide() {
 			if (config.use_dragi) {
@@ -294,6 +298,7 @@ define([
 					for (var i = 0; i < dat[k].length; i++) {
 						dat[k][i].date = new Date(dat[k][i].date);
 						dat[k][i].title = xfilt(lang.msg(dat[k][i].title || "$core.notice.untitled"));
+						dat[k][i].raw = lang.msg(dat[k][i].msg);
 						dat[k][i].msg = xfilt(lang.msg(dat[k][i].msg));
 					}
 				}
@@ -338,7 +343,10 @@ define([
 					
 					use_dragi: config.use_dragi,
 					
-					logo_url: msg.type == "event" ? "#event/" + parseInt(msg.sender) : null
+					logo_url:
+						msg.type == "event" ? "#event/" + msg.sender
+					: ( msg.type == "club" ? "#clubcent/" + msg.sender
+					:   null)
 				});
 			});
 			
@@ -364,7 +372,7 @@ define([
 				item.addClass("unread");
 			}
 
-			item.find(".sender-msg").html(msg.title + ": " + msg.msg);
+			item.find(".sender-msg").html(xfilt(msg.title + ": " + msg.msg));
 
 			item.attr("title", util.htmlToText(msg.title));
 

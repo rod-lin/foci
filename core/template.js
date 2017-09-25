@@ -1,4 +1,7 @@
 var user = require("./user");
+var club = require("./club");
+
+var xss = require("xss");
 
 exports.event_apply = async (title, job) => ({
 	title: `You just applied for ${title}`,
@@ -53,4 +56,19 @@ DON'T TELL ANYONE ABOUT IT!<br>
 (and sorry about this brutal theme)
 `
 	});
+};
+
+exports.club_invitation = async (cuid, uuid) => {
+	var clb = await club.cuid(cuid);
+	var usr = await user.uuid(uuid);
+	
+	var club_name = xss(clb.getDName());
+	var user_name = xss(usr.getDName());
+	
+	return {
+		title: `Invitation from ${club_name}`,
+		msg:
+`Hi ${user_name}, this is an invitation from <b>${club_name}</b>.<br>
+Visit <a href="#clubcent/${clb.cuid}/member">this link</a> to join!`
+	};
 };

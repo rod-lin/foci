@@ -357,6 +357,10 @@
     display: none !important;
 }
 
+.com-club-memlist .member-item.self .not-self {
+    display: none !important;
+}
+
 .com-club-memlist .member-item .toolbar .toolbtn {
     margin-right: 0.7rem !important;
     font-size: 1.3rem;

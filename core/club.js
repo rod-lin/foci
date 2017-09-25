@@ -9,6 +9,8 @@ var util = require("./util");
 var user = require("./user");
 var file = require("./file");
 var config = require("./config");
+var notice = require("./notice");
+var template = require("./template");
 
 var clubtype = exports.clubtype = {
     stuorg: 1, // student organization
@@ -79,6 +81,14 @@ Club.prototype.getCUID = function () {
 
 Club.prototype.getState = function () {
     return this.state;
+};
+
+Club.prototype.getLogo = function () {
+    return this.logo;
+};
+
+Club.prototype.getDName = function () {
+    return this.dname;
 };
 
 // public info
@@ -249,6 +259,12 @@ Club.set = {
             ["member." + uuid + ".title"]: title,
             ["member." + uuid + ".is_admin"]: is_admin
         }
+    }),
+    
+    remove_member: uuid => ({
+        $unset: {
+            ["member." + uuid]: null
+        }
     })
 };
 
@@ -365,27 +381,47 @@ exports.delete = async (cuid, uuid) => {
     await col.deleteOne(Club.query.cuid(cuid, clubstat.all));
 };
 
-exports.checkMemberExist = async (cuid, uuid, should_exist) => {
+exports.isMember = async (cuid, uuid) => {
     var col = await db.col("club");
     var count = await col.count(Club.query.member_exist(cuid, uuid));
+    return !!count;
+};
 
-    if (should_exist && !count) {
+// please do not mind the grammar
+// it's just because apply is shorter
+// @functional shift
+exports.isApply = async (cuid, uuid) => {
+    var col = await db.col("club");
+    var count = await col.count(Club.query.apply_exist(cuid, uuid));
+    return !!count;
+};
+
+exports.checkMemberExist = async (cuid, uuid, should_exist) => {
+    var exist = await exports.isMember(cuid, uuid);
+
+    if (should_exist && !exist) {
         throw new err.Exc("$core.club.member_not_exist");
-    } else if (!should_exist && count) {
+    } else if (!should_exist && exist) {
         throw new err.Exc("$core.club.member_exist");
     }
 };
 
 exports.checkApplyExist = async (cuid, uuid, should_exist) => {
-    var col = await db.col("club");
-    var count = await col.count(Club.query.apply_exist(cuid, uuid));
+    var exist = await exports.isApply(cuid, uuid);
 
-    if (should_exist && !count) {
+    if (should_exist && !exist) {
         throw new err.Exc("$core.club.apply_not_exist");
-    } else if (!should_exist && count) {
+    } else if (!should_exist && exist) {
         throw new err.Exc("$core.club.apply_exist");
     }
 };
+
+exports.checkRelated = async (cuid, uuid) => {
+    if (!await exports.isApply(cuid, uuid) &&
+        !await exports.isMember(cuid, uuid)) {
+        throw new err.Exc("$core.club.user_no_relation");
+    }
+}
 
 exports.applyMember = async (cuid, uuid, comment) => {
     await exports.checkClubExist(cuid);
@@ -454,4 +490,28 @@ exports.setMember = async (cuid, self, conf) => {
     
     await col.updateOne(Club.query.cuid(cuid),
                         Club.set.set_member(conf.uuid, title, is_admin));
+};
+
+exports.sendInvitation = async (cuid, self, uuids) => {
+    await exports.checkAdmin(cuid, self);
+    
+    for (var i = 0; i < uuids.length; i++) {
+        await notice.push(uuids[i], {
+            type: "club",
+            sender: cuid,
+            format: "html", // mind xss
+            /* title, msg */
+        }.extend(await template.club_invitation(cuid, uuids[i])));
+    }
+};
+
+exports.removeMember = async (cuid, self, uuid) => {
+    if (self != uuid)
+        await exports.checkAdmin(cuid, self);
+    // else self == uuid -> exit the club
+    
+    var col = await db.col("club");
+    
+    await col.updateOne(Club.query.cuid(cuid),
+                        Club.set.remove_member(uuid));
 };

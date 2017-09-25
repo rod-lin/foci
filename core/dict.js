@@ -137,6 +137,7 @@ var dict = module.exports = {
 		"core.notice.no_type": "no notice type",
 		"core.notice.no_sender": "no notice sender",
 		"core.notice.no_msg": "no notice content",
+		"core.notice.club_notice": "Club Notice: $1",
 
 		"core.comment.no_uuid": "no comment sender",
 		"core.comment.no_comment": "no comment content",
@@ -154,6 +155,7 @@ var dict = module.exports = {
 		"core.club.not_club_owner": "not club owner",
 		"core.club.max_review_reached": "max review count reached",
 		"core.club.club_not_review": "cannot delete a club in operation",
+		"core.club.user_no_relation": "user has no relation to the club",
 		
 		"core.realname.invalid_check_data": "real-name check data invalid",
 		"core.invalid_invcode": "invalid invitation code",

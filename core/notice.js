@@ -6,12 +6,13 @@ var db = require("./db");
 var err = require("./err");
 var util = require("./util");
 var user = require("./user");
+var club = require("./club");
 var event = require("./event");
 var lpoll = require("./lpoll");
 var config = require("./config");
 
 /*
-	type: "event": event notice, "system": system notice
+	type: "event": event notice, "system": system notice, "club": club notice
 	sender: euid or system senders("helper", "welcome")
 
 	title: title of the message
@@ -51,6 +52,17 @@ var Notice = function (config) {
 };
 
 exports.Notice = Notice;
+
+Notice.format = {};
+Notice.format.msg = {
+	type: "string",
+	uuids: "array",
+	
+	sender: "string",
+	
+	title: util.checkArg.lenlim(config.lim.notice.title, "$core.too_long($core.word.title)"),
+	msg: util.checkArg.lenlim(config.lim.notice.text, "$core.too_long($core.word.msg)")
+};
 
 Notice.set = {
 	push: (sender, msg) => {
@@ -116,6 +128,16 @@ exports.info = async (type, sender) => {
 				logo: ev.getLogo(),
 				name: "$core.notice.event_notice(" + ev.getTitle() + ")"
 			};
+			
+		case "club":
+			var cuid = parseInt(sender);
+			var clb = await club.cuid(cuid);
+
+			return {
+				url: false,
+				logo: clb.getLogo(),
+				name: "$core.notice.club_notice(" + clb.getDName() + ")"
+			};
 
 		default:
 			throw new err.Exc("$core.illegal(notice type)");
@@ -157,6 +179,24 @@ exports.sendGroup = async (type, sender /* the claimed sender of the notice */,
 
 			info.type = "event";
 			info.sender = euid;
+			
+			break;
+			
+		case "club":
+			var cuid = parseInt(sender);
+			
+			if (isNaN(cuid)) {
+				throw new err.Exc("$core.not_exist($core.word.club)");
+			}
+			
+			await club.checkAdmin(cuid, uuid);
+			
+			for (var i = 0; i < uuids.length; i++) {
+				await club.checkRelated(cuid, uuids[i]);
+			}
+			
+			info.type = "club";
+			info.sender = cuid;
 			
 			break;
 			

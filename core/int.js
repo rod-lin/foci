@@ -728,16 +728,8 @@ encop.notice = async (env, usr, query, next) => {
 			return T_NEED_HANG;
 
 		case "send":
-			var args = util.checkArg(query, {
-				type: "string",
-				uuids: "array",
-				
-				sender: "string",
-				
-				title: util.checkArg.lenlim(config.lim.notice.title, "$core.too_long($core.word.title)"),
-				msg: util.checkArg.lenlim(config.lim.notice.text, "$core.too_long($core.word.msg)")
-			});
-
+			var args = util.checkArg(query, notice.Notice.format.msg);
+			
 			await notice.sendGroup(args.type, args.sender, usr.getUUID(), args.uuids, args);
 
 			return;
@@ -901,6 +893,20 @@ encop.club = async (env, usr, query, next) => {
 			
 			await club.setMember(args.cuid, usr.getUUID(), args);
 		
+			return;
+			
+		case "invite":
+			var args = util.checkArg(query, { cuid: "int", uuids: "array" });
+			
+			await club.sendInvitation(args.cuid, usr.getUUID(), args.uuids);
+			
+			return;
+		
+		case "delmember":
+			var args = util.checkArg(query, { cuid: "int", uuid: "int" });
+			
+			await club.removeMember(args.cuid, usr.getUUID(), args.uuid);
+			
 			return;
 		
 		default:
