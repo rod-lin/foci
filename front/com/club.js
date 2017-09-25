@@ -73,9 +73,9 @@ define([
             </div> \
             <div class='action-bar'> \
                 <button class='join-btn ui green basic button'><i class='user outline icon'></i>Join</button> \
-                <button class='ui blue basic button'><i class='add icon'></i>Invite</button> \
+                <button class='invite-btn ui blue basic button'><i class='add icon'></i>Invite</button> \
             </div> \
-            <div class='apply-member only-admin'></div> \
+            <div class='apply-member club-only-admin'></div> \
             <div class='members'></div> \
             <div class='no-login-prompt'>Please <a class='login-link'>login</a> first</div> \
         </div>");
@@ -101,22 +101,49 @@ define([
                 });
             };
         }
+        
+        function badge(type, title) {
+            var badge = $("<div class='badge'></div>");
+            
+            switch (type) {
+                case "creator":
+                    badge.addClass("creator").html("Creator");
+                    break;
+                    
+                case "apply":
+                    badge.addClass("apply").html("Applicant");
+                    break;
+                    
+                case "admin":
+                    badge.addClass("admin").html("Admin");
+                    break;
+                    
+                case "self":
+                    badge.addClass("self").html("Me");
+                    break;
+                    
+                case "title":
+                    badge.addClass("title").html(xfilt(title));
+                    break;
+            }
+            
+            return badge;
+        }
     
         function genMember(uuid, mem, session) {
             var member = $("<div class='member-item'> \
                 <div class='bar'> \
                     <div class='avatar'></div> \
                     <div class='dname'>loading</div> \
-                    <div class='badge'></div> \
+                    <div class='badges'></div> \
                     <div class='expand'></div> \
                     <div class='toolbar'> \
                         <i class='toolbtn chat-btn comments outline icon'></i> \
-                        <i class='toolbtn setting icon only-admin not-apply'></i> \
-                        <i class='toolbtn remove icon only-admin not-apply'></i> \
+                        <i class='toolbtn chevron down icon club-only-admin not-apply'></i> \
                         <i class='toolbtn check icon only-apply'></i> \
                     </div> \
                 </div> \
-                <div class='expand-cont'> \
+                <div class='expand-cont club-only-admin'> \
                     <div class='comment-box only-apply'> \
                         <span class='prompt'>Comment</span> \
                         <span class='comment'></span> \
@@ -125,8 +152,24 @@ define([
                             <button class='acc-btn ui basic green button'>Accept</button> \
                         </div> \
                     </div> \
-                    <div class='setting-box only-admin not-apply'> \
+                    <div class='setting-box club-only-admin not-apply'> \
                         <span class='prompt'>Settings</span> \
+                        <div class='ui form' style='margin-top: 1rem;'> \
+                            <div class='fields' style='margin-bottom: 0;'> \
+                                <div class='field' style='margin-bottom: 1rem;'> \
+                                    <label>Title</label> \
+                                    <input class='field-mem-title'> \
+                                </div> \
+                                <div class='field' style='margin-bottom: 1rem;'> \
+                                    <label>Admin</label> \
+                                    <div class='ui toggle checkbox field-mem-is-admin'> \
+        								<input type='checkbox'> \
+        								<label>Is administrator</label> \
+        							</div> \
+                                </div> \
+                            </div> \
+                            <button class='save-btn ui basic green button'>Save</button> \
+                        </div> \
                     </div> \
                 </div> \
             </div>");
@@ -137,16 +180,6 @@ define([
                     
                     util.bgimg(member.find(".avatar"), parsed.avatar);
                     member.find(".dname").html(parsed.dname);
-                    
-                    if (mem.is_app) {
-                        member.find(".comment").html(xfilt(mem.comment ? mem.comment : "(no comment)"));
-                        member.addClass("apply");
-                        member.find(".badge").addClass("apply").html("Applicant");
-                    } else if (mem.is_creator) {
-                        member.find(".badge").addClass("creator").html("Creator");
-                    } else if (mem.is_admin) {
-                        member.find(".badge").addClass("admin").html("Admin");
-                    }
                 } else {
                     util.emsg(dat);
                 }
@@ -155,36 +188,71 @@ define([
             if (session.getUUID() == uuid) {
                 member.find(".chat-btn").remove();
             } else {
-                member.find(".chat-btn").click(function () {
+                member.find(".chat-btn").click(function (e) {
+                    e.stopPropagation();
                     pm.chatbox(uuid, { use_dragi: config.use_dragi });
                 });
+            }
+            
+            if (mem.is_app) {
+                member.find(".comment").html(xfilt(mem.comment ? mem.comment : "(no comment)"));
+                member.addClass("apply");
+                member.find(".badges").append(badge("apply"));
+            } else if (mem.is_creator) {
+                member.find(".badges").append(badge("creator"));
+            } else if (mem.is_admin) {
+                member.find(".badges").append(badge("admin"));
+            }
+            
+            if (uuid == session.getUUID()) {
+                member.find(".badges").append(badge("self"));
+            }
+            
+            if (mem.title) {
+                member.find(".badges").append(badge("title", mem.title));
             }
             
             member.find(".avatar").click(function () {
                 util.jump("#profile/" + uuid);
             });
             
-            member.click(function () {
-                member.toggleClass("selected");
+            function toggle(dom) {
+                dom.toggleClass("selected");
+                dom.find(".chevron").toggleClass("up down");
                 
-                if (member.hasClass("selected")) {
-                    member.css("height", member.outerHeight() + member.find(".expand-cont").outerHeight() + "px");
+                if (dom.hasClass("selected")) {
+                    dom.css("height", dom.outerHeight() + dom.find(".expand-cont").outerHeight() + "px");
                 } else {
-                    member.css("height", "");
+                    dom.css("height", "");
                 }
+            }
+            
+            member.click(function () {
+                if (!member.hasClass("selected"))
+                    toggle(main.find(".member-item.selected"));
+                    
+                toggle(member);
             });
             
             member.find(".expand-cont").click(function (e) {
                 e.stopPropagation();
             });
             
+            var refresh = function () {
+                member.after(genMember(uuid, mem, session));
+                member.remove();
+            }
+            
             var update = function (accept) {
                 if (accept) {
                     mem.is_app = false;
-                    member.after(genMember(uuid, mem));
-                    member.remove();
+                    refresh();
                 } else {
-                    member.remove();
+                    member.css("height", "0");
+                    
+                    setTimeout(function () {
+                        member.remove();
+                    }, 300);
                 }
             };
         
@@ -192,6 +260,45 @@ define([
                 member.find(".dec-btn").click(changeApplyProc(false, uuid, update));
                 member.find(".acc-btn").click(changeApplyProc(true, uuid, update));
             }
+            
+            (function () {
+                member.find(".field-mem-is-admin").checkbox();
+                
+                if (mem.is_admin) {
+                    member.find(".field-mem-is-admin").checkbox("set checked");
+                }
+                
+                member.find(".field-mem-title").val(mem.title ? mem.title : "");
+                
+                member.find(".save-btn").click(function () {
+                    var title = member.find(".field-mem-title").val();
+                    var is_admin = member.find(".field-mem-is-admin").checkbox("is checked");
+                
+                    member.find(".save-btn").addClass("loading");
+                
+                    login.session(function (session) {
+                        if (session) foci.encop(session, {
+                            int: "club",
+                            action: "setmember",
+                            
+                            cuid: cuid,
+                            uuid: uuid,
+                            title: title,
+                            is_admin: is_admin
+                        }, function (suc, dat) {
+                            member.find(".save-btn").removeClass("loading");
+                            
+                            if (suc) {
+                                mem.is_admin = is_admin;
+                                mem.title = title;
+                                refresh();
+                            } else {
+                                util.emsg(dat);
+                            }
+                        });
+                    });
+                });
+            })();
                 
             return member;
         }
@@ -227,8 +334,18 @@ define([
                 cuid: cuid
             }, function (suc, dat) {
                 if (suc) {
-                    if (dat[session.getUUID()] && dat[session.getUUID()].is_admin)
-                        main.addClass("admin");
+                    var self = dat[session.getUUID()];
+                    
+                    if (self) {
+                        if (self.is_admin || self.is_creator)
+                            main.addClass("admin");
+                        
+                        if (!self.is_app) {
+                            main.find(".join-btn").remove();
+                        }
+                    } else {
+                        main.find(".invite-btn").remove();
+                    }
                     
                     var filt = sortMember(dat);
                     
@@ -261,7 +378,7 @@ define([
             var no_hide = false;
             
             var reqtext = popselect.text(main.find(".join-btn"), {
-                prompt: "Comment(your identity and relation with this club)",
+                prompt: "Comment(your identity and reason to join this club)",
             
                 onSubmit: function (cb) {
                     no_hide = true;

@@ -242,6 +242,13 @@ Club.set = {
                 is_admin: false
             }
         }
+    }),
+    
+    set_member: (uuid, title, is_admin) => ({
+        $set: {
+            ["member." + uuid + ".title"]: title,
+            ["member." + uuid + ".is_admin"]: is_admin
+        }
     })
 };
 
@@ -430,4 +437,21 @@ exports.getMember = async (cuid, include_apply) => {
     var club = await exports.cuid(cuid);
 
     return club.getMember(include_apply);
+};
+
+exports.setMember = async (cuid, self, conf) => {
+    await exports.checkAdmin(cuid, self);
+    await exports.checkMemberExist(cuid, conf.uuid, true); // should be a member
+    
+    var title = conf.title;
+    var is_admin = conf.is_admin;
+    
+    if (title.length > config.lim.club.max_title_len) {
+        throw new err.Exc("$core.too_long($core.word.title)");
+    }
+    
+    var col = await db.col("club");
+    
+    await col.updateOne(Club.query.cuid(cuid),
+                        Club.set.set_member(conf.uuid, title, is_admin));
 };

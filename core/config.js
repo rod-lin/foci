@@ -141,7 +141,9 @@ var conf = module.exports = {
 			max_search_results: 8,
 			
 			max_descr: 1024,
-			max_school: 128
+			max_school: 128,
+			
+			max_title_len: 8,
 		},
 
 		pm: {

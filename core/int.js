@@ -895,6 +895,14 @@ encop.club = async (env, usr, query, next) => {
 			var args = util.checkArg(query, { cuid: "int" });
 			return await club.getMember(args.cuid, await club.isAdmin(args.cuid, usr.getUUID()));
 		
+		// set member properties
+		case "setmember":
+			var args = util.checkArg(query, { cuid: "int", uuid: "int", title: "string", is_admin: "bool" });
+			
+			await club.setMember(args.cuid, usr.getUUID(), args);
+		
+			return;
+		
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}
