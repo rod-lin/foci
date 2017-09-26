@@ -17,9 +17,13 @@ define(function () {
 		
 		var cur = config.init;
 		
-		function switchTo(i) {
+		function activateItem(i) {
 			items.filter("." + config.active).removeClass(config.active);
 			$(items[i]).addClass(config.active);
+		}
+		
+		function switchTo(i) {
+			activateItem(i);
 			
 			$(tabs[cur]).css("display", "none");
 			$(tabs[i]).css("display", "");
@@ -35,11 +39,15 @@ define(function () {
 			$(dom).css("display", "none");
 		});
 
-		items.each(function (i, dom) {
-			$(dom).click(function () {
-				switchTo(i);
+		function bind(items) {
+			items.each(function (i, dom) {
+				$(dom).click(function () {
+					switchTo(i);
+				});
 			});
-		});
+		}
+		
+		bind(items);
 		
 		switchTo(config.init);
 		$(tabs[config.init]).triggerHandler("tab:show");
@@ -47,6 +55,12 @@ define(function () {
 		var mod = {};
 		
 		mod.switchTo = switchTo;
+		mod.bind = bind;
+		
+		mod.setMenu = function (new_items) {
+			items = new_items;
+			activateItem(cur); // to synhronize possible multiple menus
+		};
 		
 		return mod;
 	}

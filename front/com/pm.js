@@ -76,7 +76,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 				}
 			});
 		}
-
+		
 		getSendee();
 
 		function genMsg(sender, text) {
@@ -283,13 +283,13 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 				})
 		} else {
 			main.modal({
+				// BUG: DO NOT set this(conflicts with userhunt modal)
+				// allowMultiple: true
 				onHide: function () {
 					clearTimeout(update_proc);
 					exit = true;
 				}
-			});
-			
-			main.modal("show");
+			}).modal("show");
 		}
 		
 		main.find(".send-btn").click(send);

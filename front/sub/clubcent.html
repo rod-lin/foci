@@ -291,9 +291,10 @@
                 info_dom.find(".field-member-count").html(parsed.member_count);
                 
                 util.bgimg(info_dom.find(".field-logo"), parsed.logo);
+                
+                var float_bar = null;
             
-                // scroll effect
-                penv.part.scroll(function () {                
+                function scrollEffect() {
                     var top = penv.part.scrollTop();
                     
                     var bar_height = tbar.height();
@@ -302,14 +303,37 @@
                     if (top < dist) {
                         tbar.setStyle("simple");
                         main.find(".nav-bar").removeClass("floating");
-                        main.find(".tabs").css("margin-top", "");
+                        // main.find(".tabs").css("margin-top", "");
+                        if (float_bar) {
+                            float_bar.remove();
+                            float_bar = null;
+                            
+                            // sync menu items
+                            main_tab.setMenu(main.find(".nav-bar .item"));
+                        }
                     } else {
                         // scroll reaches menu
+                        if (float_bar) return;
+                        
                         tbar.setStyle("");
-                        main.find(".nav-bar").addClass("floating");
-                        main.find(".tabs").css("margin-top", main.find(".nav-bar").outerHeight() + "px");
+                        float_bar = main.find(".nav-bar").clone().addClass("floating");
+                        main.find(".nav-bar").after(float_bar);
+                        
+                        // rebind menus
+                        main_tab.bind(float_bar.find(".item"));
+                        main_tab.setMenu(float_bar.find(".item"));
+                        
+                        // the page may be stuck when scrolling slowly using this margin method
+                        // main.find(".tabs").css("margin-top", main.find(".nav-bar").outerHeight() + "px");
                     }
-                }).scroll();
+                }
+            
+                // scroll effect
+                penv.part.scroll(scrollEffect).scroll();
+                
+                exit(function () {
+                    penv.part.off("scroll", null, scrollEffect)
+                });
                 
                 main.find(".tabs .tab").on("tab:show", function () {
                     if (main.find(".nav-bar").hasClass("floating")) {

@@ -141,13 +141,16 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 		var once = false;
 		var onHide = function () {
 			if (once) return;
+			once = true;
 
 			if (cb) {
-				if (cb(selected) === false)
+				// BUG: if any of the procedure in cb contains modal with allowMultiple = false
+				// this handler will be recursively called
+				if (cb(selected) === false) {
+					once = false;
 					return false;
+				}
 			}
-			
-			once = true;
 		}
 		
 		function hide() {
