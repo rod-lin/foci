@@ -755,6 +755,7 @@
 				penv.part.scroll(hideFloatAvatar).scroll();
 				exit(function () {
 					penv.part.off("scroll", null, hideFloatAvatar);
+					tbar.showFloatAvatar();
 				});
 
 				var left_bar = main.find(".left-bar");
