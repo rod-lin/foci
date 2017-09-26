@@ -908,7 +908,29 @@ encop.club = async (env, usr, query, next) => {
 			await club.removeMember(args.cuid, usr.getUUID(), args.uuid);
 			
 			return;
+			
+		case "memberinfo":
+			var args = util.checkArg(query, { cuid: "int" });
+			
+			await club.checkMemberExist(args.cuid, usr.getUUID(), true);
+			
+			return (await club.cuid(args.cuid)).getRelatedInfo(usr.getUUID());
 		
+		case "setinfo":
+			var args = util.checkArg(query, { cuid: "int" });
+			var info = util.checkArg(query, club.Club.format.info, true);
+			
+			await club.setInfo(args.cuid, usr.getUUID(), info);
+			
+			return;
+			
+		case "transcreator":
+			var args = util.checkArg(query, { cuid: "int", uuid: "int" });
+	
+			await club.transferCreator(args.cuid, usr.getUUID(), args.uuid);
+	
+			return;
+	
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}

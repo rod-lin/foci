@@ -101,8 +101,8 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 
 		var cur_hash = null;
 
-		var hashchange = function () {
-			if (cur_hash === window.location.hash)
+		var hashchange = function (forced) {
+			if (!forced && cur_hash === window.location.hash)
 				return;
 
 			var hash = window.location.hash.slice(1);
@@ -158,7 +158,10 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 
 		var ret = {
 			load: load,
-			refresh: hashchange,
+			refresh: function () {
+				hashchange(true);
+			},
+			
 			jump: function (cb) { // all jump events will be cleared after a successful jump
 				if (jump_cb.indexOf(cb) == -1)
 					jump_cb.push(cb);

@@ -156,6 +156,7 @@ var dict = module.exports = {
 		"core.club.max_review_reached": "max review count reached",
 		"core.club.club_not_review": "cannot delete a club in operation",
 		"core.club.user_no_relation": "user has no relation to the club",
+		"core.club.creator_del": "cannot delete a creator",
 		
 		"core.realname.invalid_check_data": "real-name check data invalid",
 		"core.invalid_invcode": "invalid invitation code",

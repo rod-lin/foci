@@ -1,0 +1,333 @@
+<div class="sub-setting-club">
+    <div class="main-menu">
+        <div class="menu-group only-club-admin">
+            <div class="header">Profile</div>
+            <div class="menu-item only-club-admin" data-form-set="info">Basic info</div>
+            <div class="menu-item only-club-admin" data-form-set="member">Manage members</div>
+        </div>
+        <div class="menu-group">
+            <div class="header">Other</div>
+            <div class="menu-item only-club-creator" data-form-set="transfer">Transfer ownership</div>
+            <div class="menu-item" data-form-set="quit">Quit club</div>
+        </div>
+    </div>
+    
+    <div class="form-set form-set-info">
+        <form class="form-info ui form">
+            <h3 class="ui top attached block header">Basic Info</h3>
+            <div class="ui attached segment">
+                <div class="ui field">
+                    <label>Logo</label>
+                    <div class="field-logo"></div>
+                </div>
+                
+                <div class="ui field">
+                    <label>Display name</label>
+                    <input class="field-dname" name="dname">
+                </div>
+                
+                <div class="ui field">
+                    <label>Description</label>
+                    <textarea class="field-descr" name="descr"></textarea>
+                </div>
+                
+                <div class="ui field">
+                    <label>School</label>
+                    <input class="field-school" name="school">
+                </div>
+                
+                <button type="button" class="ui green basic button update-btn">Update</button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="form-set form-set-quit">
+        <form class="form-quit ui form">
+            <h3 class="ui top attached red block header">Quit the club</h3>
+            <div class="ui attached segment">
+                <div class="ui field">
+                    <div class="ui warning visible message only-club-creator">You're the creator of this club. You have to transfer the ownership to another member first.</div>
+                    <p>
+                        Quiting the club will <b>ERASE</b> any relations you have with this club.<br>
+                        This action is <b>NOT</b> reversible.
+                    </p>
+                    <button type="button" class="ui red basic button quit-btn">Quit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <div class="form-set form-set-transfer">
+        <form class="form-transfer ui form">
+            <h3 class="ui top attached red block header">Transfer ownership</h3>
+            <div class="ui attached segment">
+                <div class="ui field">
+                    <p>
+                        Transfer ownership to another member of the club.<br>
+                        You will still be an administrator.
+                    </p>
+                    <button type="button" class="ui blue basic button select-btn">Select user</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .sub-setting .only-club-admin,
+    .sub-setting .only-club-creator {
+        display: none;
+    }
+    
+    .sub-setting.club-admin .only-club-admin {
+        display: block;
+    }
+    
+    .sub-setting.club-creator .only-club-creator {
+        display: block;
+    }
+</style>
+
+<script>
+    function initSetting(main, args, show, mod) {
+        require([
+            "com/env", "com/login", "com/tagbox",
+            "com/util", "com/upload", "com/userhunt"
+        ], function (env, login, tagbox, util, upload, userhunt) {
+            var tbar = env.get("tbar");
+            
+            tbar.setTitle("Setting", "Club");
+            
+            if (!args || !args.length) {
+				util.emsg("require one argument");
+				return;
+			}
+            
+            var cuid = parseInt(args[0]);
+            
+            if (isNaN(cuid)) {
+				util.emsg("illegal club id");
+				return;
+			}
+            
+            function setRelation(relation) {
+                switch (relation) {
+                    case "creator":
+                        main.addClass("club-creator");
+                    
+                    case "admin":
+                        main.addClass("club-admin");
+                    
+                    case "member":
+                        main.addClass("club-member");
+                        break;
+                }
+            }
+            
+            function fvalid(dom) {
+                dom.form("validate form");
+                if (!dom.form("is valid"))
+                    return false;
+                    
+                return true;
+            }
+            
+            function initTabInfo(session, cuid, info) {
+                var tab = main.find(".form-set-info");
+                var info_tab = tab.find(".form-info");
+                
+                var logo_field = upload.field(info_tab.find(".field-logo"), {
+                    width: "10rem",
+                    height: "10rem"
+                });
+                
+                info_tab.form({
+                    on: "blur",
+                    keyboardShortcuts: false,
+                    fields: {
+                        dname: {
+                            identifier: "dname",
+                            rules: [
+                                {
+                                    type: "empty",
+                                    prompt: "Empty name"
+                                }
+                            ]
+                        },
+                        
+                        descr: {
+                            identifier: "descr",
+                            rules: [
+                                {
+                                    type: "empty",
+                                    prompt: "Empty description"
+                                }
+                            ]
+                        },
+                        
+                        school: {
+                            identifier: "school",
+                            rules: [
+                                {
+                                    type: "empty",
+                                    prompt: "Empty school"
+                                }
+                            ]
+                        },
+                    }
+                });
+                
+                if (info.logo)
+                    logo_field.val(info.logo);
+                    
+                info_tab.find(".field-dname").val(info.dname);
+                info_tab.find(".field-descr").val(info.descr);
+                info_tab.find(".field-school").val(info.school);
+                
+                info_tab.find(".update-btn").click(function () {
+                    if (!fvalid(info_tab)) return;
+                    
+                    var logo = logo_field.val();
+                    var dname = info_tab.find(".field-dname").val();
+                    var descr = info_tab.find(".field-descr").val();
+                    var school = info_tab.find(".field-school").val();
+                    
+                    info_tab.find(".update-btn").addClass("loading");
+                    
+                    foci.encop(session, {
+                        int: "club",
+                        action: "setinfo",
+                        
+                        cuid: cuid,
+                        
+                        logo: logo,
+                        dname: dname,
+                        descr: descr,
+                        school: school
+                    }, function (suc, dat) {
+                        info_tab.find(".update-btn").removeClass("loading");
+                        
+                        if (suc) {
+                            util.emsg("updated", "success");
+                        } else {
+                            util.emsg(dat);
+                        }
+                    });
+                });
+            }
+            
+            function initTabQuit(session, cuid, info) {
+                var tab = main.find(".form-set-quit");
+                var quit_tab = tab.find(".form-quit");
+                
+                if (info.relation == "creator") {
+                    quit_tab.find(".quit-btn").addClass("disabled");
+                }
+                
+                quit_tab.find(".quit-btn").click(function () {
+                    quit_tab.find(".quit-btn").addClass("loading");
+                    
+                    util.ask("Are you sure to <b>QUIT</b> from this club?", function (ans) {
+                        if (ans) {
+                            foci.encop(session, {
+                                int: "club",
+                                action: "delmember",
+                                
+                                cuid: cuid,
+                                uuid: session.getUUID() // delete self
+                            }, function (suc, dat) {
+                                quit_tab.find(".quit-btn").removeClass("loading");
+                                
+                                if (suc) {
+                                    util.emsg("quited", "warning");
+                                    util.jump("#profile");
+                                } else {
+                                    util.emsg(dat);
+                                }
+                            });
+                        } else {
+                            quit_tab.find(".quit-btn").removeClass("loading");
+                        }
+                    });
+                });
+            }
+            
+            function initTabTransfer(session, cuid, info) {
+                var tab = main.find(".form-set-transfer");
+                var trans_tab = tab.find(".form-transfer");
+                
+                trans_tab.find(".select-btn").click(function () {
+                    trans_tab.find(".select-btn").addClass("loading");
+                    
+                    userhunt.modal([], function (uuid) {
+                        if (uuid.length)
+                            util.ask("Are you sure to transfer ownership to this member?", function (ans) {
+                                if (ans) {
+                                    foci.encop(session, {
+                                        int: "club",
+                                        action: "transcreator",
+                                        
+                                        cuid: cuid,
+                                        uuid: uuid
+                                    }, function (suc, dat) {
+                                        trans_tab.find(".select-btn").removeClass("loading");
+                                        
+                                        if (suc) {
+                                            util.emsg("succeeded", "success");
+                                            util.refresh();
+                                        } else {
+                                            util.emsg(dat);
+                                        }
+                                    });
+                                } else {
+                                    trans_tab.find(".select-btn").removeClass("loading");
+                                }
+                            });
+                        else
+                            trans_tab.find(".select-btn").removeClass("loading");
+                    }, {
+                        just_one: true,
+                        use_dragi: foci.use_dragi
+                    });
+                });
+            }
+            
+            function render(session, cuid, info) {
+                setRelation(info.relation);
+                
+                initTabInfo(session, cuid, info);
+                initTabQuit(session, cuid, info);
+                initTabTransfer(session, cuid, info);
+                
+                if (args[1]) {
+                    mod.showFormSet(args[1]);
+                } else {
+                    if (info.relation == "creator") {
+                        $(main.find(".menu-item")[0]).click();
+                    } else if (info.relation == "admin") {
+                        $(main.find(".menu-item").not(".only-club-creator")[0]).click();
+                    } else {
+                        $(main.find(".menu-item").not(".only-club-admin")[0]).click();
+                    }
+                }
+                    
+                show(true);
+            }
+            
+            login.session(function (session) {
+                if (session) foci.encop(session, {
+                        int: "club",
+                        action: "memberinfo",
+                        cuid: cuid
+                    }, function (suc, dat) {
+                        if (suc) {
+                            render(session, cuid, dat);
+                        } else {
+                            util.emsg(dat);
+                        }
+                    });
+                else util.emsg("login first");
+            });
+        });
+    }
+</script>    

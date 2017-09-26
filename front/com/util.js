@@ -323,6 +323,20 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 			if (load) load();
 		}
 	};
+	
+	function fill0(str, bit, after) {
+		str = str.toString();
+		
+		while (str.length < bit) {
+			if (after) {
+				str = str + "0";
+			} else {
+				str = "0" + str;
+			}
+		}
+		
+		return str;
+	}
 
 	util.localDate = function (date, short) {
 		var cur = new Date();
@@ -330,7 +344,7 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 
 		var ud = 1000 * 60 * 60 * 24; // one day
 
-		var time = date.getHours() + ":" + date.getMinutes();
+		var time = fill0(date.getHours(), 2) + ":" + fill0(date.getMinutes(), 2);
 		var ret;
 
 		if (sub >= 0 && sub < ud) {

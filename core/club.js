@@ -21,7 +21,7 @@ var clubtype = exports.clubtype = {
 var clubstat = exports.clubstat = {
     all: -Infinity,
     review: 0, // under review
-    operate: 1 // on operation
+    operate: 100 // on operation
 };
 
 /* cuid shares the uid space with uuid */
@@ -36,7 +36,7 @@ var Club = function (cuid, creator, conf) {
     this.creator = creator;
     this.dname = conf.dname || "(no name)";
     
-    this.descr = conf.dname || "(no description)";
+    this.descr = conf.descr || "(no description)";
     this.school = conf.school || "(no school)";
     
     this.type = conf.type !== undefined ? conf.type : clubtype.stuorg;
@@ -109,6 +109,10 @@ Club.prototype.getInfo = function () {
     };
 };
 
+Club.prototype.getAdminInfo = function () {
+    return this.getInfo();
+};
+
 Club.prototype.getRelation = function (uuid) {
     if (this.apply_member[uuid])
         return "app";
@@ -125,13 +129,9 @@ Club.prototype.getRelation = function (uuid) {
 
 // get info related to a user
 Club.prototype.getRelatedInfo = function (uuid) {
-    return {
-        cuid: this.cuid,
-        dname: this.dname,
-        logo: this.logo,
-        state: this.state,
-        relation: this.getRelation(uuid)
-    }
+    var base = this.getInfo();
+    base.relation = this.getRelation(uuid);
+    return base;
 };
 
 Club.prototype.getMember = function (include_apply) {
@@ -231,6 +231,8 @@ Club.query = {
 };
 
 Club.set = {
+    info: info => ({ $set: info }),
+    
     publish: () => ({ $set: { "state": clubstat.operate } }),
     add_apply: (uuid, comment) => ({ $set: { ["apply_member." + uuid]: { comment: comment } } }),
 
@@ -265,6 +267,18 @@ Club.set = {
         $unset: {
             ["member." + uuid]: null
         }
+    }),
+    
+    transfer_creator: (from, to) => ({
+        $set: {
+            creator: to,
+            
+            ["member." + from + ".is_creator"]: false,
+            ["member." + from + ".is_admin"]: true, // old creator remains as an admin
+            
+            ["member." + to + ".is_admin"]: true,
+            ["member." + to + ".is_creator"]: true
+        }
     })
 };
 
@@ -296,7 +310,7 @@ exports.newClub = async (creator, conf) => {
     
     var col = await db.col("club");
     
-    var cuid = await uid.genUID("user"); // cuid == uuid
+    var cuid = await uid.genUID("cuid");
     var club = new Club(cuid, creator, conf);
 
     await col.insertOne(club);
@@ -304,11 +318,16 @@ exports.newClub = async (creator, conf) => {
     return club;
 };
 
+exports.isCreator = async (cuid, uuid) => {
+    var col = await db.col("club");
+    return await col.count(Club.query.check_creator(cuid, uuid));
+};
+
 exports.checkCreator = async (cuid, uuid) => {
     var col = await db.col("club");
     
     if (!await user.isAdmin(uuid))
-        if (!await col.count(Club.query.check_creator(cuid, uuid)))
+        if (!await exports.isCreator(cuid, uuid))
             throw new err.Exc("$core.club.not_club_owner");
 };
 
@@ -506,12 +525,37 @@ exports.sendInvitation = async (cuid, self, uuids) => {
 };
 
 exports.removeMember = async (cuid, self, uuid) => {
-    if (self != uuid)
-        await exports.checkAdmin(cuid, self);
-    // else self == uuid -> exit the club
+    if (await exports.isCreator(cuid, uuid)) {
+        // cannot delete a creator
+        throw new err.Exc("$core.club.creator_del");
+    }
+    
+    if (self != uuid) {
+        if (await exports.isAdmin(cuid, uuid)) {
+            // only club creator can remove a admin
+            await exports.checkCreator(cuid, self);
+        } else {
+            await exports.checkAdmin(cuid, self);
+        }
+    } // else self == uuid -> exit the club
     
     var col = await db.col("club");
     
     await col.updateOne(Club.query.cuid(cuid),
                         Club.set.remove_member(uuid));
+};
+
+exports.setInfo = async (cuid, self, info) => {
+    var col = await db.col("club");
+    await exports.checkAdmin(cuid, self);
+    await col.updateOne(Club.query.cuid(cuid), Club.set.info(info));
+};
+
+exports.transferCreator = async (cuid, self, uuid) => {
+    await exports.checkCreator(cuid, self);
+    await exports.checkMemberExist(cuid, uuid, true);
+    
+    var col = await db.col("club");
+    
+    await col.updateOne(Club.query.cuid(cuid), Club.set.transfer_creator(self, uuid));
 };

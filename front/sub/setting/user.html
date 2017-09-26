@@ -220,6 +220,10 @@
             "com/env", "com/login", "com/tagbox",
             "com/util", "com/upload"
         ], function (env, login, tagbox, util, upload) {
+            var tbar = env.get("tbar");
+            
+            tbar.setTitle("Setting", "User");
+            
             login.session(function (session) {
                 if (!session) {
                     util.emsg("you have not logged in");
