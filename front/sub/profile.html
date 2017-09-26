@@ -6,8 +6,8 @@
 			</div>
 		</div><br>
 		<div class="dname"></div><div class="realname-badge"></div><br>
-		<div class="rating"></div><br>
-		<div class="intro"></div><br>
+		<div class="rating"></div>
+		<div class="intro"></div>
 		<!-- <div class="ui grey statistic">
 			<div class="value follows">
 				--
@@ -24,6 +24,8 @@
 				Followers
 			</div>
 		</div><br> -->
+		<div class="ui divider"></div>
+		<div class="related-club"></div>
 		<div class="ui divider"></div>
 		<div class="favtag">
 			<div class="favtag-prompt"></div>
@@ -457,7 +459,7 @@
 	.sub-profile .left-bar .intro {
 		display: inline-block;
 
-		margin: 0.5rem 0 0.5rem 0;
+		margin: 1rem 0 1.5rem 0;
 		padding: 1rem 1rem;
 
 		max-width: 100%;
@@ -468,7 +470,6 @@
 
 	.sub-profile .left-bar .favtag {
 		width: 100%;
-		padding-top: 1rem;
 		margin-bottom: 1rem;
 	}
 
@@ -493,7 +494,14 @@
 			height: auto;
 			width: 100%;
 			padding-bottom: 2rem;
-			border-width: 0 0 1px 0;
+			
+			border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+			
+			background: rgba(254, 254, 254, 1);
+		}
+		
+		.sub-profile .left-bar .avatar-box {
+			margin-top: 2.5rem;
 		}
 
 		.sub-profile .left-bar .favtag {
@@ -509,7 +517,7 @@
 
 		.sub-profile .right-bar {
 			margin-left: 0;
-			border-top: 1px solid rgba(0, 0, 0, 0.08);
+			/* border-top: 1px solid rgba(0, 0, 0, 0.08); */
 		}
 
 		.sub-profile .right-bar .right-bar-left-step {
@@ -526,6 +534,8 @@
 
 		border: 1px solid rgba(0, 0, 0, 0.08);
 		border-width: 0 0 0 1px;
+		
+		transition: left 0.3s, width 0.3s;
 	}
 
 	.sub-profile .new-event .ev-step {
@@ -534,6 +544,8 @@
 
 		top: 0;
 		left: 0;
+		
+		transition: left 0.3s;
 	}
 
 	.sub-profile .new-event .ev-title {
@@ -645,6 +657,16 @@
 	}
 
 	@media only screen and (max-width: 640px) {
+		.sub-profile .new-event.hide-step .ev-content {
+			width: 100% !important;
+			left: 0% !important;
+			border-left-width: 0;
+		}
+		
+		.sub-profile .new-event.hide-step .ev-step {
+			left: -30% !important;
+		}
+		
 		.sub-profile .new-event .ev-content {
 			left: 18%;
 			width: 82%;
@@ -697,14 +719,14 @@
 			"com/tagbox", "com/pm", "com/tip",
 			"com/formi", "com/marki", "com/resume",
 			"com/helper", "com/notice", "com/rating",
-			"com/realname", "com/userhunt"
+			"com/realname", "com/userhunt", "com/club"
 		], function (
 			env, util, event, xfilt,
 			pages, tab, login, event,
 			upload, map, lang, editable,
 			tagbox, pm, tip, formi, marki,
 			resume, helper, notice, rating,
-			realname, uh
+			realname, uh, club
 		) {
 			var init = function (info, is_self, init_page, page_arg) {
 				// foci.get("/user/resume", {
@@ -721,6 +743,19 @@
 				var pt = env.get("part");
 
 				tbar.setTitle("Profile", info.dname);
+				
+				function hideFloatAvatar() {
+					if (penv.part.scrollTop() <= 3) {
+						tbar.hideFloatAvatar();
+					} else {
+						tbar.showFloatAvatar();
+					}
+				}
+				
+				penv.part.scroll(hideFloatAvatar).scroll();
+				exit(function () {
+					penv.part.off("scroll", null, hideFloatAvatar);
+				});
 
 				var left_bar = main.find(".left-bar");
 				var right_bar = main.find(".right-bar");
@@ -733,6 +768,20 @@
 
 				left_bar.find(".follows").html("--");
 				left_bar.find(".followers").html("--");
+				
+				club.list(left_bar.find(".related-club"), info.uuid, {
+					entry: {
+						size: "3rem",
+						show_name: false,
+						margin: "0 0.7rem 0 0"
+					},
+					
+					is_self: is_self,
+					onMoreClick: function () {
+						if (is_self)
+							tbar.openClub();
+					}
+				});
 
 				// left_bar.find(".rating").rating("disable").rating("set rating", 0);
 				var rat = rating.init(left_bar.find(".rating"), 0);
@@ -1707,7 +1756,8 @@
 					}
 
 					function delLoader() {
-						tb.getItem("new").html(m("$front.sub.profile.save"));
+						if (tb.getItem("new").find(".loader").length) // has loader
+							tb.getItem("new").html(m("$front.sub.profile.save"));
 					}
 
 					// save the current changes
@@ -2154,6 +2204,20 @@
 
 					updateNewEventPos();
 				}
+				
+				new_tab.find(".ev-content").swipe({
+					swipeRight: function () {
+						if (display_mode == "mobile")
+							new_tab.removeClass("hide-step");
+					},
+					
+					swipeLeft: function () {
+						if (display_mode == "mobile")
+							new_tab.addClass("hide-step");
+					},
+					
+					preventDefaultEvents: false
+				});
 
 				$(window).resize(function () {
 					updateAllPos();

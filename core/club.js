@@ -206,7 +206,7 @@ Club.query = {
         "state": clubstat.review
     }),
     
-    related_club: uuid => ({
+    related_club: (uuid, pub) => ({
         $or: [
             {
                 creator: uuid,
@@ -215,7 +215,7 @@ Club.query = {
             }, {
                 ["apply_member." + uuid]: { $exists: true }
             }
-        ]
+        ].slice(0, pub ? 2 : 3)
     }),
     
     keyword: kw => {
@@ -354,9 +354,9 @@ exports.cuid = async (cuid, state) => {
 };
 
 // get clubs related to a user
-exports.getRelatedClub = async (uuid) => {
+exports.getRelatedClub = async (uuid, pub) => {
     var col = await db.col("club");
-    var all = await col.find(Club.query.related_club(uuid)).toArray();
+    var all = await col.find(Club.query.related_club(uuid, pub)).toArray();
     var ret = [];
     
     /*

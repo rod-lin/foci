@@ -575,6 +575,10 @@ define([
 				main.find(".pm-btn").click();
 			};
 			
+			mod.openClub = function () {
+				main.find(".man-club-btn").click();
+			};
+			
 			mod.showSearch = function () {
 				// main.find(".menu-cont").append(main.find(".search-box .menu-link"));
 				main.removeClass("hide-search");
@@ -595,6 +599,14 @@ define([
 			
 			mod.height = function () {
 				return main.height();
+			};
+			
+			mod.hideFloatAvatar = function () {
+				main.addClass("hide-float-avatar");
+			};
+			
+			mod.showFloatAvatar = function () {
+				main.removeClass("hide-float-avatar");
 			};
 			
 			return mod;

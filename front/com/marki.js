@@ -28,7 +28,7 @@ define([
                     + " \
                 </div> \
             </div> \
-            <div class='editor-toolbar'> \
+            <div class='editor-toolbar noSwipe'> \
                 <button class='input-no-style'><i class='header icon'></i> \
                 <button class='input-no-style'><i class='bold icon'></i> \
                 <button class='input-no-style'><i class='italic icon'></i></button> \

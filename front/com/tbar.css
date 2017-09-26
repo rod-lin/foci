@@ -583,6 +583,12 @@ html.foci-nested .top-tbar {
 
 		top: auto;
 		height: auto;
+		
+		transition: bottom 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+	}
+	
+	.com-tbar.hide-float-avatar .right-bar {
+		bottom: -5em;
 	}
 
 	.com-tbar .right-bar .avatar-box {

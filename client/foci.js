@@ -161,6 +161,10 @@ window.foci = {};
 			captcha_handler = cb;
 		} else return captcha_handler;
 	};
+
+	// callbacks for requests rejected by captcha
+	var captcha_cb = [];
+	var on_captcha = false;
 	
 	function req_callback(method, url, data, cb) {
 		return function (suc, dat) {
@@ -168,25 +172,47 @@ window.foci = {};
 			
 			if (!dat.suc) {
 				if (dat.cap) {
-					if (foci.captcha()) {
-						foci.captcha()(dat.dat, function (suc, ans) {
-							if (suc) {
-								// resend the request
-								if (data instanceof FormData) {
-									data.append("capans", JSON.stringify(ans));
+					if (on_captcha) { // already requested
+						captcha_cb.push(function () {
+							// simply retry without captcha
+							method(url, data, cb);
+						});
+					} else {
+						if (foci.captcha()) {
+							on_captcha = true;
+							
+							foci.captcha()(dat.dat, function (suc, ans) {
+								if (suc) {
+									// resend the request
+									if (data instanceof FormData) {
+										data.append("capans", JSON.stringify(ans));
+									} else {
+										data = $.extend(data, { capans: ans });
+									}
+									
+									method(url, data, (function (cbs) {
+										// wrap the original callback
+										return function (suc, dat) {
+											// retry all the blocked requests
+											for (var i = 0; i < cbs.length; i++) {
+												cbs[i]();
+											}
+											
+											cb(suc, dat);
+										};
+									})(captcha_cb));
 								} else {
-									data = $.extend(data, { capans: ans });
+									cb(false, ans);
 								}
 								
-								method(url, data, cb);
-							} else {
-								cb(false, ans);
-							}
-						});
-						
-						return;
-					} else
-						return cb(false, "$def.uninit_recaptcha");
+								// reopen captcha
+								captcha_cb = [];
+								on_captcha = false;
+							});
+							
+							return;
+						} else return cb(false, "$def.uninit_recaptcha");
+					}
 				} else
 					return cb(false, dat.msg);
 			}

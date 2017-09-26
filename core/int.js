@@ -366,6 +366,14 @@ _club.org = util.route(async env => {
 	env.qsuc(await event.getClubOrganized(args.cuid, args));	
 });
 
+_club.related = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	
+	var args = util.checkArg(env.query, { "uuid": "int" });
+
+	env.qsuc(await club.getRelatedClub(args.uuid, true));	
+});
+
 var _file = {};
 
 _file.upload = util.route(async env => {

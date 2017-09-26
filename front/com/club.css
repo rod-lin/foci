@@ -43,142 +43,6 @@
     display: none;
 }
 
-.com-club-popview .club-entry {
-    display: inline-block;
-    position: relative;
-    
-    width: 5rem;
-    
-    margin: 0 1rem 1rem 0;
-    
-    cursor: pointer;
-    
-    opacity: 1;
-    text-align: center;
-    
-    vertical-align: top;
-    
-    transition: opacity 0.2s;
-}
-
-.com-club-popview .club-entry:hover {
-    opacity: 0.8;
-}
-
-.com-club-popview .club-entry:active {
-    opacity: 0.9;
-}
-
-.com-club-popview .club-entry.review:hover,
-.com-club-popview .club-entry.review:active {
-    opacity: 1;
-}
-
-.com-club-popview .club-entry.review {
-    cursor: default;
-}
-
-.com-club-popview .club-entry .club-logo {
-    position: relative;
-    
-    height: 5rem;
-    width: 100%;
-    line-height: 5rem;
-    
-    overflow: hidden;
-    
-    border-radius: 5px;
-
-    background-color: rgba(245, 245, 245, 1);
-    
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-}
-
-.com-club-popview .club-entry .club-logo .state-overlay {
-    position: absolute;
-    left: 0; top: 0;
-    
-    width: 100%;
-    height: 100%;
-
-    color: white;
-    font-size: 1.8rem;
-}
-
-.com-club-popview .club-entry.review .club-logo .state-overlay {
-    background: rgba(52, 152, 219, 0.4);
-}
-
-.com-club-popview .club-entry.operate .club-logo .state-overlay {
-    display: none;
-}
-
-.com-club-popview .club-entry .badge,
-.com-club-popview .club-entry .delete-btn {
-    position: absolute;
-    
-    display: none;
-    
-    right: -7px;
-    top: -7px;
-    
-    width: 23px;
-    height: 23px;
-    line-height: 23px;
-    border-radius: 50%;
-    
-    text-align: center;
-    
-    background: #E74C3C;
-    color: white;
-
-    cursor: pointer;
-    font-size: 0.8rem;
-    
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-
-    transition: background 0.3s;
-}
-
-.com-club-popview .club-entry .badge {
-    background: #3498DB;
-}
-
-.com-club-popview .club-entry.show-badge:not(.review) .badge {
-    display: block;
-}
-
-.com-club-popview .club-entry .delete-btn:hover {
-    background: #E37A6F;
-}
-
-.com-club-popview .club-entry .delete-btn:active {
-    background: #E83927;
-}
-
-.com-club-popview .club-entry.review .delete-btn {
-    display: block;
-}
-
-.com-club-popview .club-entry .club-logo>.icon {
-    color: rgb(149, 149, 149);
-    font-size: 1.5rem;
-}
-
-.com-club-popview .club-entry .club-name {
-    margin-top: 0.5rem;
-    width: 100%;
-    
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    
-    font-weight: bold;
-    color: rgb(149, 149, 149);
-}
-
 /* club create */
 
 .com-club-create {
@@ -456,4 +320,160 @@
         font-size: 0.6rem;
         margin-right: 0.3rem;
     }
+}
+
+/* club entry */
+
+.com-club-entry {
+    display: inline-block;
+    position: relative;
+    
+    width: 5rem;
+    
+    margin: 0 1rem 1rem 0;
+    
+    cursor: pointer;
+    
+    opacity: 1;
+    text-align: center;
+    
+    vertical-align: top;
+    
+    transition: opacity 0.2s;
+}
+
+.com-club-entry:last-child {
+    margin-right: 0 !important;
+}
+
+.com-club-entry:hover {
+    opacity: 0.8;
+}
+
+.com-club-entry:active {
+    opacity: 0.9;
+}
+
+.com-club-entry.review:hover,
+.com-club-entry.review:active {
+    opacity: 1;
+}
+
+.com-club-entry.review {
+    cursor: default;
+}
+
+.com-club-entry .club-logo {
+    position: relative;
+    
+    height: 5rem;
+    width: 100%;
+    line-height: 5rem;
+    
+    overflow: hidden;
+    
+    border-radius: 5px;
+
+    background-color: rgba(245, 245, 245, 1);
+    
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.com-club-entry .club-logo .state-overlay {
+    position: absolute;
+    left: 0; top: 0;
+    
+    width: 100%;
+    height: 100%;
+
+    color: white;
+    font-size: 1.8rem;
+}
+
+.com-club-entry.review .club-logo .state-overlay {
+    background: rgba(52, 152, 219, 0.4);
+}
+
+.com-club-entry.operate .club-logo .state-overlay {
+    display: none;
+}
+
+.com-club-entry .badge,
+.com-club-entry .delete-btn {
+    position: absolute;
+    
+    display: none;
+    
+    right: -7px;
+    top: -7px;
+    
+    width: 23px;
+    height: 23px;
+    line-height: 23px;
+    border-radius: 50%;
+    
+    text-align: center;
+    
+    background: #E74C3C;
+    color: white;
+
+    cursor: pointer;
+    font-size: 0.8rem;
+    
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+
+    transition: background 0.3s;
+}
+
+.com-club-entry .badge {
+    background: #3498DB;
+}
+
+.com-club-entry.show-badge:not(.review) .badge {
+    display: block;
+}
+
+.com-club-entry .delete-btn:hover {
+    background: #E37A6F;
+}
+
+.com-club-entry .delete-btn:active {
+    background: #E83927;
+}
+
+.com-club-entry.review .delete-btn {
+    display: block;
+}
+
+.com-club-entry .club-logo>.icon {
+    color: rgb(149, 149, 149);
+    font-size: 1.5rem;
+}
+
+.com-club-entry .club-name {
+    margin-top: 0.5rem;
+    width: 100%;
+    
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    
+    font-weight: bold;
+    color: rgb(149, 149, 149);
+}
+
+/* club list */
+
+.com-club-list .empty-prompt {
+    display: none;
+    
+    font-weight: bold;
+    text-align: center;
+    color: #CCCCCC;
+}
+
+.com-club-list.empty .empty-prompt {
+    display: block;
 }

@@ -31,15 +31,71 @@ define([
     
     // a list of clubs shown on the profile
     // TODO: not finished!!!
-    club.list = function (cont, config) {
+    club.list = function (cont, uid, config) {
         cont = $(cont);
-        config = $.extend({}, config);
+        config = $.extend({
+            max_count: 2,
+            type: "user",
+            
+            entry: {},
+            
+            is_self: false,
+            // onMoreClick
+        }, config);
     
-        var main = $("<div class='com-club-list'></div>");
-    
-        var ret = {};
+        var main = $("<div class='com-club-list'> \
+            <div class='empty-prompt'>no related club</div> \
+        </div>");
         
-        return ret;
+        function renderList(dat) {
+            var min = dat.length > config.max_count ? config.max_count : dat.length;
+            
+            for (var i = 0; i < min; i++) {
+                main.append(club.entry(dat[i], config.entry));
+            }
+            
+            if (!i) {
+                main.addClass("empty");
+            }
+            
+            if (dat.length > config.max_count) {
+                var more = club.entry(null, $.extend(config.entry, {
+                    tool: {
+                        icon: "ellipsis horizontal",
+                        name: "more"
+                    }
+                }));
+                
+                main.append(more);
+                
+                more.click(function () {
+                    if (config.onMoreClick)
+                        config.onMoreClick();
+                        
+                    if (!config.is_self) {
+                        club.popview({
+                            visit_mode: true,
+                            init: dat
+                        });
+                    }
+                });
+            }
+        }
+    
+        if (config.type == "user")
+            foci.get("/club/related", { uuid: uid }, function (suc, dat) {
+                if (suc) {
+                    renderList(dat);
+                } else {
+                    util.emsg(dat);
+                }
+            });
+            
+        cont.append(main);
+    
+        var mod = {};
+        
+        return mod;
     };
     
     function local_search(config) {
@@ -478,32 +534,176 @@ define([
         return mod;
     };
     
+    // == club logo
+    club.entry = function (info, config) {
+        config = $.extend({
+            tool: null, // { icon, name }
+            // onClick
+            onClick: function (info) {
+                util.jump("#clubcent/" + info.cuid);
+            },
+            
+            show_name: true,
+            size: "5rem",
+            
+            margin: null,
+        }, config);
+        
+        var entry = $("<div class='com-club-entry'> \
+            <div class='club-logo'> \
+                <div class='state-overlay'><i class='icon'></i></div> \
+            </div> \
+            <div class='club-name'></div> \
+            <div class='delete-btn'><i class='fitted cancel icon'></i></div> \
+            <div class='badge'><i class='fitted icon'></i></div> \
+        </div>");
+        
+        if (config.tool) {
+            entry = $("<div class='com-club-entry'> \
+                <div class='club-logo'><i class='" + config.tool.icon + " fitted icon'></i></div> \
+                <div class='club-name'>" + config.tool.name + "</div> \
+            </div>");
+        }
+        
+        function setSize(size) {
+            entry.css("width", size);
+            entry.find(".club-logo").css("height", size).css("line-height", size);
+        }
+        
+        setSize(config.size);
+        
+        if (!config.show_name) {
+            entry.find(".club-name").remove();
+        }
+        
+        if (config.margin) {
+            entry.css("margin", config.margin);
+        }
+        
+        if (config.tool) return entry;
+        
+        ///////////// settings end
+        
+        var parsed = club.parseInfo(info);
+        
+        var overlay = entry.find(".state-overlay");
+        
+        util.bgimg(entry.find(".club-logo"), parsed.logo);
+        entry.find(".club-name").html(parsed.dname);
+        
+        entry.click(function () {
+            if (config.onClick)
+                config.onClick(info);
+        });
+        
+        entry.find(".delete-btn").click(function () {
+            if (parsed.state == foci.clubstat.review) {
+                util.ask("Are you sure to delete this club(under review)?", function (ans) {
+                    if (ans) {
+                        login.session(function (session) {
+                            foci.encop(session, {
+                                int: "club",
+                                action: "delete",
+                                
+                                cuid: parsed.cuid
+                            }, function (suc, dat) {
+                                if (suc) {
+                                    util.emsg("deleted", "info");
+                                    entry.remove();
+                                } else {
+                                    util.emsg(dat);
+                                }
+                            });
+                        });
+                    }
+                });
+            } else {
+                util.emsg("not a club under review");
+            }
+        });
+        
+        var title_text = util.htmlToText(parsed.dname);
+        
+        switch (info.relation) {
+            case "creator":
+                entry.addClass("show-badge");
+                entry.find(".badge").addClass("creator").attr("title", "Creator badge");
+                entry.find(".badge .icon").addClass("legal");
+                break;
+            
+            case "admin":
+                entry.addClass("show-badge");
+                entry.find(".badge").addClass("admin").attr("title", "Admin badge");
+                entry.find(".badge .icon").addClass("configure");
+                break;
+                
+            case "app":
+                entry.addClass("show-badge");
+                entry.find(".badge").addClass("applt").attr("title", "Applicant");
+                entry.find(".badge .icon").addClass("spinner");
+                
+                title_text += " - appliaction pending";
+                
+                break;
+        }
+        
+        switch (parsed.state) {
+            case foci.clubstat.review:
+                entry.addClass("review");
+                overlay.find(".icon").addClass("wait");
+                title_text += " - under review";
+                
+                break;
+                
+            case foci.clubstat.operate:
+                entry.addClass("operate");
+                break;
+        }
+        
+        entry.attr("title", title_text);
+        
+        return entry;
+    };
+    
     club.popview = function (config) {
         config = $.extend({
+            visit_mode: false, // visit mode: init with the given club list
+            club_list: null,
+            
             use_dragi: false
         }, config);
     
         var main = $("<div class='com-club-popview ui small modal'> \
             <div class='pop-cont'> \
                 <div class='local-search' style='padding-right: 1rem;'></div> \
-                <div class='club-list club-self-list'> \
-                    <div class='club-entry find-club-entry'> \
-                        <div class='club-logo'><i class='search fitted icon'></i></div> \
-                        <div class='club-name'>Find club</div> \
-                    </div \
-                    ><div class='club-entry add-club-entry'> \
-                        <div class='club-logo'><i class='add fitted icon'></i></div> \
-                        <div class='club-name'>New club</div> \
-                    </div \
-                ></div> \
-                <div class='club-list club-find-list'> \
-                    <div class='club-entry return-entry'> \
-                        <div class='club-logo'><i class='chevron left fitted icon'></i></div> \
-                        <div class='club-name'>Back</div> \
-                    </div> \
-                </div> \
+                <div class='club-list club-self-list'></div> \
+                <div class='club-list club-find-list'></div> \
             </div> \
         </div>");
+        
+        var find_club_entry = club.entry(null, {
+            tool: {
+                icon: "search",
+                name: "Find club"
+            }
+        });
+        
+        var add_club_entry = club.entry(null, {
+            tool: {
+                icon: "add",
+                name: "New club"
+            }
+        });
+        
+        var return_entry = club.entry(null, {
+            tool: {
+                icon: "chevron left",
+                name: "Back"
+            }
+        });
+        
+        main.find(".club-self-list").append(find_club_entry).append(add_club_entry);
+        main.find(".club-find-list").append(return_entry);
         
         main.find(".local-search").append(local_search());
         
@@ -525,98 +725,22 @@ define([
             main.modal("show");
         }
         
-        function genEntry(parsed, info) {
-            var entry = $("<div class='club-entry'> \
-                <div class='club-logo'> \
-                    <div class='state-overlay'><i class='icon'></i></div> \
-                </div> \
-                <div class='club-name'></div> \
-                <div class='delete-btn'><i class='fitted cancel icon'></i></div> \
-                <div class='badge'><i class='fitted icon'></i></div> \
-            </div>");
-            
-            var overlay = entry.find(".state-overlay");
-            
-            util.bgimg(entry.find(".club-logo"), parsed.logo);
-            entry.find(".club-name").html(parsed.dname);
-            
-            entry.click(function () {
-                if (parsed.state == foci.clubstat.review)
-                    util.emsg("club not ready");
-                else {
-                    hide();
-                    util.jump("#clubcent/" + info.cuid);
-                }
-            });
-            
-            entry.find(".delete-btn").click(function () {
-                if (parsed.state == foci.clubstat.review) {
-                    util.ask("Are you sure to delete this club(under review)?", function (ans) {
-                        if (ans) {
-                            login.session(function (session) {
-                                foci.encop(session, {
-                                    int: "club",
-                                    action: "delete",
-                                    
-                                    cuid: parsed.cuid
-                                }, function (suc, dat) {
-                                    if (suc) {
-                                        util.emsg("deleted", "info");
-                                        entry.remove();
-                                    } else {
-                                        util.emsg(dat);
-                                    }
-                                });
-                            });
-                        }
-                    });
-                } else {
-                    util.emsg("not a club under review");
-                }
-            });
-            
-            var title_text = util.htmlToText(parsed.dname);
-            
-            switch (info.relation) {
-                case "creator":
-                    entry.addClass("show-badge");
-                    entry.find(".badge").addClass("creator").attr("title", "Creator badge");
-                    entry.find(".badge .icon").addClass("legal");
-                    break;
-                
-                case "admin":
-                    entry.addClass("show-badge");
-                    entry.find(".badge").addClass("admin").attr("title", "Admin badge");
-                    entry.find(".badge .icon").addClass("configure");
-                    break;
-            }
-            
-            switch (parsed.state) {
-                case foci.clubstat.review:
-                    entry.addClass("review");
-                    overlay.find(".icon").addClass("wait");
-                    title_text += " - under review";
-                    
-                    break;
-                    
-                case foci.clubstat.operate:
-                    entry.addClass("operate");
-                    break;
-            }
-            
-            entry.attr("title", title_text);
-            
-            return entry;
-        }
-        
         var all_club = [];
         
         function renderList(dat, list, is_self) {
             for (var i = 0; i < dat.length; i++) {
-                var parsed = club.parseInfo(dat[i]);
-                var dom = genEntry(parsed, dat[i]);
+                var dom = club.entry(dat[i], {
+                    onClick: function (info) {
+                        if (info.state == foci.clubstat.review)
+                            util.emsg("club not ready");
+                        else {
+                            hide();
+                            util.jump("#clubcent/" + info.cuid);
+                        }
+                    }
+                });
                 
-                dom.attr("data-dname", parsed.dname);
+                dom.attr("data-dname", dat[i].dname);
                 
                 main.find(list).append(dom);
                 
@@ -636,15 +760,15 @@ define([
         
         // find-mode
         (function () {
-            main.find(".return-entry").click(function () {
+            return_entry.click(function () {
                 mode = "normal";
                 main.removeClass("find-mode");
                 clearSearch();
             });
             
             function clearResult() {
-                main.find(".club-find-list .club-entry ")
-                    .not(".return-entry")
+                main.find(".club-find-list .com-club-entry ")
+                    .not(return_entry)
                     .remove();
             }
             
@@ -716,7 +840,7 @@ define([
                 }, 100);
             });
             
-            main.find(".find-club-entry").click(function () {
+            find_club_entry.click(function () {
                 mode = "find";
                 main.addClass("find-mode");
                 clearSearch();
@@ -731,32 +855,43 @@ define([
                 // });
             });
             
-            main.find(".add-club-entry").click(function () {
+            add_club_entry.click(function () {
                 util.jump("#clubreg");
                 hide();
             });
             
             function clearResult() {
-                main.find(".club-self-list .club-entry ")
-                    .not(".add-club-entry, .find-club-entry")
+                main.find(".club-self-list .com-club-entry ")
+                    .not(add_club_entry).not(find_club_entry)
                     .remove();
             }
             
-            login.session(function (session) {
-                foci.encop(session, {
-                    int: "club",
-                    action: "getrelated"
-                }, function (suc, dat) {
-                    if (suc) {
-                        clearResult();
+            main.find(".local-search").addClass("loading");
+            
+            if (config.visit_mode) {
+                find_club_entry.remove();
+                add_club_entry.remove();
+                clearResult();
+                renderList(config.init, ".club-self-list", true);
+            } else {
+                login.session(function (session) {
+                    foci.encop(session, {
+                        int: "club",
+                        action: "getrelated"
+                    }, function (suc, dat) {
+                        main.find(".local-search").removeClass("loading");
                         
-                        // console.log(dat);
-                        renderList(dat, ".club-self-list", true);
-                    } else {
-                        util.emsg(dat);
-                    }
+                        if (suc) {
+                            clearResult();
+                            
+                            // console.log(dat);
+                            renderList(dat, ".club-self-list", true);
+                        } else {
+                            util.emsg(dat);
+                        }
+                    });
                 });
-            });
+            }
         })();
         
         var ret = {};
