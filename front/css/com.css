@@ -25,6 +25,10 @@ button { padding: 0; user-select: none; -moz-user-select: none; }
 	display: block !important;
 }
 
+.ui.popup {
+	max-width: initial !important;
+}
+
 a {
 	cursor: pointer;
 }

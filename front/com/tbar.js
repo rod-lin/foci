@@ -73,7 +73,9 @@ define([
 							</div> \
 							<div class="pm-popup ui popup transition hidden"></div> \
 							<div class="notice-popup ui popup transition hidden"></div> \
-						</div><div class="avatar"></div> \
+						</div><div class="avatar"> \
+							<div class="ui small loader"></div> \
+						</div> \
 						<button class="login-btn"> \
 							<div class="ui small loader"></div> \
 							<i class="sign in icon" style="font-size: 1.3em;"></i> \
@@ -233,6 +235,8 @@ define([
 		// update avatar
 		function updateAvatar(file) {
 			function refresh(info) {
+				main.find(".login-btn .loader").removeClass("active");
+				
 				info = login.parseInfo(info || {});
 
 				function update() {
@@ -253,10 +257,11 @@ define([
 
 				var url = update();
 
+				showAvatar();
+
+				main.find(".avatar .loader").addClass("active");
 				util.img(url, function () {
-					main.find(".login-btn .loader").removeClass("active");
-					showAvatar();
-					// main.find(".right-bar").prepend(ava);
+					main.find(".avatar .loader").removeClass("active");
 				});
 
 				pmview.init(function (unread) {

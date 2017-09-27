@@ -451,7 +451,8 @@ html.foci-nested .top-tbar {
 	transition: opacity 0.3s;
 }
 
-.com-tbar .logged .avatar-box>.reddot {
+.com-tbar .avatar-box>.reddot {
+	display: none;
 	z-index: 3;
 }
 
@@ -475,13 +476,15 @@ html.foci-nested .top-tbar {
 }
 
 .com-tbar .avatar {
+	position: relative;
+	
 	height: 2.5em;
 	width: 2.5em;
 
 	margin-top: 1.1rem;
 	margin-right: 1.6rem;
 
-	background-color: white;
+	background-color: rgba(253, 253, 253, 1);
 
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
 
@@ -684,6 +687,7 @@ html.foci-nested .top-tbar {
 	}
 	
 	.com-tbar .logged .avatar-box>.reddot {
+		display: block;
 		top: 2px;
 		right: 2px;
 	}
