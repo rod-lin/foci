@@ -142,14 +142,37 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 		var onHide = function () {
 			if (once) return;
 			once = true;
+			
+			if (config.use_dragi) {
+				main.dragi("hide");
+			}
 
-			if (cb) {
-				// BUG: if any of the procedure in cb contains modal with allowMultiple = false
-				// this handler will be recursively called
-				if (cb(selected) === false) {
-					once = false;
-					return false;
+			setTimeout(function () {
+				if (cb) {
+					// BUG: if any of the procedure in cb contains modal with allowMultiple = false
+					// this handler will be recursively called
+					if (cb(selected) === false) {
+						once = false;
+						show();
+						return;
+					}
 				}
+				
+				if (config.use_dragi) {
+					main.dragi("close");
+				}
+			}, 500);
+			
+			if (config.use_dragi) {
+				return false;
+			}
+		}
+		
+		function show() {
+			if (config.use_dragi) {
+				main.dragi("show");
+			} else {
+				main.modal("show");
 			}
 		}
 		

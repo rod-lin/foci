@@ -431,6 +431,7 @@ html.foci-nested .top-tbar {
 	cursor: pointer;
 }
 
+.com-tbar .logged .avatar-box>.reddot,
 .com-tbar .avatar-util .reddot {
 	position: absolute;
 
@@ -448,6 +449,10 @@ html.foci-nested .top-tbar {
 	box-shadow: 0 0 1px #E74C3C;
 
 	transition: opacity 0.3s;
+}
+
+.com-tbar .logged .avatar-box>.reddot {
+	z-index: 3;
 }
 
 .com-tbar .avatar-util.unread .reddot {
@@ -667,6 +672,7 @@ html.foci-nested .top-tbar {
 		text-align: center;
 	}
 
+	.com-tbar .logged .avatar-box>.reddot,
 	.com-tbar .logged .avatar-util .reddot {
 		height: 12px;
 		width: 12px;
@@ -675,6 +681,11 @@ html.foci-nested .top-tbar {
 		right: 8px;
 		
 		opacity: 0;
+	}
+	
+	.com-tbar .logged .avatar-box>.reddot {
+		top: 2px;
+		right: 2px;
 	}
 
 	.com-tbar .right-bar:hover .avatar-util,
@@ -687,9 +698,14 @@ html.foci-nested .top-tbar {
 		background: rgba(255, 255, 255, 0.1) !important;
 	}
 
+	.com-tbar .right-bar .avatar-box.unread>.reddot,
 	.com-tbar .right-bar:hover .avatar-util.unread .reddot,
 	.com-tbar .logged .avatar-util-box.expand .avatar-util.unread .reddot {
 		opacity: 1;
+	}
+	
+	.com-tbar .right-bar:hover .avatar-box.unread>.reddot {
+		opacity: 0;
 	}
 
 	.com-tbar .login-btn {

@@ -78,6 +78,7 @@ define([
 							<div class="ui small loader"></div> \
 							<i class="sign in icon" style="font-size: 1.3em;"></i> \
 						</button> \
+						<div class="reddot"></div> \
 					</div> \
 					<div class="avatar-popup ui popup transition hidden"> \
 						<div class="cont"> \
@@ -221,6 +222,14 @@ define([
 		
 		var ratobj = rating.init(main.find(".rating"), undefined, { size: "mini" });
 		
+		function setAvatarBoxUnread() {
+			main.find(".avatar-box").addClass("unread");
+		}
+		
+		function unsetAvatarBoxUnread() {
+			main.find(".avatar-box").removeClass("unread");
+		}
+		
 		// update avatar
 		function updateAvatar(file) {
 			function refresh(info) {
@@ -251,14 +260,16 @@ define([
 				});
 
 				pmview.init(function (unread) {
-					if (unread)
+					if (unread) {
 						main.find(".pm-btn").addClass("unread");
-					else
+						setAvatarBoxUnread();
+					} else
 						main.find(".pm-btn").removeClass("unread");
 				});
 
 				ntview.keepUpdate(function (has) {
 					if (has) {
+						setAvatarBoxUnread();
 						main.find(".notice-btn").addClass("unread");
 						util.emsg("you have a new notice", "info");
 					}
@@ -367,6 +378,7 @@ define([
 				
 				onShow: function () {
 					main.find(".pm-btn").removeClass("unread");
+					unsetAvatarBoxUnread();
 				}
 			});
 
@@ -379,6 +391,7 @@ define([
 
 				onShow: function () {
 					main.find(".notice-btn").removeClass("unread");
+					unsetAvatarBoxUnread();
 					ntview.refresh();
 				},
 

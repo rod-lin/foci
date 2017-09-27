@@ -20,7 +20,7 @@ define([ "com/util" ], function (util) {
 		var main = $("<div class='com-upload-field'> \
 			<div class='display'> \
 				<span class='upload-prompt'></span> \
-				<div class='ui loader'></div> \
+				<div class='ui inline loader'></div> \
 			</div> \
 			<div class='remove-btn'> \
 				<i class='fitted cancel icon'></i> \

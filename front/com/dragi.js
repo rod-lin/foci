@@ -308,11 +308,14 @@ define([], function () {
         };
         
         mod.close = function () {
-            if (config.onClose && config.onClose() === false) {
-                return;
-            }
+            if (win.transition("is visible")) {
+                if (config.onClose && config.onClose() === false) {
+                    return;
+                }
+                
+                win.transition("scale out");
+            } // else already closed
             
-            win.transition("scale out");
             setTimeout(function () {
                 platform.remove(mod);
             }, 1000);

@@ -67,6 +67,11 @@
 .com-upload-field {
 	position: relative;
 	display: inline-block;
+	text-align: center;
+}
+
+.com-upload-field .loader {
+	z-index: 0 !important;
 }
 
 .com-upload-field .display {

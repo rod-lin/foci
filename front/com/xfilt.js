@@ -7,7 +7,10 @@ define(function () {
 		
 		if (!config.ignore_space) {
 			str = str.replace(/\t/g, "    ")
-					 .replace(/ /g, "&nbsp;");
+					 .replace(/\s+/g, function (str) {
+						 // replace the first space
+						 return " " + str.substring(1).replace(/\s/g, "&nbsp;");
+					 });
 		}
 		
 		str = str.replace(/</g, "&lt;");
