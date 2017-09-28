@@ -21,20 +21,29 @@ define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 
 		var ava = $(" \
 			<div class='com-avatar'> \
-				<div class='avatar' style='background-image: url(\"" + info.avatar + "\"); height: " + config.size + "; width: " + config.size + ";'></div> \
+				<div class='avatar');'></div> \
 			</div> \
 		");
 
 		ava.find(".avatar")
 			.css({
 				"border-radius": config.radius,
-				"box-shadow": config.shadow
+				"box-shadow": config.shadow,
+				"height": config.size,
+				"width": config.size
 			});
+			
+		util.bgimg(ava.find(".avatar"), info.avatar);
+			
+		ava.css({
+			"width": config.size
+		});
 
 		var avacont = $("<div class='dname'>" + xfilt(info.dname ? info.dname : "anonymous") + "</div>");
 
 		if (config.show_name) {
 			ava.append(avacont.clone().css("margin-top", "0.5rem"));
+			avacont.attr("title", info.dname);
 		}
 
 		ava.popup({
@@ -43,7 +52,7 @@ define([ "com/xfilt", "com/util", "com/login" ], function (xfilt, util, login) {
 			hoverable: true
 		});
 
-		ava.click(function () {
+		ava.find(".avatar").click(function () {
 			if (info.uuid && config.can_jump) {
 				if (config.onClick) config.onClick();
 				util.jump("#profile/" + info.uuid);

@@ -35,17 +35,23 @@ define([
         cont = $(cont);
         config = $.extend({
             max_count: 2,
-            type: "user",
+            type: "user", // or "event"(init must be given)
             
-            entry: {},
+            init: [],
+            
+            entry: {}, // entry config
             
             is_self: false,
+            
+            no_related_prompt: "no related club"
             // onMoreClick
         }, config);
     
         var main = $("<div class='com-club-list'> \
-            <div class='empty-prompt'>no related club</div> \
+            <div class='empty-prompt'></div> \
         </div>");
+        
+        main.find(".empty-prompt").html(config.no_related_prompt);
         
         function renderList(dat) {
             var min = dat.length > config.max_count ? config.max_count : dat.length;
@@ -82,7 +88,7 @@ define([
             }
         }
     
-        if (config.type == "user")
+        if (config.type == "user") {
             foci.get("/club/related", { uuid: uid }, function (suc, dat) {
                 if (suc) {
                     renderList(dat);
@@ -90,6 +96,9 @@ define([
                     util.emsg(dat);
                 }
             });
+        } else if (config.type == "event") {
+            renderList(config.init);
+        }
             
         cont.append(main);
     
@@ -545,6 +554,7 @@ define([
             
             show_name: true,
             size: "5rem",
+            radius: "5px",
             
             margin: null,
         }, config);
@@ -557,6 +567,8 @@ define([
             <div class='delete-btn'><i class='fitted cancel icon'></i></div> \
             <div class='badge'><i class='fitted icon'></i></div> \
         </div>");
+        
+        entry.find(".club-logo").css("border-radius", config.radius);
         
         if (config.tool) {
             entry = $("<div class='com-club-entry'> \

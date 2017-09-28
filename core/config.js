@@ -16,6 +16,10 @@ var conf = module.exports = {
 		max_size: 1024 * 1024 * 10,
 		// with respect to the root dir of the app
 		save_dir: "upload",
+		tmp_dir: "tmp",
+		
+		tmp_clean_interval: 1000 * 60 * 60 * 24, // 1 day
+		
 		allowed_ct: [
 			"image/gif",
 			
@@ -288,6 +292,10 @@ var fs = require("fs");
 
 if (!fs.existsSync(conf.file.save_dir)) {
 	fs.mkdirSync(conf.file.save_dir);
+}
+
+if (!fs.existsSync(conf.file.tmp_dir)) {
+	fs.mkdirSync(conf.file.tmp_dir);
 }
 
 conf.lim.favtag_count = Object.keys(conf.lim.favtag).length;

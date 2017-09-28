@@ -413,7 +413,25 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		} else {
 			textarea.value += val;
 		}
-	}
+	};
+	
+	util.getSelection = function (dom) {
+		if (window.getSelection) {
+			var sel = window.setSelection();
+			
+			
+		}
+		
+		return {
+			start: 0,
+			end: 0,
+			dir: "forward"
+		};
+	};
+	
+	util.setSelection = function (dom, sel) {
+		
+	};
 
 	util.trimFloat = function (val, decimal) {
 		var e = Math.pow(10, decimal);

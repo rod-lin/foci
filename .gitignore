@@ -44,6 +44,7 @@ update.log
 *.nt
 
 upload
+tmp
 
 # semantic source
 semantic

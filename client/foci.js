@@ -373,8 +373,8 @@ window.foci = {};
 		});
 	};
 
-	foci.download = function (chsum) {
-		return "/file/download?chsum=" + chsum;
+	foci.download = function (chsum, tmp) {
+		return "/file/download?chsum=" + chsum + (tmp ? "&tmp=true" : "");
 	};
 
 	foci.loadCSS = function (path) {

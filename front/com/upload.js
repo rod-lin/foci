@@ -83,45 +83,15 @@ define([ "com/util" ], function (util) {
 		return mod;
 	}
 
-	// function field(cb, config) {
-	// 	config = $.extend({
-	// 		title: "Title",
-	// 		icon: "linkify"
-	// 	}, config);
-	// 	
-	// 	var main = $("<div class='com-upload-field ui small modal' style='padding: 1rem;'> \
-	// 		<div class='ui left icon input user-search'> \
-	// 			<input class='prompt' type='text' placeholder='" + config.title +  "'> \
-	// 			<i class='" + config.icon  + " icon'></i> \
-	// 		</div> \
-	// 	</div>");
-	// 	
-	// 	var returned = false;
-	// 	
-	// 	main.find(".prompt").keydown(function (e) {
-	// 		if (e.which == 13) {
-	// 			returned = true;
-	// 			main.modal("hide");
-	// 			e.preventDefault();
-	// 			
-	// 			cb(main.find(".prompt").val());
-	// 		}
-	// 	});
-	// 	
-	// 	main.modal({
-	// 		onHide: function () {
-	// 			if (!returned)
-	// 				cb(null);
-	// 		}
-	// 	}).modal("show");
-	// 	
-	// 	return {};
-	// }
-
 	function init(cb, config) {
 		config = $.extend({
 			arg: null, // { prompt, placeholder, init }
-			init: null // init file md5
+			init: null, // init file md5
+			
+			crop: {
+				ratio: NaN,
+				
+			}
 		}, config);
 
 		var main = $(" \
@@ -178,21 +148,62 @@ define([ "com/util" ], function (util) {
 			if (!selected) {
 				util.emsg("no file selected");
 			} else {
-				main.modal("hide");
-				if (cb) cb(selected, getArg());
+				var canvas = main.find(".preview").cropper("getCroppedCanvas");
+				
+				// console.log(canvas);
+				
+				if (!canvas.toBlob) {
+					// TODO: fallback
+					util.emsg("$unsupported(canvas.toBlob)");
+					return;
+				}
+				
+				main.find(".use-btn").addClass("loading");
+				
+				canvas.toBlob(function (blob) {
+					var form = new FormData();
+					
+					form.append("file", blob);
+
+					foci.post("/file/upload", form, function (suc, dat) {
+						main.find(".use-btn").removeClass("loading");
+						
+						if (suc) {
+							main.modal("hide");
+							if (cb) cb(dat, getArg());
+						} else {
+							util.emsg(dat);
+						}
+					});
+				});
 			}
 		});
 
-		function showPreview() {
+		var has_init = false;
+
+		function showPreview(disable_crop) {
 			if (!selected) return;
 
 			main.find(".preview-cont").css("display", "");
+			
+			if (has_init)
+				main.find(".preview").cropper("destroy");
+			
+			if (!disable_crop)
+				has_init = true;
+			
 			main.find(".preview")
-				.attr("src", foci.download(selected))
+				.attr("src", foci.download(selected, !disable_crop))
 				.ready(function () {
 					main.modal("refresh");
 				}).on("load", function () {
 					main.modal("refresh");
+				})
+			
+			if (!disable_crop)	
+				main.find(".preview").cropper({
+					aspectRatio: config.crop.ratio,
+					checkCrossOrigin: true
 				});
 
 			return;
@@ -206,9 +217,12 @@ define([ "com/util" ], function (util) {
 					util.emsg("$unsupported(FormData)");
 					return;
 				}
-
+				
 				main.find(".select-btn").addClass("loading");
 				var form = new FormData(main.find("form")[0]);
+				
+				// store local file to prevent CORS
+				form.append("tmp", true);
 
 				foci.post("/file/upload", form, function (suc, dat) {
 					main.find(".select-btn").removeClass("loading");
@@ -225,7 +239,7 @@ define([ "com/util" ], function (util) {
 		
 		if (config.init) {
 			selected = config.init;
-			showPreview();
+			showPreview(true);
 		}
 
 		main.find(".exit-btn, .exdim").click(function () {

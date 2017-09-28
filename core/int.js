@@ -25,6 +25,8 @@ var invcode = require("./invcode");
 var template = require("./template");
 var watchdog = require("./watchdog");
 
+var request = require("request");
+
 require("./binds");
 
 // returns: -1 for no captcha but good, 0 for not good, 1 for has captcha
@@ -379,9 +381,10 @@ var _file = {};
 _file.upload = util.route(async env => {
 	// if (!await checkCaptcha(env)) return;
 	// forced captcha check
-	var args = util.checkArg(env.query, {});
+	var args = util.checkArg(env.query, { "tmp": { type: "bool", opt: true } });
 
-	if (!await captcha.check(env, () => false, args.capans)) return;
+	if (!args.tmp) // not temp file
+		if (!await captcha.check(env, () => false, args.capans)) return;
 	
 	if (!env.file.file)
 		throw new err.Exc("no file");
@@ -394,7 +397,7 @@ _file.upload = util.route(async env => {
 		throw new err.Exc("$core.illegal_upload_type");
 	}
 
-	var ret = await file.newFile(path, ct);
+	var ret = await file.newFile(path, ct, args.tmp);
 
 	env.qsuc(ret);
 });
@@ -402,8 +405,8 @@ _file.upload = util.route(async env => {
 _file.download = util.route(async env => {
 	if (!await checkCaptcha(env)) return;
 	
-	var args = util.checkArg(env.query, { "chsum": "string" });
-	var ret = await file.getFile(args.chsum);
+	var args = util.checkArg(env.query, { "chsum": "string", "tmp": { type: "bool", opt: true } });
+	var ret = await file.getFile(args.chsum, !!args.tmp);
 
 	// await file.cacheFull();
 
@@ -411,7 +414,8 @@ _file.download = util.route(async env => {
 		// TODO: content type?
 		env.redir(ret.redir);
 	} else {
-		env.setCT(ret.ct);
+		if (ret.ct)
+			env.setCT(ret.ct);
 		env.raw(ret.cont);
 	}
 });

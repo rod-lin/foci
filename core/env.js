@@ -34,6 +34,11 @@ var Env = function (req, res) {
 
 	this.query = req.query;
 	this.file = {};
+	
+	this.pipe = stream => {
+		// req.pipe(stream);
+		stream.pipe(res);
+	};
 
 	if (req.method == "POST") {
 		this.init = cb => {

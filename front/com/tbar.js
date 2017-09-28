@@ -74,7 +74,7 @@ define([
 							<div class="pm-popup ui popup transition hidden"></div> \
 							<div class="notice-popup ui popup transition hidden"></div> \
 						</div><div class="avatar"> \
-							<div class="ui small loader"></div> \
+							<div class="ui tiny loader"></div> \
 						</div> \
 						<button class="login-btn"> \
 							<div class="ui small loader"></div> \

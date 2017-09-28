@@ -76,11 +76,15 @@
 
 			<div class="row">
 				<div class="col col-7 col-mid-full">
-					<div class="box pad" style="padding-bottom: 2.5rem;">
+					<div class="box pad" style="padding-bottom: 3rem;">
 						<div class="sub-title lang" data-replace="$front.sub.event.organizers">Organizers</div>
-						<div class="org" style="margin-top: 1rem;">
+						<div class="org" style="margin-top: 1.5rem;">
 							<img class="com-util-cont-fill" src="img/paragraph.png"></img>
 						</div>
+					</div>
+					<div class="box pad" style="margin-top: 1rem; padding-bottom: 3rem;">
+						<div class="sub-title">Clubs</div>
+						<div class="club-set" style="margin-top: 1.5rem;"></div>
 					</div>
 				</div><div class="col col-3 col-mid-full box-set app-box">
 					<div class="box pad">
@@ -453,8 +457,8 @@
 			"com/env", "com/util", "com/event",
 			"com/xfilt", "com/login", "com/map",
 			"com/lang", "com/avatar", "com/colstat",
-			"com/formi", "com/comment"
-		], function (env, util, event, xfilt, login, map, lang, avatar, colstat, formi, comment) {
+			"com/formi", "com/comment", "com/club"
+		], function (env, util, event, xfilt, login, map, lang, avatar, colstat, formi, comment, club) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
 				return;
@@ -560,12 +564,12 @@
 				var ava = cont.find(".org");
 				var fill = ava.children();
 
-				var size;
+				var size, club_size;
 
 				switch (info.org.length) {
-					case 1: size = "5em"; break;
-					case 2: size = "4em"; break;
-					default: size = "4em";
+					case 1: size = "5em"; club_size = "4.5em"; break;
+					case 2: size = "4em"; club_size = "3.5em"; break;
+					default: size = "4em"; club_size = "3.5em";
 				}
 
 				for (var i = 0; i < parsed.org.length; i++) {
@@ -581,6 +585,48 @@
 
 						fill.remove();
 					});
+				}
+				
+				var club_set = cont.find(".club-set");
+				
+				function loadClub(dat) {
+					club.list(club_set, null, {
+						max_count: 3,
+						type: "event",
+						
+						init: dat,
+						
+						entry: {
+							margin: "0 1.5rem 0 0",
+							size: club_size
+						}
+					});
+				}
+				
+				var club_info = new Array(parsed.org_club.length);
+				var loaded = 0;
+				
+				for (var i = 0; i < parsed.org_club.length; i++) {
+					(function (i) {
+						foci.get("/club/info", { cuid: parsed.org_club[i] }, function (suc, dat) {
+							if (suc) {
+								club_info[i] = dat;
+							} else {
+								util.emsg(dat);
+								club_info[i] = { cuid: parsed.org_club[i] };
+							}
+							
+							loaded++;
+							
+							if (loaded == parsed.org_club.length) {
+								loadClub(club_info);
+							}
+						});
+					})(i);
+				}
+				
+				if (!i) {
+					loadClub([]);
 				}
 
 				function getRForm(session, type, cb) {

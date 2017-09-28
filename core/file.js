@@ -4,11 +4,13 @@ var db = require("./db");
 var err = require("./err");
 var util = require("./util");
 var auth = require("./auth");
+var tick = require("./tick");
 var config = require("./config");
 
 var fs = require("fs");
-var crypto = require("crypto");
 var pump = require("pump");
+var crypto = require("crypto");
+var request = require("request-promise");
 
 var alioss = require("ali-oss").Wrapper; // use promise
 
@@ -33,6 +35,16 @@ if (config.oss && config.oss.type == "ali") {
 		accessKeySecret: config.oss.seckey,
 		bucket: config.oss.bucket
 	});
+	
+	tick.awrap(async () => {
+		await oss_client.putBucketCORS(config.oss.bucket, config.oss.region, [
+			{
+				allowedOrigin: "*",
+				allowedMethod: [ "GET", "HEAD" ],
+				allowedHeader: "*"
+			}
+		]);
+	})();
 }
 
 var readFileAsync = path => {
@@ -40,6 +52,15 @@ var readFileAsync = path => {
 		fs.readFile(path, (err, cont) => {
 			if (err) rej(err);
 			else res(cont);
+		});
+	});
+};
+
+var writeFileAsync = (path, data) => {
+	return new Promise((res, rej) => {
+		fs.writeFile(path, data, (err) => {
+			if (err) rej(err);
+			else res();
 		});
 	});
 };
@@ -63,14 +84,18 @@ var existsAsync = path => {
 
 var unlinkAsync = path => {
 	return new Promise((res, rej) => {
-		fs.unlink(path, (err) => {
-			if (err) rej(err);
-			else res();
-		});
+		try {
+			fs.unlink(path, (err) => {
+				if (err) rej(err);
+				else res();
+			});
+		} catch (e) {
+			rej(e);
+		}
 	});
 };
 
-var dir = chsum => config.file.save_dir + "/" + chsum;
+var dir = (chsum, tmp) => (tmp ? config.file.tmp_dir : config.file.save_dir) + "/" + chsum;
 
 // get md5&length of the file
 var md5FileAsync = file => {
@@ -112,7 +137,7 @@ var moveFileAsync = (pfrom, pto) => {
 // { type: content type, chsum: md5 checksum, size: size in bytes }
 
 // file and content-type
-exports.newFile = async (file, ct) => {
+exports.newFile = async (file, ct, tmp) => {
 	var col = await db.col("file");
 	var info = await md5FileAsync(file);
 
@@ -124,19 +149,21 @@ exports.newFile = async (file, ct) => {
 	var found = await col.findOne({ chsum: md5 });
 	var cached = false;
 	
-	if (!found) {
+	if (!found || (found.cached && tmp /* the file is cached but local temp file is requested(to prevent CORS) */)) {
 		// console.log("?? " + file + " " + md5);
 		
-		if (oss_client) {
+		if (oss_client && !tmp) {
 			// upload to oss
 			await oss_client.put(md5, file);
 			cached = true;
 		} else {
 			// console.log("?? " + file + " " + md5);
-			await moveFileAsync(file, dir(md5));
+			await moveFileAsync(file, dir(md5, tmp));
 		}
 		
-		await col.insert({ ct: ct, chsum: md5, len: len, cached: cached });
+		if (!tmp) {
+			await col.insert({ ct: ct, chsum: md5, len: len, cached: cached, tmp: tmp });
+		}
 	} else {
 		if (len != found.len) {
 			throw new err.Exc("$core.file_md5_collision");
@@ -156,16 +183,31 @@ var findFile = async (chsum) => {
 	return found;
 }
 
-exports.getFile = async (chsum) => {
+exports.getFile = async (chsum, tmp) => {
+	if (tmp) {
+		if (await existsAsync(dir(chsum, true))) {
+			return {
+				ct: null,
+				cont: await readFileAsync(dir(chsum, true))
+			};
+		}
+		
+		throw new err.Exc("$core.file_missing(" + chsum + ")");
+	}
+
 	var file = await findFile(chsum);
 
 	if (!file.cached || !oss_client) {
-		if (await existsAsync(dir(chsum))) {
-			// has local file
-			exports.cacheOne(chsum);
+		if (await existsAsync(dir(chsum, tmp))) { // has local file
+			if (!tmp) {
+				tick.awrap(async () => {
+					await exports.cacheOne(chsum);
+				})();
+			}
+			
 			return {
 				ct: file.ct,
-				cont: await readFileAsync(dir(chsum))
+				cont: await readFileAsync(dir(chsum, tmp))
 			};
 		} else {
 			throw new err.Exc("$core.file_missing(" + chsum + ")");
@@ -193,6 +235,8 @@ exports.cacheOne = async md5 => {
 	if (oss_client && await existsAsync(local)) {
 		await oss_client.put(md5, local);
 		await col.updateOne({ chsum: md5 }, { $set: { cached: true } });
+		
+		// TODO: check if put will delete the file
 		await unlinkAsync(local);
 	}
 };
@@ -212,3 +256,15 @@ exports.cacheFull = async () => {
 exports.isLegalID = async (id) => {
 	return /^(([0-9a-z]{32})|([0-9a-z]{64}))$/i.test(id);
 };
+
+exports.cleanTmp = async () => {
+	var files = await readdirAsync(config.file.tmp_dir);
+	
+	for (var i = 0; i < files.length; i++) {
+		await unlinkAsync(dir(files[i], true));
+	}
+};
+
+setInterval(function () {
+	tick.awrap(exports.cleanTmp)();
+}, config.file.tmp_clean_interval);

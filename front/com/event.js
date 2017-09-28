@@ -115,6 +115,7 @@ define([
 		ret.favtag = info.favtag ? info.favtag : [];
 
 		ret.org = info.org || [];
+		ret.org_club = info.org_club || [];
 
 		ret.location = function (cb) {
 			if (info.loclng && info.loclat) {

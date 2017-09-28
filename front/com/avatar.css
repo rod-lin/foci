@@ -6,6 +6,8 @@
 
 .com-avatar .avatar {
 	display: inline-block;
+	
+	width: 100%;
 
 	border-radius: 50%;
 
@@ -19,5 +21,16 @@
 }
 
 .com-avatar .dname {
+	position: relative;
+	
+	width: 140%;
+	left: -20%;
+	
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	
 	font-size: 1em;
+	font-weight: bold;
+	color: rgb(149, 149, 149);
 }

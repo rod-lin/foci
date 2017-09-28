@@ -104,7 +104,7 @@ define([
 
         bindTool(main.find(".linkify.icon"), "[", "](https://)", null, function () {
             var url = window.prompt("Link", "");
-        
+            
             if (url) {
                 document.execCommand("createLink", false, url);
             }
@@ -121,13 +121,20 @@ define([
         
         bindTool(main.find(".image.icon"), "![](https://", ")", null, function () {
             // document.execCommand("insertImage", false, window.prompt('图片URL:', ''));
-            var url = window.prompt("Image url", "");
-        
-            if (url) {
-                document.execCommand("insertImage", false, url);
-            }
+            // var url = window.prompt("Image url", "");
+            // 
+            // if (url) {
+            //     document.execCommand("insertImage", false, url);
+            // }
+            // 
+            // return; // TODO: fix this(lose focus)
             
-            return; // TODO: fix this(lose focus)
+            upload.init(function (file) {
+                if (file) {
+                    main.find(".editor-cont").focus();
+                    document.execCommand("insertImage", false, foci.download(file));
+                }
+            });
             
             // upload.field(function (url) {
             //     if (url) {
