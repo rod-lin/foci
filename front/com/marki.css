@@ -29,9 +29,26 @@
     overflow-y: hidden;
 }
 
+.com-marki-editor .editor-toolbar button {
+    position: relative;
+    margin-right: 0.7rem;
+}
+
+.com-marki-editor .editor-toolbar button.loading .icon {
+    visibility: hidden;
+}
+
+.com-marki-editor .editor-toolbar button .loader {
+    visibility: hidden;
+}
+
+.com-marki-editor .editor-toolbar button.loading .loader {
+    visibility: visible;
+}
+
 .com-marki-editor .editor-toolbar .icon {
     font-size: 1.2em;
-    margin-right: 0.7em;
+    margin-right: 0 !important;
     color: #6C6C6C;
     cursor: pointer;
 }

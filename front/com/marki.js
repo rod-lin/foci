@@ -32,7 +32,10 @@ define([
                 </div> \
             </div> \
             <div class='editor-toolbar noSwipe'> \
-                <button class='input-no-style wechat-btn'><i class='wechat icon'></i></button> \
+                <button class='input-no-style wechat-btn'> \
+                    <i class='wechat icon'></i> \
+                    <div class='ui tiny loader active'></div> \
+                </button> \
                 <button class='input-no-style'><i class='header icon'></i></button> \
                 <button class='input-no-style'><i class='bold icon'></i></button> \
                 <button class='input-no-style'><i class='italic icon'></i></button> \
@@ -109,7 +112,7 @@ define([
                 } else {
                     var code = match[2];
                     
-                    alert(code);
+                    main.find(".wechat-btn").addClass("loading");
                     
                     login.session(function (session) {
                         foci.encop(session, {
@@ -118,6 +121,8 @@ define([
                             
                             code: code
                         }, function (suc, dat) {
+                            main.find(".wechat-btn").removeClass("loading");
+                            
                             if (suc) {
                                 main.find(".editor-cont").focus();
                                 document.execCommand("insertHtml", false, dat);

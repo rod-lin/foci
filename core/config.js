@@ -121,7 +121,7 @@ var conf = module.exports = {
 
 		event: {
 			title: 256,
-			descr: 40960,
+			descr: 409600,
 			location: 1024,
 
 			keyword: 128,
