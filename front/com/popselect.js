@@ -9,7 +9,9 @@ define([ "com/util" ], function (util) {
 		obj = $(obj);
 		config = $.extend({
 			position: "bottom center",
-			prompt: "Text"
+			prompt: "Text",
+			
+			// onSubmit
 		}, config);
 		
 		var main = $("<div class='com-popselect-text'> \

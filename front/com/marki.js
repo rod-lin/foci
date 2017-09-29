@@ -4,8 +4,9 @@
 
 define([
     "com/xfilt", "com/util", "com/tip",
-    "com/login", "com/helper", "com/upload"
-], function (xfilt, util, tip, login, helper, upload) {
+    "com/login", "com/helper", "com/upload",
+    "com/popselect"
+], function (xfilt, util, tip, login, helper, upload, popselect) {
     var $ = jQuery;
 	foci.loadCSS("com/marki.css");
 
@@ -14,7 +15,9 @@ define([
         config = $.extend({
             placeholder: "",
             use_rich: true,
-            tab: "&nbsp;&nbsp;&nbsp;&nbsp;"
+            tab: "&nbsp;&nbsp;&nbsp;&nbsp;",
+            
+            enable_wechat: false
         }, config);
 
         var main = $("<div class='com-marki-editor split'> \
@@ -29,8 +32,9 @@ define([
                 </div> \
             </div> \
             <div class='editor-toolbar noSwipe'> \
-                <button class='input-no-style'><i class='header icon'></i> \
-                <button class='input-no-style'><i class='bold icon'></i> \
+                <button class='input-no-style wechat-btn'><i class='wechat icon'></i></button> \
+                <button class='input-no-style'><i class='header icon'></i></button> \
+                <button class='input-no-style'><i class='bold icon'></i></button> \
                 <button class='input-no-style'><i class='italic icon'></i></button> \
                 <button class='input-no-style'><i class='strikethrough icon'></i></button> \
                 <button class='input-no-style'><i class='linkify icon'></i></button> \
@@ -87,6 +91,43 @@ define([
                     updatePreview();
                 }
             };
+        }
+        
+        if (!config.enable_wechat) {
+            main.find(".wechat-btn").remove();
+        } else {
+            main.find(".wechat-btn").click(function () {
+                var url = window.prompt("Wechar article url", "");
+                
+                if (!url) return;
+                
+                var url_reg = new RegExp("^(https://)?mp\\.weixin\\.qq\\.com\\/s\\/(.+)/?$");
+                var match = url_reg.exec(url);
+                
+                if (!match) {
+                    util.emsg("illegal wechat url");
+                } else {
+                    var code = match[2];
+                    
+                    alert(code);
+                    
+                    login.session(function (session) {
+                        foci.encop(session, {
+                            int: "wechat",
+                            action: "article",
+                            
+                            code: code
+                        }, function (suc, dat) {
+                            if (suc) {
+                                main.find(".editor-cont").focus();
+                                document.execCommand("insertHtml", false, dat);
+                            } else {
+                                util.emsg(dat);
+                            }
+                        });
+                    });
+                }
+            });
         }
 
         bindTool(main.find(".bold.icon"), "**", "**", "bold");

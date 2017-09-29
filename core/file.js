@@ -10,7 +10,7 @@ var config = require("./config");
 var fs = require("fs");
 var pump = require("pump");
 var crypto = require("crypto");
-var request = require("request-promise");
+// var request = require("request-promise");
 
 var alioss = require("ali-oss").Wrapper; // use promise
 

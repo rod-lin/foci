@@ -19,13 +19,14 @@ var cover = require("./cover");
 var config = require("./config");
 var notice = require("./notice");
 var alipay = require("./alipay");
+var wechat = require("./wechat");
 var captcha = require("./captcha");
 var comment = require("./comment");
 var invcode = require("./invcode");
 var template = require("./template");
 var watchdog = require("./watchdog");
 
-var request = require("request");
+// var request = require("request");
 
 require("./binds");
 
@@ -683,6 +684,17 @@ encop.event = async (env, usr, query, next, has_cap) => {
 			await event.incView(args.euid, usr.getUUID());
 			return;
 
+		default:
+			throw new err.Exc("$core.action_not_exist");
+	}
+};
+
+encop.wechat = async (env, usr, query, next, has_cap) => {
+	switch (query.action) {
+		case "article":
+			var args = util.checkArg(query, { code: "string" }); // the code following https://mp.wechat.qq.com/s/
+			return await wechat.getArticleContent(args.code);
+			
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}
