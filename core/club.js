@@ -218,13 +218,15 @@ Club.query = {
     related_club: (uuid, pub) => ({
         $or: [
             {
-                creator: uuid,
+                "creator": uuid,
             }, {
-                ["member." + uuid]: { $exists: true }
+                ["member." + uuid]: { $exists: true },
             }, {
                 ["apply_member." + uuid]: { $exists: true }
             }
-        ].slice(0, pub ? 2 : 3)
+        ].slice(0, pub ? 2 : 3),
+        
+        "state": { $gte: pub ? clubstat.operate : clubstat.all }
     }),
     
     keyword: kw => {
