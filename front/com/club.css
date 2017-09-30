@@ -356,14 +356,14 @@
     opacity: 0.9;
 }
 
-.com-club-entry.review:hover,
+/* .com-club-entry.review:hover,
 .com-club-entry.review:active {
     opacity: 1;
 }
 
 .com-club-entry.review {
     cursor: default;
-}
+} */
 
 .com-club-entry .club-logo {
     position: relative;
@@ -398,11 +398,16 @@
     background: rgba(52, 152, 219, 0.4);
 }
 
+.com-club-entry.rejected .club-logo .state-overlay {
+    background: rgba(231, 76, 60, 0.4);
+}
+
 .com-club-entry.operate .club-logo .state-overlay {
     display: none;
 }
 
 .com-club-entry .badge,
+.com-club-entry .checkbox,
 .com-club-entry .delete-btn {
     position: absolute;
     
@@ -429,12 +434,56 @@
     transition: background 0.3s;
 }
 
+.com-club-entry.select .checkbox {
+    display: block !important;
+    opacity: 0;
+    visibility: hidden;
+    
+    border-radius: 4px;
+    border: 1px solid rgba(0 ,0, 0, 0.08);
+    
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+    
+    transition: opacity 0.2s;
+}
+
+.com-club-entry.select .checkbox .icon {
+    color: #3498DB;
+    font-size: 1.05rem;
+    
+    visibility: hidden;
+    opacity: 0;
+    
+    transition: opacity 0.2s;
+}
+
+.com-club-entry.select .checkbox.selected .icon {
+    visibility: visible;
+    opacity: 1;
+}
+
+.com-club-entry.select:hover .checkbox,
+.com-club-entry.select .checkbox.selected {
+    right: auto;
+    left: -7px;
+    
+    opacity: 1;
+    visibility: visible;
+
+    background: rgb(251, 251, 251) !important;
+}
+
 .com-club-entry .badge {
     background: #3498DB;
 }
 
-.com-club-entry.show-badge:not(.review) .badge {
+.com-club-entry.show-badge .badge {
     display: block;
+}
+
+.com-club-entry.rejected .badge,
+.com-club-entry.review .badge {
+    display: none;
 }
 
 .com-club-entry .delete-btn:hover {
@@ -445,6 +494,7 @@
     background: #E83927;
 }
 
+.com-club-entry.rejected .delete-btn,
 .com-club-entry.review .delete-btn {
     display: block;
 }
@@ -484,4 +534,65 @@
 
 .com-club-list.empty .empty-prompt {
     display: block;
+}
+
+/* club review info */
+
+.com-club-review-info {
+    padding: 2rem;
+    color: rgba(70, 70, 70, 1);
+}
+
+.com-club-review-info .header-info {
+    display: -webkit-flex;
+    display: flex;
+    
+    -webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+    
+    margin-bottom: 1rem;
+}
+
+.com-club-review-info .header-info .logo {
+    width: 5rem;
+    height: 5rem;
+    
+    border-radius: 5px;
+    
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    
+    background-color: rgb(245, 245, 245);
+    
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.04);
+}
+
+.com-club-review-info .header-info .name-creator {
+    margin-left: 1rem;
+    
+    -webkit-box-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+}
+
+.com-club-review-info .header-info .name-creator .dname {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.com-club-review-info .header-info .name-creator .school,
+.com-club-review-info .header-info .name-creator .creator {
+    color: rgba(120, 120, 120, 1);
+    line-height: 1.3;
+}
+
+.com-club-review-info .prompt {
+    color: rgba(150, 150, 150, 1);
+    font-weight: bold;
+    margin-bottom: 1rem;
 }

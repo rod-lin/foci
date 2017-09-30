@@ -29,13 +29,60 @@ define([
         return parsed;
     };
     
+    club.reviewInfo = function (info, config) {
+        config = $.extend({}, config);
+        
+        var main = $("<div class='ui small modal com-club-review-info'> \
+            <div class='header-info'> \
+                <div class='logo'></div> \
+                <div class='name-creator'> \
+                    <div class='dname'></div> \
+                    <div class='school'>School: <span class='school-field'></span></div> \
+                    <div class='creator'>Creator: <a class='creator-link'>loading</a></div> \
+                </div> \
+            </div> \
+            <div class='prompt'>Description</div> \
+            <div class='descr'>no description</div> \
+        </div>");
+        
+        var parsed = club.parseInfo(info);
+        
+        util.bgimg(main.find(".logo"), parsed.logo);
+        main.find(".dname").html(parsed.dname);
+        main.find(".school-field").html(parsed.school);
+        main.find(".descr").html(parsed.descr);
+        
+        foci.get("/user/info", { uuid: info.creator }, function (suc, dat) {
+            if (suc) {
+                main.find(".creator-link")
+                    .html(xfilt(dat.dname))
+                    .attr("href", "#profile/" + info.creator)
+                    .click(function () {
+                        hide();
+                    });
+            } else {
+                util.emsg(dat);
+            }
+        });
+        
+        function hide() {
+            main.modal("hide");
+        }
+        
+        main.modal("show");
+        
+        var mod = {}
+        
+        return mod;
+    };
+    
     // a list of clubs shown on the profile
     // TODO: not finished!!!
     club.list = function (cont, uid, config) {
         cont = $(cont);
         config = $.extend({
             max_count: 2,
-            type: "user", // or "event"(init must be given)
+            type: "user", // , "event", or "review"(init must be given)
             
             init: [],
             
@@ -52,6 +99,22 @@ define([
         </div>");
         
         main.find(".empty-prompt").html(config.no_related_prompt);
+        
+        var selected = [];
+        
+        config.entry = $.extend({
+            onSelect: function (cuid, is_selected) {
+                if (is_selected) {
+                    selected.push(cuid);
+                } else {
+                    var i = selected.indexOf(cuid);
+                    
+                    if (i != -1) {
+                        selected.splice(i, 1);
+                    }
+                }
+            }
+        }, config.entry);
         
         function renderList(dat) {
             var min = dat.length > config.max_count ? config.max_count : dat.length;
@@ -96,13 +159,18 @@ define([
                     util.emsg(dat);
                 }
             });
-        } else if (config.type == "event") {
+        } else if (config.type == "event" ||
+                   config.type == "review") {
             renderList(config.init);
         }
             
         cont.append(main);
     
         var mod = {};
+        
+        mod.getSelected = function () {
+            return selected;
+        };
         
         return mod;
     };
@@ -549,7 +617,12 @@ define([
             tool: null, // { icon, name }
             // onClick
             onClick: function (info) {
-                util.jump("#clubcent/" + info.cuid);
+                if (info.state == foci.clubstat.review ||
+                    info.state == foci.clubstat.rejected) {
+                    util.jump("#clubreg/" + info.cuid);
+                } else {
+                    util.jump("#clubcent/" + info.cuid);
+                }
             },
             
             show_name: true,
@@ -557,6 +630,11 @@ define([
             radius: "5px",
             
             margin: null,
+            
+            select: false,
+            review_mode: false,
+            
+            // onSelect(cuid)
         }, config);
         
         var entry = $("<div class='com-club-entry'> \
@@ -566,6 +644,7 @@ define([
             <div class='club-name'></div> \
             <div class='delete-btn'><i class='fitted cancel icon'></i></div> \
             <div class='badge'><i class='fitted icon'></i></div> \
+            <div class='checkbox'><i class='fitted check icon'></i></div> \
         </div>");
         
         entry.find(".club-logo").css("border-radius", config.radius);
@@ -608,9 +687,10 @@ define([
                 config.onClick(info);
         });
         
-        entry.find(".delete-btn").click(function () {
-            if (parsed.state == foci.clubstat.review) {
-                util.ask("Are you sure to delete this club(under review)?", function (ans) {
+        entry.find(".delete-btn").click(function (e) {
+            if (parsed.state == foci.clubstat.review ||
+                parsed.state == foci.clubstat.rejected) {
+                util.ask("Are you sure to delete this club(under review/rejected)?", function (ans) {
                     if (ans) {
                         login.session(function (session) {
                             foci.encop(session, {
@@ -632,6 +712,8 @@ define([
             } else {
                 util.emsg("not a club under review");
             }
+            
+            e.stopPropagation();
         });
         
         var title_text = util.htmlToText(parsed.dname);
@@ -660,16 +742,44 @@ define([
         }
         
         switch (parsed.state) {
+            case foci.clubstat.rejected:
+                entry.addClass("rejected");
+                overlay.find(".icon").addClass("cancel");
+                title_text += " - review failed";
+                
+                break;
+            
             case foci.clubstat.review:
-                entry.addClass("review");
-                overlay.find(".icon").addClass("wait");
-                title_text += " - under review";
+                if (!config.review_mode) {
+                    entry.addClass("review");
+                    overlay.find(".icon").addClass("wait");
+                    title_text += " - under review";
+                }
                 
                 break;
                 
             case foci.clubstat.operate:
                 entry.addClass("operate");
                 break;
+        }
+        
+        entry.club = {};
+        
+        if (config.select) {
+            entry.addClass("select");
+            
+            entry.find(".checkbox").click(function (e) {
+                entry.find(".checkbox").toggleClass("selected");
+                
+                if (config.onSelect)
+                    config.onSelect(info.cuid, entry.club.isSelected());
+                    
+                e.stopPropagation();
+            });
+            
+            entry.club.isSelected = function () {
+                return entry.find(".checkbox").hasClass("selected");
+            };
         }
         
         entry.attr("title", title_text);
@@ -743,10 +853,12 @@ define([
             for (var i = 0; i < dat.length; i++) {
                 var dom = club.entry(dat[i], {
                     onClick: function (info) {
-                        if (info.state == foci.clubstat.review)
-                            util.emsg("club not ready");
+                        hide();
+                        
+                        if (info.state == foci.clubstat.review ||
+                            info.state == foci.clubstat.rejected)
+                            util.jump("#clubreg/" + info.cuid);
                         else {
-                            hide();
                             util.jump("#clubcent/" + info.cuid);
                         }
                     }

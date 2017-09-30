@@ -20,6 +20,7 @@ var clubtype = exports.clubtype = {
 
 var clubstat = exports.clubstat = {
     all: -Infinity,
+    rejected: -100,
     review: 0, // under review
     operate: 100 // on operation
 };
@@ -106,6 +107,8 @@ Club.prototype.getInfo = function () {
         logo: this.logo,
         
         state: this.state,
+        
+        creator: this.creator
     };
 };
 
@@ -201,10 +204,16 @@ Club.query = {
         ]
     }),
     
-    get_review: uuid => ({
-        "creator": uuid,
-        "state": clubstat.review
-    }),
+    get_review: uuid => {
+        var q = {
+            "state": clubstat.review
+        };
+        
+        if (uuid !== undefined)
+            q["creator"] = uuid;
+            
+        return q;
+    },
     
     related_club: (uuid, pub) => ({
         $or: [
@@ -234,6 +243,8 @@ Club.set = {
     info: info => ({ $set: info }),
     
     publish: () => ({ $set: { "state": clubstat.operate } }),
+    reject: () => ({ $set: { "state": clubstat.rejected } }),
+    
     add_apply: (uuid, comment) => ({ $set: { ["apply_member." + uuid]: { comment: comment } } }),
 
     remove_apply: uuid => ({
@@ -286,10 +297,10 @@ function checkClubName(name) {
     return config.lim.club.dname_reg.test(name);
 }
 
-exports.checkClubExist = async (cuid) => {
+exports.checkClubExist = async (cuid, state) => {
     var col = await db.col("club");
 	
-    if (!await col.count(Club.query.cuid(cuid)))
+    if (!await col.count(Club.query.cuid(cuid, state)))
         throw new err.Exc("$core.not_exist($core.word.club)");
 };
 
@@ -386,13 +397,44 @@ exports.publish = async (cuid, uuid, forced) => {
     await col.updateOne(Club.query.cuid(cuid, clubstat.all), Club.set.publish());
 };
 
+exports.reject = async (cuid, uuid, forced) => {
+    var club = await exports.cuid(cuid, clubstat.all);
+    
+    if (!forced)
+        await user.checkAdmin(uuid);
+    
+    if (club.getState() != clubstat.review)
+        throw new err.Exc("$core.club.already_reviewed");
+    
+    var col = await db.col("club");
+    
+    await col.updateOne(Club.query.cuid(cuid, clubstat.all), Club.set.reject());
+};
+
+exports.publishAll = async (cuids, uuid) => {
+    await user.checkAdmin(uuid);
+    
+    for (var i = 0; i < cuids.length; i++) {
+        await exports.publish(cuids[i], null, true);
+    }
+};
+
+exports.rejectAll = async (cuids, uuid) => {
+    await user.checkAdmin(uuid);
+    
+    for (var i = 0; i < cuids.length; i++) {
+        await exports.reject(cuids[i], null, true);
+    }
+};
+
 exports.delete = async (cuid, uuid) => {
     // only creator can delete an event(under review)
     await exports.checkCreator(cuid, uuid);
     
     var club = await exports.cuid(cuid, clubstat.all);
 
-    if (club.getState() != clubstat.review)
+    if (club.getState() != clubstat.review &&
+        club.getState() != clubstat.rejected)
         throw new err.Exc("$core.club.club_not_review");
         
     var col = await db.col("club");
@@ -558,4 +600,50 @@ exports.transferCreator = async (cuid, self, uuid) => {
     var col = await db.col("club");
     
     await col.updateOne(Club.query.cuid(cuid), Club.set.transfer_creator(self, uuid));
+};
+
+exports.getReview = async () => {
+    var col = await db.col("club");
+    
+    var res = await col.find(Club.query.get_review()).toArray();
+    var ret = [];
+    
+    res.forEach(clb => ret.push(new Club(clb).getInfo()));
+    
+    return ret;
+};
+
+// used when trying to alter club info under review
+exports.getReviewInfo = async (cuid, uuid) => {
+    if (!await user.isAdmin(uuid))
+        await exports.checkCreator(cuid, uuid);
+        
+    return await exports.cuid(cuid, clubstat.all);
+};
+
+exports.updateReviewInfo = async (cuid, uuid, info) => {
+    if (!await user.isAdmin(uuid))
+        await exports.checkCreator(cuid, uuid);
+        
+    var filted = {
+        logo: info.logo,
+        dname: info.dname,
+        type: info.type,
+        descr: info.descr,
+        school: info.school
+    };
+    
+    var col = await db.col("club");
+    
+    await col.updateOne(Club.query.cuid(cuid, clubstat.all), Club.set.info(filted));
+};
+
+exports.setState = async (cuid, state) => {
+    await exports.checkClubExist(cuid, clubstat.all);
+    
+    var col = await db.col("club");
+    
+    await col.updateOne(Club.query.cuid(cuid, clubstat.all), Club.set.info({
+        state: state
+    }));
 };

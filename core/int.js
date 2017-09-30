@@ -849,13 +849,27 @@ encop.club = async (env, usr, query, next) => {
 				invcode: {
 					type: "string",
 					opt: true
+				},
+				
+				cuid: { // if given, the club should already exist
+					type: "int",
+					opt: true
 				}
 			});
 			
 			// allow other trivial settings too
 			var info = util.checkArg(query, club.Club.format.info, true);
 			
-			var clb = await club.newClub(usr.getUUID(), info);
+			var cuid;
+			
+			if (args.cuid === undefined) {
+				cuid = (await club.newClub(usr.getUUID(), info)).getCUID();
+			} else {
+				cuid = args.cuid;
+				await club.updateReviewInfo(cuid, usr.getUUID(), info);
+				await club.setState(cuid, club.clubstat.review);
+			}
+				
 			var published = false;
 			
 			// check invitation code
@@ -865,14 +879,14 @@ encop.club = async (env, usr, query, next) => {
 				if (!invdat)
 					throw new err.Exc("$core.invalid_invcode");
 
-				await club.publish(clb.getCUID(), null, true);
+				await club.publish(cuid, null, true);
 				await invcode.invalidate("clubreg", args.invcode);
 				
 				published = true;
 			}
 			
 			return {
-				cuid: clb.getCUID(),
+				cuid: cuid,
 				published: published
 			};
 			
@@ -880,6 +894,26 @@ encop.club = async (env, usr, query, next) => {
 			var args = util.checkArg(query, { cuid: "int" });
 			await club.publish(args.cuid, usr.getUUID());
 			return;
+			
+		case "publishall":
+			var args = util.checkArg(query, { cuids: "array" });
+			await club.publishAll(args.cuids, usr.getUUID());
+			return;
+			
+		case "reject":
+			var args = util.checkArg(query, { cuid: "int" });
+			await club.reject(args.cuid, usr.getUUID());
+			return;
+			
+		case "rejectall":
+			var args = util.checkArg(query, { cuids: "array" });
+			await club.rejectAll(args.cuids, usr.getUUID());
+			return;
+			
+		case "getreview":
+			// var args = util.checkArg(query, {});
+			await user.checkAdmin(usr.getUUID());
+			return await club.getReview();
 			
 		case "applyjoin":
 			var args = util.checkArg(query, { cuid: "int", comment: "string" });
@@ -954,6 +988,11 @@ encop.club = async (env, usr, query, next) => {
 			await club.transferCreator(args.cuid, usr.getUUID(), args.uuid);
 	
 			return;
+			
+		// get info of club under review(by the creator himself)
+		case "reviewinfo":
+			var args = util.checkArg(query, { cuid: "int" });
+			return await club.getReviewInfo(args.cuid, usr.getUUID());
 	
 		default:
 			throw new err.Exc("$core.action_not_exist");

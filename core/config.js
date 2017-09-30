@@ -258,7 +258,7 @@ var conf = module.exports = {
 		system: {
 			// url relative to the front dir
 			"helper": { logo: "/img/def/helper.jpg", name: "Foci Helper" },
-			"review": { logo: "/img/def/review.jpg", name: "Foci Event Review" },
+			"review": { logo: "/img/def/review.jpg", name: "Foci Review" },
 		}
 	},
 

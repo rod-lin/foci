@@ -467,6 +467,7 @@ window.foci = {};
 	
 	foci.clubstat = {
 		all: -Infinity,
+		rejected: -100,
 		review: 0,
 	    operate: 100
 	};

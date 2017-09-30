@@ -120,6 +120,18 @@
 			"com/env", "com/util", "com/pform",
 			"com/login", "com/upload"
 		], function (env, util, pform, login, upload) {
+			var review_cuid = null;
+			
+			if (args[0]) {
+				var tmp = parseInt(args[0]);
+			
+				if (isNaN(tmp)) {
+					util.emsg("illegal argument");
+				} else {
+					review_cuid = tmp;
+				}
+			}
+			
 			var tbar = env.get("tbar");
 			tbar.setTitle("Club Registration");
 
@@ -215,6 +227,8 @@
 						logo: logo,
 						
 						invcode: invcode ? invcode : undefined,
+						
+						cuid: review_cuid ? review_cuid : undefined
 					}, function (suc, dat) {
 						main.find(".page-1 .club-submit").removeClass("loading");
 						
@@ -236,7 +250,35 @@
 				util.jump("#profile");
 			});
 			
-			show(true);
+			if (review_cuid !== null) {
+				main.find(".page-1 .title").html("Edit club info");
+				main.find(".page-1 .subtitle").html("Edited info will be updated in the our review center");
+				
+				login.session(function (session) {
+					foci.encop(session, {
+						int: "club",
+						action: "reviewinfo",
+						
+						cuid: review_cuid
+					}, function (suc, dat) {
+						if (suc) {
+							main.find(".page-1 .club-name").val(dat.dname);
+							main.find(".page-1 .club-type").dropdown("set value", dat.type);
+							main.find(".page-1 .club-descr").val(dat.descr);
+							
+							logo_field.val(dat.logo);
+							
+							main.find(".page-1 .club-school").val(dat.school);
+							
+							show(true);
+						} else {
+							util.emsg(dat);
+						}
+					});
+				});
+			} else {
+				show(true);
+			}
 		});
 	}
 </script>

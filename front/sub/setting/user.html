@@ -16,7 +16,21 @@
         <div class="menu-group only-admin">
             <div class="header">Admin</div>
             <div class="menu-item" data-form-set="invcode">Invitation code</div>
+            <div class="menu-item" data-form-set="clubrev">Club review</div>
         </div>
+    </div>
+    
+    <div class="form-set form-set-clubrev">
+        <form class="form-clubrev ui form">
+            <h3 class="ui top attached block header">Club review</h3>
+            <div class="ui attached segment" style="padding-bottom: 0 !important;">
+                <div class="field">
+                    <button type="button" class="ui basic green button pub-btn">Publish</button>
+                    <button type="button" class="ui basic red button rej-btn">Reject</button>
+                </div>
+                <div class="review-box" style=""></div>
+            </div>
+        </form>
     </div>
     
     <div class="form-set form-set-invcode">
@@ -218,8 +232,9 @@
     function initSetting(main, args, show, mod) {
         require([
             "com/env", "com/login", "com/tagbox",
-            "com/util", "com/upload"
-        ], function (env, login, tagbox, util, upload) {
+            "com/util", "com/upload", "com/club",
+            "com/notice"
+        ], function (env, login, tagbox, util, upload, club, notice) {
             var tbar = env.get("tbar");
             
             tbar.setTitle("Setting", "User");
@@ -520,7 +535,7 @@
                     
                     /*************** realname form end ***************/
                     
-                    /*************** invcode form end ***************/
+                    /*************** invcode form start ***************/
                     
                     (function () {
                         var form_gen_invcode = main.find(".form-set-invcode").find(".form-gen-invcode");
@@ -605,6 +620,175 @@
                                 } else {
                                     util.emsg(dat);
                                 }
+                            });
+                        });
+                    })();
+                    
+                    /*************** club review form start ***************/
+                    (function () {
+                        var page = main.find(".form-set-clubrev");
+                        var form_review = page.find(".form-clubrev");
+                        var review_box = form_review.find(".review-box");
+                        
+                        var club_list = null;
+                        var cuid_map = {};
+                        
+                        page.on("show", function () {
+                            review_box.find("*").not(".loader").remove();
+                            review_box.find(".loader").addClass("active");
+                            
+                            club_list = null;
+                            cuid_map = {};
+                            
+                            foci.encop(session, {
+                                int: "club",
+                                action: "getreview"
+                            }, function (suc, dat) {
+                                if (suc) {
+                                    for (var i = 0; i < dat.length; i++) {
+                                        cuid_map[dat[i].cuid] = dat[i];
+                                    }
+                                    
+                                    club_list = club.list(review_box, null, {
+                                        type: "review",
+                                        init: dat,
+                                        
+                                        max_count: Infinity,
+                                        
+                                        entry: {
+                                            select: true,
+                                            review_mode: true,
+                                            onClick: function (info) {
+                                                club.reviewInfo(info);
+                                            }
+                                        },
+                                        
+                                        no_related_prompt: "<div style='padding-top: 0.5rem; margin-bottom: 1.5rem;'>no club under review</div>"
+                                    });
+                                } else {
+                                    util.emsg(dat);
+                                }
+                            });
+                        });
+                        
+                        function checkSelect() {
+                            if (!club_list) {
+                                util.emsg("club list not ready");
+                                return null;
+                            }
+                            
+                            var selected = club_list.getSelected();
+                            
+                            if (!selected.length) {
+                                util.emsg("no club selected");
+                                return null;
+                            }
+                            
+                            return selected;
+                        }
+                        
+                        form_review.find(".pub-btn").click(function () {
+                            var selected = checkSelect();
+                            
+                            if (!selected) return;
+                            
+                            form_review.find(".pub-btn").addClass("loading");
+                            
+                            // console.log(selected);
+                            
+                            util.ask("Are you sure to publish " + (selected.length > 1 ? "these " + selected.length + " clubs?" : "this club?"),
+                            function (ans) {
+                                if (ans)
+                                    foci.encop(session, {
+                                        int: "club",
+                                        action: "publishall",
+                                        
+                                        cuids: selected
+                                    }, function (suc, dat) {
+                                        form_review.find(".pub-btn").removeClass("loading");
+                                        
+                                        if (suc) {
+                                            util.emsg("published", "success");
+                                            page.triggerHandler("show");
+                                        } else {
+                                            util.emsg(dat);
+                                        }
+                                    });
+                                else
+                                    form_review.find(".pub-btn").removeClass("loading");
+                            });
+                        });
+                        
+                        form_review.find(".rej-btn").click(function () {
+                            var selected = checkSelect();
+                            
+                            if (!selected) return;
+                            
+                            var send_notice = function (selected) {
+                                var creator = [];
+                                
+                                for (var i = 0; i < selected.length; i++) {
+                                    creator.push(cuid_map[selected[i]].creator);
+                                }
+                                
+                                notice.editor({
+                                    is_admin: true,
+                                    use_dragi: foci.use_dragi,
+                                    prompt: "Reasons for rejection",
+                                    
+                                    onSend: function (dat, cb) {
+                                        if (!dat.sender) {
+                    						util.emsg("no sender");
+                    						cb(false);
+                    						return;
+                    					}
+                    					
+                						foci.encop(session, {
+                							int: "notice",
+                							action: "send",
+                							type: "system",
+
+                							sender: dat.sender,
+                							uuids: creator,
+
+                							title: dat.title,
+                							msg: dat.msg
+                						}, function (suc, dat) {
+                							if (suc) {
+                								util.emsg("notice has been sent", "success");
+                							} else {
+                								util.emsg(dat);
+                							}
+
+                							cb(suc);
+                						});
+                                    }
+                                });
+                            };
+                            
+                            form_review.find(".rej-btn").addClass("loading");
+                            
+                            util.ask("Are you sure to reject " + (selected.length > 1 ? "these " + selected.length + " clubs?" : "this club?"),
+                            function (ans) {
+                                if (ans) {
+                                    foci.encop(session, {
+                                        int: "club",
+                                        action: "rejectall",
+                                        
+                                        cuids: selected
+                                    }, function (suc, dat) {
+                                        form_review.find(".rej-btn").removeClass("loading");
+                                        
+                                        if (suc) {
+                                            util.emsg("rejected. Please state your reason for rejection");
+                                            send_notice(selected);
+                                            page.triggerHandler("show");
+                                        } else {
+                                            util.emsg(dat);
+                                        }
+                                    });
+                                } else
+                                    form_review.find(".rej-btn").removeClass("loading");
                             });
                         });
                     })();
