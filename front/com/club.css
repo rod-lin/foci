@@ -292,6 +292,14 @@
         margin-bottom: 1rem;
     }
     
+    .com-club-memlist .ui.form .field {
+        margin-top: 1rem;
+    }
+    
+    .com-club-memlist .ui.form .field:first-child {
+        margin-top: 0;
+    }
+    
     .com-club-memlist .action-bar {
         margin-bottom: 1rem;
     }
@@ -375,6 +383,8 @@
     overflow: hidden;
     
     border-radius: 5px;
+    
+    border: 1px solid rgba(0, 0, 0, 0.04);
 
     background-color: rgba(245, 245, 245, 1);
     

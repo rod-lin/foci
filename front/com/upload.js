@@ -145,7 +145,7 @@ define([ "com/util" ], function (util) {
 		});
 
 		main.find(".use-btn").click(function () {
-			if (!selected) {
+			if (!main.find(".preview").attr("src")) {
 				util.emsg("no file selected");
 			} else {
 				var canvas = main.find(".preview").cropper("getCroppedCanvas");
@@ -180,9 +180,10 @@ define([ "com/util" ], function (util) {
 		});
 
 		var has_init = false;
+		var hide_locked = false;
 
-		function showPreview(disable_crop) {
-			if (!selected) return;
+		function showPreview(disable_crop, data_url) {
+			if (!selected && !data_url) return;
 
 			main.find(".preview-cont").css("display", "");
 			
@@ -193,48 +194,78 @@ define([ "com/util" ], function (util) {
 				has_init = true;
 			
 			main.find(".preview")
-				.attr("src", foci.download(selected, !disable_crop))
+				.attr("src", data_url ? data_url : foci.download(selected, !disable_crop))
 				.ready(function () {
 					main.modal("refresh");
 				}).on("load", function () {
 					main.modal("refresh");
-				})
+				});
 			
 			if (!disable_crop)	
 				main.find(".preview").cropper({
 					aspectRatio: config.crop.ratio,
-					checkCrossOrigin: true
+					checkCrossOrigin: true,
+					
+					cropstart: function () {
+						hide_locked = true;
+					},
+					
+					cropend: function () {
+						setTimeout(function () {
+							hide_locked = false;
+						}, 100);
+					}
 				});
 
 			return;
 		}
 
 		main.find(".file").change(function () {
-			var val = $(this).val();
-			if (val) {
+			if (!$(this).val()) return;
+			
+			var self = this;
+			
+			var next = function () {
 				if (!FormData) {
 					// TODO: fallback upload mode
 					util.emsg("$unsupported(FormData)");
 					return;
 				}
 				
-				main.find(".select-btn").addClass("loading");
-				var form = new FormData(main.find("form")[0]);
+				var objurl = null;
 				
-				// store local file to prevent CORS
-				form.append("tmp", true);
+				if (self.files && self.files[0])
+				 	objurl = util.createObjectURL(self.files[0]);
+				
+				// support local preview
+				if (objurl) {
+					showPreview(false, objurl);
+				} else {
+					main.find(".select-btn").addClass("loading");
+					
+					var form = new FormData(main.find("form")[0]);
+					
+					// store local file to prevent CORS
+					form.append("tmp", true);
 
-				foci.post("/file/upload", form, function (suc, dat) {
-					main.find(".select-btn").removeClass("loading");
+					foci.post("/file/upload", form, function (suc, dat) {
+						main.find(".select-btn").removeClass("loading");
 
-					if (suc) {
-						selected = dat;
-						showPreview();
-					} else {
-						util.emsg(dat);
-					}
-				});
-			}
+						if (suc) {
+							selected = dat;
+							showPreview();
+						} else {
+							util.emsg(dat);
+						}
+					});
+				}
+			};
+			
+			util.checkUploadSize(this, function (suc) {
+				if (suc) {
+					next();
+				}
+			});
 		});
 		
 		if (config.init) {
@@ -250,7 +281,11 @@ define([ "com/util" ], function (util) {
 		main.modal({
 			allowMultiple: true,
 			observeChanges: true,
-			autofocus: false
+			autofocus: false,
+			
+			onHide: function () {
+				if (hide_locked) return false;
+			}
 		});
 
 		main.modal("show");

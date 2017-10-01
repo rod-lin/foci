@@ -245,3 +245,5 @@ exports.getPass = () => {
 exports.regEscape = str => str.replace(/[\^\$\(\)\[\]\{\}*+\.\?\\\|]/g, "\\$1");
 
 exports.keywordRegExp = kw => new RegExp(exports.regEscape(kw.trim()).split(/\s+/).join("|"), "i");
+
+exports.coin = prob => Math.random() > prob;

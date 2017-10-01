@@ -468,6 +468,30 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 	util.htmlToText = function (html) {
 		return $("<span>" + xfilt(html) + "</span>").text();
 	};
+	
+	util.createObjectURL = function (blob) {
+		var url = window[window.webkitURL ? "webkitURL" : "URL"];
+		
+		if (url && url.createObjectURL) return url.createObjectURL(blob);
+	
+		return undefined;
+	};
+
+	util.checkUploadSize = function (input, cb) {
+		input = $(input)[0];
+		
+		if (input.files && input.files[0]) {
+			if (foci.config && foci.config.max_upload_size) {
+				if (input.files[0].size > foci.config.max_upload_size) {
+					util.emsg("max upload size exceeded");
+					cb(false);
+					return;
+				}
+			}
+		}
+		
+		cb(true);
+	};
 
 	return util;
 });

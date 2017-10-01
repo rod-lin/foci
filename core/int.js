@@ -100,7 +100,7 @@ var _mail = {};
 _mail.vercode = util.route(async env => {
 	var args = util.checkArg(env.query, { "email": "string", "forgot": { opt: true, type: "bool" } });
 
-	if (!await captcha.check(env, () => false, args.capans)) return;
+	if (!await captcha.check(env, () => util.coin(0.4), args.capans)) return;
 
 	if (!args.forgot) {
 		await user.checkNewUserName(args.email);
@@ -385,7 +385,7 @@ _file.upload = util.route(async env => {
 	var args = util.checkArg(env.query, { "tmp": { type: "bool", opt: true } });
 
 	if (!args.tmp) // not temp file
-		if (!await captcha.check(env, () => false, args.capans)) return;
+		if (!await captcha.check(env, () => util.coin(0.5 /* 50% possibility to trigger */), args.capans)) return;
 	
 	if (!env.file.file)
 		throw new err.Exc("no file");

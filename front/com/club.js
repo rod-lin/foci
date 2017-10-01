@@ -296,7 +296,7 @@ define([
                                     <label>Title</label> \
                                     <input class='field-mem-title'> \
                                 </div> \
-                                <div class='field' style='margin-top: 1rem;'> \
+                                <div class='field'> \
                                     <label>Admin</label> \
                                     <div class='ui toggle checkbox field-mem-is-admin'> \
         								<input type='checkbox'> \

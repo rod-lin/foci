@@ -172,7 +172,7 @@ var conf = module.exports = {
 			levels: {
 				"normal": {
 					// max times to use a single interface during gc's for one ip
-					max_count_per_int_per_ip_per_gc: 512,
+					max_count_per_int_per_ip_per_gc: 1024,
 					
 					// number of ip to trigger collection
 					gc_threshold: 1000,
