@@ -178,7 +178,9 @@ define([
             upload.init(function (file) {
                 if (file) {
                     main.find(".editor-cont").focus();
-                    document.execCommand("insertImage", false, foci.download(file));
+                    setTimeout(function () {
+                        document.execCommand("insertImage", false, foci.download(file));
+                    }, 100);
                 }
             });
             

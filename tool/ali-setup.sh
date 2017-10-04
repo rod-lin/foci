@@ -3,7 +3,7 @@
 CONST_MONGODB_VERSION=ubuntu1604-3.4.7
 CONST_NODE_VERSION=v8.6.0
 CONST_ADMIN_NAME=rodlin
-CONST_ADMIN_PASSWD=
+CONST_ADMIN_PASSWD=123456
 CONST_ADMIN_HOME=/home/$CONST_ADMIN_NAME
 CONST_FOCI_REPO=git@gitlab.com:zhengyal/foci-server.git
 # https://gitlab.com/zhengyal/foci-server.git
@@ -105,22 +105,27 @@ trace "Downloading foci..."
 
 cd $CONST_ADMIN_HOME
 
+apt update
+
+apt install git
+
 # download foci from repo
 admin_run mkdir foci
 cd foci
 admin_run git init
 admin_run git remote add origin $CONST_FOCI_REPO
 admin_run git pull origin master
-apt install gulp
+# apt install gulp
+npm install gulp --global
 
 trace "Installing nginx..."
 
-apt install nginx
+apt install nginx-full
 
 trace "Configuring nginx..."
 
 # config nginx server
-cat >> /etc/nginx/conf.d/foci.conf << END
+cat > /etc/nginx/conf.d/foci.conf << END
 server {
     listen 80;
     server_name foci.me;
@@ -166,7 +171,7 @@ END
 # configure ssh for gitlab/github
 
 # generate rsa keys
-admin_run ssh-keygen -t rsa -f $CONST_ADMIN_HOME/.ssh/id_rsa -N ""
+admin_run ssh-keygen -t rsa -f $CONST_ADMIN_HOME/.ssh/id_rsa
 trace "PLEASE COPY THE FOLLOWING PUBLIC KEY TO GITHUB/GITLAB TO ENABLE SSH-BASED PUSH/PULL"
 cat $CONST_ADMIN_HOME/.ssh/id_rsa.pub
 
