@@ -375,10 +375,10 @@
                 var main_tab = tab.common(main.find(".nav-bar .item"), main.find(".tabs .tab"));
             
                 $(window).resize(function () {
-                    main.find(".tabs .tab").css("min-height",
+                    main.find(".tabs>.tab").css("min-height",
                                                 $(window).height() -
-                                                main.find(".info-header").outerHeight(true) -
-                                                main.find(".nav-bar").outerHeight(true) - 3);
+                                                tbar.height() -
+                                                main.find(".nav-bar").outerHeight(true) + 2);
                 }).resize();
                 
                 if (env.session()) {

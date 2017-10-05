@@ -24,17 +24,29 @@ define([ "com/util" ], function (util) {
             }
          */
         function genPForm(form) {
-            var dom = $("<div class='pform-page'><div class='pform-cont vcenter'></div></div>");
+            var dom = $("<div class='pform-page'> \
+                <div class='avcenter' style='width: 100%; text-align: center;'> \
+                    <div class='pform-cont'></div> \
+                </div> \
+            </div>");
             var fcont = $(form.cont);
 
             fcont.css("display", "");
             
             if (form.vcenter === false) {
-                dom.find(".pform-cont").removeClass("vcenter");
+                dom.children(".avcenter").removeClass("avcenter");
             }
 
             dom.find(".pform-cont").append(fcont);
             form.dom = dom;
+            
+            dom.ready(function () {
+                dom.find(".pform-cont").ready(function () {
+                    if (dom.find(".pform-cont").height() > dom.height()) {
+                        dom.children(".avcenter").removeClass("avcenter");
+                    }
+                });
+            });
 
             return dom;
         }

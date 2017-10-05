@@ -31,10 +31,8 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 			<div class='com-pboard'> \
 				<div class='main-slide'> \
 					<div class='slide-front'> \
-						<div class='setting-btn vcenter'></div> \
 					</div> \
 					<div class='slide-back'> \
-						<div class='setting-btn vcenter'></div> \
 					</div> \
 				</div> \
 				<div class='preview-set'> \
@@ -78,7 +76,6 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 				(function (i) {
 					var ph = photo[i];
 					var dom = $("<div class='preview' data-id='" + i + "'> \
-						<div class='setting-btn vcenter'><!--i class='setting icon'></i--></div> \
 					</div>");
 					// var loader = $("<div class='ui small loader active'></div>");
 

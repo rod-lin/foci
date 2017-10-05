@@ -104,7 +104,7 @@ define([
                 
                 if (!url) return;
                 
-                var url_reg = new RegExp("^(https://)?mp\\.weixin\\.qq\\.com\\/s\\/(.+)/?$");
+                var url_reg = new RegExp("^(https://|http://)?mp\\.weixin\\.qq\\.com\\/?(.+)$");
                 var match = url_reg.exec(url);
                 
                 if (!match) {

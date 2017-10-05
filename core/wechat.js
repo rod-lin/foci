@@ -9,7 +9,7 @@ var util = require("./util");
 var request = require("request-promise");
 var cheerio = require("cheerio");
 
-var article_url = code => "https://mp.weixin.qq.com/s/" + code;
+var article_url = code => "https://mp.weixin.qq.com/" + code;
 
 exports.getArticleContent = async (code) => {
     var html = await request.get(article_url(code));

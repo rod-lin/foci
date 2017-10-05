@@ -692,7 +692,7 @@ encop.event = async (env, usr, query, next, has_cap) => {
 encop.wechat = async (env, usr, query, next, has_cap) => {
 	switch (query.action) {
 		case "article":
-			var args = util.checkArg(query, { code: "string" }); // the code following https://mp.wechat.qq.com/s/
+			var args = util.checkArg(query, { code: "string" }); // the path following https://mp.wechat.qq.com/
 			return await wechat.getArticleContent(args.code);
 			
 		default:
