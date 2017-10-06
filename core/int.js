@@ -20,6 +20,7 @@ var config = require("./config");
 var notice = require("./notice");
 var alipay = require("./alipay");
 var wechat = require("./wechat");
+var forumi = require("./forumi");
 var captcha = require("./captcha");
 var comment = require("./comment");
 var invcode = require("./invcode");
@@ -994,6 +995,47 @@ encop.club = async (env, usr, query, next) => {
 			var args = util.checkArg(query, { cuid: "int" });
 			return await club.getReviewInfo(args.cuid, usr.getUUID());
 	
+		default:
+			throw new err.Exc("$core.action_not_exist");
+	}
+};
+
+encop.forumi = async (env, usr, query, next) => {
+	switch (query.action) {
+		case "getpost":
+			var args = util.checkArg(query, {
+				cuid: "int",
+				skip: { opt: true, type: "int" },
+				limit: { opt: true, type: "int" }
+			});
+			
+			return await forumi.getPost(args.cuid, usr.getUUID(), { skip: args.skip, limit: args.limit });
+			
+		case "getcomment":
+			var args = util.checkArg(query, {
+				cuid: "int",
+				puid: "int",
+				skip: { opt: true, type: "int" },
+				limit: { opt: true, type: "int" }
+			});
+			
+			return await forumi.getPostComment(args.cuid, args.puid, usr.getUUID(),
+											   { skip: args.skip, limit: args.limit });
+		
+		case "newpost":
+			var args = util.checkArg(query, { cuid: "int" });
+			var conf = util.checkArg(query, forumi.PostObject.format.newpost, true);
+		
+			var post = await forumi.newPost(args.cuid, usr.getUUID(), conf);
+		
+			return post.getPreview();
+		
+		case "newcomment":
+			var args = util.checkArg(query, { cuid: "int", puit: "int" });
+			var conf = util.checkArg(query, forumi.PostComment.format.comment, true);
+			
+			return forumi.newComment(args.cuid, args.puid, usr.getUUID(), conf);
+		
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}

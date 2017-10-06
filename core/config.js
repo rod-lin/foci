@@ -149,6 +149,14 @@ var conf = module.exports = {
 			
 			max_title_len: 12,
 		},
+		
+		forumi: {
+			max_comment_limit: 16, // max 16 comments are pushed
+			max_post_limit: 16,
+			
+			max_post_title: 128,
+			max_comment: 4096
+		},
 
 		pm: {
 			text: 256

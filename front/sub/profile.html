@@ -973,6 +973,22 @@
 						4. Add check and show event in "step_show" and "step_check"
 						5. Add initialization code in loadDraft
 				 */
+				 
+				 function deleteEvent(euid, cb) {
+					 login.session(function (session) {
+						 foci.encop(session, {
+							 int: "event",
+							 action: "del",
+							 euid: euid
+						 }, function (suc, dat) {
+							 if (!suc) {
+								 util.emsg(dat);
+							 }
+
+							 if (cb) cb(suc);
+						 });
+					 });
+				 };
 
 				"use strict";
 
@@ -1009,22 +1025,6 @@
 
 						return true;
 					}
-
-					function deleteEvent(euid, cb) {
-						login.session(function (session) {
-							foci.encop(session, {
-								int: "event",
-								action: "del",
-								euid: euid
-							}, function (suc, dat) {
-								if (!suc) {
-									util.emsg(dat);
-								}
-
-								if (cb) cb(suc);
-							});
-						});
-					};
 
 					deleteEmptyDraft = function (cb) {
 						if (deleted) {
@@ -2030,7 +2030,28 @@
 							eventTabOnShow("draft", true, function (info) {
 								loadDraft(info);
 								tb.to("new");
-							}, null, show);
+							}, {
+								ext_button: [
+									{
+										html: $("<a><i class='cancel icon'></i>Delete</a>"),
+										onClick: function (info) {
+											// loadDraft(info);
+											// tb.to("new");
+											util.ask(m("$front.sub.profile.delete_event_ask?"), function (ans) {
+												if (ans) {
+													deleteEvent(info.euid, function (suc) {
+														if (suc) {
+															deleted = true;
+															util.emsg("$front.sub.profile.event_deleted");
+															tb.refresh();
+														}
+													});
+												}
+											});
+										}
+									}
+								]
+							}, show);
 						}
 					};
 

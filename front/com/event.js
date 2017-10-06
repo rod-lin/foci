@@ -262,7 +262,8 @@ define([
 						e.g. { class: "send outline", onClick: function }
 					 */
 
-					var extbtn = $("<i class='" + btn.class + " icon'></i>");
+					var extbtn = btn.class ? $("<i class='" + btn.class + " icon'></i>") : $(btn.html).clone();
+					console.log(extbtn);
 					dom.find(".ext-btn-set").append(extbtn);
 
 					extbtn.click(function () {

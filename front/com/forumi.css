@@ -1,0 +1,213 @@
+
+.com-forumi-preview {
+    position: relative;
+}
+
+.com-forumi-preview .viewpost {
+    display: none;
+    
+    top: 0;
+    left: 0;
+    width: 100%;
+    
+    transition: opacity 0.3s;
+}
+
+.com-forumi-preview.show-post .viewpost {
+    display: block;
+}
+
+.com-forumi-preview .main-preview {
+    display: block;
+}
+
+.com-forumi-preview.show-post .main-preview {
+    display: none;
+}
+
+.com-forumi-preview .viewpost-toolbar {
+    margin-bottom: 2rem;
+}
+
+.com-forumi-preview .top-bar {
+    
+}
+
+.com-forumi-preview .post-set {
+    position: relative;
+    padding: 2em 0 2em 0;
+    text-align: center;
+    
+    color: rgba(70, 70, 70, 1);
+}
+
+.com-forumi-preview .bottom-prompt {
+    text-align: center;
+    color: #CCCCCC;
+    font-weight: bold;
+}
+
+.com-forumi-preview .ui.loader {
+    margin-top: 2rem;
+}
+
+.com-forumi-preview .post-preview {
+    display: -webkit-flex;
+	display: flex;
+    
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-top: none;
+    
+    background: white;
+    
+    text-align: left;
+}
+
+.com-forumi-preview .post-preview:first-child {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-forumi-preview .post-preview:last-child {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.com-forumi-preview .post-preview .type-bar {
+    padding: 1.5em;
+    padding-right: 0.75em;
+}
+
+.com-forumi-preview .post-preview .state-bar {
+    padding: 1.5em;
+    padding-left: 0.75em;
+}
+
+.com-forumi-preview .post-preview .preview-cont {
+    padding: 1.5em 0.75em;
+    
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+
+.com-forumi-preview .post-preview .preview-cont .preview-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    vertical-align: middle;
+    
+    cursor: pointer;
+}
+
+.com-forumi-preview .post-preview .preview-cont .preview-tag {
+    display: inline-block;
+    
+    font-size: 0.7em;
+    padding: 0.4em 0.7em;
+    margin-left: 0.4em;
+    
+    font-weight: bold;
+    color: rgba(70, 70, 70, 1);
+    
+    vertical-align: middle;
+    
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgb(250, 250, 250);
+}
+
+.com-forumi-preview .post-preview .preview-cont .preview-headline {
+    margin-bottom: 0.5rem;
+}
+
+.com-forumi-preview .post-preview .preview-cont .preview-detail {
+    color: rgba(160, 160, 160, 1);
+}
+
+/* forum new post */
+
+.com-forumi-newpost {
+    position: relative;
+    
+    color: rgba(70, 70, 70, 1);
+}
+
+.com-forumi-newpost .comment-box {
+    position: relative;
+    padding-left: 5rem;
+}
+
+.com-forumi-newpost .comment-box .avatar-cont {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    width: 4rem;
+}
+
+.com-forumi-newpost .comment-box .avatar {
+    height: 4rem;
+    width: 100%;
+    
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    
+    background-color: rgb(250, 250, 250);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.com-forumi-newpost .comment-box .msg-box {
+    position: relative;
+    
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 3px;
+    background: white;
+}
+
+.com-forumi-newpost .comment-box .msg-box:after,
+.com-forumi-newpost .comment-box .msg-box:before {
+    content: " ";
+    
+    position: absolute;
+    top: 11px;
+    
+    display: block;
+    
+    width: 0;
+    height: 0;
+    
+    pointer-events: none;
+    
+    border-color: transparent;
+    border-style: solid solid outset;
+    
+    border-width: 8px;
+}
+
+.com-forumi-newpost .comment-box .msg-box:before {
+    left: -16px;
+    border-right-color: rgba(0, 0, 0, 0.08);
+}
+
+.com-forumi-newpost .comment-box .msg-box:after {
+    left: -15px;
+    border-right-color: rgb(253, 253, 253);
+}
+
+.com-forumi-newpost .comment-box .msg-box .msg-header {
+    padding: 1rem;
+    background: rgb(253, 253, 253);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-forumi-newpost .comment-box .msg-box .msg-cont {
+}
+
+.com-forumi-newpost .comment-box .msg-box .msg-toolbar {
+    padding: 1rem;
+    text-align: right;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}

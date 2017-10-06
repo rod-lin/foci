@@ -180,6 +180,12 @@ define(function () {
 		ret.to = function (name) {
 			items[name].item.click();
 		};
+		
+		ret.refresh = function () {
+			var tmp = cur;
+			cur = null;
+			items[tmp].item.click();
+		};
 
 		ret.cur = function () {
 			return cur;

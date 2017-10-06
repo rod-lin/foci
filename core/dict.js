@@ -115,6 +115,7 @@ var dict = module.exports = {
 		"core.expect_argument": "expecting argument '$1'",
 		"core.expect_argument_type": "expecting argument '$1' of type $2",
 		"core.wrong_json_format": "wrong json format",
+		"core.wrong_argument": "wrong argument format",
 
 		"core.smsg.failed_get": "failed to reach smsg service",
 		"core.smsg.bad_res_format": "bad result format",
@@ -157,6 +158,9 @@ var dict = module.exports = {
 		"core.club.club_not_review": "cannot delete a club in operation",
 		"core.club.user_no_relation": "user has no relation to the club",
 		"core.club.creator_del": "cannot delete a creator",
+		"core.club.title_not_fit": "your title is not in the visible title list",
+		
+		"core.forumi.post_not_exist": "post not exist",
 		
 		"core.realname.invalid_check_data": "real-name check data invalid",
 		"core.invalid_invcode": "invalid invitation code",

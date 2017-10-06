@@ -41,7 +41,9 @@
             </div>
             
             <!-- forum -->
-            <div class="tab"></div>
+            <div class="tab forumi-tab">
+                <div class="ui loader"></div>
+            </div>
             
             <!-- members -->
             <div class="tab member-tab"></div>
@@ -265,8 +267,8 @@
         require([
             "com/env", "com/util", "com/login",
             "com/tab", "com/club", "com/event",
-            "com/lang"
-        ], function (env, util, login, tab, club, event, lang) {
+            "com/lang", "com/forumi"
+        ], function (env, util, login, tab, club, event, lang, forumi) {
             if (!args || !args.length) {
 				util.emsg("require one argument");
 				return;
@@ -370,6 +372,12 @@
                             }, 0);
                         });
                     });
+                });
+                
+                var forum_preview = forumi.preview(main.find(".forumi-tab"), cuid, {});
+                
+                main.find(".forumi-tab").on("tab:show", function () {
+                    forum_preview.refresh();
                 });
                 
                 var main_tab = tab.common(main.find(".nav-bar .item"), main.find(".tabs .tab"));

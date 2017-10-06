@@ -174,6 +174,7 @@ var checkArg = (args, req, opt) => {
 
 				break;
 
+			case "object":
 			case "json":
 				if (typeof tmp !== "string")
 					break;
@@ -227,6 +228,28 @@ checkArg.posint = (max, sth) => {
 			return val;
 		}
 	};
+};
+
+checkArg.nested = (conf, opt) => {
+	return {
+		type: "json",
+		lim: val => {
+			return checkArg(val, conf, opt);
+		}
+	}
+};
+
+checkArg.inarr = (arr) => {
+	return {
+		type: "json",
+		lim: val => {
+			if (arr.indexOf(val) == -1) {
+				throw new err.Exc("$core.wrong_argument");
+			}
+			
+			return val;
+		}
+	}
 };
 
 exports.checkArg = checkArg;

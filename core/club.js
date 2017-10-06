@@ -155,6 +155,10 @@ Club.prototype.getMember = function (include_apply) {
     return ret;
 };
 
+Club.prototype.getTitleOf = function (uuid) {
+    return this.member[uuid].title;
+};
+
 exports.Club = Club;
 
 Club.format = {};
@@ -238,7 +242,12 @@ Club.query = {
                 { "descr": { $regex: reg } }
             ]
         };
-    }
+    },
+    
+    check_title: (cuid, uuid, titles) => ({
+        cuid: cuid,
+        ["member." + uuid + ".title"]: { $in: titles }
+    })
 };
 
 Club.set = {
@@ -313,6 +322,21 @@ exports.checkMaxReview = async (uuid) => {
         if (await col.count(Club.query.get_review(uuid))
             >= config.lim.club.max_review_count)
             throw new err.Exc("$core.club.max_review_reached");
+};
+
+exports.checkTitle = async (cuid, uuid, titles) => {
+    var col = await db.col("club");
+    
+    if (await col.count(Club.query.check_title(cuid, uuid, titles)) == 0)
+        throw new err.Exc("$core.club.title_not_fit");
+};
+
+exports.getTitle = async (cuid, uuid) => {
+    await exports.checkMemberExist(cuid, uuid, true);
+    
+    var club = await exports.cuid(cuid);
+    
+    return club.getTitleOf(uuid);
 };
 
 exports.newClub = async (creator, conf) => {
