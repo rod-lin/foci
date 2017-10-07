@@ -447,7 +447,7 @@ define([
         var main = $("<div class='com-forumi-preview'> \
             <div class='main-preview'> \
                 <div class='top-bar'> \
-                    <div class='ui icon input'> \
+                    <div class='ui icon input local-search'> \
                         <input class='prompt' type='text' placeholder='Search post'> \
                         <i class='search icon'></i> \
                     </div> \
@@ -597,7 +597,7 @@ define([
             
             var parsed_dat = parsePreview(dat);
             
-            preview.click(function () {
+            preview.find(".preview-title").click(function () {
                 toPost(dat.puid, dat);
             });
             

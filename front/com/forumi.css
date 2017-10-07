@@ -197,6 +197,10 @@
         padding: 1em 0 1em 0;
     }
     
+    .com-forumi-preview .top-bar .local-search {
+        width: 100%;
+    }
+    
     .com-forumi-preview .top-bar .toolbar {
         float: none;
         margin-top: 1rem;

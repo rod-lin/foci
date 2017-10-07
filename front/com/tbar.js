@@ -483,7 +483,7 @@ define([
 			
 			threshold: 30,
 			
-			preventDefaultEvents: true
+			preventDefaultEvents: false
 		});
 		
 		main.find(".right-bar-restore").swipe({
