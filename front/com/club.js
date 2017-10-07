@@ -193,6 +193,56 @@ define([
         return search;
     }
     
+    club.genBadge = function (uuid, mem, session /* opt */) {
+        function badge(type, title) {
+            var badge = $("<div class='com-club-badge'></div>");
+            
+            switch (type) {
+                case "creator":
+                    badge.addClass("creator").html("Creator");
+                    break;
+                    
+                case "apply":
+                    badge.addClass("apply").html("Applicant");
+                    break;
+                    
+                case "admin":
+                    badge.addClass("admin").html("Admin");
+                    break;
+                    
+                case "self":
+                    badge.addClass("self").html("Me");
+                    break;
+                    
+                case "title":
+                    badge.addClass("title").html(xfilt(title));
+                    break;
+            }
+            
+            return badge;
+        }
+        
+        var badges = [];
+        
+        if (mem.is_app) {
+            badges.push(badge("apply"));
+        } else if (mem.is_creator) {
+            badges.push(badge("creator"));
+        } else if (mem.is_admin) {
+            badges.push(badge("admin"));
+        }
+        
+        if (session && uuid == session.getUUID()) {
+            badges.push(badge("self"));
+        }
+        
+        if (mem.title) {
+            badges.push(badge("title", mem.title));
+        }
+        
+        return badges;
+    };
+    
     // member list
     club.memlist = function (cont, cuid, config) {
         cont = $(cont);
@@ -236,34 +286,6 @@ define([
                     });
                 });
             };
-        }
-        
-        function badge(type, title) {
-            var badge = $("<div class='badge'></div>");
-            
-            switch (type) {
-                case "creator":
-                    badge.addClass("creator").html("Creator");
-                    break;
-                    
-                case "apply":
-                    badge.addClass("apply").html("Applicant");
-                    break;
-                    
-                case "admin":
-                    badge.addClass("admin").html("Admin");
-                    break;
-                    
-                case "self":
-                    badge.addClass("self").html("Me");
-                    break;
-                    
-                case "title":
-                    badge.addClass("title").html(xfilt(title));
-                    break;
-            }
-            
-            return badge;
         }
     
         function genMember(uuid, mem, session) {
@@ -331,24 +353,30 @@ define([
                 });
             }
             
+            var badges = club.genBadge(uuid, mem, session);
+            
+            for (var i = 0; i < badges.length; i++) {
+                member.find(".badges").append(badges[i]);
+            }
+            
             if (mem.is_app) {
                 member.find(".comment").html(xfilt(mem.comment ? mem.comment : "(no comment)"));
                 member.addClass("apply");
-                member.find(".badges").append(badge("apply"));
-            } else if (mem.is_creator) {
+                // member.find(".badges").append(badge("apply"));
+            } /* else if (mem.is_creator) {
                 member.find(".badges").append(badge("creator"));
             } else if (mem.is_admin) {
                 member.find(".badges").append(badge("admin"));
-            }
+            } */
             
             if (uuid == session.getUUID()) {
-                member.find(".badges").append(badge("self"));
+                // member.find(".badges").append(badge("self"));
                 member.addClass("self");
             }
             
-            if (mem.title) {
+            /* if (mem.title) {
                 member.find(".badges").append(badge("title", mem.title));
-            }
+            } */
             
             member.find(".avatar").click(function () {
                 util.jump("#profile/" + uuid);

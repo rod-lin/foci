@@ -293,6 +293,12 @@ define([
             main.find(".editor-cont").focus(arg);
             return ret;
         };
+        
+        ret.append = function (val) {
+            var orig = ret.val();
+            ret.val(orig + val);
+            return ret;
+        };
 
         ret.setWarning = function () {
             main.addClass("warning");

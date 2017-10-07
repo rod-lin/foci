@@ -32,8 +32,12 @@ window.xssfilt = (function () {
 	for (var k in xss.whiteList) {
 		if (xss.whiteList.hasOwnProperty(k)) {
 			xss.whiteList[k].push("style");
+			xss.whiteList[k].push("class");
 		}
 	}
+	
+	xss.whiteList["a"].push("data-jumptag-type");
+	xss.whiteList["a"].push("data-jumptag-uid");
 	
 	var color_reg = /^\s*(((rgb|rgba)\s*\(\s*\d*.\d*\s*,\s*\d*.\d*\s*,\s*\d*.\d*\s*(,\s*\d*.\d*\s*)?\))|#[0-9a-fA-F]+)\s*$/;
 	

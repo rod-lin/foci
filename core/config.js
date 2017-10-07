@@ -151,8 +151,8 @@ var conf = module.exports = {
 		},
 		
 		forumi: {
-			max_comment_limit: 16, // max 16 comments are pushed
-			max_post_limit: 16,
+			max_comment_limit: 9, // max 16 comments are pushed at one time
+			max_post_limit: 9,
 			
 			max_post_title: 128,
 			max_comment: 4096

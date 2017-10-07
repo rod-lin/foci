@@ -161,6 +161,7 @@ var dict = module.exports = {
 		"core.club.title_not_fit": "your title is not in the visible title list",
 		
 		"core.forumi.post_not_exist": "post not exist",
+		"core.forumi.comment_not_editable": "you cannot edit this comment",
 		
 		"core.realname.invalid_check_data": "real-name check data invalid",
 		"core.invalid_invcode": "invalid invitation code",

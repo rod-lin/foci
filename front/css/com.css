@@ -25,6 +25,12 @@ button { padding: 0; user-select: none; -moz-user-select: none; }
 	display: block !important;
 }
 
+.ui.button.frameless {
+    border: none !important;
+    padding: 0 !important;
+    background: none !important;
+}
+
 .ui.popup {
 	max-width: initial !important;
 }

@@ -137,6 +137,11 @@ Club.prototype.getRelatedInfo = function (uuid) {
     return base;
 };
 
+Club.prototype.getOneMember = function (uuid) {
+    var ret = this.member[uuid];
+    return ret;
+};
+
 Club.prototype.getMember = function (include_apply) {
     if (include_apply) {
         for (var k in this.apply_member) {
@@ -558,8 +563,12 @@ exports.search = async (uuid, conf) => {
 
 exports.getMember = async (cuid, include_apply) => {
     var club = await exports.cuid(cuid);
-
     return club.getMember(include_apply);
+};
+
+exports.getOneMember = async (cuid, uuid) => {
+    var club = await exports.cuid(cuid);
+    return club.getOneMember(uuid);
 };
 
 exports.setMember = async (cuid, self, conf) => {

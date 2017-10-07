@@ -930,8 +930,9 @@ encop.club = async (env, usr, query, next) => {
 			return await club.getRelatedClub(usr.getUUID());
 			
 		case "relation":
-			var args = util.checkArg(query, { cuid: "int" });
-			return (await club.cuid(args.cuid)).getRelation(usr.getUUID());
+			var args = util.checkArg(query, { cuid: "int", uuid: { type: "int", opt: true } });
+			return (await club.cuid(args.cuid))
+				   .getRelation(args.uuid !== undefined ? args.uuid : usr.getUUID());
 			
 		case "delete":
 			var args = util.checkArg(query, { cuid: "int" });
@@ -945,6 +946,10 @@ encop.club = async (env, usr, query, next) => {
 		case "member":
 			var args = util.checkArg(query, { cuid: "int" });
 			return await club.getMember(args.cuid, await club.isAdmin(args.cuid, usr.getUUID()));
+		
+		case "onemember":
+			var args = util.checkArg(query, { cuid: "int", uuid: "int" });
+			return await club.getOneMember(args.cuid, args.uuid);
 		
 		// set member properties
 		case "setmember":
@@ -1010,7 +1015,11 @@ encop.forumi = async (env, usr, query, next) => {
 			});
 			
 			return await forumi.getPost(args.cuid, usr.getUUID(), { skip: args.skip, limit: args.limit });
-			
+
+		case "getonepost":
+			var args = util.checkArg(query, { cuid: "int", puid: "int" });
+			return await forumi.getOnePost(args.cuid, args.puid, usr.getUUID());
+
 		case "getcomment":
 			var args = util.checkArg(query, {
 				cuid: "int",
@@ -1031,10 +1040,25 @@ encop.forumi = async (env, usr, query, next) => {
 			return post.getPreview();
 		
 		case "newcomment":
-			var args = util.checkArg(query, { cuid: "int", puit: "int" });
+			var args = util.checkArg(query, { cuid: "int", puid: "int" });
 			var conf = util.checkArg(query, forumi.PostComment.format.comment, true);
 			
-			return forumi.newComment(args.cuid, args.puid, usr.getUUID(), conf);
+			return await forumi.newComment(args.cuid, args.puid, usr.getUUID(), conf);
+		
+		case "editcomment":
+			var args = util.checkArg(query, { cuid: "int", puid: "int", comment: "int" });
+			var conf = util.checkArg(query, forumi.PostComment.format.comment, true);
+		
+			await forumi.editComment(args.cuid, args.puid, args.comment, usr.getUUID(), conf);
+			
+			return;
+		
+		case "pinpost":
+			var args = util.checkArg(query, { cuid: "int", puid: "int", pinned: "int" });
+			
+			await forumi.pinPost(args.cuid, args.puid, usr.getUUID(), args.pinned);
+			
+			return;
 		
 		default:
 			throw new err.Exc("$core.action_not_exist");

@@ -33,6 +33,10 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 			} else window.location = url;
 		}
 	};
+	
+	util.sjump = function (url) {
+		window.location = url;
+	};
 
 	util.refresh = function () {
 		require("com/env").get("part").refresh();

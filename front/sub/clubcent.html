@@ -62,7 +62,7 @@
         text-align: center;
         position: relative;
         
-        background: rgba(253, 253, 253, 1);
+        background: rgba(255, 255, 255, 1);
     }
     
     .sub-clubcent .main-scroll .info-header {
@@ -374,7 +374,17 @@
                     });
                 });
                 
-                var forum_preview = forumi.preview(main.find(".forumi-tab"), cuid, {});
+                var forum_preview = forumi.preview(main.find(".forumi-tab"), cuid, {
+                    scroll: penv.part,
+                    topOffset: tbar.height() + main.find(".nav-bar").outerHeight(true),
+                    onJumpPost: function (puid) {
+                        util.sjump("#clubcent/" + cuid + "/forum/" + puid);
+                    },
+                    
+                    onJumpBack: function () {
+                        util.sjump("#clubcent/" + cuid + "/forum");
+                    }
+                });
                 
                 main.find(".forumi-tab").on("tab:show", function () {
                     forum_preview.refresh();
@@ -412,11 +422,34 @@
                         }
                     });
                 }
-                
-                if (args[1])
-                    main.find(".item-" + args[1]).click();
                     
+                main.find(".item-event").attr("href", "#clubcent/" + cuid + "/event");
+                main.find(".item-forum").attr("href", "#clubcent/" + cuid + "/forum");
+                main.find(".item-member").attr("href", "#clubcent/" + cuid + "/member");
                 main.find(".item-setting").attr("href", "#setting/club/" + cuid);
+                
+                function applyArgs(args) {
+                    if (args[1]) {
+                        main.find(".item-" + args[1]).click();
+                        
+                        switch (args[1]) {
+                            case "forum":
+                                if (args[2]) {
+                                    forum_preview.toPost(parseInt(args[2]));
+                                } else {
+                                    forum_preview.toPreview();
+                                }
+                                
+                                break;
+                        }
+                    }
+                }
+                
+                main.on("part:argchange", function (ev, newarg) {
+                    applyArgs(newarg);
+                });
+                
+                 applyArgs(args);
             }
             
             var tbar = env.get("tbar");

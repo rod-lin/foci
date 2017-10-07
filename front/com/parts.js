@@ -29,7 +29,9 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 		config = $.extend({
 			penv: {},
 			base: "sub",
-			global_progress: true
+			global_progress: true,
+			
+			forced_refresh: []
 		}, config);
 
 		var main = $("<div class='com-parts'><div class='part-cont'></div></div>");
@@ -68,7 +70,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 					}, 300);
 				};
 
-				var part = $(text);
+				var part = cur_part_dom = $(text);
 				main_cont.html(part);
 
 				cont.scrollTop(0);
@@ -100,11 +102,13 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 		var jump_cb = [];
 
 		var cur_hash = null;
+		var cur_part = null;
+		var cur_part_dom = null;
 
 		var hashchange = function (forced) {
-			if (!forced && cur_hash === window.location.hash)
+			if (forced !== true && cur_hash === window.location.hash)
 				return;
-
+				
 			var hash = window.location.hash.slice(1);
 			var args;
 			var name = "";
@@ -114,6 +118,19 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 				name = split[0];
 				args = split.slice(1);
 			} else args = [ "" ];
+			
+			// alert([ forced, config.forced_refresh.indexOf(cur_part), cur_part, name ]);
+			
+			if (forced !== true && config.forced_refresh.indexOf(cur_part) == -1 &&
+				name == cur_part) {
+				if (cur_part_dom) {
+					cur_part_dom.trigger("part:argchange", [ args ]);
+				}
+				
+				return;
+			}
+			
+			cur_part = name;
 
 			var change = function () {
 				cur_hash = window.location.hash;
@@ -153,6 +170,8 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 			util.nextTick(hashchange);
 			$(window).on("hashchange", hashchange);
 		}
+		
+		// $(window).on("popstate", hashchange);
 
 		cont.append(main);
 

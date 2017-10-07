@@ -94,6 +94,7 @@ define([
 						</div> \
 					</div> \
 				</div> \
+				<div class="right-bar-restore"></div> \
 			</div> \
 		';
 
@@ -469,7 +470,33 @@ define([
 			position: "bottom right",
 			hoverable: true,
 			distanceAway: is_mobile ? 0 : 30 // TODO: temp fix
-		})
+		});
+		
+		main.find(".avatar-box").swipe({
+			swipeDown: function () {
+				if (is_mobile) {
+					ava.popup("hide");
+					main.find(".avatar-util-box").removeClass("expand");
+					ret.hideFloatAvatar();
+				}
+			},
+			
+			threshold: 30,
+			
+			preventDefaultEvents: true
+		});
+		
+		main.find(".right-bar-restore").swipe({
+			swipeUp: function () {
+				if (is_mobile) {
+					ret.showFloatAvatar();
+				}
+			},
+			
+			threshold: 30,
+			
+			preventDefaultEvents: true
+		});
 
 		main.find(".avatar-popup .pop-avatar")
 			.click(function () {
