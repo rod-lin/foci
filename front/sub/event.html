@@ -127,7 +127,15 @@
 	</div>
 	<div class="ui large loader active"></div>
 	<div class="cover">
-		<div class="left-corner shadow"></div>
+		<div class="shadow"></div>
+		<div class="shadow"></div>
+		<div class="shadow"></div>
+		<div class="shadow"></div>
+		<div class="shadow"></div>
+		<div class="shadow"></div>
+		<div class="shadow"></div>
+		<div class="shadow"></div>
+		<div class="shadow"></div>
 		<div class="left-corner">
 			<div class="date"><i class="calendar icon"></i><span>loading</span></div>
 			<div class="location"><i class="map icon"></i><span>loading</span></div>
@@ -181,8 +189,18 @@
 		width: 100%;
 	}
 
-	.sub-event .cover .left-corner.shadow {
+	.sub-event .cover .shadow {
 		position: absolute;
+		
+		height: 30rem;
+		width: 100%;
+		
+		background: black;
+		
+		bottom: -30rem;
+		left: 0;
+		
+		box-shadow: 0 0 30rem rgba(0, 0, 0, 1);
 	}
 
 	.sub-event .cover .left-corner {
@@ -505,33 +523,34 @@
 				});
 
 				cover.css("background-image", "url('" + parsed.cover + "')");
+				cover.css("color", "#E6E6E6");
 
-				colstat.stat(parsed.cover, { x: 0, y: 0.5, w: 0.5, h: 0.5 }, function (res) {
-					var av = res.average;
-
-					if (!av) return;
-
-					var distw = Math.sqrt(
-						Math.pow(256 - av[0], 2) +
-						Math.pow(256 - av[1], 2) +
-						Math.pow(256 - av[2], 2)
-					);
-
-					var distb = Math.sqrt(
-						Math.pow(av[0], 2) +
-						Math.pow(av[1], 2) +
-						Math.pow(av[2], 2)
-					);
-
-					// alert([ distb, distw ]);
-
-					if (distb > distw) {
-						// black text
-						cover.css("color", "#191919");
-					} else {
-						cover.css("color", "#E6E6E6");
-					}
-				});
+				// colstat.stat(parsed.cover, { x: 0, y: 0.5, w: 0.5, h: 0.5 }, function (res) {
+				// 	var av = res.average;
+				// 
+				// 	if (!av) return;
+				// 
+				// 	var distw = Math.sqrt(
+				// 		Math.pow(256 - av[0], 2) +
+				// 		Math.pow(256 - av[1], 2) +
+				// 		Math.pow(256 - av[2], 2)
+				// 	);
+				// 
+				// 	var distb = Math.sqrt(
+				// 		Math.pow(av[0], 2) +
+				// 		Math.pow(av[1], 2) +
+				// 		Math.pow(av[2], 2)
+				// 	);
+				// 
+				// 	// alert([ distb, distw ]);
+				// 
+				// 	if (distb > distw) {
+				// 		// black text
+				// 		cover.css("color", "#191919");
+				// 	} else {
+				// 		cover.css("color", "#E6E6E6");
+				// 	}
+				// });
 
 				main.children(".loader").removeClass("active");
 
