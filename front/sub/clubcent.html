@@ -453,6 +453,11 @@
                 main.find(".item-setting").attr("href", "#setting/club/" + cuid);
                 
                 function applyArgs(args) {
+                    if (args[0] !== cuid.toString()) {
+                        util.refresh();
+                        return;
+                    }
+                    
                     if (args[1]) {
                         main.find(".item-" + args[1]).click();
                         

@@ -359,6 +359,7 @@ define([
 			main.ready(function () {
 				setTimeout(function () {
 					main.css("opacity", "1");
+					main.css("pointer-events", "");
 				}, 300);
 			});
 
@@ -370,8 +371,6 @@ define([
 			setDom(main, info, $.extend({}, config, {
 				onCoverLoad: function () {
 					wf.update();
-
-					main.css("pointer-events", "");
 
 					clearInterval(incprog);
 					prog.complete();
@@ -567,6 +566,8 @@ define([
 					</div> \
 					<div class='cont'> \
 						<div class='descr'> \
+							<div class='descr-cont'></div> \
+							<div class='shade'><i class='horizontal ellipsis icon'></i></div> \
 						</div> \
 						<div class='tagbox' style='margin-top: 0;'></div> \
 						<!--div class='orgs'> \
@@ -611,7 +612,7 @@ define([
 
 			main.find(".time").html(parsed.date);
 
-			main.find(".descr").html(parsed.descr);
+			main.find(".descr-cont").html(parsed.descr);
 
 			main.find(".back .util.close").click(function () {
 				main.modal("hide");
@@ -765,8 +766,8 @@ define([
 				main.find(".title").html(xfilt(cont));
 			});
 
-			edit(main.find(".descr"), "text", "descr", function (cont) {
-				main.find(".descr").html(xfilt(cont));
+			edit(main.find(".descr-cont"), "text", "descr", function (cont) {
+				main.find(".descr-cont").html(xfilt(cont));
 			});
 
 			edit(main.find(".cover-edit"), "image", "cover", function (cont) {
@@ -789,7 +790,7 @@ define([
 				changes = {};
 				setting_open = true;
 
-				main.find(".title, .descr, .location, .time").addClass("enabled");
+				main.find(".title, .location, .time").addClass("enabled");
 
 				main.addClass("setting");
 
@@ -856,7 +857,7 @@ define([
 			function closeSetting() {
 				offproc();
 
-				main.find(".title, .descr, .location, .time").removeClass("enabled");
+				main.find(".title, .descr-cont, .location, .time").removeClass("enabled");
 
 				main.find(".back .util .setting-btn")
 					.removeClass("checkmark");

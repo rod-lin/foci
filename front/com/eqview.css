@@ -158,9 +158,32 @@
 }
 
 .com-eqview .descr {
+	position: relative;
+	
 	padding: 0.5rem 0.4rem;
 	margin: 1rem 0 0 0;
 	word-wrap: break-word;
+	
+	max-height: 100rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.com-eqview .descr .shade {
+	position: absolute;
+	
+	text-align: center;
+	
+	height: 1rem;
+	width: 100%;
+	
+	font-size: 1.3rem;
+	color: rgb(100, 100, 100);
+	background: white;
+	box-shadow: 0 0 15px white;
+	
+	left: 0;
+	top: 99rem; /* 100 - 3 */
 }
 
 .com-eqview .tagbox {
