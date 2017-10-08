@@ -1010,11 +1010,16 @@ encop.forumi = async (env, usr, query, next) => {
 		case "getpost":
 			var args = util.checkArg(query, {
 				cuid: "int",
+				kw: { opt: true, type: "string" },
 				skip: { opt: true, type: "int" },
 				limit: { opt: true, type: "int" }
 			});
 			
-			return await forumi.getPost(args.cuid, usr.getUUID(), { skip: args.skip, limit: args.limit });
+			return await forumi.searchPost(args.cuid, usr.getUUID(), {
+				kw: args.kw || "",
+				skip: args.skip,
+				limit: args.limit
+			});
 
 		case "getonepost":
 			var args = util.checkArg(query, { cuid: "int", puid: "int" });
@@ -1050,6 +1055,14 @@ encop.forumi = async (env, usr, query, next) => {
 			var conf = util.checkArg(query, forumi.PostComment.format.comment, true);
 		
 			await forumi.editComment(args.cuid, args.puid, args.comment, usr.getUUID(), conf);
+			
+			return;
+		
+		case "editpost":
+			var args = util.checkArg(query, { cuid: "int", puid: "int" });
+			var conf = util.checkArg(query, forumi.PostObject.format.newpost, true);
+		
+			await forumi.editPost(args.cuid, args.puid, usr.getUUID(), conf);
 			
 			return;
 		

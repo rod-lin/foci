@@ -126,18 +126,43 @@ PostObject.query = {
         ]
     }),
     
-    check_editable: (puid, comment, uuid) => ({
+    check_comment_editable: (puid, comment, uuid) => ({
         puid: puid,
         ["comments." + comment + ".creator"]: uuid
     }),
     
-    all_post: (cuid, title) => ({
-        cuid: cuid,
-        $or: [
-            { visible_to: [] },
-            { visible_to: title }
-        ]
-    })
+    check_post_editable: (puid, uuid) => ({
+        puid: puid,
+        creator: uuid
+    }),
+    
+    kw: kw => {
+        var reg = util.keywordRegExp(kw);
+        return {
+			$or: [
+				{ "title": { $regex: reg } },
+                // { "creator": { $regex: reg } },
+				{ "comments.msg": { $regex: reg } },
+                // { "comments.creator": { $regex: reg } }
+			]
+		};
+    },
+    
+    search_post: (cuid, title, conf) => {
+        var q = {
+            cuid: cuid,
+            $and: [
+                { $or: [ { visible_to: [] }, { visible_to: title } ] },
+                
+            ]
+        }
+        
+        if (conf.kw) {
+            q.$and.push(PostObject.query.kw(conf.kw));
+        }
+        
+        return q;
+    }
 };
 
 PostObject.set = {
@@ -166,6 +191,8 @@ PostObject.set = {
         
         return { $set: q };
     },
+    
+    edit_post: conf => ({ $set: conf }),
     
     pinned: (pinned) => ({
         $set: {
@@ -212,13 +239,21 @@ exports.checkAccess = async (cuid, uuid) => {
     }
 };
 
-exports.checkEditable = async (puid, comment, uuid) => {
+exports.checkCommentEditable = async (puid, comment, uuid) => {
     if (!await user.isAdmin(uuid)) {
         var col = await db.col("fpost");
         
-        console.log(PostObject.query.check_editable(puid, comment, uuid));
-        if (await col.count(PostObject.query.check_editable(puid, comment, uuid)) == 0)
+        if (await col.count(PostObject.query.check_comment_editable(puid, comment, uuid)) == 0)
             throw new err.Exc("$core.forumi.comment_not_editable");
+    }
+};
+
+exports.checkPostEditable = async (puid, uuid) => {
+    if (!await user.isAdmin(uuid)) {
+        var col = await db.col("fpost");
+        
+        if (await col.count(PostObject.query.check_post_editable(puid, uuid)) == 0)
+            throw new err.Exc("$core.forumi.post_not_editable");
     }
 };
 
@@ -275,27 +310,8 @@ exports.getPostComment = async (cuid, puid, uuid, conf) => {
 
 exports.getPost = async (cuid, uuid, conf) => {
     await exports.checkAccess(cuid, uuid);
-    
-    conf = conf || {};
-    conf.skip = conf.skip || 0;
-    conf.limit = config.lim.forumi.max_post_limit;
-    
-    var col = await db.col("fpost");
-    
-    var title = await club.getTitle(cuid, uuid);
-    
-    // console.log(PostObject.query.all_post(cuid, title), conf.skip, conf.limit);
-    
-    var res = await col.find(PostObject.query.all_post(cuid, title))
-                       .sort({ pinned: -1, utime: -1, ctime: -1 })
-                       .skip(conf.skip)
-                       .limit(conf.limit).toArray();
-                       
-    var ret = [];
-                       
-    res.forEach(post => ret.push(new PostObject(post).getPreview()));
-    
-    return ret;
+    conf.kw = "";
+    return await exports.searchPost(cuid, uuid, conf);
 };
 
 exports.getOnePost = async (cuid, puid, uuid) => {
@@ -307,12 +323,22 @@ exports.getOnePost = async (cuid, puid, uuid) => {
 
 exports.editComment = async (cuid, puid, comment, uuid, conf) => {
     await exports.checkAccess(cuid, uuid);
-    await exports.checkEditable(puid, comment, uuid);
+    await exports.checkCommentEditable(puid, comment, uuid);
     
     var col = await db.col("fpost");
     
     await col.updateOne(PostObject.query.puid(puid, cuid),
                         PostObject.set.edit_comment(comment, conf));
+};
+
+exports.editPost = async (cuid, puid, uuid, conf) => {
+    await exports.checkAccess(cuid, uuid);
+    await exports.checkPostEditable(puid, uuid);
+    
+    var col = await db.col("fpost");
+    
+    await col.updateOne(PostObject.query.puid(puid, cuid),
+                        PostObject.set.edit_post(conf));
 };
 
 exports.pinPost = async (cuid, puid, uuid, pinned) => {
@@ -322,6 +348,32 @@ exports.pinPost = async (cuid, puid, uuid, pinned) => {
     
     await col.updateOne(PostObject.query.puid(puid, cuid),
                         PostObject.set.pinned(pinned));
+};
+
+exports.searchPost = async (cuid, uuid, conf) => {
+    await exports.checkAccess(cuid, uuid);
+    
+    // conf { kw, skip, ... }
+    
+    conf = conf || {};
+    conf.kw = conf.kw || "";
+    conf.skip = conf.skip || 0;
+    conf.limit = config.lim.forumi.max_post_limit;
+    
+    var col = await db.col("fpost");
+    
+    var title = await club.getTitle(cuid, uuid);
+    
+    var res = await col.find(PostObject.query.search_post(cuid, title, conf))
+                       .sort({ pinned: -1, utime: -1, ctime: -1 })
+                       .skip(conf.skip)
+                       .limit(conf.limit).toArray();
+                       
+    var ret = [];
+                       
+    res.forEach(post => ret.push(new PostObject(post).getPreview()));
+    
+    return ret;
 };
 
 // setTag

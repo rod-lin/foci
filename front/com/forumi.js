@@ -4,8 +4,9 @@
 
 define([
     "com/util", "com/login", "com/xfilt",
-    "com/marki", "com/env", "com/club"
-], function (util, login, xfilt, marki, env, club) {
+    "com/marki", "com/env", "com/club",
+    "com/editable"
+], function (util, login, xfilt, marki, env, club, editable) {
     var $ = jQuery;
     foci.loadCSS("com/forumi.css");
     
@@ -40,7 +41,10 @@ define([
         var main = $("<div class='com-forumi-viewpost com-forumi-comment'> \
             <div class='post-headline'> \
                 <div class='post-headline-left'> \
-                    <div class='post-title'>loading</div> \
+                    <div style='margin-bottom: 0.5rem;'> \
+                        <span class='post-title'>loading</span> \
+                        <button class='ui frameless button edit-title-btn post-creator-only'><i class='fitted edit icon'></i></button> \
+                    </div> \
                     <div class='post-detail'>Created <span class='created-time'></span></div> \
                     <div class='post-detail'>By <a class='creator-name'>loading</a></div> \
                 </div> \
@@ -50,7 +54,6 @@ define([
             </div> \
             <div class='comment-set'></div> \
             <div class='show-more'><button class='ui fitted button show-more-btn'><i class='chevron down icon'></i>Show more</button></div> \
-            <div class='ui divider'></div> \
             <div class='comment-box send-box'> \
                 <div class='avatar-cont'> \
                     <div class='avatar'></div> \
@@ -108,8 +111,11 @@ define([
                     </div> \
                     <div class='msg-cont'></div> \
                     <div class='msg-toolbar'> \
-                        <button class='ui frameless icon button reply-btn'><i class='reply icon'></i></button> \
-                        <button class='ui frameless icon button edit-btn'><i class='edit icon'></i></button> \
+                        <span class='msg-detail'></span> \
+                        <div class='msg-toolbar-btns'> \
+                            <button class='ui frameless icon button reply-btn'><i class='reply icon'></i></button> \
+                            <button class='ui frameless icon button edit-btn'><i class='edit icon'></i></button> \
+                        </div> \
                     </div> \
                 </div> \
             </div>");
@@ -119,6 +125,8 @@ define([
             // comm.find(".msg-header").html(genCommentHeader(parsed));
             comm.find(".msg-cont").html(parsed.msg);
             renderJumpTag(comm.find(".msg-cont"));
+            
+            comm.find(".msg-detail").html("Issued at " + util.localDate(parsed.ctime));
             
             var editor = null;
             
@@ -169,6 +177,10 @@ define([
                 
                     comm.find(".edit-btn .icon").toggleClass("edit check");
                 }
+            });
+            
+            comm.find(".avatar").click(function () {
+                util.jump("#profile/" + parsed.creator);
             });
             
             foci.get("/user/info", { uuid: parsed.creator }, function (suc, dat) {
@@ -233,6 +245,50 @@ define([
                     main.find(".show-more-btn").removeClass("loading");
                 });
             });
+            
+            var title_editor = editable.init(main.find(".post-title"), null, { explicit: true });
+            title_editor.enable(false);
+            
+            login.session(function (session) {
+                if (session) {
+                    if (session.getUUID() == post_info.creator) {
+                        main.addClass("post-is-creator");
+                    }
+                }
+            });
+            
+            main.find(".edit-title-btn").click(function () {
+                if (title_editor.enable()) {
+                    main.find(".edit-title-btn").addClass("loading");
+                    
+                    var ntitle = main.find(".post-title").text() || "(no title)";
+                    main.find(".post-title").text(ntitle);
+                    
+                    login.session(function (session) {
+                        if (session) foci.encop(session, {
+                            int: "forumi",
+                            action: "editpost",
+                            
+                            cuid: cuid,
+                            puid: puid,
+                            
+                            title: ntitle
+                        }, function (suc, dat) {
+                            main.find(".edit-title-btn").removeClass("loading");
+                            
+                            if (suc) {
+                                title_editor.enable(false);
+                            } else {
+                                util.emsg(dat);
+                            }
+                        });
+                    });
+                } else {
+                    title_editor.enable(true);
+                }
+                
+                main.find(".edit-title-btn .icon").toggleClass("edit check");
+            });
         }
         
         var send_box;
@@ -292,8 +348,6 @@ define([
                             cuid: cuid,
                             skip: cur_skip
                         }, function (suc, dat) {
-                            cb(suc);
-                            
                             if (suc) {
                                 cur_skip += dat.length;
                                 
@@ -309,8 +363,10 @@ define([
                             } else {
                                 util.emsg(dat);
                             }
+                            
+                            if (cb) cb(suc);
                         });
-                    else cb(false);
+                    else if (cb) cb(false);
                 });
             };
             
@@ -370,6 +426,10 @@ define([
             placeholder: "Comment"
         });
         
+        main.find(".avatar").click(function () {
+            util.emsg("tada~", "info");
+        });
+        
         env.user(function (info) {
             var parsed = login.parseInfo(info);
             util.bgimg(main.find(".avatar"), parsed.avatar);
@@ -417,7 +477,7 @@ define([
     function parsePreview(dat) {
         var parsed = {};
         
-        parsed.title = xfilt(dat.title);
+        parsed.title = dat.title ? xfilt(dat.title) : "(no title)";
         parsed.ctime = new Date(dat.ctime);
         parsed.utime = new Date(dat.utime);
         
@@ -682,54 +742,95 @@ define([
             mod.loadMore();
         });
     
+        // init local search
+        (function () {
+            var search_handler = null;
+            var input = main.find(".local-search input");
+            
+            input.keydown(function () {
+                if (search_handler) clearTimeout(search_handler);
+                
+                search_handler = setTimeout(function () {
+                    doSearch(input.val());
+                }, 500);
+            });
+            
+            function doSearch(kw) {
+                main.find(".local-search").addClass("loading");
+                
+                cur_kw = kw;
+                mod.refresh(function () {
+                    main.find(".local-search").removeClass("loading");
+                });
+            }
+        })();
+    
         var mod = {};
         
         var skip = 0;
+        var cur_kw = "";
         var no_more = false;
         
         mod.toPost = toPost;
         mod.toPreview = hidePost;
         
-        mod.loadMore = function () {
+        mod.loadMore = function (cb) {
             if (no_more) return;
             
             loader.addClass("active");
             
             login.session(function (session) {
                 if (session) foci.encop(session, {
-                    int: "forumi",
-                    action: "getpost",
-                    
-                    cuid: cuid,
-                    skip: skip,
-                }, function (suc, dat) {
-                    loader.removeClass("active");
-                    
-                    if (suc) {
-                        skip += dat.length;
+                        int: "forumi",
+                        action: "getpost",
                         
-                        for (var i = 0; i < dat.length; i++) {
-                            main.find(".post-set").append(genPreview(dat[i]));
+                        cuid: cuid,
+                        
+                        kw: cur_kw || "",
+                        skip: skip,
+                    }, function (suc, dat) {
+                        loader.removeClass("active");
+                        
+                        if (suc) {
+                            skip += dat.length;
+                            
+                            for (var i = 0; i < dat.length; i++) {
+                                main.find(".post-set").append(genPreview(dat[i]));
+                            }
+                            
+                            if (!i) {
+                                setBottomPrompt(config.no_more_prompt);
+                                no_more = true;
+                            }
+                        } else {
+                            util.emsg(dat);
                         }
                         
-                        if (!i) {
-                            setBottomPrompt(config.no_more_prompt);
-                            no_more = true;
-                        }
-                    } else {
-                        util.emsg(dat);
-                    }
-                });
+                        if (cb) cb(suc);
+                    });
+                else if (cb) cb(false);
             });
         }
         
-        mod.refresh = function () {
+        var refresh_locked = false;
+        
+        mod.refresh = function (cb) {
+            if (refresh_locked) {
+                if (cb) cb();
+                return;
+            }
+            
+            refresh_locked = true;
+            
             skip = 0;
             no_more = false;
             main.find(".post-set").html("");
             setBottomPrompt("");
             
-            mod.loadMore();
+            mod.loadMore(function () {
+                refresh_locked = false;
+                if (cb) cb();
+            });
         };
     
         return mod;

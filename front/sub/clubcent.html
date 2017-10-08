@@ -176,7 +176,7 @@
         overflow: auto;
         overflow-y: hidden;
         
-        transition: padding 0.2s;
+        transition: padding 0.2s, top 0.2s;
     }
     
     .sub-clubcent .main-scroll .nav-bar.floating {
@@ -187,6 +187,10 @@
         z-index: 3;
         
         /* padding: 0.5rem 0; */
+    }
+    
+    .sub-clubcent .main-scroll .nav-bar.floating.hide {
+        top: -1rem;
     }
     
     .sub-clubcent .main-scroll .nav-bar .ui.secondary.menu a {
@@ -329,12 +333,24 @@
                         // main.find(".tabs").css("margin-top", main.find(".nav-bar").outerHeight() + "px");
                     }
                 }
+                
+                var off_scroll = util.scroll(penv.part, function (val) {
+                    if (float_bar) {
+                        if (val > 0) {
+                            // down
+                            float_bar.addClass("hide");
+                        } else {
+                            float_bar.removeClass("hide");
+                        }
+                    }
+                }, 20, 20, main.find(".info-header").height() - tbar.height() + 200);
             
                 // scroll effect
                 penv.part.scroll(scrollEffect).scroll();
                 
                 exit(function () {
-                    penv.part.off("scroll", null, scrollEffect)
+                    penv.part.off("scroll", null, scrollEffect);
+                    off_scroll();
                 });
                 
                 main.find(".tabs .tab").on("tab:show", function () {
@@ -374,20 +390,27 @@
                     });
                 });
                 
-                var forum_preview = forumi.preview(main.find(".forumi-tab"), cuid, {
-                    scroll: penv.part,
-                    topOffset: tbar.height() + main.find(".nav-bar").outerHeight(true),
-                    onJumpPost: function (puid) {
-                        util.sjump("#clubcent/" + cuid + "/forum/" + puid);
-                    },
+                var forum_preview = null;
+                
+                function initOnlyMember() {
+                    forum_preview = forumi.preview(main.find(".forumi-tab"), cuid, {
+                        scroll: penv.part,
+                        topOffset: tbar.height() + main.find(".nav-bar").outerHeight(true),
+                        onJumpPost: function (puid) {
+                            util.sjump("#clubcent/" + cuid + "/forum/" + puid);
+                        },
+                        
+                        onJumpBack: function () {
+                            util.sjump("#clubcent/" + cuid + "/forum");
+                        }
+                    });
                     
-                    onJumpBack: function () {
-                        util.sjump("#clubcent/" + cuid + "/forum");
-                    }
-                });
+                    forum_preview.refresh();
+                }
                 
                 main.find(".forumi-tab").on("tab:show", function () {
-                    forum_preview.refresh();
+                    if (forum_preview)
+                        forum_preview.refresh();
                 });
                 
                 var main_tab = tab.common(main.find(".nav-bar .item"), main.find(".tabs .tab"));
@@ -413,6 +436,7 @@
                                 
                                 case "member":
                                     main.addClass("member");
+                                    initOnlyMember();
                                     break;
                                 
                                 default: ;
@@ -434,6 +458,8 @@
                         
                         switch (args[1]) {
                             case "forum":
+                                if (!forum_preview) break;
+                            
                                 if (args[2]) {
                                     forum_preview.toPost(parseInt(args[2]));
                                 } else {

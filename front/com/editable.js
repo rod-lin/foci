@@ -10,7 +10,9 @@ define([ "com/util", "com/xfilt" ], function (util, xfilt) {
 		config = $.extend({
 			type: "input",
 			explicit: false,
-			enable: true
+			enable: true,
+			
+			// onEnable
 		}, config);
 
 		var enable;
@@ -79,6 +81,8 @@ define([ "com/util", "com/xfilt" ], function (util, xfilt) {
 		var ret = {};
 
 		ret.enable = function (val) {
+			if (val === undefined) return enable;
+			
 			if (enable = val)
 				obj.addClass("enabled");
 			else

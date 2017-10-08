@@ -162,6 +162,7 @@ var dict = module.exports = {
 		
 		"core.forumi.post_not_exist": "post not exist",
 		"core.forumi.comment_not_editable": "you cannot edit this comment",
+		"core.forumi.post_not_editable": "you cannot edit this post",
 		
 		"core.realname.invalid_check_data": "real-name check data invalid",
 		"core.invalid_invcode": "invalid invitation code",
