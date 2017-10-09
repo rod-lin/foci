@@ -3,11 +3,14 @@
 		<!-- <div class="tcover"></div> -->
 		<div class="cont-box">
 			<div class="box">
-				<div class="scover"></div>
+				<div class="scover">
+					<button class="ui blue button view-cover-btn">View cover</button>
+				</div>
 				<div class="info-box">
 					<div class="title"></div>
-					<div class="location"><i class="map outline icon"></i><span></span></div>
-					<div class="date"><i class="calendar outline icon"></i><span></span></div>
+					<!--div class="location"><i class="map outline icon"></i><span></span></div>
+					<div class="date"><i class="calendar outline icon"></i><span></span></div -->
+					<div class="tagbox"></div>
 					<div class="descr"></div>
 					<div class="col-shadow">
 						<div class="show-more-btn lang" data-replace='$front.sub.event.show_more'>More</div>
@@ -274,19 +277,30 @@
 
 	.sub-event>.cont .date,
 	.sub-event>.cont .location {
-		text-align: center;
-		font-size: 0.8em;
-		margin-top: 0.5rem;
+		display: inline-block;
+		color: white;
+		
+		padding: 0.5rem 0.6rem;
+		border-radius: 3px;
+		border: 1px solid rgba(0, 0, 0, 0.08);
+		
+		background: #bdc3c7;
+		margin-right: 0.3rem;
+		margin-top: 0.3rem;
 	}
 
 	.sub-event>.cont .info-box {
 		padding: 3rem 4rem 4rem;
 	}
+	
+	.sub-event>.cont .tagbox {
+		margin-top: 1rem;
+	}
 
 	.sub-event>.cont .descr {
 		font-size: 1.2em;
 		text-align: left;
-		margin-top: 1.2em;
+		margin-top: 1rem;
 		line-height: 1.7;
 
 	    word-break: break-all;
@@ -334,12 +348,22 @@
 	}
 
 	.sub-event>.cont .scover {
+		position: relative;
+		
 		width: 100%;
 		height: 20rem;
 
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 50% 50%;
+	}
+	
+	.sub-event>.cont .view-cover-btn {
+		position: absolute;
+		left: 0;
+		top: 0;
+		
+		border-radius: 3px 0 3px 0 !important;
 	}
 	
 	.sub-event>.cont .detail {
@@ -475,8 +499,15 @@
 			"com/env", "com/util", "com/event",
 			"com/xfilt", "com/login", "com/map",
 			"com/lang", "com/avatar", "com/colstat",
-			"com/formi", "com/comment", "com/club"
-		], function (env, util, event, xfilt, login, map, lang, avatar, colstat, formi, comment, club) {
+			"com/formi", "com/comment", "com/club",
+			"com/tagbox"
+		], function (
+			env, util, event,
+			xfilt, login, map,
+			lang, avatar, colstat,
+			formi, comment, club,
+			tagbox
+		) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
 				return;
@@ -509,7 +540,6 @@
 
 			display.render = function (info) {
 				var parsed = event.parseInfo(info, { max_title_len: Infinity });
-
 				var cont = main.children(".cont");
 
 				tbar.setTitle(info.title, parsed.date);
@@ -517,47 +547,61 @@
 				cover.find(".title").html(parsed.title);
 				cover.find(".date span").html(parsed.date);
 
-				parsed.location(function (addr) {
-					cover.find(".location span").html(addr);
-					cont.find(".location span").html(addr);
-				});
-
 				cover.css("background-image", "url('" + parsed.cover + "')");
 				cover.css("color", "#E6E6E6");
-
-				// colstat.stat(parsed.cover, { x: 0, y: 0.5, w: 0.5, h: 0.5 }, function (res) {
-				// 	var av = res.average;
-				// 
-				// 	if (!av) return;
-				// 
-				// 	var distw = Math.sqrt(
-				// 		Math.pow(256 - av[0], 2) +
-				// 		Math.pow(256 - av[1], 2) +
-				// 		Math.pow(256 - av[2], 2)
-				// 	);
-				// 
-				// 	var distb = Math.sqrt(
-				// 		Math.pow(av[0], 2) +
-				// 		Math.pow(av[1], 2) +
-				// 		Math.pow(av[2], 2)
-				// 	);
-				// 
-				// 	// alert([ distb, distw ]);
-				// 
-				// 	if (distb > distw) {
-				// 		// black text
-				// 		cover.css("color", "#191919");
-				// 	} else {
-				// 		cover.css("color", "#E6E6E6");
-				// 	}
-				// });
 
 				main.children(".loader").removeClass("active");
 
 				cont.find(".scover").css("background-image", "url('" + parsed.cover + "')");
 				cont.find(".title").html(parsed.title);
 				cont.find(".descr").html(parsed.descr);
-				cont.find(".date span").html(parsed.date);
+				// cont.find(".date span").html(parsed.date);
+				
+				cont.find(".view-cover-btn").click(function () {
+					if (!show_cover) {
+						util.jump("#event/" + euid + "/true");
+						show_cover = true;
+					}
+					
+					showCover();
+					
+					setTimeout(function () {
+						util.emsg("You can use the current url to open the cover again", "info");
+					}, 1000);
+				});
+				
+				// if (!parsed.favtag.length) {
+				// 	cont.find(".tagbox").css("display", "none");
+				// } else {
+				// 	env.favtag(function (tags) {
+				// 		var tgbox = tagbox.init(cont.find(".tagbox"), tags, {
+				// 			init: parsed.favtag
+				// 		});
+				// 	});
+				// }
+				
+				var tgbox = null;
+				
+				env.favtag(function (tags) {
+					tgbox = tagbox.init(cont.find(".tagbox"), tags, {
+						init: parsed.favtag
+					});
+					
+					parsed.location(function (addr) {
+						cover.find(".location span").html(addr);
+						// cont.find(".location span").html(addr);
+						
+						tgbox.addTrivial({
+							name: "<span><i class='map outline icon'></i>" + addr + "</span>",
+							style: "green border"
+						});
+					});
+					
+					tgbox.addTrivial({
+						name: "<span><i class='calendar outline icon'></i>" + parsed.date + "</span>",
+						style: "blue border"
+					});
+				});
 
 				cont.find(".detail").html(parsed.detail);
 
@@ -577,7 +621,11 @@
 				cont.find(".bmap-box").dimmer({ on: "hover" });
 
 				cont.find(".bmap-box .view-btn").click(function () {
-					map.init({ init_lng: parsed.loclng, init_lat: parsed.loclat, view: true, prompt: "loading address" });
+					map.init({
+						init_lng: parsed.loclng,
+						init_lat: parsed.loclat,
+						view: true, prompt: "loading address"
+					});
 				});
 
 				var ava = cont.find(".org");
@@ -828,7 +876,7 @@
 
 			function hideCover(quick) {
 				if (quick === true)
-					main.find(".cover").remove();
+					main.find(".cover").css("display", "none");
 				else
 					main.find(".cover").addClass("hide");
 
@@ -841,12 +889,28 @@
 					});
 				}, 400);
 			}
+			
+			function showCover() {
+				main.find(".cover").css("display", "");
+				main.find(".cover").addClass("hide");
+				
+				setTimeout(function () {
+					main.find(".cover").removeClass("hide");
+					
+					tbar.setStyle("simple");
+					$("body").removeClass("padding-tbar");
+				}, 300);
+			}
 
 			main.find(".cover").click(hideCover);
+
+			var show_cover = false;
 
 			if (args[1] !== "true") {
 				hideCover(true);
 			} else {
+				show_cover = true;
+				
 				cover.ready(function () {
 					tbar.setStyle("simple");
 					$("body").removeClass("padding-tbar");

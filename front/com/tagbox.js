@@ -35,15 +35,32 @@ define([ "com/util" ], function (util) {
 
 		var tag_count = 0;
 		
-		function genTag(id, obj) {
-			var tag = $("<div class='tag' data-value='" + id + "'>" + obj.name.toUpperCase() + "<i class='deltag cancel icon'></i></div>");
+		function genTag(id, obj, is_trivial) {
+			var tag = $("<div class='tag'></div>");
 			
-			tag.click(function () {
-				if (!main.hasClass("edit"))
-					util.jump("#search//" + id);
-			});
+			tag.html(obj.name);
+			tag.append("<i class='deltag cancel icon'></i>");
+			
+			if (obj.style)
+				tag.addClass(obj.style);
+			
+			if (!is_trivial) {
+				tag.attr("data-value", id);
+				
+				tag.click(function () {
+					if (!main.hasClass("edit"))
+						util.jump("#search//" + id);
+				});
+			} else {
+				tag.addClass("trivial");
+			}
 			
 			return tag;
+		}
+		
+		function addTrivial(obj) {
+			var dom = genTag(null, obj, true);
+			main.find(".tag").first().before(dom);
 		}
 
 		function addTag(name) {
@@ -117,6 +134,10 @@ define([ "com/util" ], function (util) {
 		ret.add = function (name) {
 			changed = true;
 			addTag(name);
+		};
+		
+		ret.addTrivial = function (obj) {
+			addTrivial(obj);
 		};
 
 		ret.clear = function () {

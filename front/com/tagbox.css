@@ -20,14 +20,36 @@
 
 	cursor: default;
 
-	white-space: nowrap;
+	word-wrap: break-word;
 	cursor: pointer;
+	
+	text-transform: uppercase;
 
 	transition: border-color 0.2s;
 }
 
+.com-tagbox .tag.trivial {
+	text-transform: none;
+}
+
 .com-tagbox .tag:hover {
 	border-color: rgba(0, 0, 0, 0.22);
+}
+
+.com-tagbox .tag.green.border {
+	border-color: #27AE60;
+}
+
+.com-tagbox .tag.green.border .icon {
+	color: #27AE60;
+}
+
+.com-tagbox .tag.blue.border {
+	border-color: #2980B9;
+}
+
+.com-tagbox .tag.blue.border .icon {
+	color: #2980B9;
 }
 
 .com-tagbox .addtag {

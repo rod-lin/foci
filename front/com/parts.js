@@ -181,6 +181,14 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 				hashchange(true);
 			},
 			
+			forceJump: function (url) {
+				if (window.location == url) {
+					ret.refresh();
+				} else {
+					window.location = url;
+				}
+			},
+			
 			jump: function (cb) { // all jump events will be cleared after a successful jump
 				if (jump_cb.indexOf(cb) == -1)
 					jump_cb.push(cb);

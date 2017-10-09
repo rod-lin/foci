@@ -24,12 +24,15 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		return $(window).width() <= 640;
 	};
 
-	util.jump = function (url, allow_dragi) {
+	util.jump = function (url, allow_dragi, forced) {
 		if (allow_dragi && foci.use_dragi) {
 			dragi.iframe(foci.platform, url);
 		} else {
 			if (window.location.hash === url) {
-				util.emsg("already here", "info");
+				if (forced) {
+					util.refresh();
+				} else
+					util.emsg("already here", "info");
 			} else window.location = url;
 		}
 	};
@@ -51,8 +54,13 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 				</div> \
 			</div> \
 		");
+		
+		var hidden = false;
 
 		var hide = function () {
+			if (hidden) return;
+			hidden = true;
+			
 			msg.transition("scale out");
 			clearTimeout(proc);
 
@@ -85,6 +93,18 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 			.click(hide);
 
 		var proc = setTimeout(hide, 5000);
+		
+		msg.mouseover(function () {
+			if (proc && !hidden) {
+				clearTimeout(proc);
+				proc = null;
+			}
+		});
+		
+		msg.mouseleave(function () {
+			if (!proc && !hidden)
+				proc = setTimeout(hide, 2000);
+		});
 	};
 
 	util.json = function (str) {
