@@ -46,7 +46,7 @@
             <h3 class="ui top attached red block header">Quit the club</h3>
             <div class="ui attached segment">
                 <div class="ui field">
-                    <div class="ui warning visible message only-club-creator">You're the creator of this club. You have to transfer the ownership to another member first.</div>
+                    <div class="ui warning message only-club-creator">You're the creator of this club. You have to transfer the ownership to another member first.</div>
                     <p>
                         Quiting the club will <b>ERASE</b> any relations you have with this club.<br>
                         This action is <b>NOT</b> reversible.
@@ -84,7 +84,7 @@
     }
     
     .sub-setting.club-creator .only-club-creator {
-        display: block;
+        display: block !important;
     }
 </style>
 
@@ -307,7 +307,7 @@
                     } else if (info.relation == "admin") {
                         $(main.find(".menu-item").not(".only-club-creator")[0]).click();
                     } else {
-                        $(main.find(".menu-item").not(".only-club-admin")[0]).click();
+                        $(main.find(".menu-item").not(".only-club-admin, .only-club-creator")[0]).click();
                     }
                 }
                     
