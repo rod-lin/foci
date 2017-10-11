@@ -302,6 +302,8 @@ define([
 				
 				login.onlyAdmin(adminSetting);
 			} else {
+				main.find(".login-btn .loader").removeClass("active");
+				
 				hideAvatar();
 				old_info = null;
 			}

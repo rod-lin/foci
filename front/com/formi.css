@@ -51,6 +51,17 @@
 	height: 3rem;
 }
 
+.com-form .ui.form label {
+	min-height: 1.5rem;
+}
+
+.com-form .ui.form .ui.checkbox {
+	width: 100%;
+}
+
+.com-form .ui.form .check-input .del-btn {
+}
+
 .com-form .ui.form label.no-edit {
 	border: 2px solid transparent;
 }
@@ -90,12 +101,20 @@
 	right: 0.5em;
 }
 
+.com-form .ui.form .check-input .del-btn {
+	right: 0 !important;
+}
+
 .com-form .ui.form .header .del-btn {
 	top: -2px; right: -2px;
 }
 
 .com-form .ui.form .no-save .del-btn {
 	display: none;
+}
+
+.com-form .ui.form .check-add-btn {
+	width: 100%;
 }
 
 .com-form.on-edit .ui.form .header {

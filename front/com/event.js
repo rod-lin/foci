@@ -263,7 +263,7 @@ define([
 					 */
 
 					var extbtn = btn.class ? $("<i class='" + btn.class + " icon'></i>") : $(btn.html).clone();
-					console.log(extbtn);
+
 					dom.find(".ext-btn-set").append(extbtn);
 
 					extbtn.click(function () {

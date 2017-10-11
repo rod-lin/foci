@@ -4,7 +4,8 @@
 
 /*
 
-JSON -> form with semantic-ui classes
+gen :: JSON -> form with semantic-ui classes
+parse :: dom -> JSON
 
 {
 	"name": "Staff Form",
@@ -33,8 +34,10 @@ JSON -> form with semantic-ui classes
 		}
 	]
 }
-
  */
+
+/* the best way to maintain this bunch of trash code is to rewrite it */
+/* -- some advise */
 
 define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (util, editable, xfilt, popselect) {
 	var $ = jQuery;
@@ -45,7 +48,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		console.log("formi: " + msg);
 	}
 
-	function genInput(name, input, colfields) {
+	function genInput(name, input, colfields, single_check) {
 		var ret;
 
 		input.type = input.type || "text";
@@ -61,9 +64,14 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 			}
 		}
 
-		if (input.type == "check" && !input.label) {
+		if ((input.type == "check" || input.type == "radio") &&
+			!input.label) {
 			warn("checkbox with no label");
 			input.label = "unlabeled";
+		}
+		
+		if (input.label && typeof input.label == "string") {
+			input.label = [ input.label ];
 		}
 
 		switch (input.type) {
@@ -91,12 +99,34 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 				break;
 
+			case "radio":
 			case "check":
-				ret = "<div class='ui checkbox check-input'><input class='hidden' type='checkbox' name='" + input.name + "'>";
-				ret += "<label>" + (input.label || "") + "</label>";
-				ret += "</div>";
+				var type = input.type == "check" ? "checkbox" : "radio";
+				
+				ret = "";
+				
+				var input_html = "<input class='hidden' type='" + type + "' name='" + input.name + "'>";
+				
+				for (var i = 0; i < input.label.length; i++) {
+					if (!single_check)
+						ret += "<div class='check-input-cont'>";
+					
+					ret += "<div class='ui field check-input'>";
+					ret += "<div class='ui " + (type == "radio" ? "radio" : "") + " checkbox'>";
+					ret += input_html;
+					ret += "<label>" + input.label[i] + "</label>";
+					ret += "</div>";
+					ret += "</div>";
+					
+					if (!single_check)
+						ret += "</div>";
+					else break;
+				}
 
 				break;
+				
+			default:
+				warn("unrecognized input type");
 		}
 
 		return ret;
@@ -171,11 +201,13 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		}
 
 		ret += "</form>";
+		
+		// console.log(fields);
 
 		ret = $(ret);
 
 		ret.find(".checkbox").checkbox();
-
+		
 		return {
 			dom: ret,
 			fields: fields
@@ -188,7 +220,8 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 			var input = $(dom.children()[1]);
 
 			var ret = {
-				name: input.attr("name"),
+				name: dom.find("input").attr("name") ||
+					  dom.find("textarea").attr("name"),
 				placeholder: input.attr("placeholder")
 			};
 
@@ -196,10 +229,14 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				ret.type = "text";
 			} else if (input.hasClass("textarea-input")) {
 				ret.type = "textarea";
-			} else if (input.hasClass("check-input")) {
-				ret.type = "check";
-				ret.label = input.children("label").text();
-				ret.name = input.children("input").attr("name");
+			} else if (input.hasClass("check-input-cont")) {
+				ret.type = dom.find(".checkbox").hasClass("radio")
+						   ? "radio" : "check";
+				ret.label = [];
+				
+				dom.find(".check-input").each(function (i, dom) {
+					ret.label.push($(dom).find("label").text());
+				});
 			} else ret.type = "text";
 
 			return ret;
@@ -272,13 +309,30 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		// sget input vale
 		function ival(field, value) {
 			if (value === undefined) {
+				// get value
+				
 				switch (field.type) {
 					case "textarea":
 					case "text":
 						return field.dom.val();
 
+					case "radio":
 					case "check":
-						return field.dom.prop("checked");
+						var res = {
+							dval: "", // display value
+							raw: new Array(field.dom.length)
+						};
+						
+						var dvals = [];
+					
+						field.dom.each(function (i, dom) {
+							if (res.raw[i] = $(dom).prop("checked"))
+								dvals.push($(dom).siblings("label").html());
+						});
+					
+						res.dval = dvals.join(", ");
+					
+						return res;
 				}
 			} else {
 				switch (field.type) {
@@ -286,8 +340,18 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 					case "text":
 						return field.dom.val(value);
 
+					case "radio":
 					case "check":
-						return field.dom.prop("checked", value);
+						// valud assumed to be an arrays
+						var list = value.raw;
+						
+						if (list) {
+							field.dom.each(function (i, dom) {
+								$(dom).prop("checked", list[i]);
+							});
+						}
+					
+						return value;
 				}
 			}
 		}
@@ -567,6 +631,44 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 			var editable_conf = { explicit: true };
 
+			function initCheckbox(cont) {
+				var type = cont.find(".check-input .radio").length ? "radio" : "check";
+				var name = cont.find("input").attr("name");
+				
+				function bindDel(dom) {
+					dom = $(dom);
+					dom.append(delbtn.clone().css("height", dom.outerHeight() + "px").click(function () {
+						dom.remove();
+					}));
+				}
+				
+				cont.find(".check-input").each(function (i, dom) {
+					bindDel(dom);
+				});
+				
+				var addbtn = $("<div class='ui basic button check-add-btn'><i class='add icon'></i>Option</div>");
+				
+				cont.find(".check-input").last().after(addbtn);
+				
+				addbtn.click(function () {
+					var ninput = $(genInput(name, {
+						type: type,
+						name: name
+					}, undefined, true));
+					
+					addbtn.before(ninput);
+					
+					ninput.ready(function () {
+						bindDel(ninput);
+						editable.init(ninput.find("label"), null, editable_conf);
+						ninput.find(".checkbox").checkbox("set disabled").removeClass("disabled");
+						
+						if (!config.use_dragi)
+							main.modal("refresh");
+					});
+				});
+			}
+
 			function initField(field, group) {
 				setTimeout(function () {
 					field.append(delbtn.clone().css("height", field.find("label").outerHeight() + "px").click(function () {
@@ -576,6 +678,10 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 							field.remove();
 						}
 					}));
+					
+					if (field.children(".check-input-cont").length) {
+						initCheckbox(field.children(".check-input-cont"));
+					}
 
 					if (!config.use_dragi)
 						main.modal("refresh");
@@ -603,6 +709,13 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 						onSelect: function () {
 							cb("check");
 						}
+					},
+
+					{
+						cont: "<i class='selected radio icon'></i> Radio",
+						onSelect: function () {
+							cb("radio");
+						}
 					}
 				]);
 			}
@@ -615,8 +728,8 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				// group.after(split);
 				// editable.init(group.find(".field>label").not(".no-edit"), null, editable_conf);
 				setEditable(group);
-				group.find(".field").each(function (n, fl) {
-					initField($(fl), group, split)
+				group.find(".field").not(".check-input").each(function (n, fl) {
+					initField($(fl), group, split);
 				});
 
 				function setEditable(f) {
@@ -631,7 +744,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				}
 
 				function newField(type) {
-					if (group.find(".field").length >= 5) {
+					if (group.find(".field").not(".check-input").length >= 5) {
 						util.emsg("unable to add more fields");
 						return;
 					}

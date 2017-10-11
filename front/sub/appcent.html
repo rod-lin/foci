@@ -502,10 +502,15 @@
 
 						var form = app.form;
 
+						// fill in all supplied fields
 						for (var i = init_header.length + (use_rating ? 1 : 0);
 							 i < list.length; i++) {
 							if (form && form.hasOwnProperty(list[i].iname)) {
-								item.push("<td>" + form[list[i].iname].val + "</td>");
+								var val = form[list[i].iname].val;
+	
+								if (val.hasOwnProperty("dval")) val = val.dval; // replace with display value
+								
+								item.push("<td>" + val + "</td>");
 							} else {
 								item.push("<td>N/A</td>");
 							}
@@ -717,6 +722,8 @@
 						var rtab = tab.get(n).find("table");
 						var form = formi.genForm(util.json(app[type + "_form"]));
 
+						// field titles are generated here
+						// field values are filled in in genItem function
 						var hlist = headerList(form.fields);
 
 						if (type == "staff" && enable_rating) {
