@@ -183,7 +183,8 @@ _user.login = util.route(async env => {
 	env.qsuc({
 		uuid: res.uuid,
 		sid: sid,
-		admin: await user.isAdmin(res.uuid)
+		admin: await user.isAdmin(res.uuid),
+		root: await user.isRoot(res.uuid),
 	});
 });
 

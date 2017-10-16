@@ -176,7 +176,7 @@ window.foci = {};
 
 	var server = "";
 
-	var Session = function (lname, uuid, sid, is_admin) {
+	var Session = function (lname, uuid, sid, is_admin, is_root) {
 		if (uuid === undefined) {
 			$.extend(this, lname);
 			return;
@@ -187,6 +187,7 @@ window.foci = {};
 		this.sid = sid;
 		
 		this.is_admin = is_admin;
+		this.is_root = is_root;
 	};
 
 	Session.prototype = {};
@@ -388,7 +389,7 @@ window.foci = {};
 				var sid = foci.aesdec(dat.sid, salt);
 				if (!sid) return cb(false, "$def.server_error");
 
-				var ses = new Session(lname, dat.uuid, sid, dat.admin);
+				var ses = new Session(lname, dat.uuid, sid, dat.admin, dat.root);
 
 				foci.setLocal("session", ses);
 				return cb(true, ses);

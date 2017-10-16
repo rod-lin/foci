@@ -29,6 +29,43 @@ define([
         return "<a class='jump-tag' data-jumptag-type='" + type + "' data-jumptag-uid='" + uid + "'>#" + uid + "</a>";
     }
     
+    forumi.actpanel = function (cont, post_info, cuid, puid, config) {
+        cont = $(cont);
+        config = $.extend({}, config);
+        
+        var main = $("<div class='com-forumi-actpanel'> \
+            <h5 class='ui dividing header'>This is a(n)<div class='ui inline tiny loader active' style='margin-left: 0.4rem; margin-top: 0;'></div></h5> \
+            <div class='ui fluid basic floating dropdown type-drop'> \
+                <div class='text'>Type</div> \
+                <i class='dropdown icon'></i> \
+                <div class='menu'> \
+                    <div class='item' data-value='post'>Discussion</div> \
+                    <div class='item' data-value='issue'>Issue</div> \
+                </div> \
+            </div> \
+            <h5 class='ui dividing header'> \
+                Assignees \
+                <button class='ui frameless icon tiny button' style='font-size: 1rem; margin-left: 0.5rem;'><i class='fitted edit icon'></i></button> \
+            </h5> \
+            <div class='assign-list'><div class='prompt'>Nothing</div></div> \
+            <h5 class='ui dividing header'> \
+                Tags \
+                <button class='ui frameless icon tiny button' style='font-size: 1rem; margin-left: 0.5rem;'><i class='fitted edit icon'></i></button> \
+            </h5> \
+            <div class='tag-list'><div class='prompt'>Nothing</div></div> \
+        </div>");
+        
+        var parsed = parsePreview(post_info);
+        
+        main.find(".type-drop").dropdown().dropdown("set selected", parsed.type);
+        
+        cont.append(main);
+        
+        var mod = {};
+        
+        return mod;
+    };
+    
     forumi.viewpost = function (cont, post_info, cuid, puid, config) {
         cont = $(cont);
         config = $.extend({
@@ -48,21 +85,25 @@ define([
                     <div class='post-detail'>Created <span class='created-time'></span></div> \
                     <div class='post-detail'>By <a class='creator-name'>loading</a></div> \
                 </div> \
-                <div class='post-headline-right'> \
-                     \
-                </div> \
+                <div class='post-headline-right'></div> \
             </div> \
-            <div class='comment-set'></div> \
-            <div class='show-more'><button class='ui fitted button show-more-btn'><i class='chevron down icon'></i>Show more</button></div> \
-            <div class='comment-box send-box'> \
-                <div class='avatar-cont'> \
-                    <div class='avatar'></div> \
+            <div style='position: relative;'> \
+                <div class='right-panel'> \
                 </div> \
-                <div class='msg-box'> \
-                    <div class='msg-header' style='font-weight: bold;'>New comment</div> \
-                    <div class='msg-cont'></div> \
-                    <div class='msg-toolbar'> \
-                        <button class='ui basic green button post-btn'>Post</button> \
+                <div class='left-board'> \
+                    <div class='comment-set'></div> \
+                    <div class='show-more'><button class='ui fitted button show-more-btn'><i class='chevron down icon'></i>Show more</button></div> \
+                    <div class='comment-box send-box'> \
+                        <div class='avatar-cont'> \
+                            <div class='avatar'></div> \
+                        </div> \
+                        <div class='msg-box'> \
+                            <div class='msg-header' style='font-weight: bold;'>New comment</div> \
+                            <div class='msg-cont'></div> \
+                            <div class='msg-toolbar'> \
+                                <button class='ui basic green button post-btn'>Post</button> \
+                            </div> \
+                        </div> \
                     </div> \
                 </div> \
             </div> \
@@ -228,6 +269,8 @@ define([
             main.find(".created-time").html(util.localDate(parsed.ctime));
             
             main.find(".creator-name").attr("href", "#profile/" + parsed.creator);
+            
+            forumi.actpanel(main.find(".right-panel").html(""), post_info, cuid, puid, {});
             
             foci.get("/user/info", { uuid: parsed.creator }, function (suc, dat) {
                 if (suc) {
@@ -409,7 +452,15 @@ define([
                 </div> \
                 <div class='msg-box'> \
                     <div class='msg-header' style='font-size: 1.3rem;'> \
-                        <div class='ui fluid input'> \
+                        <div class='ui fluid left action input'> \
+                            <div class='ui basic floating dropdown button type-drop'> \
+                                <div class='text'>Type</div> \
+                                <i class='dropdown icon'></i> \
+                                <div class='menu'> \
+                                    <div class='item' data-value='post'>Discussion</div> \
+                                    <div class='item' data-value='issue'>Issue</div> \
+                                </div> \
+                            </div> \
                             <input class='np-field-title' placeholder='Title' style='font-weight: bold;'> \
                         </div> \
                     </div> \
@@ -435,6 +486,9 @@ define([
             util.bgimg(main.find(".avatar"), parsed.avatar);
         });
         
+        main.find(".type-drop").dropdown({
+        }).dropdown("set selected", "1");
+        
         main.find(".post-btn").click(function () {
             main.find(".post-btn").addClass("loading");
             
@@ -446,6 +500,8 @@ define([
                         cuid: cuid,
                         
                         title: main.find(".np-field-title").val(),
+                        
+                        type: main.find(".type-drop").dropdown("get value"),
                         
                         init: {
                             msg: editor.val()
@@ -482,6 +538,8 @@ define([
         parsed.utime = new Date(dat.utime);
         
         parsed.pinned = dat.pinned;
+        
+        parsed.type = dat.type || "post";
         
         parsed.tags = dat.tags || [];
         parsed.creator = dat.creator;
@@ -636,7 +694,7 @@ define([
         function genPreview(dat) {
             var preview = $("<div class='post-preview'> \
                 <div class='type-bar'> \
-                    <i class='fitted talk outline icon'></i><br> \
+                    <i class='fitted icon type-icon'></i><br> \
                     <i class='pin-btn fitted pin outline icon'></i> \
                 </div> \
                 <div class='preview-cont'> \
@@ -656,6 +714,25 @@ define([
             </div>");
             
             var parsed_dat = parsePreview(dat);
+            
+            switch (parsed_dat.type) {
+                case "issue":
+                    preview
+                        .find(".type-icon")
+                        .addClass("blue warning circle")
+                        .attr("title", "Issue");
+                        
+                    break;
+                    
+                case "post":
+                default:
+                    preview
+                        .find(".type-icon")
+                        .addClass("talk outline")
+                        .attr("title", "Discussion");
+                        
+                    break;
+            }
             
             preview.find(".preview-title").click(function () {
                 toPost(dat.puid, dat);

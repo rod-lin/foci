@@ -82,7 +82,13 @@ define([ "com/env", "com/util", "com/login" ], function (env, util, login) {
             }
         });
 
-        main.find(".reg-btn, .login-btn").click(function () {
+        main.find(".login-btn").click(function () {
+            login.init(function () {
+                refresh();
+            });
+        });
+        
+        main.find(".reg-btn").click(function () {
             login.init(function () {
                 refresh();
             }, { reg: true });

@@ -111,6 +111,7 @@ var conf = module.exports = {
 			},
 
 			admin_level: -1, // lower the admin_level, higher the ability
+			root_level: -100,
 
 			max_login_try: 5,
 			account_freeze_time: 1000 * 60 * 60, /* an hour */

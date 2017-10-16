@@ -48,7 +48,7 @@ var PostObject = function (cuid, puid, creator, conf) {
     
     this.title = conf.title || "(no title)";
     
-    this.type = conf.type || "post";
+    this.type = conf.type || "post"; // "post", "issue"
     this.pinned = 0; // always on the top
     
     this.comments = [ new PostComment(creator, conf.init) ];
@@ -96,6 +96,8 @@ PostObject.format.newpost = {
     tags: "array",
     visible_to: "array",
     pinned: "bool",
+    
+    type: util.checkArg.inarr([ "post", "issue" ], "string"),
     
     init: util.checkArg.nested(PostComment.format.comment, true)
 };

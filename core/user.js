@@ -289,6 +289,17 @@ exports.checkAdmin = async (uuid) => {
 		throw new err.Exc("$core.permission_denied");
 };
 
+exports.isRoot = async (uuid) => {
+	var col = await db.col("user");
+	var found = await col.findOne(User.query.check_level(uuid, config.lim.user.root_level));
+	return !!found;
+};
+
+exports.checkRoot = async (uuid) => {
+	if (!await exports.isRoot(uuid))
+		throw new err.Exc("$core.permission_denied");
+};
+
 var testUserName = (name) => {
 	return /^[0-9a-zA-Z_\-@.]+$/g.test(name);
 };

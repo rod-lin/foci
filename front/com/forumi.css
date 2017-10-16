@@ -386,6 +386,19 @@
     margin-right: 0.5rem;
 }
 
+.com-forumi-viewpost .left-board {
+    padding-right: 20rem;
+}
+
+.com-forumi-viewpost .right-panel {
+    position: absolute;
+    
+    right: 0;
+    top: 0;    
+    
+    width: 19rem;
+}
+
 .com-forumi-viewpost .comment-set {
     position: relative;
     text-align: center;
@@ -457,4 +470,24 @@
     .com-forumi-viewpost .comment-set .comment-box {
         margin-bottom: 1rem;
     }
+}
+
+@media only screen and (max-width: 720px) {
+    .com-forumi-viewpost .left-board {
+        padding-right: 0;
+    }
+
+    .com-forumi-viewpost .right-panel {
+        /* position: static;
+        width: 100%;
+        margin-bottom: 2rem; */
+        display: none;
+    }
+}
+
+/* action panel */
+
+.com-forumi-actpanel .prompt {
+    color: #CCCCCC;
+    font-weight: bold;
 }

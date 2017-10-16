@@ -2,7 +2,7 @@
 
 "use strict";
 
-define(function () {
+define([ "com/util" ], function (util) {
 	var $ = jQuery;
 	foci.loadCSS("com/tab.css");
 	
@@ -37,6 +37,23 @@ define(function () {
 		
 		tabs.each(function (i, dom) {
 			$(dom).css("display", "none");
+			$(dom).swipe({
+				swipe: function (e, dir) {
+					if (util.isMobile()) {
+						if (dir == "left") {
+							if (i < tabs.length - 1) {
+								switchTo(i + 1);
+							}
+						} else if (dir == "right") {
+							if (i > 0) {
+								switchTo(i - 1);
+							}
+						}
+					}
+				},
+				
+				preventDefaultEvents: false
+			});
 		});
 
 		function bind(items) {

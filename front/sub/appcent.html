@@ -508,7 +508,7 @@
 							if (form && form.hasOwnProperty(list[i].iname)) {
 								var val = form[list[i].iname].val;
 	
-								if (val.hasOwnProperty("dval")) val = val.dval; // replace with display value
+								if (val && val.hasOwnProperty("dval")) val = val.dval; // replace with display value
 								
 								item.push("<td>" + val + "</td>");
 							} else {
@@ -604,6 +604,7 @@
 							.addClass("show")
 							.find(".option-selnum").html(n);
 
+						// alert(par.find(".option-bar").outerHeight());
 						par.children("table").css("margin-top", par.find(".option-bar").outerHeight());
 					}
 
@@ -900,7 +901,7 @@
 											rtab.parent().find(".float-header").prepend(opt);
 											opt.ready(function () {
 												$(window).resize(function () {
-													opt.css("margin-top", "-" + opt.outerHeight() + "px");
+													opt.css("margin-top", "-" + opt.next().position().top + "px");
 												}).resize();
 											});
 

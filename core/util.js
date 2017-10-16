@@ -239,9 +239,9 @@ checkArg.nested = (conf, opt) => {
 	}
 };
 
-checkArg.inarr = (arr) => {
+checkArg.inarr = (arr, type) => {
 	return {
-		type: "json",
+		type: type || "json",
 		lim: val => {
 			if (arr.indexOf(val) == -1) {
 				throw new err.Exc("$core.wrong_argument");

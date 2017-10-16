@@ -28,6 +28,7 @@
                         <a class="item item-event"><i class="calendar icon"></i>Events</a>
                         <a class="item item-forum only-member"><i class="talk outline icon"></i>Forum</a>
                         <a class="item item-member"><i class="user outline icon"></i>Members</a>
+                        <a class="item item-util"><i class="idea outline icon"></i>Utility</a>
                         <a class="item item-setting only-member"><i class="setting icon"></i>Settings</a>
                     </div>
                 </div>
@@ -48,8 +49,11 @@
             <!-- members -->
             <div class="tab member-tab"></div>
             
+            <!-- util -->
+            <div class="tab util-tab"></div>
+            
             <!-- settings -->
-            <div class="tab"></div>
+            <div class="tab setting-tab"></div>
         </div>
     </div>
 </div>
@@ -147,9 +151,9 @@
     .sub-clubcent .main-scroll .info-header .shadow {
         position: absolute;
         height: 100%;
-        width: 150%;
+        width: 100%;
         
-        left: -25%;
+        left: 0;
         top: 0;
         
         background: rgba(0, 0, 0, 0.6);
@@ -413,6 +417,10 @@
                         forum_preview.refresh();
                 });
                 
+                main.find(".setting-tab").on("tab:show", function () {
+                    util.jump("#setting/club/" + cuid);
+                });
+                
                 var main_tab = tab.common(main.find(".nav-bar .item"), main.find(".tabs .tab"));
             
                 $(window).resize(function () {
@@ -421,6 +429,40 @@
                                                 tbar.height() -
                                                 main.find(".nav-bar").outerHeight(true) + 2);
                 }).resize();
+                    
+                main.find(".item-event").attr("href", "#clubcent/" + cuid + "/event");
+                main.find(".item-forum").attr("href", "#clubcent/" + cuid + "/forum");
+                main.find(".item-member").attr("href", "#clubcent/" + cuid + "/member");
+                main.find(".item-setting").attr("href", "#setting/club/" + cuid);
+                
+                function applyArgs(args) {
+                    if (args[0] !== cuid.toString()) {
+                        util.refresh();
+                        return;
+                    }
+                    
+                    if (args[1]) {
+                        main.find(".item-" + args[1]).click();
+                        
+                        switch (args[1]) {
+                            case "forum":
+                                if (!forum_preview) break;
+
+                                if (args[2]) {
+                                    forum_preview.toPost(parseInt(args[2]));
+                                } else {
+                                    forum_preview.toPreview();
+                                }
+                                
+                                break;
+                        }
+                    }
+                }
+                
+                main.on("part:argchange", function (ev, newarg) {
+                    applyArgs(newarg);
+                });
+                
                 
                 if (env.session()) {
                     foci.encop(env.session(), {
@@ -444,43 +486,10 @@
                         } else {
                             util.emsg(dat);
                         }
-                    });
-                }
-                    
-                main.find(".item-event").attr("href", "#clubcent/" + cuid + "/event");
-                main.find(".item-forum").attr("href", "#clubcent/" + cuid + "/forum");
-                main.find(".item-member").attr("href", "#clubcent/" + cuid + "/member");
-                main.find(".item-setting").attr("href", "#setting/club/" + cuid);
-                
-                function applyArgs(args) {
-                    if (args[0] !== cuid.toString()) {
-                        util.refresh();
-                        return;
-                    }
-                    
-                    if (args[1]) {
-                        main.find(".item-" + args[1]).click();
                         
-                        switch (args[1]) {
-                            case "forum":
-                                if (!forum_preview) break;
-                            
-                                if (args[2]) {
-                                    forum_preview.toPost(parseInt(args[2]));
-                                } else {
-                                    forum_preview.toPreview();
-                                }
-                                
-                                break;
-                        }
-                    }
-                }
-                
-                main.on("part:argchange", function (ev, newarg) {
-                    applyArgs(newarg);
-                });
-                
-                 applyArgs(args);
+                        applyArgs(args);
+                    });
+                } else applyArgs(args);
             }
             
             var tbar = env.get("tbar");
