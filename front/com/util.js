@@ -348,7 +348,7 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		}
 	};
 	
-	function fill0(str, bit, after) {
+	var fill0 = util.fill0 = function (str, bit, after) {
 		str = str.toString();
 		
 		while (str.length < bit) {
@@ -360,7 +360,7 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		}
 		
 		return str;
-	}
+	};
 
 	util.localDate = function (date, short) {
 		var cur = new Date();
@@ -515,6 +515,107 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		}
 		
 		cb(true);
+	};
+
+	var cached_info = {
+		"user": {
+			api: "/user/info",
+			arg: function (uid) {
+				return { uuid: uid };
+			},
+			
+			cache: {}
+		},
+		
+		"event": {
+			api: "/event/info",
+			arg: function (uid) {
+				return { euid: uid }
+			},
+			
+			cache: {}
+		}
+	};
+	
+	util.clearCachedInfo = function (type, uid) {
+		delete cached_info[type][uid];
+	};
+
+	util.cachedInfo = function (type, uid, cb, fail, com) {
+		var table = cached_info[type];
+		var entry = table.cache[uid];
+		var now = new Date();
+		
+		if (entry && now - entry.ctime < 60000) {
+			// exists and still valid
+			if (cb) cb(entry.dat);
+			if (com) com(true, entry.dat);
+			return;
+		}
+		
+		// TODO: pending & callback
+		
+		var primary = false;
+		
+		var next = function (suc, dat) {
+			if (suc) {
+				table.cache[uid] = {
+					ctime: new Date(),
+					dat: dat
+				};
+				
+				if (cb) cb(dat);
+			} else {
+				util.emsg(dat);
+				if (fail) fail();
+			}
+			
+			if (com) com(suc, dat);
+			
+			if (primary && entry) {
+				for (var i = 0; i < entry.cb.length; i++) {
+					entry.cb[i](suc, dat);
+				}
+			}
+		};
+		
+		if (entry && entry.pending) {
+			// pushed to callback list
+			entry.cb.push(next);
+			return;
+		}
+		
+		primary = true;
+		
+		entry = table.cache[uid] = {
+			pending: true,
+			cb: []
+		};
+		
+		foci.get(table.api, table.arg(uid), next);
+	};
+	
+	util.userInfo = function (uuid, cb, fail, com) {
+		return util.cachedInfo("user", uuid, cb, fail, com);
+	};
+	
+	util.eventInfo = function (euid, cb, fail, com) {
+		return util.cachedInfo("event", euid, cb, fail, com);
+	};
+	
+	util.invalidUserInfo = function (uuid) {
+		util.clearCachedInfo("user", uuid);
+		
+		// clear cache
+		require([ "com/env" ], function (env) {
+			if (env.session() && env.session().getUUID() == uuid) {
+				env.clearUserCache();
+			}
+		});
+	};
+	
+	util.invalidEventInfo = function (euid) {
+		util.clearCachedInfo("event", euid);
 	};
 
 	return util;

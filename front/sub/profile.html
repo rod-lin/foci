@@ -36,7 +36,9 @@
 		</div>
 	</div>
 	<div class="right-bar">
-		<div class="main-tab"></div>
+		<div style='height: 100%; position: relative;'>
+			<div class="main-tab"></div>
+		</div>
 	</div>
 
 	<div class="new-event-draft" style="display: none;">
@@ -319,6 +321,8 @@
 		position: fixed;
 		width: 20em;
 		height: 100%;
+		
+		z-index: 3;
 
 		padding: 0 2rem;
 
@@ -480,8 +484,10 @@
 
 	.sub-profile .right-bar {
 		position: relative;
-		margin-left: 20em;
 		height: 100%;
+		
+		width: 100%;
+		padding-left: 20em;
 	}
 
 	.sub-profile .right-bar.main-tab {
@@ -516,7 +522,7 @@
 		}
 
 		.sub-profile .right-bar {
-			margin-left: 0;
+			padding-left: 0;
 			/* border-top: 1px solid rgba(0, 0, 0, 0.08); */
 		}
 
@@ -819,6 +825,7 @@
 											favtag: tags
 										}, function (suc, dat) {
 											if (suc) {
+												util.invalidUserInfo(session.getUUID());
 												info.favtag = tags;
 												setDom(info);
 											} else {
@@ -1776,6 +1783,8 @@
 
 								if (!suc) {
 									util.emsg(dat);
+								} else {
+									util.invalidEventInfo(euid);
 								}
 
 								cb(suc);
@@ -2148,6 +2157,7 @@
 						login.session(function (session) {
 							foci.encop(session, query, function (suc, dat) {
 								if (suc) {
+									util.invalidUserInfo(session.getUUID());
 									info[name] = val;
 									setDom(info);
 								} else {
@@ -2209,16 +2219,17 @@
 
 					main.find(".right-bar-left-step").css("max-height", tb.displayHeight() + "px");
 				}
-
+				
+				// change here
 				function updateAllPos() {
-					if (!right_bar.offset().left) {
+					if (util.isMobile()) {
 						display_mode = "mobile";
-						right_bar.width(main.innerWidth());
+						// right_bar.width(main.innerWidth());
 						left_bar.css("height", "");
 						tb.flow(true);
 					} else {
 						display_mode = "normal";
-						right_bar.width(main.innerWidth() - left_bar.outerWidth());
+						// right_bar.width(main.innerWidth() - left_bar.outerWidth());
 						left_bar.css("height", main.innerHeight() + "px");
 						tb.flow(false);
 					}
@@ -2304,15 +2315,12 @@
 					util.emsg("$front.sub.profile.illegal_uuid");
 					show(false);
 				} else {
-					foci.get("/user/info", { uuid: uuid }, function (suc, dat) {
-						if (suc) {
-							env.user(function (cur) {
-								init(dat, cur && cur.uuid == dat.uuid, args[1]);
-							});
-						} else {
-							util.emsg(dat);
-							show(false);
-						}
+					util.userInfo(uuid, function (dat) {
+						env.user(function (cur) {
+							init(dat, cur && cur.uuid == dat.uuid, args[1]);
+						});
+					}, function () {
+						show(false);
 					});
 				}
 			} else {

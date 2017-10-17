@@ -93,13 +93,9 @@ define([
 			});
 
 			if (info.uuid) {
-				foci.get("/user/info", { uuid: info.uuid }, function (suc, dat) {
-					if (suc) {
-						comm.find(".name").html(dat.dname);
-						avatar.init(comm.find(".avatar"), dat, { radius: "5px", shadow: "0 0 1px rgba(0, 0, 0, 0.3)" });
-					} else {
-						util.emsg(dat);
-					}
+				util.userInfo(info.uuid, function (dat) {
+					comm.find(".name").html(dat.dname);
+					avatar.init(comm.find(".avatar"), dat, { radius: "5px", shadow: "0 0 1px rgba(0, 0, 0, 0.3)" });
 				});
 			}
 

@@ -841,15 +841,14 @@ define([
 						util.emsg(dat);
 						cb(false);
 					} else {
-						foci.get("/event/info", { euid: info.euid }, function (suc, dat) {
+						util.invalidEventInfo(info.euid);
+						util.eventInfo(info.euid, null, null, function (suc, dat) {
 							if (suc) {
 								$.extend(info, dat);
-							} else {
-								util.emsg(dat);
 							}
 
 							cb(suc);
-						});
+						})
 					}
 				});
 			}

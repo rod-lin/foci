@@ -5,8 +5,9 @@
 define([
     "com/util", "com/login", "com/xfilt",
     "com/marki", "com/env", "com/club",
-    "com/editable"
-], function (util, login, xfilt, marki, env, club, editable) {
+    "com/editable", "com/avatar", "com/userhunt",
+    "com/tagbox"
+], function (util, login, xfilt, marki, env, club, editable, avatar, uh, tagbox) {
     var $ = jQuery;
     foci.loadCSS("com/forumi.css");
     
@@ -34,7 +35,7 @@ define([
         config = $.extend({}, config);
         
         var main = $("<div class='com-forumi-actpanel'> \
-            <h5 class='ui dividing header'>This is a(n)<div class='ui inline tiny loader active' style='margin-left: 0.4rem; margin-top: 0;'></div></h5> \
+            <h5 class='ui dividing header type-header'>This is a(n)<div class='ui inline tiny loader' style='margin-left: 0.6rem; margin-top: 0;'></div></h5> \
             <div class='ui fluid basic floating dropdown type-drop'> \
                 <div class='text'>Type</div> \
                 <i class='dropdown icon'></i> \
@@ -45,19 +46,143 @@ define([
             </div> \
             <h5 class='ui dividing header'> \
                 Assignees \
-                <button class='ui frameless icon tiny button' style='font-size: 1rem; margin-left: 0.5rem;'><i class='fitted edit icon'></i></button> \
+                <button class='ui frameless icon tiny button edit-assign-btn' style='font-size: 1rem; margin-left: 0.5rem;'><i class='fitted edit icon'></i></button> \
             </h5> \
-            <div class='assign-list'><div class='prompt'>Nothing</div></div> \
-            <h5 class='ui dividing header'> \
-                Tags \
-                <button class='ui frameless icon tiny button' style='font-size: 1rem; margin-left: 0.5rem;'><i class='fitted edit icon'></i></button> \
-            </h5> \
-            <div class='tag-list'><div class='prompt'>Nothing</div></div> \
+            <div class='assign-list'></div> \
+            <h5 class='ui dividing header'>Tags</h5> \
+            <div class='tag-list' style='font-size: 0.85em;'></div> \
         </div>");
         
         var parsed = parsePreview(post_info);
         
-        main.find(".type-drop").dropdown().dropdown("set selected", parsed.type);
+        function nothing() {
+            return $("<div class='prompt'>Nothing</div>");
+        }
+        
+        function bindDom(is_admin) {
+            function initAssignList() {
+                var assignees = main.find(".assign-list");
+                
+                assignees.html("");
+                
+                for (var i = 0; i < parsed.assignee.length; i++) {
+                    avatar.init(assignees, parsed.assignee[i], {
+                        size: "2rem",
+                        radius: "3px",
+                        margin: "0 0.4rem 0.4rem 0"
+                    });
+                }
+            }
+            
+            if (parsed.assignee.length) {
+                initAssignList();
+            } else {
+                main.find(".assign-list").html(nothing());
+            }
+            
+            main.find(".edit-assign-btn").click(function () {
+                uh.modal(parsed.assignee, function (selected) {
+                    var btn = main.find(".edit-assign-btn");
+                    
+                    btn.addClass("active");
+                    
+                    login.session(function (session) {
+                        if (session) foci.encop(session, {
+                                int: "forumi",
+                                action: "editpost",
+                                
+                                cuid: cuid,
+                                puid: puid,
+                                
+                                assignee: selected
+                            }, function (suc, dat) {
+                                btn.removeClass("active");
+                                
+                                if (suc) {
+                                    parsed.assignee = selected;
+                                    initAssignList();
+                                } else {
+                                    util.emsg(dat);
+                                }
+                            });
+                        else btn.removeClass("active");
+                    });
+                }, {
+                    prompt: "Change assignee(s)"
+                });
+            });
+            
+            main.find(".type-drop")
+                .dropdown({
+                    onChange: function (value) {
+                        if (parsed.type != value) {
+                            var loader = main.find(".type-header .loader");
+                            loader.addClass("active");
+                            
+                            login.session(function (session) {
+                                if (session) foci.encop(session, {
+                                        int: "forumi",
+                                        action: "editpost",
+                                        
+                                        cuid: cuid,
+                                        puid: puid,
+                                        
+                                        type: value
+                                    }, function (suc, dat) {
+                                        loader.removeClass("active");
+                                        
+                                        if (suc) {
+                                            parsed.type = value;
+                                        } else {
+                                            util.emsg(dat);
+                                            main.find(".type-drop").dropdown("set selected", parsed.type);
+                                        }
+                                    });
+                                else loader.removeClass("active");
+                            });
+                        }
+                    }
+                })
+                .dropdown("set selected", parsed.type);
+                
+            var tgbox = tagbox.colortag(main.find(".tag-list"), {
+                init: parsed.tags,
+                onUpdate: function (selected, cb) {
+                    // alert(selected);
+                    
+                    login.session(function (session) {
+                        if (session) foci.encop(session, {
+                                int: "forumi",
+                                action: "editpost",
+                                
+                                cuid: cuid,
+                                puid: puid,
+                                
+                                tags: selected
+                            }, function (suc, dat) {
+                                cb();
+                                
+                                if (suc) {
+                                    parsed.tags = selected;
+                                } else {
+                                    util.emsg(dat);
+                                }
+                            });
+                        else cb();
+                    });
+                }
+            });
+            
+            if (is_admin)
+                tgbox.setEditable(true);
+                
+            if (!is_admin) {
+                main.find(".edit-assign-btn").remove();
+            }
+        }
+        
+        var session = env.session();
+        bindDom(session && (session.getUUID() == parsed.creator || session.isAdmin()));
         
         cont.append(main);
         
@@ -224,18 +349,14 @@ define([
                 util.jump("#profile/" + parsed.creator);
             });
             
-            foci.get("/user/info", { uuid: parsed.creator }, function (suc, dat) {
-                if (suc) {
-                    var info = login.parseInfo(dat);
-                    
-                    comm.find(".creator-name").html(info.dname).click(function () {
-                        util.jump("#profile/" + info.uuid);
-                    });
-                    
-                    util.bgimg(comm.find(".avatar"), info.avatar);
-                } else {
-                    util.emsg(dat);
-                }
+            util.userInfo(parsed.creator, function (dat) {
+                var info = login.parseInfo(dat);
+                
+                comm.find(".creator-name").html(info.dname).click(function () {
+                    util.jump("#profile/" + info.uuid);
+                });
+                
+                util.bgimg(comm.find(".avatar"), info.avatar);
             });
             
             // get relation to club
@@ -272,13 +393,9 @@ define([
             
             forumi.actpanel(main.find(".right-panel").html(""), post_info, cuid, puid, {});
             
-            foci.get("/user/info", { uuid: parsed.creator }, function (suc, dat) {
-                if (suc) {
-                    var info = login.parseInfo(dat);
-                    main.find(".creator-name").html(info.dname);
-                } else {
-                    util.emsg(dat);
-                }
+            util.userInfo(parsed.creator, function (dat) {
+                var info = login.parseInfo(dat);
+                main.find(".creator-name").html(info.dname);
             });
             
             main.find(".show-more-btn").click(function () {
@@ -546,6 +663,8 @@ define([
         parsed.comment_count = dat.comment_count || 0;
         parsed.partic_count = dat.partic_count || 0;
         
+        parsed.assignee = dat.assignee || [];
+        
         return parsed;
     }
     
@@ -775,23 +894,23 @@ define([
             preview.find(".field-utime").html(util.localDate(parsed_dat.utime));
             
             for (var i = 0; i < parsed_dat.tags.length; i++) {
-                preview.find(".preview-headline").append("<div class='preview-tag'>" +
-                                                         xfilt(parsed_dat.tags[i]) + "</div>");
+                if (parsed_dat.tags[i]) {
+                    preview.find(".preview-headline")
+                           .append(tagbox.genColorTag(parsed_dat.tags[i]).css("font-size", "0.7em").addClass("preview-tag"));
+                    // preview.find(".preview-headline").append("<div class='preview-tag'>" +
+                    //                                          xfilt(parsed_dat.tags[i]) + "</div>");
+                }
             }
             
             preview.find(".field-comment-count").html(parsed_dat.comment_count);
             preview.find(".field-partic-count").html(parsed_dat.partic_count);
             
-            foci.get("/user/info", { uuid: parsed_dat.creator }, function (suc, dat) {
-                if (suc) {
-                     var parsed = login.parseInfo(dat);
-                     
-                     preview.find(".field-creator")
-                            .html(parsed.dname)
-                            .attr("href", "#profile/" + parsed_dat.creator);
-                } else {
-                    util.emsg(dat);
-                }
+            util.userInfo(parsed_dat.creator, function (dat) {
+                var parsed = login.parseInfo(dat);
+                
+                preview.find(".field-creator")
+                       .html(parsed.dname)
+                       .attr("href", "#profile/" + parsed_dat.creator);
             });
             
             return preview;

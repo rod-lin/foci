@@ -85,3 +85,97 @@
 	display: inline;
 	color: #999999;
 }
+
+/* color tagbox */
+
+.com-tagbox-colortag-set {
+	
+}
+
+.com-tagbox-colortag {
+	display: inline-block;
+	
+	padding: 0.4em 0.6em;
+	border-radius: 3px;
+	
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	font-weight: bold;
+	
+	margin: 0 0.4em 0.4em 0;
+	
+	opacity: 1;
+	user-select: none;
+	-moz-user-select: none;
+	
+	transition: opacity 0.1s;
+}
+
+.com-tagbox-colortag:hover {
+	opacity: 0.9;
+}
+
+.com-tagbox-colortag:active {
+	opacity: 0.95;
+}
+
+.com-tagbox-colortag-set .addbtn,
+.com-tagbox-colortag-set .updatebtn {
+	display: none;
+	color: rgb(150, 150, 150);
+}
+
+.com-tagbox-colortag .delbtn {
+	display: none;
+}
+
+.com-tagbox-colortag-set.editable .com-tagbox-colortag .delbtn {
+	display: inline;
+}
+
+.com-tagbox-colortag-set.editable .addbtn {
+	display: inline-block;
+}
+
+.com-tagbox-colortag-set.edited .updatebtn {
+	display: inline-block;
+}
+
+.com-tagbox-colortag-set .updatebtn .loader {
+	display: none !important;
+}
+
+.com-tagbox-colortag-set .updatebtn.loading .loader {
+	margin-top: 0 !important;
+	display: inline-block !important;
+}
+
+.com-tagbox-colortag-set .updatebtn.loading .icon {
+	display: none !important;
+}
+
+.com-tagbox-colortag-set.editable .com-tagbox-colortag {
+	cursor: pointer;
+}
+
+.com-tagbox-newtag .color-value {
+	font-weight: bold;
+}
+
+/* palette */
+
+.com-palette .row {
+	word-break: keep-all;
+	white-space: nowrap;
+}
+
+.com-palette .color {
+	display: inline-block;
+	border-radius: 2px;
+	
+	cursor: pointer;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-palette .color:hover {
+	opacity: 0.8;
+}

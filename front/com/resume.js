@@ -106,12 +106,8 @@ function (util, rating, event, lang) {
             if (info) {
                 setDom(dat, info, parsed);
             } else {
-                foci.get("/event/info", { euid: dat.euid }, function (suc, info) {
-                    if (suc) {
-                        setDom(dat, info);
-                    } else {
-                        util.emsg(info);
-                    }
+                util.eventInfo(dat.euid, function (info) {
+                    setDom(dat, info);
                 });
             }
         };
@@ -144,45 +140,41 @@ function (util, rating, event, lang) {
 
             // preview(main.find(".resume-preview"), {}, {});
 
-            foci.get("/event/info", { euid: dat.euid }, function (suc, info) {
-                if (suc) {
-                    var parsed = event.parseInfo(info);
+            util.eventInfo(dat.euid, function (info) {
+                var parsed = event.parseInfo(info);
 
-                    rating.init(item.find(".resume-rating"), parsed.rating);
-                    util.bgimg(item.find(".resume-cover"), parsed.cover);
+                rating.init(item.find(".resume-rating"), parsed.rating);
+                util.bgimg(item.find(".resume-cover"), parsed.cover);
 
-                    var prefix;
+                var prefix;
 
-                    switch (dat.job) {
-                        case "org":
-                            prefix = "<b>Organized</b> event ";
-                            break;
+                switch (dat.job) {
+                    case "org":
+                        prefix = "<b>Organized</b> event ";
+                        break;
 
-                        case "partic":
-                            prefix = "<b>Participated</b> event ";
-                            break;
+                    case "partic":
+                        prefix = "<b>Participated</b> event ";
+                        break;
 
-                        case "staff":
-                            prefix = "<b>Volunteered</b> event ";
-                            break;
+                    case "staff":
+                        prefix = "<b>Volunteered</b> event ";
+                        break;
 
-                        default:
-                            prefix = "Unknown job in event ";
-                    }
-                    
-                    item.find(".resume-prompt").prepend(prefix + parsed.title);
-
-                    item.click(function () {
-                        main.find(".selected").removeClass("selected");
-                        item.addClass("selected");
-                        prev.setResume(dat, info, parsed);
-                    });
-
-                    if (util.windowWidth() > 640)
-                        if (i == 0) item.click();
-                } else {
-                    util.emsg(info);
+                    default:
+                        prefix = "Unknown job in event ";
                 }
+                
+                item.find(".resume-prompt").prepend(prefix + parsed.title);
+
+                item.click(function () {
+                    main.find(".selected").removeClass("selected");
+                    item.addClass("selected");
+                    prev.setResume(dat, info, parsed);
+                });
+
+                if (util.windowWidth() > 640)
+                    if (i == 0) item.click();
             });
 
             return item;

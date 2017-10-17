@@ -151,6 +151,10 @@ define([ "com/util" ], function (util) {
 		user: function (cb) {
 			load_info(cb);
 		},
+		
+		clearUserCache: function () {
+			env.user = null;
+		},
 
 		favtag: favtag,
 		logout: logout,

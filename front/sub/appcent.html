@@ -515,39 +515,35 @@
 								item.push("<td>N/A</td>");
 							}
 						}
+						
+						util.userInfo(app.uuid, function (dat) {
+							var ava = avatar.init(user.find(".avatar"), dat, { size: "3em", popdir: "top left" });
 
-						foci.get("/user/info", { uuid: app.uuid }, function (suc, dat) {
-							if (suc) {
-								var ava = avatar.init(user.find(".avatar"), dat, { size: "3em", popdir: "top left" });
+							dat = login.parseInfo(dat);
 
-								dat = login.parseInfo(dat);
+							var uname = $("<div class='user-name'></div>");
+							var loaded = false;
+							var load = function () {
+								if (loaded) return;
+								loaded = true;
+								if (cb) cb();
+							};
 
-								var uname = $("<div class='user-name'></div>");
-								var loaded = false;
-								var load = function () {
-									if (loaded) return;
-									loaded = true;
-									if (cb) cb();
-								};
+							uname.append(realname.badge(app.uuid, euid, { onLoad: load }));
+							
+							uname.append("<span>" +
+										 xfilt(dat.dname) + "</span>");
 
-								uname.append(realname.badge(app.uuid, euid, { onLoad: load }));
-								
-								uname.append("<span>" +
-											 xfilt(dat.dname) + "</span>");
+							user.find(".trivial").append(uname);
+							// var rat = rating.init(user.find(".trivial"), dat.rating);
 
-								user.find(".trivial").append(uname);
-								// var rat = rating.init(user.find(".trivial"), dat.rating);
+							var ratdom = rating.init(user.find(".trivial"));
 
-								var ratdom = rating.init(user.find(".trivial"));
-
-								util.ratingOf(app.uuid, ratdom.set);
-								
-								setTimeout(load, 3000);
-							} else {
-								util.emsg(dat);
-							}
+							util.ratingOf(app.uuid, ratdom.set);
+							
+							setTimeout(load, 3000);
 						});
-
+						
 						check.find(".checkbox").checkbox();
 
 						return {
@@ -950,22 +946,18 @@
 				// 	// main.children(".tabs").width(main.width() - main.children(".left-panel").width());
 				// }).resize();
 
-				foci.get("/event/info", { euid: euid }, function (suc, dat) {
-					if (suc) {
-						foci.encop(session, {
-							int: "event",
-							action: "getapp",
-							euid: euid
-						}, function (suc, app) {
-							if (suc) {
-								render(dat, app);
-							} else {
-								util.emsg(app);
-							}
-						});
-					} else {
-						util.emsg(dat);
-					}
+				util.eventInfo(euid, function (dat) {
+					foci.encop(session, {
+						int: "event",
+						action: "getapp",
+						euid: euid
+					}, function (suc, app) {
+						if (suc) {
+							render(dat, app);
+						} else {
+							util.emsg(app);
+						}
+					});
 				});
 			});
 		});

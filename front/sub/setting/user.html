@@ -341,6 +341,7 @@
                                 form_binfo.find(".update-btn").removeClass("loading");
                                 
                                 if (suc) {
+                                    util.invalidUserInfo(session.getUUID());
                                     util.emsg("updated", "success");
                                 } else {
                                     util.emsg(dat);

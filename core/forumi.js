@@ -51,6 +51,8 @@ var PostObject = function (cuid, puid, creator, conf) {
     this.type = conf.type || "post"; // "post", "issue"
     this.pinned = 0; // always on the top
     
+    this.assignee = [];
+    
     this.comments = [ new PostComment(creator, conf.init) ];
 };
 
@@ -83,6 +85,8 @@ PostObject.prototype.getPreview = function () {
         type: this.type,
         pinned: this.pinned,
         
+        assignee: this.assignee,
+        
         comment_count: this.comments.length,
         partic_count: this.partic.length
     };
@@ -98,6 +102,8 @@ PostObject.format.newpost = {
     pinned: "bool",
     
     type: util.checkArg.inarr([ "post", "issue" ], "string"),
+    
+    assignee: "array",
     
     init: util.checkArg.nested(PostComment.format.comment, true)
 };

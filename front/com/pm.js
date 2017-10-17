@@ -62,18 +62,15 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 				cb(sendee_info);
 				return;
 			}
-
-			foci.get("/user/info", { uuid: sendee }, function (suc, dat) {
-				if (suc) {
-					sendee_info = dat = login.parseInfo(dat);
-					util.bgimg(main.find(".header .sendee-avatar"), dat.avatar);
-					main.find(".header .sendee-name").html(dat.dname);
-					main.find(".header .sendee-intro").html(dat.intro);
-					if (cb) cb(dat);
-				} else {
-					util.emsg(dat);
-					if (cb) cb(login.parseInfo({}));
-				}
+			
+			util.userInfo(sendee, function (dat) {
+				sendee_info = dat = login.parseInfo(dat);
+				util.bgimg(main.find(".header .sendee-avatar"), dat.avatar);
+				main.find(".header .sendee-name").html(dat.dname);
+				main.find(".header .sendee-intro").html(dat.intro);
+				if (cb) cb(dat);
+			}, function () {
+				if (cb) cb(login.parseInfo({}));
 			});
 		}
 		
@@ -369,14 +366,13 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 					<div class='ellip'><i class='fitted ellipsis horizontal icon'></i></div> \
 				</div> \
 			");
-
-			foci.get("/user/info", { uuid: sender }, function (suc, dat) {
+			
+			util.userInfo(sender, null, null, function (suc, dat) {
 				msg.find(".loader").removeClass("active");
 
 				if (suc) {
 					dat = login.parseInfo(dat);
 				} else {
-					util.emsg(dat);
 					dat = login.parseInfo({});
 				}
 

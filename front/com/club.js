@@ -52,17 +52,13 @@ define([
         main.find(".school-field").html(parsed.school);
         main.find(".descr").html(parsed.descr);
         
-        foci.get("/user/info", { uuid: info.creator }, function (suc, dat) {
-            if (suc) {
-                main.find(".creator-link")
-                    .html(xfilt(dat.dname))
-                    .attr("href", "#profile/" + info.creator)
-                    .click(function () {
-                        hide();
-                    });
-            } else {
-                util.emsg(dat);
-            }
+        util.userInfo(info.creator, function (dat) {
+            main.find(".creator-link")
+                .html(xfilt(dat.dname))
+                .attr("href", "#profile/" + info.creator)
+                .click(function () {
+                    hide();
+                });
         });
         
         function hide() {
@@ -333,15 +329,11 @@ define([
                 </div> \
             </div>");
             
-            foci.get("/user/info", { uuid: uuid }, function (suc, dat) {
-                if (suc) {
-                    var parsed = login.parseInfo(dat);
-                    
-                    util.bgimg(member.find(".avatar"), parsed.avatar);
-                    member.find(".dname").html(parsed.dname);
-                } else {
-                    util.emsg(dat);
-                }
+            util.userInfo(uuid, function (dat) {
+                var parsed = login.parseInfo(dat);
+                
+                util.bgimg(member.find(".avatar"), parsed.avatar);
+                member.find(".dname").html(parsed.dname);
             });
             
             if (session.getUUID() == uuid) {

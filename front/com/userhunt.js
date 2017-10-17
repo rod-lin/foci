@@ -43,13 +43,9 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 		},
 		
 		onInfo: function (uid, cb) {
-			foci.get("/user/info", { uuid: uid }, function (suc, dat) {
-				if (suc) {
-					cb(dat);
-				} else {
-					util.emsg(dat);
-				}
-			});
+			util.userInfo(uid, function (dat) {
+				cb(dat);
+			})
 		}
 	};
 	
@@ -124,16 +120,7 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 
 		if (init) {
 			for (var i = 0; i < init.length; i++) {
-				// foci.get("/user/info", { uuid: init[i] }, function (suc, dat) {
-				// 	if (suc) {
-				// 		addSelected(dat);
-				// 	} else {
-				// 		util.emsg(dat);
-				// 	}
-				// });
-				
 				config.api.onInfo(init[i], addSelected);
-				
 				// selected[init[i]] = true;
 			}
 		}

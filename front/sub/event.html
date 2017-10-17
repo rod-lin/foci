@@ -644,9 +644,8 @@
 				}
 
 				for (var i = 0; i < parsed.org.length; i++) {
-					foci.get("/user/info", { uuid: parsed.org[i] }, function (suc, dat) {
+					util.userInfo(parsed.org[i], null, null, function (suc, dat) {
 						if (!suc) {
-							util.emsg(dat);
 							dat = null;
 						}
 
@@ -865,16 +864,9 @@
 					comm.more();
 				});
 			};
-
-			foci.get("/event/info", { euid: euid }, function (suc, dat) {
-				if (suc) {
-					display.render(dat);
-				} else {
-					util.emsg(dat);
-				}
-				
-				show(suc);
-			});
+			
+			util.eventInfo(euid, function (dat) { display.render(dat); },
+						   null, function (suc) { show(suc); });
 
 			// util.blur(main.find(".dim"), 10);
 

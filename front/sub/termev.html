@@ -319,14 +319,10 @@
 				util.jump("#event/" + euid);
 			});
 
-			foci.get("/event/info", { euid: euid }, function (suc, dat) {
-				if (suc) {
-					login.session(function (session) {
-						init(dat, session);
-					});
-				} else {
-					util.emsg(dat);
-				}
+			util.eventInfo(euid, function (dat) {
+				login.session(function (session) {
+					init(dat, session);
+				});
 			});
 		});
 	}
