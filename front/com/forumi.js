@@ -40,8 +40,8 @@ define([
                 <div class='text'>Type</div> \
                 <i class='dropdown icon'></i> \
                 <div class='menu'> \
-                    <div class='item' data-value='post'>Discussion</div> \
-                    <div class='item' data-value='issue'>Issue</div> \
+                    <div class='item' data-value='post'><i class='talk outline icon'></i>Discussion</div> \
+                    <div class='item' data-value='issue'><i class='warning circle icon'></i>Issue</div> \
                 </div> \
             </div> \
             <h5 class='ui dividing header'> \
@@ -896,7 +896,8 @@ define([
             for (var i = 0; i < parsed_dat.tags.length; i++) {
                 if (parsed_dat.tags[i]) {
                     preview.find(".preview-headline")
-                           .append(tagbox.genColorTag(parsed_dat.tags[i]).css("font-size", "0.7em").addClass("preview-tag"));
+                           .append(tagbox.genColorTag(parsed_dat.tags[i], { margin: "0.4em 0.4em 0 0" })
+                                   .css("font-size", "0.65em").addClass("preview-tag"));
                     // preview.find(".preview-headline").append("<div class='preview-tag'>" +
                     //                                          xfilt(parsed_dat.tags[i]) + "</div>");
                 }

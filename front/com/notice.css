@@ -84,6 +84,7 @@
 	background-position: 50% 50%;
 }
 
+.com-notice .hist-reddot,
 .com-notice .nt-reddot {
 	position: absolute;
 
@@ -186,6 +187,8 @@
 }
 
 .com-notice .nt-all .hist-msg {
+	position: relative;
+	
 	text-align: left;
 	padding: 0.7rem 1rem;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
@@ -193,6 +196,24 @@
 	cursor: pointer;
 
 	transition: background 0.3s;
+}
+
+.com-notice .hist-reddot {
+	left: 0;
+	top: 0;
+	
+	height: 100%;
+	width: 3px;
+	border-radius: 0;
+	
+	box-shadow: none;
+	border: 0;
+	
+	background: #3498DB;
+}
+
+.com-notice .nt-all .hist-msg.unread .hist-reddot {
+	opacity: 1;
 }
 
 .com-notice .nt-all .hist-msg:hover {

@@ -8,7 +8,10 @@ var uid = require("./uid");
 var util = require("./util");
 var club = require("./club");
 var user = require("./user");
+var tick = require("./tick");
 var config = require("./config");
+var notice = require("./notice");
+var template = require("./template");
 
 // must has: creator
 var PostComment = function (creator, conf) {
@@ -151,6 +154,7 @@ PostObject.query = {
 				{ "title": { $regex: reg } },
                 // { "creator": { $regex: reg } },
 				{ "comments.msg": { $regex: reg } },
+                { "tags": { $regex: reg } }
                 // { "comments.creator": { $regex: reg } }
 			]
 		};
@@ -345,8 +349,19 @@ exports.editPost = async (cuid, puid, uuid, conf) => {
     
     var col = await db.col("fpost");
     
+    if (conf.assignee) {
+        for (var i = 0; i < conf.assignee.length; i++) {
+            await club.checkRelated(cuid, conf.assignee[i]);
+        }
+    }
+    
     await col.updateOne(PostObject.query.puid(puid, cuid),
                         PostObject.set.edit_post(conf));
+
+    if (conf.assignee) {
+        await notice.sendGroup("club", cuid, uuid, conf.assignee,
+                               await template.club_assignment(cuid, uuid, puid));
+    }
 };
 
 exports.pinPost = async (cuid, puid, uuid, pinned) => {

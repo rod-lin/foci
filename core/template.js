@@ -72,3 +72,19 @@ exports.club_invitation = async (cuid, uuid) => {
 Visit <a href="#clubcent/${clb.cuid}/member">this link</a> to join!`
 	};
 };
+
+exports.club_assignment = async (cuid, assigner, puid) => {
+	var clb = await club.cuid(cuid);
+	var boss = await user.uuid(assigner);
+	
+	var club_name = xss(clb.getDName());
+	var boss_name = xss(boss.getDName());
+	
+	return {
+		title: `Assignment update from ${club_name}`,
+		format: "html",
+		msg:
+`Hi, <b>${boss_name}</b> in club <b>${club_name}</b> just assigned you a new job.<br>
+View more info from <a href="#clubcent/${clb.cuid}/forum/${puid}">here</a>`
+	};
+};

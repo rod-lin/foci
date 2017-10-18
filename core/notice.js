@@ -34,6 +34,7 @@ var config = require("./config");
  */
 
 var ltok = (event, id) => "notice." + event + "." + id;
+var senduid = (type, uid) => type + "-" + uid;
 
 var Notice = function (config) {
 	err.assert(config.type, "$core.notice.no_type");
@@ -49,9 +50,16 @@ var Notice = function (config) {
 
 	this.format = config.format || "text"; // text, html(need authoritation), markdown, etc.
 	this.date = config.date || new Date();
+	
+	this.unread = config.unread || true;
 };
 
 exports.Notice = Notice;
+
+Notice.prototype = {};
+Notice.prototype.getSenderUID = function () {
+	return senduid(this.type, this.sender);
+};
 
 Notice.format = {};
 Notice.format.msg = {
@@ -77,7 +85,13 @@ Notice.set = {
 		} else {
 			return { $set: { notice_update: 0 } };
 		}
-	}
+	},
+	
+	read: (senduid, i) => ({
+		$set: {
+			["notice." + senduid + "." + i + ".unread"]: false
+		}
+	})
 };
 
 async function setUpdate(uuid, val) {
@@ -89,7 +103,7 @@ exports.push = async (uuid, info) => {
 	var nnt = new Notice(info);
 	var col = await db.col("user");
 	
-	var sender = nnt.sender;
+	var sender = nnt.getSenderUID();
 
 	await col.updateOne(user.User.query.uuid(uuid), Notice.set.push(sender, nnt));
 	await setUpdate(uuid, true);
@@ -101,6 +115,11 @@ exports.pull = async (uuid) => {
 	var usr = await user.uuid(uuid);
 	await setUpdate(uuid, false);
 	return usr.notice;
+};
+
+exports.setRead = async (uuid, type, sender, which) => {
+	var col = await db.col("user");
+	await col.updateOne(user.User.query.uuid(uuid), Notice.set.read(senduid(type, sender), which));
 };
 
 // get sender info

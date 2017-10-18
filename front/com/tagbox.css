@@ -102,8 +102,11 @@
 	font-weight: bold;
 	
 	margin: 0 0.4em 0.4em 0;
+	line-height: normal;
 	
 	opacity: 1;
+	cursor: default;
+	
 	user-select: none;
 	-moz-user-select: none;
 	

@@ -258,7 +258,10 @@ define([
 		cont = $(cont);
 		config = $.extend({
 			is_admin: false,
-			use_dragi: false
+			use_dragi: false,
+			
+			// onUnread
+			// onAllRead
 		}, config);
 
 		var main = $(" \
@@ -282,9 +285,28 @@ define([
 				</div> \
 			</div> \
 		");
+		
+		var cur_preview = null;
 
 		main.find(".nt-all .back-btn").click(function () {
 			main.removeClass("view-all");
+			
+			if (cur_preview) {
+				var unread = false;
+				
+				// check if any history message is unread
+				for (var i = 0; i < cur_preview.hist.length; i++) {
+					if (cur_preview.hist[i].unread) unread = true;
+				}
+				
+				if (!unread) {
+					cur_preview.dom.removeClass("unread");
+				}
+				
+				cur_preview = null;
+				
+				updateUnreadState();
+			}
 		});
 
 		var no_hide = false;
@@ -319,8 +341,16 @@ define([
 
 			return ret;
 		}
+		
+		function updateUnreadState() {
+			if (main.find(".hist-msg.unread, .nt-item.unread").length) {
+				if (config.onUnread) config.onUnread();
+			} else {
+				if (config.onAllRead) config.onAllRead();
+			}
+		}
 
-		function genHist(msg, info) {
+		function genHist(msg, info, i) {
 			var item = $(" \
 				<div class='hist-msg'> \
 					<div class='header'> \
@@ -328,11 +358,17 @@ define([
 						<div class='date'>" + util.localDate(msg.date) + "</div> \
 					</div> \
 					<div class='msg'>" + xfilt(msg.msg) + "</div> \
+					<div class='hist-reddot'></div> \
 				</div>\
 			");
+			
+			if (msg.unread) {
+				item.addClass("unread");
+			}
 
 			item.click(function () {
 				no_hide = true;
+				
 				modal(msg, {
 					info: info,
 					onHide: function () {
@@ -348,6 +384,28 @@ define([
 					: ( msg.type == "club" ? "#clubcent/" + msg.sender
 					:   null)
 				});
+				
+				if (msg.unread) {
+					login.session(function (session) {
+						if (session) foci.encop(session, {
+							int: "notice",
+							action: "setread",
+							
+							type: msg.type,
+							sender: msg.sender,
+							which: i
+						}, function (suc, dat) {
+							if (suc) {
+								item.removeClass("unread");
+								msg.unread = false;
+								
+								updateUnreadState();
+							} else {
+								util.emsg(dat);
+							}
+						});
+					});
+				}
 			});
 			
 			item.attr("title", util.htmlToText(xfilt(msg.title)));
@@ -368,7 +426,13 @@ define([
 				</div> \
 			");
 			
-			if (is_new) {
+			var unread = false;
+			
+			if (hist) for (var i = 0; i < hist.length; i++) {
+				if (hist[i].unread) unread = true;
+			}
+			
+			if (unread) {
 				item.addClass("unread");
 			}
 
@@ -399,8 +463,6 @@ define([
 						item.find(".sender-name").html(dat.name);
 
 						item.click(function () {
-							item.removeClass("unread");
-							
 							util.bgimg(main.find(".nt-all .nt-tbar .sender-logo"), dat.logo);
 							main.find(".nt-all .nt-tbar .sender-name").html(dat.name);
 
@@ -408,8 +470,13 @@ define([
 
 							// console.log(hist);
 							for (var i = hist.length - 1; i >= 0; i--) {
-								main.find(".nt-all .history").append(genHist(hist[i], dat));
+								main.find(".nt-all .history").append(genHist(hist[i], dat, i));
 							}
+							
+							cur_preview = {
+								hist: hist,
+								dom: item
+							};
 
 							main.addClass("view-all");
 						});
@@ -450,6 +517,8 @@ define([
 							main.find(".nt-box").html("<div class='prompt'>no notice</div>");
 
 						main.find(".nt-view .loader").removeClass("active");
+						
+						updateUnreadState();
 					} else {
 						util.emsg(dat);
 					}

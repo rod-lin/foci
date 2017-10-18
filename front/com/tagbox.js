@@ -39,7 +39,11 @@ define([ "com/util", "com/xfilt" ], function (util, xfilt) {
 		}
 	}
 	
-	function genColorTag(tag, onDelete) {
+	function genColorTag(tag, config) {
+		config = $.extend({
+			margin: "0 0.4em 0.4em 0"
+		}, config);
+		
 		var sp = tag.split(":");
 		var bg = sp[0];
 		var fg = sp[1];
@@ -47,11 +51,15 @@ define([ "com/util", "com/xfilt" ], function (util, xfilt) {
 		
 		var tdom = $("<div class='com-tagbox-colortag'></div>");
 		
+		tdom.css({
+			margin: config.margin
+		});
+		
 		var delbtn = $("<i class='fitted cancel delbtn icon' style='margin-left: 0.5rem;'></i>");
 		
-		if (onDelete)
+		if (config.onDelete)
 			delbtn.click(function () {
-				onDelete(tag, tdom);
+				config.onDelete(tag, tdom);
 			});
 		
 		tdom.html(xfilt(name))
@@ -286,7 +294,9 @@ define([ "com/util", "com/xfilt" ], function (util, xfilt) {
 		for (var i = 0; i < config.init.length; i++) {
 			if (!config.init[i]) continue;
 			
-			var dom = genColorTag(config.init[i], deleteTag);
+			var dom = genColorTag(config.init[i], {
+				onDelete: deleteTag
+			});
 			
 			cur_tags.push({
 				name: config.init[i],
@@ -305,7 +315,7 @@ define([ "com/util", "com/xfilt" ], function (util, xfilt) {
 			onUse: function (dat, cb) {
 				// cb();
 				var val = dat.color + ":" + getForeground(dat.color) + ":" + dat.name;
-				var dom = genColorTag(val, deleteTag);
+				var dom = genColorTag(val, { onDelete: deleteTag });
 				
 				cur_tags.push({
 					name: val,

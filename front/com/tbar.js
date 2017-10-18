@@ -398,8 +398,8 @@ define([
 				distanceAway: is_mobile ? 0 : 18,
 
 				onShow: function () {
-					main.find(".notice-btn").removeClass("unread");
-					unsetAvatarBoxUnread();
+					// main.find(".notice-btn").removeClass("unread");
+					// unsetAvatarBoxUnread();
 					ntview.refresh();
 				},
 
@@ -413,8 +413,20 @@ define([
 			});
 			
 			ntview = notice.init(main.find(".notice-popup"), {
-				use_dragi: foci.use_dragi
+				use_dragi: foci.use_dragi,
+				
+				onUnread: function () {
+					main.find(".notice-btn").addClass("unread");
+					setAvatarBoxUnread();
+				},
+				
+				onAllRead: function () {
+					main.find(".notice-btn").removeClass("unread");
+					unsetAvatarBoxUnread();
+				}
 			});
+			
+			ntview.refresh();
 		})();
 
 		// init filter tag

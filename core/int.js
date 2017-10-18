@@ -790,6 +790,11 @@ encop.notice = async (env, usr, query, next) => {
 			} else {
 				throw new err.Exc("$core.not_exist($core.word.template)");
 			}
+			
+		case "setread":
+			var args = util.checkArg(query, { type: "string", sender: "string", which: "int"});
+			await notice.setRead(usr.getUUID(), args.type, args.sender, args.which);
+			return;
 
 		default:
 			throw new err.Exc("$core.action_not_exist");
