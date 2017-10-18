@@ -24,20 +24,22 @@ function initTransport() {
     }));
 }
 
-if (config.mail.passwd_enc) {
-    var key = util.getPass();
-    
-    config.mail.passwd = auth.aes.dec(config.mail.passwd, key);
-    
-    if (!config.mail.passwd) {
-        util.log("mail: incorrect password", util.style.red("ERROR"));
-        process.exit();
+if (!config.offline) {
+    if (config.mail.passwd_enc) {
+        var key = util.getPass();
+        
+        config.mail.passwd = auth.aes.dec(config.mail.passwd, key);
+        
+        if (!config.mail.passwd) {
+            util.log("mail: incorrect password", util.style.red("ERROR"));
+            process.exit();
+        } else {
+            util.log("mail: init transport", util.style.blue("INFO"));
+            initTransport();
+        }
     } else {
-        util.log("mail: init transport", util.style.blue("INFO"));
         initTransport();
     }
-} else {
-    initTransport();
 }
 
 exports.send = (to, subject, cont) => {
@@ -58,8 +60,15 @@ exports.send = (to, subject, cont) => {
 };
 
 exports.sendVercode = async (to) => {
+    if (config.offline) {
+        util.log("offline mail: " + to);
+        return;
+    }
+    
     var code = reg.genCode();
     var cont = await template.email_vericode(code);
     await exports.send(to, cont.title, cont.cont);
     await reg.insert(to, code);
 };
+;
+

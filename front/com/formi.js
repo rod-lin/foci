@@ -431,7 +431,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		}, config);
 
 		var main = $(" \
-			<div class='com-form ui small modal'> \
+			<div class='com-form ui modal'> \
 				<div class='title'></div> \
 				<div class='form'></div> \
 				<div class='btn-set' style='text-align: center; margin-top: 2rem;'> \
@@ -521,7 +521,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		var exited = false;
 
 		if (config.use_dragi) {
-			main.removeClass("ui small modal")
+			main.removeClass("ui modal")
 				.dragi({
 					height: "auto",
 					onClose: function () {
@@ -572,7 +572,8 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 			var split = $("<div class='ui divider'></div>");
 			var addblock = $("<button class='ui basic button add-block-btn' type='button'><i class='add icon'></i>Add block</button>");
-			var delbtn = $("<button class='ui icon button del-btn' type='button'><i class='cancel icon'></i></button>");
+			var delbtn = $("<button class='del-btn' type='button'><i class='fitted cancel icon'></i></button>");
+			var opt_delbtn = $("<button class='del-btn' type='button'><i class='fitted minus icon'></i></button>");
 
 			var uid = 0;
 
@@ -637,8 +638,10 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				
 				function bindDel(dom) {
 					dom = $(dom);
-					dom.append(delbtn.clone().css("height", dom.outerHeight() + "px").click(function () {
+					dom.append(opt_delbtn.clone().click(function () {
 						dom.remove();
+						if (!config.use_dragi)
+							main.modal("refresh");
 					}));
 				}
 				
@@ -671,12 +674,15 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 			function initField(field, group) {
 				setTimeout(function () {
-					field.append(delbtn.clone().css("height", field.find("label").outerHeight() + "px").click(function () {
+					field.append(delbtn.clone().click(function () {
 						if (group.children(".field").not(".no-save").length == 1) {
 							group.remove();
 						} else {
 							field.remove();
 						}
+						
+						if (!config.use_dragi)
+							main.modal("refresh");
 					}));
 					
 					if (field.children(".check-input-cont").length) {
@@ -722,7 +728,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 
 			function initGroup(group, new_type) {
 				// var split = $("<div class='ui divider'></div>");
-				var addfield = $("<div class='field no-save'><label class='no-edit'>Add field</label><button class='ui basic icon button add-field-btn' type='button'><i class='add icon'></i></button></div>");
+				var addfield = $("<div class='field no-save add-field'><label class='no-edit'>Add field</label><button class='ui basic icon button add-field-btn' type='button'><i class='add icon'></i></button></div>");
 
 				group.append(addfield);
 				// group.after(split);
@@ -780,9 +786,12 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 					// console.log(header.length);
 					// console.log(header[0]);
 
-					block.append(delbtn.clone().css("height", header.outerHeight() + "px").click(function () {
+					block.append(delbtn.clone().click(function () {
 						block.remove();
 						header.remove();
+						
+						if (!config.use_dragi)
+							main.modal("refresh");
 					}));
 
 					if (!config.use_dragi)
@@ -796,7 +805,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 			editable.init(main.children(".title"), null, editable_conf);
 
 			addblock.click(function () {
-				split.before(genBlock({ name: "New block", field: [] }));
+				split.before(genBlock({ name: "Block title", field: [] }));
 				initBlock(split.prev(".block"));
 			});
 

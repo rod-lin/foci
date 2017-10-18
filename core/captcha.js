@@ -75,6 +75,9 @@ exports.check = async (env, check_fn, ans) => {
             return -1; // geetest is down...
         }
         
+        if (config.offline)
+            return -1;
+        
         await env.qcap(challenge);
         
         return 0;

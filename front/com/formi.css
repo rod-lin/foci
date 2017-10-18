@@ -83,26 +83,58 @@
 .com-form .ui.form .del-btn {
 	position: absolute;
 	
-	top: 0; right: 0;
+	top: -7px; right: -7px;
 
-	margin: 0 !important;
-	padding: 0 0.5rem !important;
+	height: 20px;
+	width: 20px;
+	line-height: 18px;
 
 	border: 1px solid rgba(0, 0, 0, 0.1);
-	border-radius: 0 3px 3px 0 !important;
-	font-size: 1rem;
-
-	box-sizing: border-box;
+	border-radius: 50%;
+	font-size: 0.8em;
 
 	text-align: center;
+
+	color: white;
+	background: rgb(180, 180, 180);
+	
+	transition: background 0.2s;
+}
+
+.com-form .ui.form .del-btn:hover {
+	background: rgb(200, 200, 200);
+}
+
+.com-form .ui.form .del-btn:active {
+	background: rgb(170, 170, 170);
 }
 
 .com-form .ui.form .field .del-btn {
-	right: 0.5em;
+	right: 0;
 }
 
 .com-form .ui.form .check-input .del-btn {
-	right: 0 !important;
+	right: 0;
+	top: 0;
+	
+	height: 100%;
+	width: 1.5rem;
+	border-radius: 0 3px 3px 0;
+}
+
+.com-form .ui.form .check-input .checkbox {
+	padding-right: 1.4rem;
+}
+
+.com-form .ui.form .check-input .checkbox label {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	border-right: 0;
+}
+
+.com-form .ui.form .add-field {
+	max-width: 13rem !important;
+	text-align: center;
 }
 
 .com-form .ui.form .header .del-btn {

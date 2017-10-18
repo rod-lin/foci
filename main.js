@@ -10,12 +10,12 @@ var err = require("./core/err");
 var mail = require("./core/mail");
 var auth = require("./core/auth");
 var user = require("./core/user");
-var util = require("./core/util");
 var file = require("./core/file");
 var tick = require("./core/tick");
+var util = require("./core/util");
 var event = require("./core/event");
-var config = require("./core/config");
 var notice = require("./core/notice");
+var config = require("./core/config");
 
 var int = require("./core/int");
 

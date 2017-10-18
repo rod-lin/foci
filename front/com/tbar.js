@@ -5,8 +5,9 @@ define([
 	"com/login", "com/xfilt", "com/util",
 	"com/env", "com/upload", "com/pm",
 	"com/notice", "com/lang", "com/popselect",
-	"com/rating", "com/club", "com/tip"
-], function (login, xfilt, util, env, upload, pm, notice, lang, popselect, rating, club, tip) {
+	"com/rating", "com/club", "com/tip",
+	"com/trex"
+], function (login, xfilt, util, env, upload, pm, notice, lang, popselect, rating, club, tip, trex) {
 	var $ = jQuery;
 	foci.loadCSS("com/tbar.css");
 
@@ -100,6 +101,15 @@ define([
 
 		main = $(main);
 		
+		var trex_count = 0;
+
+		main.find(".site-logo-name").click(function () {
+			if (++trex_count == 3) {
+				trex_count = 0;
+				trex.modal({ use_dragi: foci.use_dragi });
+			}
+		});
+
 		main.find(".site-logo-prompt").prepend(main.find(".site-logo-name").clone());
 		
 		function toggleAvatarUtil(dir) {
