@@ -210,7 +210,7 @@ define([ "com/util" ], function (com) {
 		 * @enum {number}
 		 */
 		Runner.config = {
-			ACCELERATION: 1, // 0.001,
+			ACCELERATION: 0.001,
 			BG_CLOUD_SPEED: 0.2,
 			BOTTOM_PAD: 10,
 			CLEAR_TIME: 3000,
@@ -225,7 +225,7 @@ define([ "com/util" ], function (com) {
 			MAX_CLOUDS: 6,
 			MAX_OBSTACLE_LENGTH: 3,
 			MAX_OBSTACLE_DUPLICATION: 2,
-			MAX_SPEED: 15, // 13,
+			MAX_SPEED: 13,
 			MIN_JUMP_HEIGHT: 35,
 			MOBILE_SPEED_COEFFICIENT: 1.2,
 			RESOURCE_TEMPLATE_ID: "audio-resources",
