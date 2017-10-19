@@ -864,6 +864,12 @@ encop.club = async (env, usr, query, next) => {
 				}
 			});
 			
+			// check invcode first
+			if (args.invcode) {
+				if (!await invcode.findInvcode("clubreg", args.invcode))
+					throw new err.Exc("$core.invalid_invcode");
+			}
+			
 			// allow other trivial settings too
 			var info = util.checkArg(query, club.Club.format.info, true);
 			
@@ -881,14 +887,8 @@ encop.club = async (env, usr, query, next) => {
 			
 			// check invitation code
 			if (args.invcode) {
-				var invdat = await invcode.findInvcode("clubreg", args.invcode);
-				
-				if (!invdat)
-					throw new err.Exc("$core.invalid_invcode");
-
 				await club.publish(cuid, null, true);
 				await invcode.invalidate("clubreg", args.invcode);
-				
 				published = true;
 			}
 			
