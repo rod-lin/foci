@@ -205,8 +205,8 @@ _user.csid = util.route(async env => {
 		<other args>
 	}
  */
-var T_NEED_HANG = {};
-var T_NEED_CAP = {};
+const T_NEED_HANG = {};
+const T_NEED_CAP = {};
 
 _user.encop = util.route(async env => {
 	var check_res = await checkCaptcha(env);
@@ -240,11 +240,17 @@ _user.encop = util.route(async env => {
 	};
 
 	var proc = encop[query.int];
+	
 	var res = await proc(env, res.usr, query, next, check_res == 1);
 
 	switch (res) {
 		// hangup for future messages
-		case T_NEED_HANG: break;
+		case T_NEED_HANG:
+			// temp fix for the duplicated request issue
+			// https://github.com/expressjs/express/issues/2512
+			// probably a node bug?
+			env.setTimeout(60 * 10 * 1000);
+			break;
 		
 		// need captcha
 		case T_NEED_CAP:
@@ -727,10 +733,22 @@ encop.pm = async (env, usr, query, next) => {
 
 		case "updatel":
 			var args = util.checkArg(query, { sender: { type: "int", opt: true } });
-			pm.getUpdateHang(usr.getUUID(), args.sender, next);
+			await pm.getUpdateHang(usr.getUUID(), args.sender, next);
 
 			// hang up
 			return T_NEED_HANG;
+			
+		case "setread":
+			var args = util.checkArg(query, { sender: "int" });
+			await pm.removeUpdate(usr.getUUID(), args.sender);
+			
+			return;
+			
+		case "closel":
+			var args = util.checkArg(query, { sender: "int", ltime: "int" });
+			await pm.closeHang(usr.getUUID(), args.sender, new Date(args.ltime));
+
+			return;
 
 		default:
 			throw new err.Exc("$core.action_not_exist");

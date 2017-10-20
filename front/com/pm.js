@@ -148,6 +148,10 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 								(dat[i].sender == self_uuid ? null : dat[i].sender),
 								dat[i].msg
 							));
+							
+							if (dat[i].sender == sendee) {
+								last_date = dat[i].date.getTime();
+							}
 						}
 
 						all_msg = dat.concat(all_msg);
@@ -211,11 +215,15 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 		var exit = false;
 
 		var all_msg = [];
+		
+		var last_date = 0;
 
 		function checkUpdate() {
 			login.session(function (session) {
 				if (!session) return;
-
+				
+				if (exit) return;
+				
 				foci.encop(session, {
 					int: "pm",
 					action: "updatel",
@@ -223,21 +231,22 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 				}, function (suc, dat) {
 					if (suc) {
 						var self_uuid = session.getUUID();
-
+					
 						if (dat.length) {
-
 							for (var i = dat.length - 1; i >= 0; i--) {
 								dat[i].date = new Date(dat[i].date);
 								var prev = i ? dat[i - 1] : (all_msg.length ? all_msg[all_msg.length - 1] : null);
-
+					
 								if (needDate(prev, dat[i])) {
 									main.find(".msg-box").append(formatDate(dat[i].date));
 								}
-
+					
 								all_msg.push(dat[i]);
-								main.find(".msg-box").append(genMsg(dat[0].sender, dat[i].msg));
+								main.find(".msg-box").append(genMsg(dat[0].sender, dat[i].msg, dat[i]));
+							
+								last_date = dat[i].date.getTime();
 							}
-
+					
 							main.find(".msg-box").ready(function () {
 								util.bottom(main.find(".msg-box"));
 							});
@@ -246,7 +255,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 						if (dat != "$def.network_error")
 							util.emsg(dat);
 					}
-
+					
 					if (!exit)
 						update_proc = setTimeout(checkUpdate, 1000);
 				});
@@ -266,14 +275,33 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 				main.modal("hide");
 			}
 		}
+		
+		// inform server the last message received
+		function closeUpdate() {
+			login.session(function (session) {
+				if (session) foci.encop(session, {
+					int: "pm",
+					action: "closel",
+					
+					sender: sendee,
+					ltime: last_date
+				}, function (suc, dat) {
+					if (!suc) {
+						util.emsg(dat);
+					}
+				});
+			});
+		}
 
 		if (config.use_dragi) {
 			main.removeClass("ui small modal")
 				.dragi({
 					height: "auto",
 					onClose: function () {
-						clearTimeout(update_proc);
 						exit = true;
+						clearTimeout(update_proc);
+						
+						closeUpdate();
 					},
 					
 					title: "Chat"
@@ -283,8 +311,10 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 				// BUG: DO NOT set this(conflicts with userhunt modal)
 				// allowMultiple: true
 				onHide: function () {
-					clearTimeout(update_proc);
 					exit = true;
+					clearTimeout(update_proc);
+					
+					closeUpdate();
 				}
 			}).modal("show");
 		}
@@ -331,7 +361,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 		cont = $(cont);
 		config = $.extend({
 			use_dragi: false
-		}, config)
+		}, config);
 
 		var main = $(" \
 			<div class='com-pm-qview'> \
@@ -354,11 +384,32 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 		function setPrompt(msg) {
 			main.find(".prompt").html(msg);
 		}
+		
+		function checkUnread(alldat) {
+			var unread = false;
+			
+			for (var i = 0; i < alldat.length; i++) {
+				if (alldat[i].unread) {
+					unread = true;
+				}
+			}
+			
+			if (!unread) {
+				if (config.onAllRead)
+					config.onAllRead();
+			} else {
+				if (config.onUnread)
+					config.onUnread();
+			}
+		}
 
-		function genMsg(sender /* uuid */, text) {
+		function genMsg(sender /* uuid */, text, msgdat, alldat) {
 			var msg = $(" \
 				<div class='msg'> \
-					<div class='sender-avatar'><div class='ui loader active'></div></div> \
+					<div class='sender-avatar'> \
+						<div class='ui loader active'></div> \
+						<div class='reddot'></div> \
+					</div> \
 					<div class='brief-info'> \
 						<div class='sender-name'></div> \
 						<div class='msg-cont'></div> \
@@ -366,6 +417,10 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 					<div class='ellip'><i class='fitted ellipsis horizontal icon'></i></div> \
 				</div> \
 			");
+			
+			if (msgdat.unread) {
+				msg.addClass("unread");
+			}
 			
 			util.userInfo(sender, null, null, function (suc, dat) {
 				msg.find(".loader").removeClass("active");
@@ -381,6 +436,24 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 				msg.find(".msg-cont").html(text);
 
 				msg.click(function () {
+					if (msgdat.unread) {
+						login.session(function (session) {
+							if (session) foci.encop(session, {
+								int: "pm",
+								action: "setread",
+								sender: msgdat.sender
+							}, function (suc, dat) {
+								if (suc) {
+									msgdat.unread = false;
+									msg.removeClass("unread");
+									checkUnread(alldat);
+								} else {
+									util.emsg(dat);
+								}
+							});
+						});
+					}
+					
 					chatbox(sender, { use_dragi: config.use_dragi });
 				});
 			});
@@ -454,12 +527,18 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 							main.find(".msg-box").removeClass("empty");
 							var self_uuid = session.getUUID();
 
+							dat.sort(function (a, b) {
+								return new Date(b.date) - new Date(a.date);
+							});
+
 							for (var i = 0; i < dat.length; i++) {
 								main.find(".msg-box-cont").append(genMsg(
 									dat[i].sender == self_uuid ? dat[i].sendee : dat[i].sender,
-									dat[i].msg
+									dat[i].msg, dat[i], dat
 								));
 							}
+							
+							checkUnread(dat);
 						} else {
 							main.find(".msg-box").addClass("empty");
 							setPrompt(has_view_all ? "no conversation" : "no update");

@@ -74,6 +74,8 @@
 }
 
 .com-pm-qview .sender-avatar {
+	position: relative;
+	
 	width: 3em;
 	height: 3em;
 
@@ -84,6 +86,33 @@
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 50% 50%;
+}
+
+.com-pm-qview .sender-avatar .reddot {
+	position: absolute;
+	
+	visibility: hidden;
+	opacity: 0;
+	
+	top: 1px;
+	right: 1px;
+	
+	width: 10px;
+	height: 10px;
+	
+	border-radius: 50%;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	
+	background: #E74C3C;
+	
+	box-shadow: 0 0 1px #E74C3C;
+	
+	transition: opacity 0.3s;
+}
+
+.com-pm-qview .msg.unread .sender-avatar .reddot {
+	visibility: visible;
+	opacity: 1;
 }
 
 .com-pm-qview .brief-info {

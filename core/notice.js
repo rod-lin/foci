@@ -108,7 +108,7 @@ exports.push = async (uuid, info) => {
 	await col.updateOne(user.User.query.uuid(uuid), Notice.set.push(sender, nnt));
 	await setUpdate(uuid, true);
 
-	lpoll.emit(ltok("update", uuid));
+	await lpoll.emit(ltok("update", uuid));
 };
 
 exports.pull = async (uuid) => {
@@ -169,7 +169,8 @@ exports.update = async (uuid) => {
 };
 
 exports.updatel = async (uuid, next) => {
-	lpoll.reg(ltok("update", uuid), function () {
+	lpoll.off(ltok("update", uuid));
+	lpoll.reg(ltok("update", uuid), async () => {
 		next(true);
 	});
 };

@@ -211,6 +211,8 @@ window.foci = {};
 
 	// cb(suc, data)
 	var sendAsync = function (url, data, cb, method, ext) {
+		// alert([ url, data, cb, method, ext ]);
+		
 		$.ajax($.extend({
 			type: method || "GET",
 			url: url,

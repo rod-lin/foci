@@ -39,6 +39,10 @@ var Env = function (req, res) {
 		// req.pipe(stream);
 		stream.pipe(res);
 	};
+	
+	this.setTimeout = time => {
+		req.connection.setTimeout(time);
+	};
 
 	if (req.method == "POST") {
 		this.init = cb => {

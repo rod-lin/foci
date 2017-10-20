@@ -42,9 +42,12 @@ define([ "com/util" ], function (util) {
             
             dom.ready(function () {
                 dom.find(".pform-cont").ready(function () {
-                    if (dom.find(".pform-cont").height() > dom.height()) {
-                        dom.children(".avcenter").removeClass("avcenter");
-                    }
+                    setTimeout(function () {
+                        // alert([ dom.find(".pform-cont").height(), dom.height() ]);
+                        if (dom.find(".pform-cont").height() > dom.height()) {
+                            dom.children(".avcenter").removeClass("avcenter");
+                        }
+                    }, 100);
                 });
             });
 

@@ -276,11 +276,11 @@ define([
 				});
 
 				pmview.init(function (unread) {
-					if (unread) {
-						main.find(".pm-btn").addClass("unread");
-						setAvatarBoxUnread();
-					} else
-						main.find(".pm-btn").removeClass("unread");
+					// if (unread) {
+					// 	main.find(".pm-btn").addClass("unread");
+					// 	setAvatarBoxUnread();
+					// } else
+					// 	main.find(".pm-btn").removeClass("unread");
 				});
 
 				ntview.keepUpdate(function (has) {
@@ -394,10 +394,10 @@ define([
 				lastResort: true,
 				distanceAway: is_mobile ? 0 : 18, /* TODO: not fixed!! */
 				
-				onShow: function () {
-					main.find(".pm-btn").removeClass("unread");
-					unsetAvatarBoxUnread();
-				}
+				// onShow: function () {
+				// 	// main.find(".pm-btn").removeClass("unread");
+				// 	// unsetAvatarBoxUnread();
+				// }
 			});
 
 			main.find(".notice-btn").popup({
@@ -419,7 +419,17 @@ define([
 			});
 
 			pmview = pm.qview(main.find(".pm-popup"), {
-				use_dragi: foci.use_dragi
+				use_dragi: foci.use_dragi,
+				
+				onUnread: function () {
+					main.find(".pm-btn").addClass("unread");
+					setAvatarBoxUnread();
+				},
+				
+				onAllRead: function () {
+					main.find(".pm-btn").removeClass("unread");
+					unsetAvatarBoxUnread();
+				}
 			});
 			
 			ntview = notice.init(main.find(".notice-popup"), {
