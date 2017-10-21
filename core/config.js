@@ -160,7 +160,8 @@ var conf = module.exports = {
 		},
 
 		pm: {
-			text: 256
+			text: 256,
+			max_conv_refresh: 16
 		},
 
 		notice: {

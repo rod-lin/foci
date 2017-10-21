@@ -42,7 +42,12 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 					</div> \
 					<div class='msg-box'> \
 						<div class='ui loader active'></div> \
-						<div class='history'></div> \
+						<div class='history'> \
+							<div class='load-more-btn'> \
+								<a>Load more</a> \
+								<div class='ui active inline mini loader'></div> \
+							</div> \
+						</div> \
 					</div> \
 					<div class='input-area'> \
 						<textarea class='input'></textarea> \
@@ -127,38 +132,74 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 					if (cb) cb(false);
 					return;
 				}
+				
+				// alert(first_uid);
+				
+				var cur_top = main.find(".msg-box").scrollTop();
+				var cur_height = main.find(".history").height();
+				var load_more = main.find(".load-more-btn");
+				
+				load_more.addClass("loading");
 
 				foci.encop(session, {
 					int: "pm",
 					action: "getconv",
-					sender: sendee
+					sender: sendee,
+					
+					noafter: first_uid
 				}, function (suc, dat) {
 					main.find(".msg-box>.loader").removeClass("active").addClass("hidden");
+					
 					if (suc) {
 						var self_uuid = session.getUUID();
+						
+						if (dat.length == 0) {
+							// no more history
+							load_more.addClass("no-more");
+						}
+						
+						// sort from oldest to newest
+						dat.sort(function (a, b) {
+							return new Date(a.date) - new Date(b.date);
+						});
 
 						for (var i = 0; i < dat.length; i++) {
 							dat[i].date = new Date(dat[i].date);
 
 							if (needDate(i ? dat[i - 1] : null, dat[i])) {
-								main.find(".history").append(formatDate(dat[i].date));
+								load_more.before(formatDate(dat[i].date));
 							}
 
-							main.find(".history").append(genMsg(
+							load_more.before(genMsg(
 								(dat[i].sender == self_uuid ? null : dat[i].sender),
 								dat[i].msg
 							));
 							
 							if (dat[i].sender == sendee) {
-								last_date = dat[i].date.getTime();
+								last_uid = Math.max(last_uid, dat[i].pmuid);
 							}
+							
+							// alert(dat[i].pmuid);
+							
+							// get the first date
+							if (!first_uid)
+								first_uid = dat[i].pmuid;
+							else
+								first_uid = Math.min(first_uid, dat[i].pmuid);
 						}
+						
+						// reset load more
+						main.find(".history").prepend(load_more);
 
 						all_msg = dat.concat(all_msg);
-
+						
+						load_more.removeClass("loading");
+					
 						setTimeout(function () {
-							main.find(".msg-box").scrollTop(main.find(".history").height());
-						}, 300);
+							// hope everything is ready
+							// reset the scroller to the original position
+							main.find(".msg-box").scrollTop(cur_top + main.find(".history").height() - cur_height);
+						}, 100);
 					} else {
 						util.emsg(dat);
 					}
@@ -216,7 +257,8 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 
 		var all_msg = [];
 		
-		var last_date = 0;
+		var last_uid = 0;
+		var first_uid = 0;
 
 		function checkUpdate() {
 			login.session(function (session) {
@@ -244,7 +286,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 								all_msg.push(dat[i]);
 								main.find(".msg-box").append(genMsg(dat[0].sender, dat[i].msg, dat[i]));
 							
-								last_date = dat[i].date.getTime();
+								last_uid = Math.max(last_uid, dat[i].pmuid);
 							}
 					
 							main.find(".msg-box").ready(function () {
@@ -263,7 +305,15 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 		}
 
 		loadHistory(function () {
-			util.bottom(main.find(".msg-box"));
+			// util.bottom(main.find(".msg-box"));
+			// setTimeout(function () {
+			// 	main.find(".msg-box").scrollTop(main.find(".history").height());
+			// }, 300);
+		});
+		
+		main.find(".load-more-btn").click(function () {
+			if ($(this).hasClass("loading")) return;
+			loadHistory();
 		});
 
 		checkUpdate();
@@ -284,7 +334,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 					action: "closel",
 					
 					sender: sendee,
-					ltime: last_date
+					luid: last_uid
 				}, function (suc, dat) {
 					if (!suc) {
 						util.emsg(dat);
@@ -386,15 +436,15 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 		}
 		
 		function checkUnread(alldat) {
-			var unread = false;
+			// var unread = false;
 			
-			for (var i = 0; i < alldat.length; i++) {
-				if (alldat[i].unread) {
-					unread = true;
-				}
-			}
+			// for (var i = 0; i < alldat.length; i++) {
+			// 	if (alldat[i].unread) {
+			// 		unread = true;
+			// 	}
+			// }
 			
-			if (!unread) {
+			if (!main.find(".unread").length) {
 				if (config.onAllRead)
 					config.onAllRead();
 			} else {
@@ -418,7 +468,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 				</div> \
 			");
 			
-			if (msgdat.unread) {
+			if (msgdat.sender == sender && msgdat.unread) {
 				msg.addClass("unread");
 			}
 			

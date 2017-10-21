@@ -173,7 +173,7 @@ function (util, rating, event, lang) {
                     prev.setResume(dat, info, parsed);
                 });
 
-                if (util.windowWidth() > 640)
+                if (util.windowWidth() >= 1024)
                     if (i == 0) item.click();
             });
 
@@ -199,7 +199,7 @@ function (util, rating, event, lang) {
 
         var prev = preview(main.find(".resume-preview"), {
             scroll: config.scroll,
-            use_modal: util.windowWidth() <= 640
+            use_modal: util.windowWidth() < 1024
         });
 
         cont.append(main);

@@ -129,7 +129,7 @@
 	display: inline-block;
 
 	margin-top: 0.2rem;
-	padding: 0.8rem 1rem;
+	padding: 0.7rem 0.9rem;
 	border-radius: 3px;
 
 	max-width: 100%;
@@ -172,6 +172,30 @@
 	padding: 1.5rem 7rem 1.5rem 1.5rem;
 
 	border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-pm-chatbox .msg-box .load-more-btn {
+	display: block;
+	
+	margin-bottom: 0.5rem;
+	width: 100%;
+	text-align: center;
+}
+
+.com-pm-chatbox .msg-box .load-more-btn .loader {
+	display: none;
+}
+
+.com-pm-chatbox .msg-box .load-more-btn.loading a {
+	display: none;
+}
+
+.com-pm-chatbox .msg-box .load-more-btn.loading .loader {
+	display: inline-block;
+}
+
+.com-pm-chatbox .msg-box .load-more-btn.no-more {
+	display: none;
 }
 
 .com-pm-chatbox .input-area .btn-area {

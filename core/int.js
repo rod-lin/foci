@@ -724,8 +724,8 @@ encop.pm = async (env, usr, query, next) => {
 			return await pm.getConvHead(usr.getUUID());
 
 		case "getconv":
-			var args = util.checkArg(query, { sender: "int" });
-			return await pm.getConvAll(usr.getUUID(), args.sender);
+			var args = util.checkArg(query, { sender: "int", noafter: "int" });
+			return await pm.getConvAll(usr.getUUID(), args.sender, args.noafter);
 
 		case "update":
 			var args = util.checkArg(query, { sender: { type: "int", opt: true } });
@@ -745,8 +745,8 @@ encop.pm = async (env, usr, query, next) => {
 			return;
 			
 		case "closel":
-			var args = util.checkArg(query, { sender: "int", ltime: "int" });
-			await pm.closeHang(usr.getUUID(), args.sender, new Date(args.ltime));
+			var args = util.checkArg(query, { sender: "int", luid: "int" });
+			await pm.closeHang(usr.getUUID(), args.sender, args.luid);
 
 			return;
 

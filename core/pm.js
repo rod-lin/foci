@@ -4,9 +4,11 @@
 
 var db = require("./db");
 var err = require("./err");
+var uid = require("./uid");
 var util = require("./util");
 var user = require("./user");
 var lpoll = require("./lpoll");
+var config = require("./config");
 
 var tconv = (a, b) => a > b ? a + "." + b : b + "." + a;
 var ltok = (sender, sendee) => "pm.conv." + sender + "->" + sendee;
@@ -15,6 +17,8 @@ var PMsg = function (config) {
 	err.assert(config.sender, "$core.pm.no_sender");
 	err.assert(config.sendee, "$core.pm.no_sendee");
 	err.assert(config.msg, "$core.pm.no_msg");
+
+	this.pmuid = config.pmuid;
 
 	this.sender = config.sender;
 	this.sendee = config.sendee;
@@ -49,7 +53,15 @@ PMsg.query = {
 		$or: [ { sender: uuid }, { sendee: uuid } ]
 	}),
 
-	conv: (u1, u2) => ({ conv: tconv(u1, u2) }),
+	conv: (u1, u2, noafter) => {
+		var q = { conv: tconv(u1, u2) };
+		
+		if (noafter) { // not include 0
+			q["pmuid"] = { $lt: noafter };
+		}
+		
+		return q;
+	},
 
 	// get the first char log of every conversation
 	chat_list: uuid => [
@@ -68,6 +80,18 @@ PMsg.query = {
 		sender: sender,
 		sendee: sendee,
 		date: { $lte: time }
+	}),
+	
+	after_uid: (sender, sendee, uid) => ({
+		sender: sender,
+		sendee: sendee,
+		pmuid: { $gt: uid }
+	}),
+	
+	before_uid: (sender, sendee, uid) => ({
+		sender: sender,
+		sendee: sendee,
+		pmuid: { $lte: uid }
 	})
 };
 
@@ -82,7 +106,7 @@ PMsg.set = {
 	// 	return q;
 	// }
 	
-	unread: (unread) => ({
+	unread: unread => ({
 		$set: {
 			unread: !!unread
 		}
@@ -91,7 +115,13 @@ PMsg.set = {
 
 // send text
 exports.send = async (sender, sendee, msg) => {
-	var nmsg = new PMsg({ sender: sender, sendee: sendee, msg: msg });
+	var nmsg = new PMsg({
+		pmuid: await uid.genUID("pmuid"),
+		sender: sender,
+		sendee: sendee,
+		msg: msg
+	});
+	
 	var col = await db.col("pm");
 
 	await col.insertOne(nmsg);
@@ -111,6 +141,7 @@ exports.getUpdate = async (uuid, sender) => {
 	// console.log(PMsg.query.update(uuid, sender, usr.pm_update || 0));
 	var res = await col.find(PMsg.query.update(uuid, sender)).sort({ date: -1 }).toArray();
 
+	// console.log(PMsg.query.update(uuid, sender));
 	// exports.removeUpdate(uuid);
 
 	return res;
@@ -147,23 +178,25 @@ exports.getUpdateHang = async (uuid, sender, next) => {
 
 // explicitly request a closing so that
 // no message is marked 'read' after user closed the modal
-exports.closeHang = async (uuid, sender, ltime /* time of last received message */) => {
+exports.closeHang = async (uuid, sender, last_uid /* last pmuid received */) => {
 	// close all listeners
 	lpoll.off(ltok(sender, uuid));
 	
 	// console.log("closing on " + ltok(sender, uuid) + " " + ltime);
 	
-	if (ltime.getTime() !== 0) {
+	if (last_uid !== 0) {
 		var col = await db.col("pm");
 		
 		// console.log(PMsg.query.later_than(sender, uuid, ltime), PMsg.set.unread(true));
 		
 		// console.log(await col.find(PMsg.query.later_than(sender, uuid, ltime)).toArray());
 		
-		await col.update(PMsg.query.after(sender, uuid, ltime),
+		// console.log(PMsg.query.after(sender, uuid, ltime));
+		
+		await col.update(PMsg.query.after_uid(sender, uuid, last_uid),
 						 PMsg.set.unread(true), { multi: true });
 		
-		 await col.update(PMsg.query.before(sender, uuid, ltime),
+		await col.update(PMsg.query.before_uid(sender, uuid, last_uid),
  						 PMsg.set.unread(false), { multi: true });
 	}
 };
@@ -193,11 +226,13 @@ exports.getConvHead = async (uuid) => {
 	return res;
 };
 
-exports.getConvAll = async (uuid, sender) => {
+// get all message
+exports.getConvAll = async (uuid, sender, noafter) => {
 	var col = await db.col("pm");
 
-	var res = await col.find(PMsg.query.conv(uuid, sender))
-					   .sort({ date: -1 })
+	var res = await col.find(PMsg.query.conv(uuid, sender, noafter))
+					   .sort({ date: -1 }) // reversed order(from newest to oldest)
+					   .limit(config.lim.pm.max_conv_refresh)
 					   .toArray();
 
 	return res;
