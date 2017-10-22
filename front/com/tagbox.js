@@ -565,7 +565,7 @@ define([ "com/util", "com/xfilt" ], function (util, xfilt) {
 			if (tag.img) {
 				util.bgimg(t.find(".imgtag-img"), tag.img || util.randimg());
 			} else if (tag.icon) {
-				t.find(".imgtag-img").html("<i class='" + tag.icon + " icon'></i>");;
+				t.find(".imgtag-img").html("<i class='fitted " + tag.icon + " icon'></i>");;
 			}
 
 			t.click(function () {

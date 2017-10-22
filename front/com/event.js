@@ -949,10 +949,11 @@ define([
 
 		var parsed = parseInfo(info, {
 			max_title_len: 32,
-			max_descr_len: 64
+			max_descr_len: 256
 		});
 
 		var main = $("<div class='com-event-showcase img-" + config.imgpos + "'> \
+			<div class='show-cover'></div> \
 			<div class='show-info'> \
 				<div style='position: relative; height: 100%; width: 100%; overflow: hidden;'> \
 					<div class='show-title'>Hello, world</div> \
@@ -963,7 +964,6 @@ define([
 					</div> \
 				</div> \
 			</div> \
-			<div class='show-cover'></div> \
 		</div>");
 
 		main.find(".show-title").html(parsed.title);

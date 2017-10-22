@@ -3,11 +3,11 @@
 .com-event-showcase {
     position: relative;
     width: 100%;
-    height: 15em;
+    height: 15.7em;
 
     overflow: hidden;
 
-    transition: box-shadow 0.3s;
+    transition: box-shadow 0.3s, height 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .com-event-showcase .show-info {
@@ -20,11 +20,11 @@
     overflow: hidden;
 
     cursor: pointer;
-    transition: opacity 0.3s;
+    transition: opacity 0.3s, padding 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .com-event-showcase .show-info:hover {
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 .com-event-showcase .show-info .show-title {
@@ -45,6 +45,8 @@
 }
 
 .com-event-showcase .show-cover {
+    z-index: 1;
+    
     position: absolute;
     top: 0;
     width: 15em;
@@ -57,6 +59,11 @@
     background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 50% 50%;
+    
+    box-shadow: 0 0 0 black inset;
+    
+    transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+                box-shadow 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .com-event-showcase.img-right .show-cover {
@@ -92,7 +99,7 @@
 
     padding-top: 0.7em;
 
-    box-shadow: 0 -5px 1em white;
+    box-shadow: 0 -10px 1em white;
 
     color: #9D9D9D;
     background: white;
@@ -124,6 +131,30 @@
 
     .com-event-showcase .show-cover {
         width: 10em;
+    }
+}
+
+@media only screen and (min-width: 481px) {
+    .com-event-showcase:hover {
+        height: 24em;
+    }
+    
+    .com-event-showcase:hover .show-cover {
+        width: 6em;
+        box-shadow: 0 0 6em black inset;
+    }
+    
+    .com-event-showcase:hover .show-info {    
+        padding-left: 8em;
+    }
+    
+    .com-event-showcase:hover .show-cover:hover {
+        width: 24em;
+        box-shadow: 0 0 0 black inset;
+    }
+    
+    .com-event-showcase:hover .show-cover:hover+.show-info {
+        padding-left: 26em;
     }
 }
 

@@ -98,13 +98,16 @@ define([ "com/util" ], function (util) {
 			<div class='ui basic modal com-upload'> \
 				<div class='exdim'></div> \
 				<form class='ui form' enctype='multipart/form-data'> \
-					<div class='field preview-cont' style='display: none;'> \
+					<div class='field preview-cont'> \
 						<img class='ui medium rounded bordered preview'></img> \
 						<div class='ui labeled input upload-arg' style='margin-top: 0.5rem;'> \
 							<div class='ui label'></div> \
 							<input type='text'> \
 						</div> \
 						<input type='text' style='display: none;'> \
+						<div class='drop-area'> \
+							Drag & drop the image \
+						</div> \
 					</div> \
 					<div class='ui buttons'> \
 						<button type='button' class='ui icon button exit-btn'> \
@@ -139,6 +142,48 @@ define([ "com/util" ], function (util) {
 		} else {
 			argfield.remove();
 		}
+		
+		main.find(".drop-area").click(function () {
+			main.find(".file").click();
+		});
+		
+		main.on({
+			dragleave: function (e) {
+				e.preventDefault();
+			},
+			
+			drop: function (e) {
+				e.preventDefault();
+			},
+			
+			dragenter: function (e) {
+				e.preventDefault();
+			},
+			
+			dragover: function (e) {
+				e.preventDefault();
+			}
+		});
+		
+		function dropEvent(e) {
+			e = e.originalEvent;
+			
+			if (e.dataTransfer && e.dataTransfer.files) {
+				var files = e.dataTransfer.files;
+				
+				if (files.length) {
+					main.find(".file")[0].files = files;
+					// main.find(".file").change();
+				} else {
+					util.emsg("no file selected");
+				}
+			} else {
+				util.emsg("drag & drop not supported");
+			}
+		}
+		
+		main.find(".preview-cont").on("drop", dropEvent);
+		// main.find(".drop-area").on("drop", dropEvent);
 
 		main.find(".select-btn").click(function () {
 			main.find(".file").click();
@@ -185,7 +230,8 @@ define([ "com/util" ], function (util) {
 		function showPreview(disable_crop, data_url) {
 			if (!selected && !data_url) return;
 
-			main.find(".preview-cont").css("display", "");
+			// main.find(".preview-cont").css("display", "");
+			main.addClass("loaded");
 			
 			if (has_init)
 				main.find(".preview").cropper("destroy");
