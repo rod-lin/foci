@@ -446,7 +446,8 @@ define([
 				}
 			});
 			
-			ntview.refresh();
+			if (env.session())
+				ntview.refresh();
 		})();
 
 		// init filter tag

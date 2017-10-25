@@ -313,6 +313,8 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 		vercode: vercode,
 		onlyAdmin: onlyAdmin,
 		session: function (cb) {
+			// throw new Error("aaa");
+			
 			if (!env.session()) {
 				this.init(cb);
 			} else {
