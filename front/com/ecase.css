@@ -141,7 +141,6 @@
     
     .com-event-showcase:hover .show-cover {
         width: 6em;
-        box-shadow: 0 0 6em black inset;
     }
     
     .com-event-showcase:hover .show-info {    
@@ -150,7 +149,6 @@
     
     .com-event-showcase:hover .show-cover:hover {
         width: 24em;
-        box-shadow: 0 0 0 black inset;
     }
     
     .com-event-showcase:hover .show-cover:hover+.show-info {
