@@ -364,9 +364,10 @@ define([
 			});
 
 			prog.show();
+			
 			var incprog = setInterval(function () {
-				prog.sinc();
-			}, 300);
+				prog.fakeinc();
+			}, 1000);
 
 			setDom(main, info, $.extend({}, config, {
 				onCoverLoad: function () {

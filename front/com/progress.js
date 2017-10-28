@@ -37,6 +37,21 @@ define([ "com/util" ], function (util) {
 
 		var ret = {};
 
+		ret.fakeinc = function (max, k, i) {
+			k = k || 10000;
+			i = i || 0.25;
+			max = max || 85;
+
+			var val = main.progress("get value");
+
+			var curx = (k * max) / (max - val);
+			curx = curx + i;
+			
+			var newx = (max * curx) / (k + curx);
+			
+			main.progress("set progress", newx);
+		};
+
 		ret.inc = function () {
 			var val = main.progress("get value");
 			var inc = util.random(10, 30);

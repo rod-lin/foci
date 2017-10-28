@@ -301,49 +301,53 @@ define([
                 jumpToDom(main.find(".send-box"));
             });
             
-            comm.find(".edit-btn").click(function () {
-                if (comm.find(".msg-cont").hasClass("editing")) {
-                    comm.find(".edit-btn").addClass("loading");
-                    
-                    login.session(function (session) {
-                        var val = editor.val();
+            if (env.session() && env.session().getUUID() == parsed.creator) {
+                comm.find(".edit-btn").click(function () {
+                    if (comm.find(".msg-cont").hasClass("editing")) {
+                        comm.find(".edit-btn").addClass("loading");
                         
-                        if (session) foci.encop(session, {
-                                int: "forumi",
-                                action: "editcomment",
-                                
-                                cuid: cuid,
-                                puid: puid,
-                                comment: comment_id,
-                                
-                                msg: val
-                            }, function (suc, dat) {
-                                comm.find(".edit-btn").removeClass("loading");
-                                
-                                if (suc) {
-                                    comm.find(".msg-cont").html(parsed.msg = val);
-                                    renderJumpTag(comm.find(".msg-cont"));
+                        login.session(function (session) {
+                            var val = editor.val();
+                            
+                            if (session) foci.encop(session, {
+                                    int: "forumi",
+                                    action: "editcomment",
                                     
-                                    comm.find(".edit-btn .icon").toggleClass("edit check");
-                                    comm.find(".msg-cont").removeClass("editing")
-                                } else {
-                                    util.emsg(dat);
-                                }
-                            });
-                        else comm.find(".edit-btn").removeClass("loading");
-                    });
+                                    cuid: cuid,
+                                    puid: puid,
+                                    comment: comment_id,
+                                    
+                                    msg: val
+                                }, function (suc, dat) {
+                                    comm.find(".edit-btn").removeClass("loading");
+                                    
+                                    if (suc) {
+                                        comm.find(".msg-cont").html(parsed.msg = val);
+                                        renderJumpTag(comm.find(".msg-cont"));
+                                        
+                                        comm.find(".edit-btn .icon").toggleClass("edit check");
+                                        comm.find(".msg-cont").removeClass("editing")
+                                    } else {
+                                        util.emsg(dat);
+                                    }
+                                });
+                            else comm.find(".edit-btn").removeClass("loading");
+                        });
+                        
+                        // comm.find(".edit-btn").removeClass("loading");
+                        // comm.find(".edit-btn .icon").toggleClass("edit check");
+                    } else {
+                        comm.find(".msg-cont").html("").addClass("editing");
+                        editor = marki.editor(comm.find(".msg-cont"));
+                        
+                        editor.val(parsed.msg);
                     
-                    // comm.find(".edit-btn").removeClass("loading");
-                    // comm.find(".edit-btn .icon").toggleClass("edit check");
-                } else {
-                    comm.find(".msg-cont").html("").addClass("editing");
-                    editor = marki.editor(comm.find(".msg-cont"));
-                    
-                    editor.val(parsed.msg);
-                
-                    comm.find(".edit-btn .icon").toggleClass("edit check");
-                }
-            });
+                        comm.find(".edit-btn .icon").toggleClass("edit check");
+                    }
+                });
+            } else {
+                comm.find(".edit-btn").remove();
+            }
             
             comm.find(".avatar").click(function () {
                 util.jump("#profile/" + parsed.creator);

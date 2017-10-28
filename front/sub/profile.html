@@ -2275,7 +2275,7 @@
 										state: foci.evstat.review
 									}, function (suc, dat) {
 										if (suc) {
-											if (dat.org.indexOf(uuid) != -1) {
+											if (dat.org.indexOf(uuid) != -1 || session.isAdmin()) {
 												loadDraft(dat, function () {
 													if (page_arg[1]) {
 														setDraftStep(page_arg[1]);
@@ -2284,6 +2284,7 @@
 
 												tb.to("new");
 											} else {
+												util.emsg("not allowed to edit this event");
 												util.jump("#profile");
 											}
 										} else {

@@ -128,6 +128,19 @@ trace "Configuring nginx..."
 cat > /etc/nginx/conf.d/foci.conf << END
 server {
     listen 80;
+    server_name foci.me.w.kunlunar.com;
+    location / {
+        proxy_pass http://127.0.0.1:3138;
+        client_max_body_size 4m;
+
+        proxy_set_header Host \$http_host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    }
+}
+
+server {
+    listen 80;
     server_name foci.me;
     location / {
         proxy_pass http://127.0.0.1:3138;

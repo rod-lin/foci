@@ -50,7 +50,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 		function load(name, cb, args) {
 			var next = function (text) {
 				// var loader = $("<div class='ui active loader'></div>");
-				prog.inc();
+				prog.sinc();
 
 				var show = function (suc) {
 					setTimeout(function () {
@@ -75,10 +75,10 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 
 				cont.scrollTop(0);
 
-				prog.inc();
+				prog.sinc();
 
 				part.ready(function () {
-					prog.inc();
+					prog.sinc();
 					if (window.init) {
 						window.init($(part[0]), args, show, cont, ret.jump, config.penv);
 					}
@@ -91,8 +91,18 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 			if (cache.hasOwnProperty(name)) {
 				next(cache[name]);
 			} else {
+				var proc = setInterval(function () {
+					prog.fakeinc(50);
+				}, 500);
+				
 				var url = config.base + "/" + name + ".html";
-				fetch(url, next, function () {
+				fetch(url, function (text) {
+					clearInterval(proc);
+					
+					next(text);
+				}, function () {
+					clearInterval(proc);
+					
 					if (cb) cb(false, true /* not found */);
 					prog.err();
 				});
