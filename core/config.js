@@ -207,7 +207,7 @@ var conf = module.exports = {
 	db: {
 		url: "127.0.0.1",
 		port: 3137,
-		name: "foci-main",
+		name: "foci-main-shot",
 		opt: { auto_reconnect: true },
 		col: {
 			user: "user",

@@ -10,7 +10,7 @@ var config = require("./config");
 var fs = require("fs");
 var pump = require("pump");
 var crypto = require("crypto");
-// var request = require("request-promise");
+var request = require("request-promise");
 
 var alioss = require("ali-oss").Wrapper; // use promise
 
@@ -197,9 +197,9 @@ exports.getFile = async (chsum, tmp) => {
 
 	var file = await findFile(chsum);
 
-	if (!file.cached || !oss_client) {
+	if (file.force_local || !file.cached || !oss_client) {
 		if (await existsAsync(dir(chsum, tmp))) { // has local file
-			if (!tmp) {
+			if (!tmp && !file.force_local) {
 				tick.awrap(async () => {
 					await exports.cacheOne(chsum);
 				})();
@@ -249,7 +249,38 @@ exports.cacheFull = async () => {
 	var files = await col.find({ cached: { $not: { $eq: true } } }).toArray();
 	
 	for (var i = 0; i < files.length; i++) {
-		exports.cacheOne(files[i].chsum);
+		if (!files[i].force_local)
+			await exports.cacheOne(files[i].chsum);
+	}
+};
+
+// cache back to local
+exports.cacheToLocal = async (chsum) => {
+	var file = await findFile(chsum);
+
+	if (!await existsAsync(dir(chsum))) {
+		// cache back
+		if (oss_client) {
+			var url = oss_client.signatureUrl(chsum);
+		
+			var res = await request.head(url);
+			
+			// download
+			await request(url).pipe(fs.createWriteStream(dir(chsum, false)));
+
+			// set force local flag
+			var col = await db.col("file");
+			await col.updateOne({ chsum: chsum }, { $set: { force_local: true } });
+		}
+	}
+};
+
+exports.cacheToLocalFull = async () => {
+	var col = await db.col("file");
+	var files = await col.find({}).toArray();
+	
+	for (var i = 0; i < files.length; i++) {
+		await exports.cacheToLocal(files[i].chsum);
 	}
 };
 

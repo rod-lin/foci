@@ -237,7 +237,7 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 	function slide(cont, slides, config) {
 		cont = $(cont);
 		config = $.extend({
-			interval: 4000,
+			interval: 3000,
 			height: "10rem",
 			setting: false,
 			setting_cb: null
