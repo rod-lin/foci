@@ -10,6 +10,10 @@ var conf = module.exports = {
 		certif: "ssl/cert.crt"
 	},
 
+	mcom: {
+		expire: 0, // in sec
+	},
+
 	debug: false,
 
 	file: {

@@ -14,6 +14,7 @@ var file = require("./file");
 var dict = require("./dict");
 var smsg = require("./smsg");
 var mail = require("./mail");
+var mcom = require("./mcom");
 var event = require("./event");
 var cover = require("./cover");
 var config = require("./config");
@@ -64,6 +65,21 @@ exports.dict = util.route(async env => {
 		throw new err.Exc("$core.dict_not_exist(" + args.lang + ")");
 
 	env.qsuc(dict[args.lang]);
+});
+
+var _mcom = {};
+
+// ?coms="a,b,c,d,e"
+_mcom.merge = util.route(async env => {
+	var args = util.checkArg(env.query, { "coms": "string" });
+	var coms = args.coms.split(",");
+
+	env.setExpire(config.mcom.expire);
+
+	var res = await mcom.merge(coms);
+
+	env.setExpire(config.mcom.expire, res.modified);
+	env.raw(res.batch);
 });
 
 var _cover = {};
@@ -429,6 +445,7 @@ _file.download = util.route(async env => {
 	}
 });
 
+exports.mcom = _mcom;
 exports.cover = _cover;
 exports.alipay = _alipay;
 exports.smsg = _smsg;

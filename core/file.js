@@ -47,7 +47,7 @@ if (config.oss && config.oss.type == "ali") {
 	})();
 }
 
-var readFileAsync = path => {
+var readFileAsync = exports.readFileAsync = path => {
 	return new Promise((res, rej) => {
 		fs.readFile(path, (err, cont) => {
 			if (err) rej(err);

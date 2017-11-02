@@ -38,6 +38,8 @@ app.get("/dict", int.dict);
 
 // app.get("/alipay/test", int.alipay.test);
 
+app.get("/mcom/merge", int.mcom.merge);
+
 app.get("/cover/pboard", int.cover.pboard);
 
 app.get("/smsg/vercode", int.smsg.vercode);

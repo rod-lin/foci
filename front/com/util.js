@@ -618,5 +618,15 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		util.clearCachedInfo("event", euid);
 	};
 
+	util.waitFor = function (obj, cb) {
+		var proc = setInterval(function () {
+			if (obj()) {
+				cb();
+			}
+
+			clearInterval(proc);
+		}, 1000);
+	};
+
 	return util;
 });

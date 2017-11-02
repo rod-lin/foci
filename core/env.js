@@ -44,6 +44,15 @@ var Env = function (req, res) {
 		req.connection.setTimeout(time);
 	};
 
+	this.setExpire = (time, modified) => { // time in sec
+		if (modified) {
+			res.set("Last-Modified", modified.toUTCString());
+		}
+
+		res.set("Expires", (new Date(new Date() + time * 1000)).toUTCString());
+		res.set("Cache-Control", "max-age=" + time);
+	};
+
 	if (req.method == "POST") {
 		this.init = cb => {
 			var form = new multiparty.Form({ maxFilesSize: config.file.max_size });

@@ -57,6 +57,8 @@
 
 		<script src="https://api.map.baidu.com/getscript?v=2.0&ak=B4lBjPwv47t4CNlFiyY4siyy&s=1"></script>
 
+		<script src="/mcom/merge?coms=parts,pages,tbar,lang,dragi,xfilt,waterfall,util,avatar,env,upload,login,map,tagbox,rating,progress,sortby,editable,tip,lang,club"></script>
+
 		<style>
 			body {
 				font-size: 14px;
@@ -126,27 +128,17 @@
 			require([
 				"com/tbar", "com/event", "com/env",
 				"com/util", "com/pages", "com/parts",
-				"com/lang", "com/formi", "com/pm",
-				"com/map", "lib/fastclick", "com/dragi",
-				"com/club"
-			], function (tbar, event, env, util, pages, parts, lang, formi, pm, map, fastclick, dragi, club) {
+				"com/lang", "com/dragi"
+			], function (tbar, event, env, util, pages, parts, lang, dragi) {
 				// fastclick.attach(document.body);
 
 				lang.loadDict("english", util, function () {
 					lang.update(document.body);
 				});
 
-				// map.search();
-				// uh.modal();
-
-				// var cover = [ "img/cover1.jpg", "img/cover2.jpg", "img/cover3.jpg" ].choose();
-				// $("#cover").css("background-image", "url(" + cover + ")");
-				
 				// init dragi platform
 				if (!foci.nested) {
 					foci.platform = dragi.platform("#platform");
-					// dragi.window(foci.platform);
-					// $("<div style='width: 500px; height: 500px; background: black'></div>").dragi();
 				} else {
 					foci.platform = top.foci.platform;
 				}
@@ -154,16 +146,11 @@
 				foci.use_dragi = true && !util.isMobile();
 
 				env.init(function () {
-					// map.init();
-					// console.log(lang.expand("hola"));
-					
-					// club.popview({ use_dragi: true });
 
 					var bar = tbar.init();
 					
 					if (foci.nested) {
 						bar.hide();
-						// $("body").removeClass("padding-tbar");
 					}
 
 					bar.menu(function () {
@@ -173,10 +160,6 @@
 					bar.profile(function () {
 						util.jump("#profile");
 					});
-
-					// util.scrollTop("#search", function () {
-					// 	bar.removeShadow();
-					// });
 
 					util.scroll("#search, #part", function (n) {
 						if (n > 0) {
@@ -196,29 +179,7 @@
 								bar.setStyle("shadowy");
 							}
 						},
-
-						// "cover": {
-						// 	page: "#cover",
-						// 	onShow: function () {
-						// 		bar.setTitle("Foci");
-						// 		bar.setStyle("light-simple");
-						// 	},
-
-						// 	onLoad: function (show) {
-						// 		if (cover_loaded) {
-						// 			show();
-						// 		} else {
-						// 			$("#cover").off("ready").ready(function () {
-						// 				setTimeout(function () {
-						// 					$("#main-loader").removeClass("active");
-						// 					show();
-						// 					cover_loaded = true;
-						// 				}, 2000);
-						// 			});
-						// 		}
-						// 	}
-						// },
-
+						
 						"part": {
 							page: "#part",
 							onShow: function () {

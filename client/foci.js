@@ -460,7 +460,11 @@ window.foci = {};
 				href: path + (foci.version ? "?v=" + foci.version : "")
 			})
 			.appendTo("head");
-	}
+	};
+
+	foci.loadCSSPlain = function (sheet) {
+		$("head").append("<style>" + sheet + "</style>");
+	};
 
 	foci.domready = require("domready");
 	
