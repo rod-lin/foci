@@ -4,6 +4,7 @@ var fs = require("fs");
 var http = require("http");
 var https = require("https");
 var express = require("express");
+var compression = require("compression");
 
 var db = require("./core/db");
 var err = require("./core/err");
@@ -31,7 +32,7 @@ app.get("/test", util.route(async env => {
 
 */
 
-app.use(express.compress());
+app.use(compression());
 
 /* official api */
 app.get("/auth", int.auth);
