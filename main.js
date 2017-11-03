@@ -32,7 +32,9 @@ app.get("/test", util.route(async env => {
 
 */
 
-app.use(compression());
+app.use(compression({
+	level: 9
+}));
 
 /* official api */
 app.get("/auth", int.auth);
