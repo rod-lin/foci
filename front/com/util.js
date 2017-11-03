@@ -336,14 +336,18 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 	};
 
 	util.bgimg = function (obj, url, load) {
+		obj = $(obj);
+
 		if (url) {
+			obj.css("background-image", "url('" + url + "')");
+
 			util.img(url, function (img) {
-				$(obj).css("background-image", "url('" + url + "')").ready(function () {
+				obj.ready(function () {
 					if (load) load(img);
 				});
 			});
 		} else {
-			$(obj).css("background-image", "");
+			obj.css("background-image", "");
 			if (load) load();
 		}
 	};
