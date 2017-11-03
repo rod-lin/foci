@@ -45,26 +45,4 @@ window.vcent = {};
 			com.css("top", "");
 		}
 	};
-
-	// vcent.update();
-	// $(window)
-	// 	.on("load", vcent.update)
-	// 	.on("resize", vcent.update);
-	// 
-	// setInterval(vcent.update, 50);
-
-	// var times = 0;
-	// var init = 50;
-
-	// var update = function () {
-	// 	times++;
-	// 	vcent.update();
-
-	// 	if (times * init > 5000) {
-	// 		clearInterval(proc);
-	// 		proc = setInterval(vcent.update, 5000);
-	// 	}
-	// };
-
-	// var proc = setInterval(update, init);
 })(jQuery);

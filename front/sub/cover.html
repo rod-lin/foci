@@ -66,6 +66,8 @@
 	}
 
 	.sub-cover .show-board {
+		height: auto;
+
 		margin-bottom: 0.5rem;
 		border-radius: 0 0 3px 3px;
 		border: 1px solid rgba(0, 0, 0, 0.08);
@@ -298,7 +300,7 @@
 					function initPBoard(main_config, sub_config) {
 						// pboard.init(show_board, parsed.slice(0, 4), main_config);
 						pboard.slide(show_board, parsed.slice(0, 4), $.extend(main_config, {
-							height: "20rem",
+							height: "24rem",
 							interval: 5000
 						}));
 
