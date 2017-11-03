@@ -554,11 +554,19 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 		var ret = {};
 		var has_view_all = false;
 
+		var refresh_lock = false;
+
 		ret.refresh = function (cb) {
+			if (refresh_lock) return;
+			refresh_lock = true;
+
 			main.find(".msg-box-cont").html("");
 
 			login.session(function (session) {
-				if (!session) return;
+				if (!session) {
+					refresh_lock = false;
+					return;
+				}
 
 				foci.encop(session, {
 					int: "pm",
@@ -598,6 +606,8 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 					}
 
 					if (cb) cb(suc && dat.length);
+
+					refresh_lock = false;
 				});
 			});
 		};
