@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --harmony main.js"
+    "start": "node --harmony main.js",
+    "product": "NODE_ENV=production node --harmony main.js"
   },
   "repository": {
     "type": "git",
