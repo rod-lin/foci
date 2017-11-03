@@ -31,6 +31,8 @@ app.get("/test", util.route(async env => {
 
 */
 
+app.use(express.compress());
+
 /* official api */
 app.get("/auth", int.auth);
 app.get("/favtag", int.favtag);
