@@ -11,7 +11,7 @@ var conf = module.exports = {
 	},
 
 	mcom: {
-		expire: 0, // in sec
+		expire: 60 * 60 * 24, // in sec
 	},
 
 	debug: false,
