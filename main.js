@@ -111,8 +111,12 @@ app.get("/user/test/echo", util.route(async env => {
 	env.qsuc(query);
 }));
 
-app.use("/", express.static("front"));
-app.use("/semantic", express.static("semantic/dist"));
+var option = {
+	maxAge: (60 * 60 * 24).toString(),
+};
+
+app.use("/", express.static("front", option));
+app.use("/semantic", express.static("semantic/dist", option));
 
 app.use("/main", express.static("front/main.html"));
 
