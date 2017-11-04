@@ -257,7 +257,7 @@ var conf = module.exports = {
 
 	mail: {
 		service: "QQex",
-		email: "helper@foci.me",
+		email: "helper@m.foci.me",
 		passwd_enc: true,
 		passwd: "U2FsdGVkX1+5WKK5xcMya2zJvSPDnFOWn+YOW6Qwn+0="
 	},
