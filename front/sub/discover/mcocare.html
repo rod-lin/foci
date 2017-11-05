@@ -18,7 +18,7 @@
         <h2>McOriginal Care 项目申请表</h2>
         <div class="subtitle no-review">
             Fill out the following form to apply for McOriginal Care<br>
-            <b>The draft will be saved every 30 seconds</b>
+            <b>The draft will be saved every 60 seconds</b>
         </div>
         <form class="ui form main-form" style="margin-top: 2rem;">
             <h3 class="ui top attached block header">社团基本信息</h3>
@@ -113,7 +113,7 @@
 
                     <div class="ui field">
                         <label>项目拟解决的（社会）问题及对需求问题的把握</label>
-                        <textarea class="value-field" name="q4"></textarea>
+                        <textarea class="value-field" name="q4" placeholder="例如：此项目希望解决的社会问题为大众对于自闭症的误区，及认为所有自闭症患者都没有生活的能力。"></textarea>
                     </div>
 
                     <div class="ui field">
@@ -123,7 +123,7 @@
 
                     <div class="ui field">
                         <label>项目现状</label>
-                        <textarea class="value-field" name="q6" placeholder="例如：项目从x年x月开始筹备，并且在x月份成功举办。三个社团约10人左右负责了本项目的筹备。x月项目的售卖数量大约为200个马克杯，售卖所得利润为2000元，并已捐赠给某机构。"></textarea>
+                        <textarea class="value-field" name="q6" placeholder="例如：项目从x年x月开始筹备，并且在x月份成功举办。约10人左右负责了本项目的筹备。x月项目的售卖数量大约为200个马克杯，售卖所得利润为2000元，并已捐赠给某机构。"></textarea>
                     </div>
 
                     <div class="ui field">
@@ -138,12 +138,12 @@
 
                     <div class="ui field">
                         <label>近期的主要挑战（待解决问题）和需要McOriginal care提供的帮助（100字以上）</label>
-                        <textarea class="value-field" name="q9" placeholder="例如：场地／市场
-1．
-2.
+                        <textarea class="value-field" name="q9" placeholder="例如：
+1．场地
+2. 市场
 ......
 
-例如需要Mcoringinal帮助招募人员，协调场地时间或者策划活动等）"></textarea>
+例如需要Mcoringinal帮助招募人员，协调场地时间或者策划活动等"></textarea>
                     </div>
 
                     <div class="ui field">
@@ -300,7 +300,7 @@
                     var data = valfield.extract(main.find(".main-form"));
                     foci.setLocal("discover.mcocare.form", data);
                     util.emsg("form draft saved", "success");
-                }, 30000);
+                }, 60000);
 
                 exit(function () {
                     clearInterval(autosave);
