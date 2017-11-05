@@ -35,7 +35,10 @@ app.get("/test", util.route(async env => {
 
 */
 
-app.use(bodyparser.urlencoded({ extended:true }));
+app.use(bodyparser.urlencoded({
+	limit: "5mb",
+	extended: true
+}));
 
 app.use(compression({ level: 9 }));
 
