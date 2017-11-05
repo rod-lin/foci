@@ -214,7 +214,7 @@ define([
         function reloadUtil() {
             wf.clear();
 
-            foci.get("/cutil/all", { show_disabled: true }, function (suc, dat) {
+            foci.get("/cutil/all", { show_disabled: config.editable }, function (suc, dat) {
                 if (suc) {
                     for (var i = 0; i < dat.length; i++) {
                         wf.add(genBoard(dat[i]));
