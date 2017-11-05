@@ -42,7 +42,7 @@ var cache = {
 exports.merge = async (coms) => {
     var query = Array.from(new Set(coms)).sort().join(",");
 
-    if (cache[query]) {
+    if (!config.mcom.no_cache && cache[query]) {
         var entry = cache[query];
 
         if (entry.ctime + config.mcom.expire > new Date()) {
@@ -66,10 +66,22 @@ exports.merge = async (coms) => {
         fromString: true
     }).code;
 
-    cache[query] = {
-        ctime: new Date(),
-        batch: batch
-    };
+    if (!config.mcom.no_cache) {
+        cache[query] = {
+            ctime: new Date(),
+            batch: batch
+        };
+    }
 
     return { batch: batch, modified: undefined };
+};
+
+exports.clearCache = () => {
+    cache = {};
+};
+
+exports.disableCache = () => {
+    exports.clearCache();
+    config.mcom.no_cache = true;
+    config.mcom.expire = 0;
 };

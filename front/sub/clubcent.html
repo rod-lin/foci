@@ -29,7 +29,7 @@
                         <a class="item item-me only-member"><i class="remove bookmark icon"></i>Me</a>
                         <a class="item item-forum only-member"><i class="talk outline icon"></i>Forum</a>
                         <a class="item item-member"><i class="user outline icon"></i>Members</a>
-                        <a class="item item-util"><i class="idea outline icon"></i>Utility</a>
+                        <a class="item item-discover only-admin"><i class="idea outline icon"></i>Discover</a>
                         <a class="item item-setting only-member"><i class="setting icon"></i>Settings</a>
                     </div>
                 </div>
@@ -54,8 +54,8 @@
             <!-- members -->
             <div class="tab member-tab"></div>
             
-            <!-- util -->
-            <div class="tab util-tab"></div>
+            <!-- discover -->
+            <div class="tab discover-tab"></div>
             
             <!-- settings -->
             <div class="tab setting-tab"></div>
@@ -280,8 +280,8 @@
         require([
             "com/env", "com/util", "com/login",
             "com/tab", "com/club", "com/event",
-            "com/lang", "com/forumi"
-        ], function (env, util, login, tab, club, event, lang, forumi) {
+            "com/lang", "com/forumi", "com/cutil"
+        ], function (env, util, login, tab, club, event, lang, forumi, cutil) {
             if (!args || !args.length) {
 				util.emsg("require one argument");
 				return;
@@ -380,7 +380,37 @@
 
                         cont: penv.part,
                         no_more_prompt: "no more events"
-                    }
+                    },
+
+                    extra_util_btn: [
+                        {
+                            cont: "New event",
+                            onClick: function (butil) {
+                                butil.setLoading(true);
+
+                                login.session(function (session) {
+                                    if (session) {
+                                        foci.encop(session, {
+                                            int: "event",
+                                            action: "new",
+
+                                            org_club: [ cuid ]
+                                        }, function (suc, dat) {
+                                            butil.setLoading(false);
+
+                                            if (suc) {
+                                                util.jump("#profile//new/" + dat.euid);
+                                            } else {
+                                                util.emsg(dat);
+                                            }
+                                        });
+                                    } else {
+                                        butil.setLoading(false);
+                                    }
+                                });
+                            }
+                        }
+                    ]
                 });
                 
                 main.find(".org-event-tab").on("tab:show", function () {
@@ -438,6 +468,7 @@
                 main.find(".item-event").attr("href", "#clubcent/" + cuid + "/event");
                 main.find(".item-forum").attr("href", "#clubcent/" + cuid + "/forum");
                 main.find(".item-member").attr("href", "#clubcent/" + cuid + "/member");
+                main.find(".item-discover").attr("href", "#clubcent/" + cuid + "/discover");
                 main.find(".item-setting").attr("href", "#setting/club/" + cuid);
                 
                 function applyArgs(args) {
@@ -468,7 +499,6 @@
                     applyArgs(newarg);
                 });
                 
-                
                 if (env.session()) {
                     foci.encop(env.session(), {
                         int: "club",
@@ -495,6 +525,12 @@
                         applyArgs(args);
                     });
                 } else applyArgs(args);
+
+                var discover = cutil.init(main.find(".discover-tab"), {});
+
+                main.find(".discover-tab").on("tab:show", function () {
+                    discover.updateWF();
+                });
             }
             
             var tbar = env.get("tbar");

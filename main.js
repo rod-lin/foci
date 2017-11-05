@@ -14,6 +14,7 @@ var user = require("./core/user");
 var file = require("./core/file");
 var tick = require("./core/tick");
 var util = require("./core/util");
+var mcom = require("./core/mcom");
 var event = require("./core/event");
 var notice = require("./core/notice");
 var config = require("./core/config");
@@ -163,8 +164,14 @@ Object.assign(require("repl").start("foci> ").context, {
 	file: require("./core/file"),
 	util: require("./core/util"),
 	watchdog: require("./core/watchdog"),
+	config: require("./core/config"),
+
 	exit: function () {
 		// if (util.ask("Are you sure to exit? [N/y]: ").toLowerCase() == "y")
 		process.exit();
+	},
+
+	nocache: function () {
+		mcom.disableCache();
 	}
 });

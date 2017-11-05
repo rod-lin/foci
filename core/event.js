@@ -24,8 +24,10 @@ var evstat = {
 
 exports.evstat = evstat;
 
+var d = (val, def) => val === undefined ? def : val;
+
 // event
-var Event = function (euid, owner /* uuid */) {
+var Event = function (euid, owner /* uuid */, dat) {
 	if (owner === undefined) {
 		this.extend(euid); // extend the first argument
 		return;
@@ -36,7 +38,7 @@ var Event = function (euid, owner /* uuid */) {
 	this.euid = euid;
 
 	this.org = [ owner ];
-	this.org_club = []; // organizing clubs
+	this.org_club = d(dat.org_club, []); // organizing clubs
 	this.state = evstat.draft; // draft state
 	// 1 for published
 	// 2 for terminated
@@ -46,11 +48,11 @@ var Event = function (euid, owner /* uuid */) {
 	// time created
 	this.created = new Date();
 
-	this.logo = null;
-	this.cover = null;
+	this.logo = d(dat.logo, null);
+	this.cover = d(dat.cover, null);
 
-	this.title = "";
-	this.descr = "";
+	this.title = d(dat.title, "");
+	this.descr = d(dat.descr, "");
 
 	this.detail = null;
 
@@ -571,9 +573,9 @@ exports.euid = async (euid, state) => {
 	return new Event(found);
 };
 
-exports.newEvent = async (uuid) => {
+exports.newEvent = async (uuid, info) => {
 	var euid = await uid.genUID("euid");
-	var nev = new Event(euid, uuid);
+	var nev = new Event(euid, uuid, info);
 	var col = await db.col("event");
 
 	await col.insertOne(nev);

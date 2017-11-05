@@ -310,7 +310,7 @@ define([
 
         ret.showHelp = function (cb) {
             if (config.use_rich) {
-                cb();
+                if (cb) cb();
                 return;
             }
             

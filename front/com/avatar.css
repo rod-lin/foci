@@ -4,6 +4,10 @@
 	position: relative;
 }
 
+.com-avatar:last-child {
+	margin-right: 0 !important;
+}
+
 .com-avatar .avatar {
 	display: inline-block;
 	

@@ -7,9 +7,12 @@ define([ "com/util", "com/lang" ], function (util, lang) {
 
 	function init(cont, cond, config) {
 		cont = $(cont);
-		config = $.extend({}, config);
+		config = $.extend({
+			extra_util_btn: []
+		}, config);
 
-		var main = $("<div class='com-sortby'></div>");
+		var main = $("<div class='com-sortby'><span class='cond-set'></span></div>");
+		var cond_set = main.find(".cond-set");
 
 		var sortby = {};
 
@@ -45,10 +48,46 @@ define([ "com/util", "com/lang" ], function (util, lang) {
 			return cond;
 		}
 
+		// conf { cont, onClick(util) }
+		function appendBtn(conf) {
+			var btn = $("<div class='btn'> \
+				<span class='cont'></span> \
+				<div class='ui tiny loader active'></div> \
+			</div>");
+			
+			var cont = btn.find(".cont");
+
+			cont.html(conf.cont);
+
+			var btnutil = {};
+
+			btnutil.setLoading = function (loading) {
+				if (loading) {
+					btn.addClass("loading");
+				} else {
+					btn.removeClass("loading");
+				}
+			};
+
+			btn.click(function () {
+				if (conf.onClick) {
+					conf.onClick(btnutil);
+				}
+			});
+
+			main.append(btn);
+
+			return btn;
+		}
+
 		for (var k in cond) {
 			if (cond.hasOwnProperty(k)) {
-				main.append(genCond(k, cond[k]));
+				cond_set.append(genCond(k, cond[k]));
 			}
+		}
+
+		for (var i = 0; i < config.extra_util_btn.length; i++) {
+			appendBtn(config.extra_util_btn[i]);
 		}
 		
 		// TODO: temp fix!!!

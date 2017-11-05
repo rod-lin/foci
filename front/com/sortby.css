@@ -9,6 +9,7 @@
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.04);
 }
 
+.com-sortby .btn,
 .com-sortby .cond {
 	display: inline-block;
 	padding: 0.6rem 0.7rem;
@@ -18,7 +19,7 @@
 	cursor: pointer;
 
 	border: 1px solid rgba(0, 0, 0, 0.08);
-	border-right: none;
+	border-right: 0;
 
 	transition: background 0.2s;
 }
@@ -32,14 +33,37 @@
 	border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+.com-sortby .btn:hover,
 .com-sortby .cond:hover {
 	background: rgb(250, 250, 250);
 }
 
+.com-sortby .btn:active,
 .com-sortby .cond:active {
 	background: rgb(245, 245, 245);
 }
 
+.com-sortby .btn:selected,
 .com-sortby .cond.selected {
 	background: rgb(250, 250, 250);
+}
+
+.com-sortby .btn {
+	position: relative;
+	border-radius: 4px;
+	margin-left: 1em;
+
+	border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-sortby .btn .loader {
+	display: none;
+}
+
+.com-sortby .btn.loading .loader {
+	display: block;
+}
+
+.com-sortby .btn.loading .cont {
+	visibility: hidden;
 }

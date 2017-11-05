@@ -596,6 +596,7 @@ encop.event = async (env, usr, query, next, has_cap) => {
 			return (await event.euid(args.euid, args.state)).getInfo();
 		
 		case "new":
+			var info = util.checkArg(query, event.Event.format.info, true);
 			var uuid = usr.getUUID();
 			
 			if (!await user.isAdmin(uuid)) {
@@ -610,7 +611,7 @@ encop.event = async (env, usr, query, next, has_cap) => {
 				}
 			}
 		
-			var ev = await event.newEvent(uuid);
+			var ev = await event.newEvent(uuid, info);
 			
 			return ev.getInfo();
 

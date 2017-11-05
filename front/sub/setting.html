@@ -203,9 +203,7 @@
 
 <script>
 	function init(main, args, show, cont, exit) {
-		require([
-			"com/util"
-		], function (util) {
+		require([ "com/util" ], function (util) {
             if (!args.length) {
                 util.emsg("no enough argument");
                 show(false);

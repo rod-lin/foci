@@ -290,6 +290,10 @@ define([
 
 			gap: 20,
 
+			// extra utillity buttons on the top bar(beside the sortby bar)
+			// format see sortby.js
+			extra_util_btn: [],
+
 			// fetch: {
 			//     fetch: function (skip, cb(suc, dat)),
 			//     cont: the scroll container,
@@ -315,7 +319,9 @@ define([
 			{
 				onClick: function (cond) {
 					mod.refetch(cond);
-				}
+				},
+
+				extra_util_btn: config.extra_util_btn
 			});
 
 		main.ready(function () {

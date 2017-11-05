@@ -1,0 +1,50 @@
+<div class="sub-discover">
+
+</div>
+
+<style>
+
+</style>
+
+<script>
+    function init(main, args, show, cont, exit) {
+        require([ "com/util" ], function (util) {
+            function fetch(name, suc, err) {
+                $.ajax({
+        			type: "GET",
+        			url: "/sub/discover/" + name + ".html",
+        			data: { v: (new Date()).getTime() /* no cache */ },
+        			success: function (dat) { suc(dat); },
+        			error: function (req, exc) {
+        				util.emsg("failed to get setting '" + name + "'");
+        				err();
+        			}
+        		});
+            }
+
+            if (!args.length) {
+                util.emsg("no enough argument");
+                show(false);
+                return;
+            }
+            
+            var discover_name = args[0];
+
+            fetch(discover_name, function (dat) {
+                var cont = $(dat);
+
+                main.append(cont);
+                
+                cont.ready(function () {
+                    if (!window.initCUtil) {
+                        util.emsg("invalid utility page");
+                        show(false);
+                        return;
+                    }
+                    
+                    window.initCUtil(main, args.slice(1), show);
+                });
+            }, function () { show(false); });
+        });
+    }
+</script>

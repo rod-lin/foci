@@ -201,7 +201,7 @@ window.foci = {};
 			async: false,
 			url: url,
 			dataType: "json",
-			data: data
+			data: $.extend({}, { v: (new Date()).getTime() }, data)
 		}, ext)).responseText;
 
 		if (!res) return null;
@@ -217,7 +217,7 @@ window.foci = {};
 			type: method || "GET",
 			url: url,
 			dataType: "json",
-			data: data,
+			data: $.extend({}, { v: (new Date()).getTime() }, data), // disable cache
 			success: function (dat) {
 				return cb(true, dat);
 			},
