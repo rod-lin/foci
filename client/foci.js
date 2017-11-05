@@ -195,13 +195,25 @@ window.foci = {};
 	Session.prototype.getSID = function () { return this.sid; };
 	Session.prototype.isAdmin = function () { return this.is_admin; };
 
+	function noCacheData(data) {
+		if (FormData && data instanceof FormData) {
+			data.append("v", Math.random());
+		} else {
+			data = $.extend({ v: Math.random() }, data || {});
+		}
+
+		return data;
+	}
+
 	var sendSync = function (url, data, method, ext) {
+		data = noCacheData(data); // disable cache
+
 		var res = $.ajax($.extend({
 			type: method || "GET",
 			async: false,
 			url: url,
 			dataType: "json",
-			data: $.extend({}, { v: (new Date()).getTime() }, data)
+			data: data
 		}, ext)).responseText;
 
 		if (!res) return null;
@@ -212,12 +224,14 @@ window.foci = {};
 	// cb(suc, data)
 	var sendAsync = function (url, data, cb, method, ext) {
 		// alert([ url, data, cb, method, ext ]);
+
+		data = noCacheData(data); // disable cache
 		
 		$.ajax($.extend({
 			type: method || "GET",
 			url: url,
 			dataType: "json",
-			data: $.extend({}, { v: (new Date()).getTime() }, data), // disable cache
+			data: data,
 			success: function (dat) {
 				return cb(true, dat);
 			},
@@ -260,7 +274,7 @@ window.foci = {};
 							foci.captcha()(dat.dat, function (suc, ans) {
 								if (suc) {
 									// resend the request
-									if (data instanceof FormData) {
+									if (FormData && data instanceof FormData) {
 										data.append("capans", JSON.stringify(ans));
 									} else {
 										data = $.extend(data, { capans: ans });
