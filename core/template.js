@@ -1,5 +1,6 @@
 var user = require("./user");
 var club = require("./club");
+var cutil = require("./cutil");
 
 var xss = require("xss");
 
@@ -86,5 +87,18 @@ exports.club_assignment = async (cuid, assigner, puid) => {
 		msg:
 `Hi, <b>${boss_name}</b> in club <b>${club_name}</b> just assigned you a new job.<br>
 View more info from <a href="#clubcent/${clb.cuid}/forum/${puid}">here</a>`
+	};
+};
+
+exports.cutil_form_submit = async (uuid, cuuid, url) => {
+	var utl = await cutil.cuuid(cuuid);
+	var usr = await user.uuid(uuid);
+
+	return {
+		title: `Form submitted for ${utl.getName()}`,
+		format: "html",
+		msg:
+`Hi, user <b>${usr.getDName()}</b> has just submitted a application form for club utility <b>${utl.getName()}</b>.<br>
+Click <a href="${url}">here</a> to review the form</a>`
 	};
 };

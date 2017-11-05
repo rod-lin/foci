@@ -1,18 +1,309 @@
 <div class="sub-discover-mcocare">
-    MCOCARE
+    <style>
+        .sub-discover-mcocare .page-1 {
+            width: 50rem;
+            padding: 0 1rem;
+            max-width: 100%;
+
+            color: rgb(70, 70, 70);
+        }
+
+        .sub-discover-mcocare .page-1 .header,
+        .sub-discover-mcocare .page-1 label {
+            color: rgb(70, 70, 70) !important;
+        }
+    </style>
+    
+    <div class="page-1" style="display: none;">
+        <h2>McOriginal Care 项目申请表</h2>
+        <div class="subtitle">
+            Fill out the following form to apply for McOriginal Care<br>
+            <b>The draft will be saved every 30 seconds</b>
+        </div>
+        <form class="ui form main-form" style="margin-top: 2rem;">
+            <h3 class="ui top attached block header">社团基本信息</h3>
+            <div class="ui attached segment">
+                <div class="ui field">
+                    <label>社团/组织/团队名称</label>
+                    <input class="value-field" name="club-name">
+                </div>
+
+                <div class="ui two fields">
+                    <div class="ui field">
+                        <label>团队负责人姓名</label>
+                        <input class="value-field" name="admin-name">
+                    </div>
+
+                    <div class="ui field">
+                        <label>团队负责人所在学校</label>
+                        <input class="value-field" name="admin-school">
+                    </div>
+                </div>
+
+                <div class="ui two fields">
+                    <div class="ui field">
+                        <label>团队负责人微信</label>
+                        <input class="value-field" name="admin-wechat">
+                    </div>
+
+                    <div class="ui field">
+                        <label>团队负责人邮箱</label>
+                        <input class="value-field" name="admin-email">
+                    </div>
+                </div>
+
+                <div class="ui field">
+                    <label>团队核心成员名单（职务）</label>
+                    <textarea class="value-field" name="member-list"></textarea>
+                </div>
+
+                <div class="ui field">
+                    <label>所在城市</label>
+                    <input class="value-field" name="club-city">
+                </div>
+
+                <div class="ui field">
+                    <label>主要活跃学校</label>
+                    <input class="value-field" name="club-school">
+                </div>
+            </div>
+
+            <h3 class="ui top attached block header">申请信息</h3>
+            <div class="ui attached segment">
+                <div class="ui field">
+                    <label>申请类型</label>
+                    <div class="ui fields">
+                        <div class="field">
+                            <div class="ui radio checkbox value-field" data-field-type="radio" name="app-type">
+                                <input type="radio" name="app-type-sub" checked="checked" value="short">
+                                <label>单期活动</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox value-field" data-field-type="radio" name="app-type">
+                                <input type="radio" name="app-type-sub" value="long">
+                                <label>长期社团规划</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="long-term-form">
+
+                </div>
+
+                <div class="short-term-form">
+                    <div class="ui field">
+                        <label>团队介绍（50字以上）</label>
+                        <textarea placeholder="项目/活动名称及其含义介绍" class="value-field" name="q1"></textarea>
+                    </div>
+
+                    <div class="ui field">
+                        <label>项目/活动名称及其意义（20字以上）</label>
+                        <textarea placeholder="项目/活动名称及其含义介绍"class="value-field" name="q2"></textarea>
+                    </div>
+
+                    <div class="ui field">
+                        <label>项目/活动简介</label>
+                        <textarea class="value-field" name="q3" placeholder="例如：
+时间：x年x月x日
+地点：xxx
+概览：项目主要针对于普及对自闭症的了解。项目会在学国际部进行马克杯的售卖。同时，我们做了一定的产品解释（马克杯上的画为自闭症孩子所创作），并将售卖所得利益捐赠给自闭症训练机构。我们所期待的效果为更多的人知晓自闭症这一病状，并且理解自闭症孩子的能力并不低于其他孩子，以消除一定的对自闭症的误解和定向思维。"></textarea>
+                    </div>
+
+                    <div class="ui field">
+                        <label>项目拟解决的（社会）问题及对需求问题的把握</label>
+                        <textarea class="value-field" name="q4"></textarea>
+                    </div>
+
+                    <div class="ui field">
+                        <label>项目亮点分析及可行性论证</label>
+                        <textarea class="value-field" name="q5" placeholder="例如：本项目并没有用传统的信息传达方式向受众普及自闭症这一主题。我们的团队运用了商业的模式，不仅以新颖的方式让受众接受这一信息的传达，并且产生了经济利益。在一定程度上，帮助了自闭症训练机构的发展。"></textarea>
+                    </div>
+
+                    <div class="ui field">
+                        <label>项目现状</label>
+                        <textarea class="value-field" name="q6" placeholder="例如：项目从x年x月开始筹备，并且在x月份成功举办。三个社团约10人左右负责了本项目的筹备。x月项目的售卖数量大约为200个马克杯，售卖所得利润为2000元，并已捐赠给某机构。"></textarea>
+                    </div>
+
+                    <div class="ui field">
+                        <label>资源需求</label>
+                        <textarea class="value-field" name="q7" placeholder="例如：项目所需要的资源为启动资金，例如制作周边产品的资金。同时，本项目计划在后期进行扩张，即为将此概念带入其他的国际学校。故本项目也需要其他学校的沟通联系的资源。"></textarea>
+                    </div>
+
+                    <div class="ui field">
+                        <label>项目发展规划</label>
+                        <textarea class="value-field" name="q8" placeholder="例如：本项目计划在圣诞节之际完成义卖的计划，并且计划在第二学期开学之际（即为x年x月）将此概念推广到其他的学校，在第二学期结束之前（即为x年x月）在此学校展开第一个活动。"></textarea>
+                    </div>
+
+                    <div class="ui field">
+                        <label>近期的主要挑战（待解决问题）和需要McOriginal care提供的帮助（100字以上）</label>
+                        <textarea class="value-field" name="q9" placeholder="例如：场地／市场
+1．
+2.
+......
+
+例如需要Mcoringinal帮助招募人员，协调场地时间或者策划活动等）"></textarea>
+                    </div>
+
+                    <div class="ui field">
+                        <label>资金申请</label>
+                        <table class="ui celled table short-term-fund-table value-field" name="fund-table" data-field-type="etable">
+                            <thead>
+                                <tr>
+                                   <th>详细费用项目</th>
+                                   <th>申请费用</th>
+                                   <th>备注</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                            </tbody>
+                        </table>
+
+                        <label>总计: <span class="short-term-fund-total">0</span></label>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="ui field" style="margin-top: 1rem;">
+                <button type="button" class="ui primary button submit-btn">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="page-2" style="display: none;">
+        <div class="white big-icon">
+            <i class="check circle icon"></i>
+        </div>
+        <div class="white title">Submitted</div>
+        <div class="white subtitle prompt">
+            Please wait patiently as the review<br>
+            process may take several days
+        </div>
+        <button class="ui basic inverted button yep-btn">Yep</button>
+    </div>
 </div>
 
-<style></style>
+<style>
+    .sub-discover-mcocare {
+		height: 100%;
+	}
+</style>
 
 <script>
-    
-    function initCUtil(main, args, show) {
+    function initCUtil(main, cuuid, args, show, exit) {
         require([
-            "com/env", "com/login", "com/tagbox",
-            "com/util", "com/upload", "com/userhunt"
-        ], function (env, login, tagbox, util, upload, userhunt) {
+            "com/util", "com/env", "com/login", "com/pform",
+            "com/etable", "com/valfield"
+        ], function (util, env, login, pform, etable, valfield) {
+            var short_table1 = etable.editable(main.find(".page-1 .short-term-fund-table"), {
+                check: [
+                    {
+                        reg: /.{5,}/,
+                        prompt: "too short description"
+                    },
+                    {
+                        reg: /0|[1-9][0-9]*/,
+                        prompt: "not an integer"
+                    },
+                    {}
+                ],
+
+                onChange: function () {
+                    var allrow = short_table1.getAll();
+                    var total = 0;
+                    
+                    for (var i = 0; i < allrow.length; i++) {
+                        total += parseInt(allrow[i][1]);
+                    }
+
+                    main.find(".short-term-fund-total").html(total);
+                }
+            });
+
+            var submit_btn = main.find(".submit-btn");
+            
+            submit_btn.click(function () {
+                var data = JSON.stringify(valfield.extract(main.find(".main-form")));
+
+                // util.jump("#discover/mcocare/" + encodeURIComponent(data));
+
+                submit_btn.addClass("loading");
+
+                login.session(function (session) {
+                    if (session) {
+                        foci.encop(session, {
+                            int: "cutil",
+                            action: "submit",
+
+                            cuuid: cuuid,
+                            form: data
+                        }, function (suc, dat) {
+                            submit_btn.removeClass("loading");
+
+                            if (suc) {
+                                pf.nextPage();
+                            } else {
+                                util.emsg(dat);
+                            }
+                        });
+                    } else {
+                        submit_btn.removeClass("loading");
+                    }
+                });
+            });
+
+            var pf = pform.init(main, [
+				{
+					vcenter: false,
+					cont: main.find(".page-1")
+                },
+                
+                {
+					cont: main.find(".page-2"),
+					
+					onShow: function () {
+						tbar.setStyle("colorful green");
+						pf.background("#2ECC71");
+					},
+
+					onHide: function () {
+						tbar.setStyle("");
+						pf.background("");
+					}
+				}
+            ]);
+
+            if (args[0]) {
+                try {
+                    valfield.refill(main.find(".main-form"), JSON.parse(decodeURIComponent(args[0])));
+                } catch (e) {
+                    util.emsg("illegal form data");
+                }
+
+                submit_btn.remove();
+            } else {
+                var data = foci.getLocal("discover.mcocare.form");
+
+                if (data) {
+                    valfield.refill(main.find(".main-form"), data);
+                    util.emsg("form draft restored", "success");
+                }
+
+                // autosave 30sec
+                var autosave = setInterval(function () {
+                    var data = valfield.extract(main.find(".main-form"));
+                    foci.setLocal("discover.mcocare.form", data);
+                    util.emsg("form draft saved", "success");
+                }, 30000);
+
+                exit(function () {
+                    clearInterval(autosave);
+                });
+            }
+
             show(true);
         });
     }
-
 </script>

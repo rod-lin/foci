@@ -3,7 +3,9 @@
 </div>
 
 <style>
-
+    .sub-discover {
+        height: 100%;
+    }
 </style>
 
 <script>
@@ -22,13 +24,20 @@
         		});
             }
 
-            if (!args.length) {
+            if (args.length < 2) {
                 util.emsg("no enough argument");
                 show(false);
                 return;
             }
             
-            var discover_name = args[0];
+            var discover_name = args[1];
+            var cuuid = parseInt(args[0]);
+
+            if (isNaN(cuuid)) {
+                util.emsg("illegal cuuid");
+                show(false);
+                return;
+            }
 
             fetch(discover_name, function (dat) {
                 var cont = $(dat);
@@ -42,7 +51,7 @@
                         return;
                     }
                     
-                    window.initCUtil(main, args.slice(1), show);
+                    window.initCUtil($(cont[0]), cuuid, args.slice(2), show, exit);
                 });
             }, function () { show(false); });
         });

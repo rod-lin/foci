@@ -205,6 +205,12 @@ var conf = module.exports = {
 		
 		invcode: {
 			allowed_type: [ "realname", "clubreg" ]
+		},
+
+		cutil: {
+			max_name: 36,
+			max_descr: 128,
+			max_url: 2048
 		}
 	},
 

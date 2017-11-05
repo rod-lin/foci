@@ -15,6 +15,7 @@ var dict = require("./dict");
 var smsg = require("./smsg");
 var mail = require("./mail");
 var mcom = require("./mcom");
+var cutil = require("./cutil");
 var event = require("./event");
 var cover = require("./cover");
 var config = require("./config");
@@ -445,6 +446,13 @@ _file.download = util.route(async env => {
 	}
 });
 
+var _cutil = {};
+
+_cutil.all = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	env.qsuc(await cutil.getAllUtil());
+});
+
 exports.mcom = _mcom;
 exports.cover = _cover;
 exports.alipay = _alipay;
@@ -454,6 +462,7 @@ exports.user = _user;
 exports.event = _event;
 exports.club = _club;
 exports.file = _file;
+exports.cutil = _cutil;
 
 /* encrypted operations */
 
@@ -1115,6 +1124,34 @@ encop.forumi = async (env, usr, query, next) => {
 			
 			return;
 		
+		default:
+			throw new err.Exc("$core.action_not_exist");
+	}
+};
+
+encop.cutil = async (env, usr, query, next) => {
+	switch (query.action) {
+		case "new":
+			var conf = util.checkArg(query, cutil.CUtil.format.info, true);
+
+			await user.checkRoot(usr.getUUID());
+			var utl = await cutil.newUtil(conf);
+
+			return utl;
+
+		case "setinfo":
+			var args = util.checkArg(query, { cuuid: "int" });
+			var conf = util.checkArg(query, cutil.CUtil.format.info, true);
+
+			await cutil.setInfo(args.cuuid, usr.getUUID(), conf);
+
+			return;
+
+		case "submit":
+			var args = util.checkArg(query, { cuuid: "int", form: "json" });
+			await cutil.submit(args.cuuid, usr.getUUID(), args.form);
+			return;
+
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}

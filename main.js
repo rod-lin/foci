@@ -42,6 +42,8 @@ app.get("/auth", int.auth);
 app.get("/favtag", int.favtag);
 app.get("/dict", int.dict);
 
+app.get("/cutil/all", int.cutil.all);
+
 // app.get("/alipay/test", int.alipay.test);
 
 app.get("/mcom/merge", int.mcom.merge);

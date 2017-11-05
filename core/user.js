@@ -280,7 +280,7 @@ exports.checkLevel = async (uuid, level) => {
 
 exports.isAdmin = async (uuid) => {
 	var col = await db.col("user");
-	var found = await col.findOne(User.query.check_level(uuid, config.lim.user.admin_level));
+	var found = await col.findOne(User.query.check_admin(uuid, config.lim.user.admin_level));
 	return !!found;
 };
 

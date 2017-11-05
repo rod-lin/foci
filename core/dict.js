@@ -48,9 +48,15 @@ var dict = module.exports = {
 		"core.word.sid": "session id",
 		"core.word.string": "string",
 
+		"core.word.name": "name",
+		"core.word.url": "url",
+
 		"core.word.template": "template",
 
 		"core.word.msg": "message",
+
+		"core.word.cuuid": "club utility uid",
+		"core.word.cutil": "club utility",
 
 		"core.internal_err": "internal error",
 		"core.assert_failed": "assertion failed",
@@ -139,6 +145,7 @@ var dict = module.exports = {
 		"core.notice.no_sender": "no notice sender",
 		"core.notice.no_msg": "no notice content",
 		"core.notice.club_notice": "Club Notice: $1",
+		"core.notice.cutil_notice": "Discover Notice: $1",
 
 		"core.comment.no_uuid": "no comment sender",
 		"core.comment.no_comment": "no comment content",
@@ -166,6 +173,8 @@ var dict = module.exports = {
 		
 		"core.realname.invalid_check_data": "real-name check data invalid",
 		"core.invalid_invcode": "invalid invitation code",
+
+		"core.cutil.not_responsible": "not responsible user for this club utility",
 
 		"front.com.parts.fail_get_url": "fail to get url $1: $2",
 		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",

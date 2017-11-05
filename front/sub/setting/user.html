@@ -17,6 +17,7 @@
             <div class="header">Admin</div>
             <div class="menu-item" data-form-set="invcode">Invitation code</div>
             <div class="menu-item" data-form-set="clubrev">Club review</div>
+            <div class="menu-item" data-form-set="cutil">Club utility</div>
         </div>
     </div>
     
@@ -28,7 +29,19 @@
                     <button type="button" class="ui basic green button pub-btn">Publish</button>
                     <button type="button" class="ui basic red button rej-btn">Reject</button>
                 </div>
-                <div class="review-box" style=""></div>
+                <div class="review-box"></div>
+            </div>
+        </form>
+    </div>
+
+    <div class="form-set form-set-cutil">
+        <form class="form-cutil ui form">
+            <h3 class="ui top attached block header">Club utility</h3>
+            <div class="ui attached segment">
+                <div style="margin-bottom: 1rem;">
+                    <button type="button" class="ui green basic button new-util-btn">New utility</button>
+                </div>
+                <div class="cutil-box"></div>
             </div>
         </form>
     </div>
@@ -233,8 +246,8 @@
         require([
             "com/env", "com/login", "com/tagbox",
             "com/util", "com/upload", "com/club",
-            "com/notice"
-        ], function (env, login, tagbox, util, upload, club, notice) {
+            "com/notice", "com/cutil"
+        ], function (env, login, tagbox, util, upload, club, notice, cutil) {
             var tbar = env.get("tbar");
             
             tbar.setTitle("Setting", "User");
@@ -259,6 +272,52 @@
                         return true;
                     }
                     
+                    /*************** cutil form beg ***************/
+                    
+                    (function () {
+                        var form_cutil = main.find(".form-set-cutil .form-cutil");
+                    
+                        form_cutil.css("padding-bottom", "1rem");
+
+                        var cutil_set = cutil.init(form_cutil.find(".cutil-box"), {
+                            show_header: false,
+                            editable: true,
+
+                            onEdited: function () {
+                                util.refresh();
+                            }
+                        });
+
+                        main.find(".form-set-cutil").on("show", function () {
+                            cutil_set.updateWF();
+                        });
+
+                        form_cutil.find(".new-util-btn").click(function () {
+                            form_cutil.find(".new-util-btn").addClass("loading");
+
+                            login.session(function (session) {
+                                if (session) {
+                                    foci.encop(session, {
+                                        int: "cutil",
+                                        action: "new",
+                                    }, function (suc, dat) {
+                                        form_cutil.find(".new-util-btn").removeClass("loading");
+
+                                        if (suc) {
+                                            util.refresh();
+                                        } else {
+                                            util.emsg(dat);
+                                        }
+                                    });
+                                } else {
+                                    form_cutil.find(".new-util-btn").removeClass("loading");
+                                }
+                            });
+                        });
+                    })();
+
+                    /*************** cutil form end ***************/
+
                     /*************** profile form beg ***************/
                     
                     (function () {

@@ -9,10 +9,11 @@ var user = require("./user");
 var club = require("./club");
 var event = require("./event");
 var lpoll = require("./lpoll");
+var cutil = require("./cutil");
 var config = require("./config");
 
 /*
-	type: "event": event notice, "system": system notice, "club": club notice
+	type: "event": event notice, "system": system notice, "club": club notice, "cutil": club utility
 	sender: euid or system senders("helper", "welcome")
 
 	title: title of the message
@@ -147,6 +148,16 @@ exports.info = async (type, sender) => {
 				logo: ev.getLogo(),
 				name: "$core.notice.event_notice(" + ev.getTitle() + ")"
 			};
+
+		case "cutil":
+			var cuuid = parseInt(sender);
+			var utl = await cutil.cuuid(cuuid);
+
+			return {
+				url: false,
+				logo: utl.getCover(),
+				name: "$core.notice.cutil_notice(" + utl.getName() + ")"
+			};
 			
 		case "club":
 			var cuid = parseInt(sender);
@@ -218,6 +229,14 @@ exports.sendGroup = async (type, sender /* the claimed sender of the notice */,
 			info.type = "club";
 			info.sender = cuid;
 			
+			break;
+
+		case "cutil":
+			info.type = "cutil";
+			var cuuid = info.sender = parseInt(sender);
+		
+			await cutil.checkResponsible(cuuid, uuids);
+
 			break;
 			
 		case "system":
