@@ -16,7 +16,7 @@
     
     <div class="page-1" style="display: none;">
         <h2>McOriginal Care 项目申请表</h2>
-        <div class="subtitle">
+        <div class="subtitle no-review">
             Fill out the following form to apply for McOriginal Care<br>
             <b>The draft will be saved every 30 seconds</b>
         </div>
@@ -80,7 +80,7 @@
                             </div>
                         </div>
                         <div class="field">
-                            <div class="ui radio checkbox value-field" data-field-type="radio" name="app-type">
+                            <div class="ui radio disabled checkbox value-field" data-field-type="radio" name="app-type">
                                 <input type="radio" name="app-type-sub" value="long">
                                 <label>长期社团规划</label>
                             </div>
@@ -166,7 +166,7 @@
                 </div>
             </div>
     
-            <div class="ui field" style="margin-top: 1rem;">
+            <div class="ui field no-review" style="margin-top: 1rem;">
                 <button type="button" class="ui primary button submit-btn">Submit</button>
             </div>
         </form>
@@ -188,7 +188,11 @@
 <style>
     .sub-discover-mcocare {
 		height: 100%;
-	}
+    }
+    
+    .sub-discover-mcocare.review-mode .no-review {
+        display: none;
+    }
 </style>
 
 <script>
@@ -282,7 +286,7 @@
                     util.emsg("illegal form data");
                 }
 
-                submit_btn.remove();
+                main.addClass("review-mode");
             } else {
                 var data = foci.getLocal("discover.mcocare.form");
 

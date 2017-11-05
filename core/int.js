@@ -1152,6 +1152,14 @@ encop.cutil = async (env, usr, query, next) => {
 			await cutil.submit(args.cuuid, usr.getUUID(), args.form);
 			return;
 
+		case "del":
+			var args = util.checkArg(query, { cuuid: "int" });
+
+			await user.checkRoot(usr.getUUID());
+			await cutil.delete(args.cuuid);
+
+			return;
+
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}

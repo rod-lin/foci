@@ -40,6 +40,7 @@ define([
                 </div> \
                 <div class='ui field'> \
                     <button type='button' class='ui button submit-btn'>Submit</button> \
+                    <button type='button' class='ui red button delete-btn'>Delete</button> \
                 </div> \
             </form> \
         </div>");
@@ -95,6 +96,40 @@ define([
                     });
                 } else {
                     modal.find(".submit-btn").removeClass("loading");
+                }
+            });
+        });
+
+        modal.find(".delete-btn").click(function () {
+            util.ask("Are you sure to delete this discover item?", function (ans) {
+                if (ans) {
+                    modal.find(".delete-btn").addClass("loading");
+                    login.session(function (session) {
+                        if (session) {
+                            foci.encop(session, {
+                                int: "cutil",
+                                action: "del",
+
+                                cuuid: info.cuuid
+                            }, function (suc, dat) {
+                                modal.find(".delete-btn").removeClass("loading");
+
+                                if (suc) {
+                                    util.emsg("deleted", "info");
+
+                                    modal.modal("hide");
+
+                                    if (config.onChanged) {
+                                        config.onChanged();
+                                    }
+                                } else {
+                                    util.emsg(dat);
+                                }
+                            });
+                        } else {
+                            modal.find(".delete-btn").removeClass("loading");
+                        }
+                    });
                 }
             });
         });

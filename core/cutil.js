@@ -167,3 +167,8 @@ exports.submit = async (cuuid, uuid, form) => {
             uuid, cuuid,
             "#discover/" + cuuid + "/" + utl.getURL() + "/" + encodeURIComponent(JSON.stringify(form))));
 };
+
+exports.delete = async (cuuid) => {
+    var col = await db.col("cutil");
+    await col.remove(CUtil.query.cuuid(cuuid));
+};
