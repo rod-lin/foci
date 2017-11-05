@@ -450,7 +450,10 @@ var _cutil = {};
 
 _cutil.all = util.route(async env => {
 	if (!await checkCaptcha(env)) return;
-	env.qsuc(await cutil.getAllUtil(env.query.show_disabled));
+
+	var args = util.checkArg(env.query, { "show_disabled": "bool" });
+
+	env.qsuc(await cutil.getAllUtil(args.show_disabled));
 });
 
 exports.mcom = _mcom;
