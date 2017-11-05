@@ -166,7 +166,10 @@ define([
 
         if (!config.show_header) {
             main.find(".header").remove();
-            main.find(".load-prompt").remove();
+        }
+
+        function setLoadPrompt(val) {
+            main.find(".load-prompt").html(val);
         }
 
         var board_set = main.find(".board-set");
@@ -214,14 +217,24 @@ define([
         function reloadUtil() {
             wf.clear();
 
+            setLoadPrompt("<div class='ui active small inline loader'></div>");
+
             foci.get("/cutil/all", { show_disabled: config.editable }, function (suc, dat) {
-                if (suc) {
-                    for (var i = 0; i < dat.length; i++) {
-                        wf.add(genBoard(dat[i]));
+                setTimeout(function () {
+                    setLoadPrompt("no more utilities");
+
+                    if (suc) {
+                        for (var i = 0; i < dat.length; i++) {
+                            wf.add(genBoard(dat[i]));
+                        }
+
+                        setTimeout(function () {
+                            wf.update();
+                        }, 100);
+                    } else {
+                        util.emsg(dat);
                     }
-                } else {
-                    util.emsg(dat);
-                }
+                }, 4000);
             });
         }
 
