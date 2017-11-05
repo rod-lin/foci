@@ -450,7 +450,7 @@ var _cutil = {};
 
 _cutil.all = util.route(async env => {
 	if (!await checkCaptcha(env)) return;
-	env.qsuc(await cutil.getAllUtil());
+	env.qsuc(await cutil.getAllUtil(env.query.show_disabled));
 });
 
 exports.mcom = _mcom;
@@ -1152,11 +1152,11 @@ encop.cutil = async (env, usr, query, next) => {
 			await cutil.submit(args.cuuid, usr.getUUID(), args.form);
 			return;
 
-		case "del":
-			var args = util.checkArg(query, { cuuid: "int" });
+		case "enable":
+			var args = util.checkArg(query, { cuuid: "int", enable: "bool" });
 
 			await user.checkRoot(usr.getUUID());
-			await cutil.delete(args.cuuid);
+			await cutil.enable(args.cuuid, args.enable);
 
 			return;
 

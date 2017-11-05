@@ -321,6 +321,10 @@ window.foci = {};
 				  "POST", { cache: false, contentType: false, processData: false });
 	};
 
+	foci.epost = function (url, data, cb) {
+		sendAsync(url, data, req_callback(foci.post, url, data, cb), "POST");
+	};
+
 	foci.salt = function (len) {
 		var static_buf = new Array(len || 16);
 		var tab = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -445,7 +449,7 @@ window.foci = {};
 		var uuid = session.getUUID();
 		var sid = session.getSID();
 		
-		foci.get("/user/encop", {
+		foci.epost("/user/encop", {
 			uuid: uuid,
 			enc: foci.aesenc(JSON.stringify(query), sid)
 		}, function (suc, dat) {

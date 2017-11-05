@@ -210,7 +210,9 @@ var conf = module.exports = {
 		cutil: {
 			max_name: 36,
 			max_descr: 128,
-			max_url: 2048
+			max_url: 2048,
+
+			default_logo: "/img/def/logo.jpg"
 		}
 	},
 

@@ -151,6 +151,11 @@ exports.info = async (type, sender) => {
 
 		case "cutil":
 			var cuuid = parseInt(sender);
+
+			if (!await cutil.existCUtil(cuuid)) {
+				return { url: true, logo: config.lim.cutil.default_logo, name: "$core.notice.no_name" };
+			}
+
 			var utl = await cutil.cuuid(cuuid);
 
 			return {

@@ -32,7 +32,7 @@ var Env = function (req, res) {
 	
 	this.redir = url => res.redirect(url);
 
-	this.query = req.query;
+	this.query = req.query.extend(req.body);
 	this.file = {};
 	
 	this.pipe = stream => {
@@ -55,29 +55,33 @@ var Env = function (req, res) {
 
 	if (req.method == "POST") {
 		this.init = cb => {
-			var form = new multiparty.Form({ maxFilesSize: config.file.max_size });
+			if (req.headers["content-type"].indexOf("form-urlencoded") != -1) {
+				cb();
+			} else {
+				var form = new multiparty.Form({ maxFilesSize: config.file.max_size });
 
-			form.parse(req, (e, query, file) => {
-				if (e) {
-					this.qerr("$core.fail_upload");
-					util.log(e, util.style.yellow("EXCEPTION"));
-					return;
-				}
-
-				for (var k in query) {
-					if (query.hasOwnProperty(k)) {
-						this.query[k] = query[k][0];
+				form.parse(req, (e, query, file) => {
+					if (e) {
+						this.qerr("$core.fail_upload");
+						util.log(e, util.style.yellow("EXCEPTION"));
+						return;
 					}
-				}
 
-				for (var k in file) {
-					if (file.hasOwnProperty(k)) {
-						this.file[k] = file[k][0];
+					for (var k in query) {
+						if (query.hasOwnProperty(k)) {
+							this.query[k] = query[k][0];
+						}
 					}
-				}
 
-				return cb();
-			});
+					for (var k in file) {
+						if (file.hasOwnProperty(k)) {
+							this.file[k] = file[k][0];
+						}
+					}
+
+					return cb();
+				});
+			}
 		};
 	} else this.init = cb => cb()
 };

@@ -27,6 +27,8 @@ var CUtil = function (cuuid, conf) {
     this.descr = conf.descr || "";
 
     this.url = conf.url || ""; // url will be formatted as #discover/<cuuid>/<url>/...
+
+    this.enable = false;
 };
 
 CUtil.prototype = {};
@@ -59,7 +61,8 @@ CUtil.format.info = {
     descr: util.checkArg.lenlim(config.lim.cutil.max_descr, "$core.too_long($core.word.descr)"),
 
     url: util.checkArg.lenlim(config.lim.cutil.max_url, "$core.too_long($core.word.url)"),
-    
+    enable: "bool",
+
     admin: {
         type: "array", lim: admin => {
 			for (var i = 0; i < admin.length; i++) {
@@ -99,7 +102,16 @@ CUtil.query = {
 CUtil.set = {
     info: conf => ({
         $set: conf
+    }),
+
+    set_enabled: is_enabled => ({
+        enabled: is_enabled
     })
+};
+
+exports.existCUtil = async (cuuid) => {
+    var col = await db.col("cutil");
+    return !! await col.count(CUtil.query.cuuid(cuuid));
 };
 
 var checkCUtilExist = async (cuuid) => {
@@ -149,9 +161,14 @@ exports.setInfo = async (cuuid, uuid, conf) => {
     await col.updateOne(CUtil.query.cuuid(cuuid), CUtil.set.info(conf));
 };
 
-exports.getAllUtil = async () => {
+exports.getAllUtil = async (show_disabled) => {
     var col = await db.col("cutil");
-    var found = await col.find({}).toArray();
+    var q = {};
+
+    if (!show_disabled)
+        q.enable = true
+
+    var found = await col.find(q).toArray();
     var ret = [];
 
     found.forEach(utl => ret.push(new CUtil(utl)));
@@ -168,7 +185,7 @@ exports.submit = async (cuuid, uuid, form) => {
             "#discover/" + cuuid + "/" + utl.getURL() + "/" + encodeURIComponent(JSON.stringify(form))));
 };
 
-exports.delete = async (cuuid) => {
+exports.enable = async (cuuid, is_enabled) => {
     var col = await db.col("cutil");
-    await col.remove(CUtil.query.cuuid(cuuid));
+    await col.updateOne(CUtil.query.cuuid(cuuid), CUtil.set.set_enabled(is_enabled));
 };

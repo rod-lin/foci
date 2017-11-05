@@ -6,6 +6,8 @@ var https = require("https");
 var express = require("express");
 var compression = require("compression");
 
+var bodyparser = require("body-parser");
+
 var db = require("./core/db");
 var err = require("./core/err");
 var mail = require("./core/mail");
@@ -33,9 +35,9 @@ app.get("/test", util.route(async env => {
 
 */
 
-app.use(compression({
-	level: 9
-}));
+app.use(bodyparser.urlencoded({ extended:true }));
+
+app.use(compression({ level: 9 }));
 
 /* official api */
 app.get("/auth", int.auth);
@@ -63,10 +65,10 @@ app.get("/user/info", int.user.info);
 app.get("/user/rating", int.user.rating);
 app.get("/user/org", int.user.org);
 app.get("/user/applied", int.user.applied);
-app.get("/user/encop", int.user.encop);
 app.get("/user/search", int.user.search);
 app.get("/user/resume", int.user.resume);
 app.get("/user/realname", int.user.realname);
+app.post("/user/encop", int.user.encop);
 
 app.get("/event/info", int.event.info);
 app.get("/event/search", int.event.search);

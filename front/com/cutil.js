@@ -34,13 +34,21 @@ define([
                     <label>URL</label> \
                     <input class='field-url'> \
                 </div> \
-                <div class='ui field'> \
-                    <label>Administrator</label> \
-                    <button type='button' class='ui button change-admin-btn'>Change administrator</button> \
+                <div class='ui fields'> \
+                    <div class='ui field'> \
+                        <label>Administrator</label> \
+                        <button type='button' class='ui button change-admin-btn'>Change administrator</button> \
+                    </div> \
+                    <div class='ui field'> \
+                        <label>Enabled</label> \
+                        <div class='ui toggle checkbox enable-check'> \
+                            <input type='checkbox'> \
+                            <label></label> \
+                        </div> \
+                    </div> \
                 </div> \
                 <div class='ui field'> \
                     <button type='button' class='ui button submit-btn'>Submit</button> \
-                    <button type='button' class='ui red button delete-btn'>Delete</button> \
                 </div> \
             </form> \
         </div>");
@@ -61,11 +69,14 @@ define([
         modal.find(".field-descr").val(info.descr);
         modal.find(".field-url").val(info.url);
 
+        modal.find(".enable-check").checkbox(info.enable ? "check" : "uncheck");
+
         modal.find(".submit-btn").click(function () {
             var cover = cover_field.val();
             var name = modal.find(".field-name").val();
             var descr = modal.find(".field-descr").val();
             var url = modal.find(".field-url").val();
+            var enable = modal.find(".enable-check").checkbox("is checked");
 
             modal.find(".submit-btn").addClass("loading");
             
@@ -81,7 +92,8 @@ define([
                         name: name,
                         descr: descr,
                         url: url,
-                        admin: info.admin
+                        admin: info.admin,
+                        enable: enable
                     }, function (suc, dat) {
                         modal.find(".submit-btn").removeClass("loading");
 
@@ -152,8 +164,10 @@ define([
             <div class='load-prompt'>no more utilities</div> \
         </div>");
 
-        if (!config.show_header)
+        if (!config.show_header) {
             main.find(".header").remove();
+            main.find(".load-prompt").remove();
+        }
 
         var board_set = main.find(".board-set");
 
@@ -200,7 +214,7 @@ define([
         function reloadUtil() {
             wf.clear();
 
-            foci.get("/cutil/all", {}, function (suc, dat) {
+            foci.get("/cutil/all", { show_disabled: true }, function (suc, dat) {
                 if (suc) {
                     for (var i = 0; i < dat.length; i++) {
                         wf.add(genBoard(dat[i]));
