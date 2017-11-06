@@ -84,6 +84,7 @@ app.get("/club/related", int.club.related);
 
 app.post("/file/upload", int.file.upload);
 app.get("/file/download", int.file.download);
+app.get("/file/derefer", int.file.derefer);
 /* official api */
 
 app.get("/test", util.route(async env => {

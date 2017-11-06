@@ -11,6 +11,7 @@ var fs = require("fs");
 var pump = require("pump");
 var crypto = require("crypto");
 var request = require("request-promise");
+var superagent = require("superagent");
 
 var alioss = require("ali-oss").Wrapper; // use promise
 
@@ -294,6 +295,35 @@ exports.cleanTmp = async () => {
 	for (var i = 0; i < files.length; i++) {
 		await unlinkAsync(dir(files[i], true));
 	}
+};
+
+// TODO: need to restrict the url format
+exports.derefer = async (url) => {
+	// return await request.get(url, {
+	// 	header: {
+	// 		"Content-type": "image/*",
+	// 		"Referer": "",
+	// 		"User-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
+	// 	}
+	// });
+
+	return new Promise((res, rej) => {
+		// var request = require("request");
+
+		// env.pipe(request.get(url, function (err, res, body) {
+		// 	if (err) rej(err);
+		// 	else res();
+		// }));
+
+		superagent
+			.get(decodeURIComponent(url))
+			.set("Referer", "")
+			.set("User-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36")
+			.end(function (err, result) {
+				if (err) rej(err);
+				else res(result.body);
+			});
+	});
 };
 
 setInterval(function () {

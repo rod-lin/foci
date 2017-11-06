@@ -446,6 +446,15 @@ _file.download = util.route(async env => {
 	}
 });
 
+_file.derefer = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+
+	var args = util.checkArg(env.query, { "url": "string", "type": "string" });
+
+	env.setCT(args.type);
+	env.raw(await file.derefer(args.url));
+});
+
 var _cutil = {};
 
 _cutil.all = util.route(async env => {

@@ -240,6 +240,8 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 			setting: false,
 			setting_cb: null,
 
+			max_height: "30rem",
+
 			auto_resize: false
 		}, config);
 
@@ -260,6 +262,7 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 		}
 
 		$(window).resize(updateRatio);
+		main.css("max-height", "30rem");
 
 		for (var i = 0; i < slides.length; i++) {
 			(function (i) {

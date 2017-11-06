@@ -12,7 +12,14 @@ var Env = function (req, res) {
 		res.send(JSON.stringify(obj));
 	};
 
-	this.header = obj => res.set(obj);
+	this.header = obj => {
+		for (var k in obj) {
+			if (obj.hasOwnProperty(k)) {
+				res.set(k, obj[k]);
+			}
+		}
+	};
+
 	this.setCT = ct => res.set("Content-Type", ct);
 
 	this.raw = dat => res.send(dat);
@@ -37,7 +44,7 @@ var Env = function (req, res) {
 	
 	this.pipe = stream => {
 		// req.pipe(stream);
-		stream.pipe(res);
+		return stream.pipe(res);
 	};
 	
 	this.setTimeout = time => {

@@ -313,6 +313,12 @@
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.04);
 }
 
+.markdown-body img.frameless {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
 .markdown-body strong {
     font-weight: bold;
 }
