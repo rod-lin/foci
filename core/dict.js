@@ -307,7 +307,7 @@ var dict = module.exports = {
 		"front.com.event.change_logo": "Change logo",
 		"front.com.event.more": "$nat.all_cap(more)",
 
-		"front.com.login.logo_prompt": "Where events begin",
+		"front.com.login.logo_prompt": "Explore your infinity", // "Where events begin",
 		"front.com.login.verify": "Verify",
 		"front.com.login.register": "Register",
 		"front.com.login.login": "Login",
