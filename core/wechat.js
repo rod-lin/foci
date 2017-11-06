@@ -81,7 +81,7 @@ exports.getArticleContent = async (code) => {
 
     for (var url in map) {
         if (map.hasOwnProperty(url)) {
-            text = text.replaceAll(url, map[url]);
+            text = text.replaceAll("url(" + url + ")", "url(" + map[url] + ")");
         }
     }
 
