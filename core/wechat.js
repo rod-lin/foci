@@ -11,35 +11,35 @@ var cheerio = require("cheerio");
 
 var article_url = code => "https://mp.weixin.qq.com/" + code;
 
-var imgDerefer = async (html) => {
-    var img = /https?:\/\/mmbiz.qpic.cn\/mmbiz_([^/]+)\/[^'")]*/g;
-    var imgi = /https?:\/\/mmbiz.qpic.cn\/mmbiz_([^/]+)\/[^'")]*/;
+// var imgDerefer = async (html) => {
+//     var img = /https?:\/\/mmbiz.qpic.cn\/mmbiz_([^/]+)\/[^'")]*/g;
+//     var imgi = /https?:\/\/mmbiz.qpic.cn\/mmbiz_([^/]+)\/[^'")]*/;
 
-    var type;
+//     var type;
 
-    html = html.replace(img, function (cont) {
-        var match = cont.match(imgi);
+//     html = html.replace(img, function (cont) {
+//         var match = cont.match(imgi);
 
-        // console.log(cont, match[1]);
+//         // console.log(cont, match[1]);
 
-        switch (match[1]) {
-            case "png":
-                type = "image/png";
-                break;
+//         switch (match[1]) {
+//             case "png":
+//                 type = "image/png";
+//                 break;
 
-            case "jpg":
-            default:
-                type = "image/jpeg";
-                break;
-        }
+//             case "jpg":
+//             default:
+//                 type = "image/jpeg";
+//                 break;
+//         }
 
-        return "/file/derefer?type=" + encodeURIComponent(type) + "&url=" + encodeURIComponent(cont);
-    });
+//         return "/file/derefer?type=" + encodeURIComponent(type) + "&url=" + encodeURIComponent(cont);
+//     });
 
-    // console.log(html);
+//     // console.log(html);
 
-    return html;
-};
+//     return html;
+// };
 
 exports.getArticleContent = async (code) => {
     var html = await request.get(article_url(code));
@@ -54,17 +54,15 @@ exports.getArticleContent = async (code) => {
         var url = dom.attr("data-src");
         var match = url.match(img);
 
-        var type;
-
-        switch (match[1]) {
+        var type = "image/jpeg";
+    
+        if (match) switch (match[1]) {
             case "png":
                 type = "image/png";
                 break;
 
             case "jpg":
-            default:
-                type = "image/jpeg";
-                break;
+            default: break;
         }
 
         var derefered = "/file/derefer?type=" + encodeURIComponent(type) + "&url=" + encodeURIComponent(url);
