@@ -671,7 +671,10 @@ define([
         
         if (config.tool) {
             entry = $("<div class='com-club-entry'> \
-                <div class='club-logo'><i class='" + config.tool.icon + " fitted icon'></i></div> \
+                <div class='club-logo'> \
+                    <i class='" + config.tool.icon + " fitted icon'></i> \
+                    <div class='ui small active loader'></div> \
+                </div> \
                 <div class='club-name'>" + config.tool.name + "</div> \
             </div>");
         }
@@ -1018,22 +1021,33 @@ define([
                 clearResult();
                 renderList(config.init, ".club-self-list", true);
             } else {
+                add_club_entry.addClass("loading");
+                add_club_entry.find(".club-name").html("Loading");
+
                 login.session(function (session) {
-                    foci.encop(session, {
-                        int: "club",
-                        action: "getrelated"
-                    }, function (suc, dat) {
-                        main.find(".local-search").removeClass("loading");
-                        
-                        if (suc) {
-                            clearResult();
+                    if (session) {
+                        foci.encop(session, {
+                            int: "club",
+                            action: "getrelated"
+                        }, function (suc, dat) {
+                            add_club_entry.removeClass("loading");
+                            add_club_entry.find(".club-name").html("New club");
+
+                            main.find(".local-search").removeClass("loading");
                             
-                            // console.log(dat);
-                            renderList(dat, ".club-self-list", true);
-                        } else {
-                            util.emsg(dat);
-                        }
-                    });
+                            if (suc) {
+                                clearResult();
+                                
+                                // console.log(dat);
+                                renderList(dat, ".club-self-list", true);
+                            } else {
+                                util.emsg(dat);
+                            }
+                        });
+                    } else {
+                        add_club_entry.removeClass("loading");
+                        add_club_entry.find(".club-name").html("New club");
+                    }
                 });
             }
         })();
@@ -1042,31 +1056,6 @@ define([
         
         return ret;
     };
-    
-    // create club modal
-    // club.create = function (config) {
-    //     config = $.extend({
-    //         use_dragi: false
-    //     }, config);
-    //     
-    //     var main = $("<div class='com-club-create ui small modal'> \
-    //         <div class='cont'> \
-    //             <div class='ui input'> \
-    //                 <input> \
-    //             </div> \
-    //         </div> \
-    //     </div>");
-    //     
-    //     if (config.use_dragi) {
-    //         // TODO: !!!
-    //     } else {
-    //         main.modal("show");
-    //     }
-    //     
-    //     var ret = {};
-    //     
-    //     return ret;
-    // };
     
     return club;
 });

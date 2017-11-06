@@ -632,5 +632,14 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		}, 1000);
 	};
 
+	util.imgsize = function (src, cb) {
+		util.img(src, function (img) {
+			cb({
+				width: img.width,
+				height: img.height
+			});
+		});
+	};
+
 	return util;
 });

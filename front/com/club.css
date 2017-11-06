@@ -393,6 +393,18 @@
     background-position: center;
 }
 
+.com-club-entry .club-logo .loader {
+    display: none;
+}
+
+.com-club-entry.loading .club-logo .loader {
+    display: block;
+}
+
+.com-club-entry.loading .club-logo .icon {
+    display: none;
+}
+
 .com-club-entry .club-logo .state-overlay {
     position: absolute;
     left: 0; top: 0;

@@ -301,7 +301,8 @@
 						// pboard.init(show_board, parsed.slice(0, 4), main_config);
 						pboard.slide(show_board, parsed.slice(0, 4), $.extend(main_config, {
 							height: "24rem",
-							interval: 5000
+							interval: 5000,
+							auto_resize: true
 						}));
 
 						pboard.slide(main.find(".mini-push-board"), parsed.slice(4, 7), sub_config);

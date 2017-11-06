@@ -123,12 +123,10 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 			function setMain(ph) {
 				if (main_slide.hasClass("switch")) {
 					util.bgimg(front, ph.img, function () {
-						// alert("??");
 						main_slide.toggleClass("switch");
 					});
 				} else {
 					util.bgimg(back, ph.img, function () {
-						// alert("???");
 						main_slide.toggleClass("switch");
 					});
 				}
@@ -240,7 +238,9 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 			interval: 3000,
 			height: "10rem",
 			setting: false,
-			setting_cb: null
+			setting_cb: null,
+
+			auto_resize: false
 		}, config);
 
 		var main = $("<div class='com-pboard-slide'> \
@@ -249,11 +249,30 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 			<div class='slides'></div> \
 		</div>");
 
+		// h / w
+		var ratio = 0;
+
+		function updateRatio() {
+			if (!ratio) return;
+			var height = main.width() * ratio;
+			main.height(height);
+			main.find(".left-btn, .right-btn").css("line-height", height + "px");
+		}
+
+		$(window).resize(updateRatio);
+
 		for (var i = 0; i < slides.length; i++) {
 			(function (i) {
 				var slide = slides[i];
 				slide.dom = $("<div class='slide'></div>");
-				util.bgimg(slide.dom, slide.img);
+				
+				util.bgimg(slide.dom, slide.img, function () {
+					if (i == 0 && config.auto_resize)
+						util.imgsize(slide.img, function (size) {
+							ratio = size.height / size.width;
+							setTimeout(updateRatio, 100);
+						});
+				});
 
 				slide.dom.click(function () {
 					if (config.setting) {

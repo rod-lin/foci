@@ -136,15 +136,15 @@
 
 @media only screen and (min-width: 481px) {
     .com-event-showcase:hover {
-        height: 24em;
+
     }
     
     .com-event-showcase:hover .show-cover {
-        width: 6em;
+        width: 3rem;
     }
     
     .com-event-showcase:hover .show-info {    
-        padding-left: 8em;
+        padding-left: 5em;
     }
     
     .com-event-showcase:hover .show-cover:hover {
