@@ -46,6 +46,8 @@ exports.getArticleContent = async (code) => {
     var $ = cheerio.load(html);
     var img = /https?:\/\/mmbiz.qpic.cn\/mmbiz_([^/]+)\/[^'")]*/;
 
+    var map = {};
+    
     $("#js_content img[data-src]").each(function (i, dom) {
         dom = $(dom);
         
@@ -65,10 +67,23 @@ exports.getArticleContent = async (code) => {
                 break;
         }
 
+        var derefered = "/file/derefer?type=" + encodeURIComponent(type) + "&url=" + encodeURIComponent(url);
+
+        map[url] = derefered;
+
         dom
-            .attr("src", "/file/derefer?type=" + encodeURIComponent(type) + "&url=" + encodeURIComponent(url))
+            .attr("data-src", "")
+            .attr("src", derefered)
             .addClass("frameless img");
     });
 
-    return $("#js_content").html();
+    var text = $("#js_content").html();
+
+    for (var url in map) {
+        if (map.hasOwnProperty(url)) {
+            text = text.replaceAll(url, map[url]);
+        }
+    }
+
+    return text;
 };

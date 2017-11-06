@@ -20,6 +20,28 @@ Object.prototype.extend = function (obj) {
 	return this;
 };
 
+String.prototype.replaceAll = function (val, rep) {
+	var str = this;
+
+	var next = 0;
+	var i = str.indexOf(val);
+	var replen = rep.length;
+	var vallen = val.length;
+
+	var ret = "";
+
+	while (i != -1) {
+		next += i + vallen;
+		ret += str.substring(next, next + i) + rep;
+		i = str.substring(next).indexOf(val);
+		// console.log(i, next, str.substring(next));
+	}
+
+	ret += str.substring(next);
+
+	return ret;
+};
+
 Object.prototype.fieldCount = function () {
 	return Object.keys(this).length;
 };
