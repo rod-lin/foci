@@ -212,9 +212,14 @@
 			var fetch_push = (function () {
 				var skip = 0;
 				var ended = false;
+				var fetch_lock = false;
 				
 				return function fetch_push() {
 					if (ended) return;
+
+					if (fetch_lock) return;
+					
+					fetch_lock = true;
 					
 					foci.get("/event/search", { lim: 8, skip: skip }, function (suc, dat) {
 						if (suc) {
@@ -235,6 +240,8 @@
 						} else {
 							util.emsg(dat);
 						}
+
+						fetch_lock = false;
 					});
 				};
 			})();

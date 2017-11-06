@@ -677,46 +677,6 @@ define([
 				}
 			});
 
-			// function editText(com, cb) {
-			// 	com = $(com);
-			// 	var editor = $("<textarea class='editor-text'></textarea>");
-
-			// 	editor.val(com.html());
-
-			// 	function updatePos() {
-			// 		var ofs = com.offset();
-			// 		var mofs = main.offset();
-
-			// 		editor.css({
-			// 			position: "absolute",
-			// 			top: (ofs.top - mofs.top) + "px",
-			// 			left: (ofs.left - mofs.left) + "px",
-			// 			height: com.outerHeight(),
-			// 			width: com.outerWidth(),
-			// 			"font-size": com.css("font-size"),
-			// 			"font-family": com.css("font-family"),
-			// 			"font-weight": com.css("font-weight"),
-			// 			"line-height": com.css("line-height")
-			// 		});
-			// 	}
-
-			// 	updatePos()
-
-			// 	main.append(editor);
-			// 	editor.focus();
-
-			// 	$(window).on("resize", updatePos);
-
-			// 	editor.blur(function () {
-			// 		var val = editor.val();
-
-			// 		$(window).off("resize", updatePos);
-			// 		editor.remove();
-
-			// 		if (cb) cb(val);
-			// 	});
-			// }
-
 			var exc_state = false;
 			function exclude(cb) {
 				if (exc_state) return;
