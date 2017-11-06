@@ -146,6 +146,11 @@
 				
 				foci.use_dragi = true && !util.isMobile();
 
+				// localStorage is not supported
+				foci.nolocal(function () {
+					util.emsg("local storage is disabled or full. please make sure that your are <b>NOT</b> in incognito mode");
+				});
+
 				env.init(function () {
 
 					var bar = tbar.init();

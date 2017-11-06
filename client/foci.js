@@ -353,8 +353,40 @@ window.foci = {};
 		return res;
 	};
 
+	var nolocal_cb = null;
+
+	// nolocal event is triggered when localStorage is not supported(e.g. in private mode)
+	foci.nolocal = function (cb) {
+		if (cb !== undefined) {
+			nolocal_cb = cb;
+		} else if (nolocal_cb) {
+			nolocal_cb();
+		}
+	};
+
+	foci.localEnabled = function () {
+		var enabled = false;
+
+		try {
+			localStorage["test"] = "1";
+			localStorage.removeItem("test");
+		} catch (e) {
+			enabled = false;
+		}
+
+		return enabled;
+	};
+
 	foci.setLocal = function (key, value) {
-		return localStorage[key] = JSON.stringify(value);
+		var ret;
+
+		try {
+			ret = localStorage[key] = JSON.stringify(value);
+		} catch (e) {
+			foci.nolocal();
+		}
+
+		return ret;
 	};
 
 	foci.getLocal = function (key) {

@@ -641,5 +641,17 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		});
 	};
 
+	util.isLocalStorageEnabled = function () {
+		var enabled = false;
+
+		try {
+			localStorage["test"] = "1";
+		} catch (e) {
+			enabled = false;
+		}
+
+		return enabled;
+	};
+
 	return util;
 });
