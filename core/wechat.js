@@ -74,7 +74,8 @@ exports.getArticleContent = async (code) => {
         map[url] = derefered;
 
         dom
-            .attr("data-src", derefered)
+            .attr("data-src", "")
+            .attr("src", derefered)
             .addClass("frameless img");
     });
 
