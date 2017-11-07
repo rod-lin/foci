@@ -39,6 +39,7 @@ window.xssfilt = (function () {
 	xss.whiteList["a"].push("data-jumptag-type");
 	xss.whiteList["a"].push("data-jumptag-uid");
 	xss.whiteList["img"].push("data-src");
+	xss.whiteList["qqmusic"] = [];
 	
 	var color_reg = /^\s*(((rgb|rgba)\s*\(\s*\d*.\d*\s*,\s*\d*.\d*\s*,\s*\d*.\d*\s*(,\s*\d*.\d*\s*)?\))|#[0-9a-fA-F]+)\s*$/;
 	
