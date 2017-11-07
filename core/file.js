@@ -217,7 +217,7 @@ exports.getFile = async (chsum, tmp) => {
 	
 	return {
 		ct: file.ct,
-		redir: oss_client.signatureUrl(chsum /* default expire: 30 min */)
+		redir: oss_client.signatureUrl(chsum /* default expire: 30 min */).replace("http", "https")
 	}
 };
 
