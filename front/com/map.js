@@ -252,7 +252,7 @@ define([ "com/util" ], function (util) {
 			map.centerAndZoom("杭州", 12);
 
 			map.enableScrollWheelZoom(true);
-			map.setMapStyle({ style: "grayscale" });
+			map.setMapStyle({ style: "googlelite" });
 
 			map.addEventListener("click", function(e) {
 				if (!config.canMark) return;
