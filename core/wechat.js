@@ -61,6 +61,10 @@ exports.getArticleContent = async (code) => {
                 type = "image/png";
                 break;
 
+            case "gif":
+                type = "image/gif";
+                break;
+
             case "jpg":
             default: break;
         }
@@ -76,10 +80,27 @@ exports.getArticleContent = async (code) => {
     });
 
     var text = $("#js_content").html();
+    var i = 0;
 
     for (var url in map) {
         if (map.hasOwnProperty(url)) {
+            // console.log(url, map[url]);
+
+            // var orig = text;
+
             text = text.replaceAll("url(" + url + ")", "url(" + map[url] + ")");
+
+            // if (text[0] == ";") {
+            //     console.log("##########################################");
+                
+            //     var temp = orig.slice(orig.indexOf(url) - 100, orig.indexOf(url) + 300);
+
+            //     console.log(url, map[url]);
+            //     console.log(temp + "...");
+            //     console.log(text.slice(0, 500) + "...");
+
+            //     console.log(temp.replaceAll("url(" + url + ")", "url(" + map[url] + ")"));
+            // }
         }
     }
 

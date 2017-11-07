@@ -31,8 +31,8 @@ String.prototype.replaceAll = function (val, rep) {
 	var ret = "";
 
 	while (i != -1) {
-		next += i + vallen;
 		ret += str.substring(next, next + i) + rep;
+		next += i + vallen;
 		i = str.substring(next).indexOf(val);
 		// console.log(i, next, str.substring(next));
 	}
