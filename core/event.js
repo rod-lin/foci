@@ -248,6 +248,20 @@ Event.prototype.isOnlyRealname = function () {
 	return !!this.apply_only_realname;
 };
 
+Event.prototype.getRelatedUser = function () {
+	var staff = [], partic = [];
+
+	for (var i = 0; i < this.staff.length; i++) {
+		staff.push(this.staff[i].uuid);
+	}
+
+	for (var i = 0; i < this.partic.length; i++) {
+		partic.push(this.partic[i].uuid);
+	}
+
+	return this.org.concat(staff, partic);
+};
+
 Event.format = {};
 
 Event.format.info = {
@@ -597,6 +611,13 @@ exports.delEvent = async (euid, uuid) => {
 		throw new err.Exc("$core.cannot_delete_published");
 
 	await col.findOneAndDelete(Event.query.euid(euid, evstat.draft));
+
+	var ev = new Event(found);
+	var related = ev.getRelatedUser();
+
+	for (var i = 0; i < related.length; i++) {
+		await user.updateResume(related[i]);
+	}
 };
 
 // count how many times has a user created a event(after a certain date)
@@ -785,12 +806,15 @@ exports.genResume = async (uuid) => {
 	for (var i = 0; i < ret.length; i++) {
 		var ev = ret[i];
 
+		var rating = ev.rating;
+
 		// TODO: f**king slow?
 		if (ev.resume_type == "app") {
 			if (ev.apply_partic) {
 				for (var j = 0; j < ev.apply_partic.length; j++) {
 					if (ev.apply_partic[j].uuid == uuid) {
 						ev.resume_job += "partic";
+						rating = ev.apply_partic[j].rating || 0;
 						break;
 					}
 				}
@@ -800,6 +824,7 @@ exports.genResume = async (uuid) => {
 				for (var j = 0; j < ev.apply_staff.length; j++) {
 					if (ev.apply_staff[j].uuid == uuid) {
 						ev.resume_job = "staff";
+						rating = ev.apply_staff[j].rating || 0;
 						break;
 					}
 				}
@@ -808,7 +833,7 @@ exports.genResume = async (uuid) => {
 
 		ret[i] = {
 			job: ev.resume_type == "org" ? "org" : (ev.resume_job == "staff" ? "staff" : "partic"),
-			rating: ev.rating,
+			rating: rating,
 			cover: ev.cover,
 			euid: ev.euid
 		};
@@ -1022,6 +1047,9 @@ exports.getOrgRating = async (uuid) => {
 // add a rating field in the application
 exports.setAppRating = async (euid, uuid, type, rating) => {
 	var col = await db.col("event");
+	
 	await col.updateOne(Event.query.applicant(euid, uuid, type),
 						Event.set.set_app_rating(type, rating));
+
+	await user.updateResume(uuid);
 };
