@@ -118,7 +118,8 @@ window.xssfilt = (function () {
 				"-moz-transform": /.*/,
 				
 				"color": /.*/,
-		    }
+				"opacity": /.*/
+			}
 		}
 	});
 	
