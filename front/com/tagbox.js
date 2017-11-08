@@ -510,11 +510,15 @@ define([ "com/util", "com/xfilt" ], function (util, xfilt) {
 
 			delAll();
 
-			cur = init;
+			cur = [];
+
 			for (var i = 0; i < init.length; i++) {
-				if (tag_dom[cur[i]]) {
-					main.find(".addtag").before(tag_dom[cur[i]]);
-					tag_dom[cur[i]].click(tagOnClick);
+				var dom = tag_dom[init[i]];
+
+				if (dom) {
+					cur.push(init[i]);
+					main.find(".addtag").before(dom);
+					dom.click(tagOnClick);
 				}
 			}
 
