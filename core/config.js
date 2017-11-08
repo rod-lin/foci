@@ -299,6 +299,14 @@ var conf = module.exports = {
 		seckey: "U2FsdGVkX19L2W2PLjOYnQVONfvJEl1y6l4srETP9G+0IBZ7qMx+LLsEPjyWS2CE",
 		bucket: "foci-upload-0"
 	},
+
+	derefer: {
+		oss: {
+			// acckey and seckey same as config.oss.*
+			region: "oss-cn-hangzhou",
+			bucket: "foci-derefer-0"
+		},
+	},
 	
 	captcha: {
 		type: "geetest",

@@ -278,8 +278,10 @@ window.foci = {};
 								if (suc) {
 									// resend the request
 									if (FormData && data instanceof FormData) {
+										// console.log("using form data");
 										data.append("capans", JSON.stringify(ans));
 									} else {
+										// console.log("using urlencode");
 										data = $.extend(data, { capans: ans });
 									}
 									
@@ -325,7 +327,7 @@ window.foci = {};
 	};
 
 	foci.epost = function (url, data, cb) {
-		sendAsync(url, data, req_callback(foci.post, url, data, cb), "POST");
+		sendAsync(url, data, req_callback(foci.epost, url, data, cb), "POST");
 	};
 
 	foci.salt = function (len) {

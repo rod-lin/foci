@@ -224,6 +224,7 @@ _user.csid = util.route(async env => {
  */
 const T_NEED_HANG = {};
 const T_NEED_CAP = {};
+const T_HAS_HANDLED = {};
 
 _user.encop = util.route(async env => {
 	var check_res = await checkCaptcha(env);
@@ -267,6 +268,9 @@ _user.encop = util.route(async env => {
 			// https://github.com/expressjs/express/issues/2512
 			// probably a node bug?
 			env.setTimeout(60 * 10 * 1000);
+			break;
+
+		case T_HAS_HANDLED:
 			break;
 		
 		// need captcha
@@ -450,9 +454,7 @@ _file.derefer = util.route(async env => {
 	// if (!await checkCaptcha(env)) return;
 
 	var args = util.checkArg(env.query, { "url": "string", "type": "string" });
-
-	env.setCT(args.type);
-	env.raw(await file.derefer(args.url));
+	await file.derefer(args.url, args.type, env);
 });
 
 var _cutil = {};
@@ -740,6 +742,10 @@ encop.wechat = async (env, usr, query, next, has_cap) => {
 	switch (query.action) {
 		case "article":
 			var args = util.checkArg(query, { code: "string" }); // the path following https://mp.wechat.qq.com/
+
+			if (!has_cap)
+				if (!await captcha.check(env, () => util.coin(1))) return T_HAS_HANDLED;
+
 			return await wechat.getArticleContent(args.code);
 			
 		default:

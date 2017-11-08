@@ -16,6 +16,7 @@ var superagent = require("superagent");
 var alioss = require("ali-oss").Wrapper; // use promise
 
 var oss_client = null;
+var derefer_oss = null;
 
 if (config.oss && config.oss.type == "ali") {
 	if (config.oss.enc) {
@@ -36,16 +37,25 @@ if (config.oss && config.oss.type == "ali") {
 		accessKeySecret: config.oss.seckey,
 		bucket: config.oss.bucket
 	});
+
+	if (config.derefer.oss) {
+		derefer_oss = new alioss({
+			region: config.derefer.oss.region,
+			accessKeyId: config.oss.acckey,
+			accessKeySecret: config.oss.seckey,
+			bucket: config.derefer.oss.bucket
+		});
+	}
 	
-	tick.awrap(async () => {
-		await oss_client.putBucketCORS(config.oss.bucket, config.oss.region, [
-			{
-				allowedOrigin: "*",
-				allowedMethod: [ "GET", "HEAD" ],
-				allowedHeader: "*"
-			}
-		]);
-	})();
+	// tick.awrap(async () => {
+	// 	await oss_client.putBucketCORS(config.oss.bucket, config.oss.region, [
+	// 		{
+	// 			allowedOrigin: "*",
+	// 			allowedMethod: [ "GET", "HEAD" ],
+	// 			allowedHeader: "*"
+	// 		}
+	// 	]);
+	// })();
 }
 
 var readFileAsync = exports.readFileAsync = path => {
@@ -297,33 +307,63 @@ exports.cleanTmp = async () => {
 	}
 };
 
+var dereferStream = url => 
+	superagent
+		.get(decodeURIComponent(url))
+		.set("Referer", "")
+		.set("User-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
+
 // TODO: need to restrict the url format
-exports.derefer = async (url) => {
-	// return await request.get(url, {
-	// 	header: {
-	// 		"Content-type": "image/*",
-	// 		"Referer": "",
-	// 		"User-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
-	// 	}
-	// });
+exports.derefer = async (url, type, env) => {
+	// check log
 
-	return new Promise((res, rej) => {
-		// var request = require("request");
+	var col = await db.col("derefer");
 
-		// env.pipe(request.get(url, function (err, res, body) {
-		// 	if (err) rej(err);
-		// 	else res();
-		// }));
+	var md5 = util.md5(url, "hex");
+	var found = await col.findOne({ md5: md5 });
 
-		superagent
-			.get(decodeURIComponent(url))
-			.set("Referer", "")
-			.set("User-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36")
-			.end(function (err, result) {
+	if (!found) {
+		throw new err.Exc("derefer log not found");
+	}
+
+	if (found.no_oss || !derefer_oss) {
+		var res = await new Promise((res, rej) => {
+			dereferStream(found.url).end(function (err, result) {
 				if (err) rej(err);
 				else res(result.body);
 			});
-	});
+		});
+
+		env.setCT(type);
+		env.raw(res);
+	} else {
+		env.setCT(type);
+		env.redir(derefer_oss.signatureUrl(md5).replace("http", "https"));
+	}
+};
+
+exports.logDerefer = async (url) => {
+	var col = await db.col("derefer");
+
+	var md5 = util.md5(url, "hex");
+	var found = await col.findOne({ md5: md5 });
+
+	if (!found) {
+		if (derefer_oss) {
+			// save to oss
+			await col.insert({ url: url, md5: md5, no_oss: false });
+			await derefer_oss.putStream(md5, dereferStream(url));
+		} else {
+			await col.insert({ url: url, md5: md5, no_oss: true });
+		}
+	}
+};
+
+// only logged derefer url can be used
+exports.logDereferAll = async (urls) => {
+	for (var i = 0; i < urls.length; i++) {
+		await exports.logDerefer(urls[i]);
+	}
 };
 
 setInterval(function () {
