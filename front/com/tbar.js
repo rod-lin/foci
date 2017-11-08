@@ -100,18 +100,30 @@ define([
 		';
 
 		main = $(main);
-		
-		var trex_count = 0;
-
-		main.find(".site-logo-name").click(function () {
-			if (++trex_count == 3) {
-				trex_count = 0;
-				trex.modal({ use_dragi: foci.use_dragi });
-			}
-		});
 
 		main.find(".site-logo-prompt").prepend(main.find(".site-logo-name").clone());
 		
+		(function () {
+			var trex_count = 0;
+			var trex_time = new Date();
+	
+			main.find(".site-logo-name").click(function () {
+				var cur = new Date();
+	
+				if (cur - trex_time < 3000 || trex_count == 0) {
+					if (++trex_count == 3) {
+						trex_count = 0;
+						trex.modal({ use_dragi: foci.use_dragi });
+						setTimeout(function () {
+							hideMenu();
+						}, 300);
+					}
+				} else trex_count = 0;
+	
+				trex_time = cur;
+			});
+		})();
+
 		function toggleAvatarUtil(dir) {
 			main.find(".avatar-util").transition({
 				animation: "scale " + (dir || ""),

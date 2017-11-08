@@ -1,6 +1,8 @@
 /* T-Rex */
 
-.com-trex {
+html,
+.com-trex .game,
+.com-trex .copyright {
 	transition: -webkit-filter 0.8s cubic-bezier(0.65, 0.05, 0.36, 1),
 				-moz-filter 0.8s cubic-bezier(0.65, 0.05, 0.36, 1),
 				-ms-filter 0.8s cubic-bezier(0.65, 0.05, 0.36, 1),
@@ -9,7 +11,9 @@
 				background-color 0.8s cubic-bezier(0.65, 0.05, 0.36, 1);
 }
 
-.com-trex.inverted {
+html.inverted,
+.com-trex .game.inverted,
+.com-trex .game.inverted+.copyright {
 	-webkit-filter: invert(100%);
 	-moz-filter: invert(100%);
 	-ms-filter: invert(100%);
@@ -17,4 +21,14 @@
 	filter: invert(100%);
 
 	background: white;
+}
+
+.com-trex .copyright {
+	padding: 1rem 0;
+	text-align: center;
+
+	font-size: 0.8rem;
+	font-weight: bold;
+
+	border-top: 1px solid rgba(0, 0, 0, 0.08);
 }

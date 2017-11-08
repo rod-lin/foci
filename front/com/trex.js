@@ -8,6 +8,8 @@ define([ "com/util" ], function (com) {
 
 	var uid = 0;
 
+	var html = document.getElementsByTagName("html")[0];
+
 	trex.modal = function (config) {
 		config = $.extend({
 			use_dragi: false
@@ -61,10 +63,14 @@ define([ "com/util" ], function (com) {
 		cont = $(cont);
 		config = $.extend({}, config);
 
-		var main = $("<div class='com-trex'></div>");
+		var main = $("<div class='com-trex'> \
+			<div class='game'></div> \
+			<div class='copyright'>Designed by <a target='_blank' href='https://google.com'><i class='fitted google icon'></i>oogle</a></div> \
+		</div>");
+
 		cont.append(main);
 
-		var runner = new Runner(main[0]);
+		var runner = new Runner(main.find(".game")[0]);
 		// runner.play();
 
 		var high = foci.getLocal("trex-high-score");
@@ -1059,11 +1065,12 @@ define([ "com/util" ], function (com) {
 			 */
 			invert: function (reset) {
 				if (reset) {
-					this.outerContainerEl.classList.toggle(Runner.classes.INVERTED, false);
+					// this.outerContainerEl
+					html.classList.toggle(Runner.classes.INVERTED, false);
 					this.invertTimer = 0;
 					this.inverted = false;
 				} else {
-					this.inverted = this.outerContainerEl.classList.toggle(Runner.classes.INVERTED,
+					this.inverted = html.classList.toggle(Runner.classes.INVERTED,
 						this.invertTrigger);
 				}
 			}
