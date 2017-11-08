@@ -429,7 +429,7 @@ _file.upload = util.route(async env => {
 });
 
 _file.download = util.route(async env => {
-	if (!await checkCaptcha(env)) return;
+	// if (!await checkCaptcha(env)) return;
 	
 	var args = util.checkArg(env.query, { "chsum": "string", "tmp": { type: "bool", opt: true } });
 	var ret = await file.getFile(args.chsum, !!args.tmp);
@@ -447,7 +447,7 @@ _file.download = util.route(async env => {
 });
 
 _file.derefer = util.route(async env => {
-	if (!await checkCaptcha(env)) return;
+	// if (!await checkCaptcha(env)) return;
 
 	var args = util.checkArg(env.query, { "url": "string", "type": "string" });
 

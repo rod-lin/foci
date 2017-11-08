@@ -11,7 +11,7 @@ define([ "com/util", "com/lang" ], function (util, lang) {
 			extra_util_btn: []
 		}, config);
 
-		var main = $("<div class='com-sortby'><span class='cond-set'></span></div>");
+		var main = $("<div class='com-sortby'><div class='cond-set'></div></div>");
 		var cond_set = main.find(".cond-set");
 
 		var sortby = {};

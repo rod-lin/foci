@@ -6,6 +6,19 @@
 
 	opacity: 0.9;
 
+	line-height: 1.5;
+}
+
+.com-sortby .cond-set {
+	display: inline-block;
+	margin-right: 0.5rem;
+	margin-bottom: 0.5rem;
+
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.04);
+}
+
+.com-sortby .btn {
+	margin-bottom: 0.5rem;
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.04);
 }
 
@@ -51,7 +64,7 @@
 .com-sortby .btn {
 	position: relative;
 	border-radius: 4px;
-	margin-left: 1em;
+	margin-right: 0.5rem;
 
 	border-right: 1px solid rgba(0, 0, 0, 0.08);
 }

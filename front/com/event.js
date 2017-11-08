@@ -916,7 +916,7 @@ define([
 
 		var parsed = parseInfo(info, {
 			max_title_len: 32,
-			max_descr_len: 256
+			max_descr_len: 128
 		});
 
 		var main = $("<div class='com-event-showcase img-" + config.imgpos + "'> \

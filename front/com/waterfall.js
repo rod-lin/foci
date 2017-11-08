@@ -7,6 +7,7 @@ define(function () {
 	function init(cont /* parent container */, config) {
 		config = $.extend({
 			gap: 20, /* px */
+			top_gap: 12,
 			count: 5, /* max column count */
 			min_margin: 20
 		}, config);
@@ -43,6 +44,7 @@ define(function () {
 			/* side margin */
 			var count = config.count + 1;
 			var gap = config.gap;
+			var top_gap = config.top_gap;
 			var left;
 
 			if (child.length) width = child[0].width();
@@ -73,7 +75,7 @@ define(function () {
 			var heights = new Array(count);
 
 			for (var i = 0; i < count; i++) {
-				heights[i] = gap;
+				heights[i] = top_gap;
 			}
 
 			function findMinColumn() {

@@ -29,7 +29,8 @@ define([ "com/util" ], function (util) {
 		
 		var prompt = main.find(".upload-prompt");
 		var display = main.find(".display");
-		
+		var loader = display.find(".loader");
+
 		var uploaded = undefined;
 		
 		display.css($.extend(config.style, {
@@ -37,6 +38,8 @@ define([ "com/util" ], function (util) {
 			height: config.height,
 			"line-height": config.height
 		}));
+
+		loader.css("display", "none");
 		
 		prompt.html(config.prompt);
 		
@@ -44,15 +47,15 @@ define([ "com/util" ], function (util) {
 			if (md5) {
 				uploaded = md5;
 				main.addClass("loaded");
-				display.find(".loader").css("display", "");
+				loader.css("display", "");
 				
 				util.bgimg(display, foci.download(md5), function () {
-					display.find(".loader").css("display", "none");
+					loader.css("display", "none");
 				});
 			} else {
 				uploaded = undefined;
 				main.removeClass("loaded");
-				display.find(".loader").css("display", "none");
+				loader.css("display", "none");
 				util.bgimg(display, null);
 			}
 		}
