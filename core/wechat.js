@@ -65,6 +65,8 @@ exports.getArticleContent = async (code) => {
             text = text.replaceAll("url(" + url + ")", final);
             text = text.replaceAll("url(\"" + url + "\")", final);
             text = text.replaceAll("url('" + url + "')", final);
+            text = text.replaceAll("url(&quot;" + url + "&quot;)", final);
+            text = text.replaceAll("url(&apos;" + url + "&apos;)", final);
         }
     }
 
