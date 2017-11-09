@@ -509,7 +509,7 @@ window.foci = {};
 		return "/file/download?chsum=" +
 			   chsum +
 			   (config.tmp ? "&tmp=true" : "") +
-			   (config.thumb !== undefined ? "&thumb=" + config.thumb : "&thumb=4");
+			   (config.thumb !== undefined ? "&thumb=" + config.thumb : "&thumb=3");
 	};
 
 	foci.loadCSS = function (path) {
