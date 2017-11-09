@@ -15,7 +15,7 @@
                 $.ajax({
         			type: "GET",
         			url: "/mcom/mpart?part=discover/" + name,
-        			data: { v: (new Date()).getTime() /* no cache */ },
+        			data: { v: foci.version /* no cache */ },
         			success: function (dat) { suc(dat); },
         			error: function (req, exc) {
         				util.emsg("failed to get setting '" + name + "'");
