@@ -194,6 +194,19 @@ var findFile = async (chsum) => {
 	return found;
 }
 
+var parseImgStyle = (config) => {
+	config = config || {};
+	var style = "";
+	
+	if (config.thumb !== undefined) {
+		style = "!thumb" + config.thumb;
+	} else {
+		style = "!thumb3";
+	}
+
+	return style;
+};
+
 exports.getFile = async (chsum, config) => {
 	config = config || {};
 
@@ -227,17 +240,9 @@ exports.getFile = async (chsum, config) => {
 		}
 	}
 
-	var style = "";
-
-	if (config.thumb !== undefined) {
-		style = "!thumb" + config.thumb;
-	} else {
-		style = "!thumb3";
-	}
-
 	return {
 		ct: file.ct,
-		redir: oss_client.signatureUrl(chsum + style /* default expire: 30 min */).replace("http", "https")
+		redir: oss_client.signatureUrl(chsum + parseImgStyle(config) /* default expire: 30 min */).replace("http", "https")
 	}
 };
 
@@ -324,8 +329,9 @@ var dereferStream = url =>
 		.set("User-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
 
 // TODO: need to restrict the url format
-exports.derefer = async (url, type, env) => {
+exports.derefer = async (url, type, env, config) => {
 	// check log
+	config = config = {};
 
 	var col = await db.col("derefer");
 
@@ -348,7 +354,7 @@ exports.derefer = async (url, type, env) => {
 		env.raw(res);
 	} else {
 		env.setCT(type);
-		env.redir(derefer_oss.signatureUrl(md5).replace("http", "https"));
+		env.redir(derefer_oss.signatureUrl(md5 + parseImgStyle(config)).replace("http", "https"));
 	}
 };
 
