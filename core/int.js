@@ -452,12 +452,12 @@ _file.download = util.route(async env => {
 	
 	var args = util.checkArg(env.query, {
 		"chsum": "string",
-
-		"tmp": { type: "bool", opt: true },
-		"thumb": { type: "int", opt: true }, // 0 - 5, the higher the higher compressing rate
+		"tmp": { type: "bool", opt: true }
 	});
+
+	var imgstyle = util.checkArg(env.query, file.format.imgstyle, true);
 	
-	var ret = await file.getFile(args.chsum, args);
+	var ret = await file.getFile(args.chsum, util.extend({ tmp: args.tmp }, imgstyle));
 
 	if (ret.redir) {
 		// TODO: content type?
@@ -471,9 +471,9 @@ _file.download = util.route(async env => {
 
 _file.derefer = util.route(async env => {
 	// if (!await checkCaptcha(env)) return;
-
 	var args = util.checkArg(env.query, { "url": "string", "type": "string" });
-	await file.derefer(args.url, args.type, env);
+	var imgstyle = util.checkArg(env.query, file.format.imgstyle, true);
+	await file.derefer(args.url, args.type, env, imgstyle);
 });
 
 var _cutil = {};

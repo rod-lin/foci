@@ -194,6 +194,11 @@ var findFile = async (chsum) => {
 	return found;
 }
 
+exports.format = {};
+exports.format.imgstyle = {
+	"thumb": { type: "int", opt: true }, // 0 - 5, the higher the higher compressing rate
+};
+
 var parseImgStyle = (config) => {
 	config = config || {};
 	var style = "";
