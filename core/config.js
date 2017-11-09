@@ -1,5 +1,7 @@
 "use strict";
 
+var minifycss = new (require("clean-css"))();
+
 var conf = module.exports = {
 	port: 3138,
 
@@ -12,6 +14,18 @@ var conf = module.exports = {
 
 	mcom: {
 		expire: 60 * 60 * 24, // in sec
+		minify_html_conf: {
+			minifyJS: true,
+			minifyCSS: function (text) {
+				text = minifycss.minify(text).styles;
+				return text;
+			},
+			removeComments: true,
+			removeEmptyAttributes: true,
+			removeScriptTypeAttributes: true,
+			conservativeCollapse: true,
+			collapseWhitespace: true
+		}
 	},
 
 	debug: false,

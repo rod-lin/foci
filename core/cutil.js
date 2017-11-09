@@ -14,7 +14,7 @@ var template = require("./template");
 
 var CUtil = function (cuuid, conf) {
     if (arguments.length == 1) {
-        this.extend(arguments[0]);
+        util.extend(this, arguments[0]);
         return;
     }
 

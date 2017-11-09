@@ -28,7 +28,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 		cont = $(cont);
 		config = $.extend({
 			penv: {},
-			base: "sub",
+			base: "/mcom/mpart?part=",
 			global_progress: true,
 			
 			forced_refresh: []
@@ -95,7 +95,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 					prog.fakeinc(50);
 				}, 500);
 				
-				var url = config.base + "/" + name + ".html";
+				var url = config.base + name;
 				fetch(url, function (text) {
 					clearInterval(proc);
 					

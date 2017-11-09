@@ -1,10 +1,10 @@
 @font-face {
 	font-family: "foci";
-	src: url("foci.eot?zfovl9");
-	src: url("foci.eot?zfovl9#iefix") format("embedded-opentype"),
-		 url("foci.ttf?zfovl9") format("truetype"),
-		 url("foci.woff?zfovl9") format("woff"),
-		 url("foci.svg?zfovl9#foci") format("svg");
+	src: url("/font/foci/foci.eot?zfovl9");
+	src: url("/font/foci/foci.eot?zfovl9#iefix") format("embedded-opentype"),
+		 url("/font/foci/foci.ttf?zfovl9") format("truetype"),
+		 url("/font/foci/foci.woff?zfovl9") format("woff"),
+		 url("/font/foci/foci.svg?zfovl9#foci") format("svg");
 	font-weight: normal;
 	font-style: normal;
 }

@@ -44,7 +44,7 @@ exports.Comment = Comment;
 
 Comment.query = {
 	upvote_check: (euid, cid, uuid) => {
-		var q = event.Event.query.euid(euid).extend({
+		var q = util.extend(event.Event.query.euid(euid), {
 			// $and: [ { "comment.id": cid }, { "comment.$.upvote": { $ne: uuid } } ]
 			comment: {
 				$elemMatch: {
@@ -58,7 +58,7 @@ Comment.query = {
 	},
 
 	count_comm: (euid, uuid) => {
-		var q = event.Event.query.euid(euid).extend({
+		var q = util.extend(event.Event.query.euid(euid), {
 			comment: {
 				$elemMatch: {
 					uuid: uuid

@@ -39,7 +39,7 @@ var Env = function (req, res) {
 	
 	this.redir = url => res.redirect(url);
 
-	this.query = req.query.extend(req.body);
+	this.query = util.extend(req.query, req.body);
 	this.file = {};
 	
 	this.pipe = stream => {

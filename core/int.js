@@ -75,12 +75,33 @@ _mcom.merge = util.route(async env => {
 	var args = util.checkArg(env.query, { "coms": "string" });
 	var coms = args.coms.split(",");
 
-	env.setExpire(config.mcom.expire);
-
 	var res = await mcom.merge(coms);
 
+	env.setCT("text/javascript");
 	env.setExpire(config.mcom.expire, res.modified);
-	env.raw(res.batch);
+	env.raw(res.src);
+});
+
+// ?part="abc/ss"
+_mcom.mpart = util.route(async env => {
+	var args = util.checkArg(env.query, { "part": "string" });
+
+	var res = await mcom.mpart(args.part);
+
+	env.setExpire(config.mcom.expire, res.modified);
+	env.raw(res.src);
+});
+
+// ?files="abc/ss,abc/sss"
+_mcom.mcss = util.route(async env => {
+	var args = util.checkArg(env.query, { "files": "string" });
+	var files = args.files.split(",");
+
+	var res = await mcom.mcss(files);
+
+	env.setCT("text/css");
+	env.setExpire(config.mcom.expire, res.modified);
+	env.raw(res.src);
 });
 
 var _cover = {};
@@ -312,9 +333,7 @@ _user.rating = util.route(async env => {
 
 _user.org = util.route(async env => {
 	if (!await checkCaptcha(env)) return;
-	var args = util.checkArg(env.query, {}.extend(event.Event.format.lim).extend({
-		"uuid": "int"
-	}));
+	var args = util.checkArg(env.query, util.extend({ "uuid": "int" }, event.Event.format.lim));
 
 	var ret = await event.getOrganized(args.uuid, args);
 	env.qsuc(ret);
@@ -322,9 +341,7 @@ _user.org = util.route(async env => {
 
 _user.applied = util.route(async env => {
 	if (!await checkCaptcha(env)) return;
-	var args = util.checkArg(env.query, {}.extend(event.Event.format.lim).extend({
-		"uuid": "int"
-	}));
+	var args = util.checkArg(env.query, util.extend({ "uuid": "int" }, event.Event.format.lim));
 
 	var ret = await event.getApplied(args.uuid, args);
 	env.qsuc(ret);
@@ -391,9 +408,7 @@ _club.search = util.route(async env => {
 _club.org = util.route(async env => {
 	if (!await checkCaptcha(env)) return;
 	
-	var args = util.checkArg(env.query, {}.extend(event.Event.format.lim).extend({
-		"cuid": "int"
-	}));
+	var args = util.checkArg(env.query, util.extend({ "cuid": "int" }, event.Event.format.lim));
 	
 	env.qsuc(await event.getClubOrganized(args.cuid, args));	
 });
@@ -869,7 +884,7 @@ encop.comment = async (env, usr, query, next) => {
 		case "issue":
 			var args = util.checkArg(query, {
 				euid: "int",
-				rating: util.checkArg.posint(10, "$core.illegal($core.word.rating)").extend({ opt: true }),
+				rating: util.extend(util.checkArg.posint(10, "$core.illegal($core.word.rating)"), { opt: true }),
 				comment: util.checkArg.lenlim(config.lim.comment.text, "$core.too_long($core.word.comment)")
 			});
 

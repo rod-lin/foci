@@ -29,7 +29,7 @@ var d = (val, def) => val === undefined ? def : val;
 // event
 var Event = function (euid, owner /* uuid */, dat) {
 	if (owner === undefined) {
-		this.extend(euid); // extend the first argument
+		util.extend(this, euid); // extend the first argument
 		return;
 	}
 
@@ -393,13 +393,13 @@ Event.format.lim = {
 	}
 };
 
-Event.format.search = {
+Event.format.search = util.extend({
 	favtag: { type: "json", lim: tags => user.checkTag(tags) },
 	kw: util.checkArg.lenlim(config.lim.event.keyword, "$core.too_long($core.word.search_keyword)"),
 
 	after: { type: "int", lim: time => new Date(time) },
 	before: { type: "int", lim: time => new Date(time) }
-}.extend(Event.format.lim);
+}, Event.format.lim);
 
 Event.query = {
 	euid: (euid, state) => ({
@@ -850,12 +850,12 @@ exports.search = async (conf, state) => {
 	if (conf.favtag) {
 		// NOT ALL tags are selected
 		if (conf.favtag.length != config.lim.favtag_count)
-			query.extend(Event.query.has_favtag(conf.favtag));
+		util.extend(query, Event.query.has_favtag(conf.favtag));
 	}
 	
-	if (conf.kw) query.extend(Event.query.keyword(conf.kw));
-	if (conf.after) query.extend(Event.query.after(conf.after));
-	if (conf.before) query.extend(Event.query.before(conf.before));
+	if (conf.kw) util.extend(query, Event.query.keyword(conf.kw));
+	if (conf.after) util.extend(query, Event.query.after(conf.after));
+	if (conf.before) util.extend(query, Event.query.before(conf.before));
 
 	var col = await db.col("event");
 

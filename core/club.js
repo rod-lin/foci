@@ -29,7 +29,7 @@ var clubstat = exports.clubstat = {
 /* cuid does not overlap with uuid */
 var Club = function (cuid, creator, conf) {
     if (arguments.length == 1) {
-        this.extend(arguments[0]);
+        util.extend(this, arguments[0]);
         return;
     }
     
@@ -102,7 +102,7 @@ Club.prototype.getInfo = function () {
         descr: this.descr,
         school: this.school,
         
-        member_count: this.member.fieldCount(),
+        member_count: util.fieldCount(this.member),
         
         logo: this.logo,
         
@@ -152,7 +152,7 @@ Club.prototype.getMember = function (include_apply) {
     }
     
     var ret = include_apply
-              ? {}.extend(this.apply_member).extend(this.member) // overwrite applying member
+              ? util.extend({}, this.apply_member, this.member) // overwrite applying member
               : this.member;
               
     ret[this.creator].is_creator = true;
@@ -543,7 +543,7 @@ exports.changeApply = async (cuid, uuid, applicant, accept) => {
 exports.search = async (uuid, conf) => {
     var query = { state: clubstat.operate };
 
-    if (conf.kw) query.extend(Club.query.keyword(conf.kw));
+    if (conf.kw) util.extend(query, Club.query.keyword(conf.kw));
 
     var col = await db.col("club");
     
@@ -592,12 +592,12 @@ exports.sendInvitation = async (cuid, self, uuids) => {
     await exports.checkAdmin(cuid, self);
     
     for (var i = 0; i < uuids.length; i++) {
-        await notice.push(uuids[i], {
+        await notice.push(uuids[i], util.extend({
             type: "club",
             sender: cuid,
             format: "html", // mind xss
             /* title, msg */
-        }.extend(await template.club_invitation(cuid, uuids[i])));
+        }, await template.club_invitation(cuid, uuids[i])));
     }
 };
 

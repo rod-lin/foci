@@ -1,23 +1,23 @@
 @font-face {
     font-family: Avenir;
-    src: url("avenir-regular.woff2") format("woff2"),
-         url("avenir-regular.woff") format("woff"),
-         url("avenir-regular.ttf") format("truetype"),
-         url("avenir-regular.eot") format("embedded-opentype"),
-         url("avenir-regular.svg") format("svg"),
-         url("avenir-regular.otf") format("opentype");
+    src: url("/font/avenir/avenir-regular.woff2") format("woff2"),
+         url("/font/avenir/avenir-regular.woff") format("woff"),
+         url("/font/avenir/avenir-regular.ttf") format("truetype"),
+         url("/font/avenir/avenir-regular.eot") format("embedded-opentype"),
+         url("/font/avenir/avenir-regular.svg") format("svg"),
+         url("/font/avenir/avenir-regular.otf") format("opentype");
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: Avenir;
-    src: url("avenir-heavy.woff2") format("woff2"),
-         url("avenir-heavy.woff") format("woff"),
-         url("avenir-heavy.ttf") format("truetype"),
-         url("avenir-heavy.eot") format("embedded-opentype"),
-         url("avenir-heavy.svg") format("svg"),
-         url("avenir-heavy.otf") format("opentype");
+    src: url("/font/avenir/avenir-heavy.woff2") format("woff2"),
+         url("/font/avenir/avenir-heavy.woff") format("woff"),
+         url("/font/avenir/avenir-heavy.ttf") format("truetype"),
+         url("/font/avenir/avenir-heavy.eot") format("embedded-opentype"),
+         url("/font/avenir/avenir-heavy.svg") format("svg"),
+         url("/font/avenir/avenir-heavy.otf") format("opentype");
     font-weight: bold;
     font-style: normal;
 }

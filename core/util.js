@@ -10,15 +10,35 @@ var crypto = require("crypto");
 var NodeRSA = require("node-rsa");
 var readline = require("readline-sync");
 
-Object.prototype.extend = function (obj) {
-	for (var k in obj) {
-		if (obj.hasOwnProperty(k)) {
-			this[k] = obj[k];
+exports.extend = function (base) {
+	for (var i = 1; i < arguments.length; i++) {
+		var obj = arguments[i];
+
+		for (var k in obj) {
+			if (obj.hasOwnProperty(k)) {
+				base[k] = obj[k];
+			}
 		}
 	}
 
-	return this;
+	return base;
 };
+
+exports.fieldCount = obj => Object.keys(obj).length;
+
+// Object.prototype.fextend = function (obj) {
+// 	for (var k in obj) {
+// 		if (obj.hasOwnProperty(k)) {
+// 			this[k] = obj[k];
+// 		}
+// 	}
+
+// 	return this;
+// };
+
+// Object.prototype.fieldCount = function () {
+// 	return Object.keys(this).length;
+// };
 
 String.prototype.replaceAll = function (val, rep) {
 	var str = this;
@@ -40,10 +60,6 @@ String.prototype.replaceAll = function (val, rep) {
 	ret += str.substring(next);
 
 	return ret;
-};
-
-Object.prototype.fieldCount = function () {
-	return Object.keys(this).length;
 };
 
 exports.salt = (len) => {

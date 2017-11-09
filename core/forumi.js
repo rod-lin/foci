@@ -16,7 +16,7 @@ var template = require("./template");
 // must has: creator
 var PostComment = function (creator, conf) {
     if (arguments.length == 1) {
-        this.extend(arguments[0]);
+        util.extend(this, arguments[0]);
         return;
     }
     
@@ -31,7 +31,7 @@ var PostComment = function (creator, conf) {
 // must has: cuid, puid, creator
 var PostObject = function (cuid, puid, creator, conf) {
     if (arguments.length == 1) {
-        this.extend(arguments[0]);
+        util.extend(this, arguments[0]);
         return;
     }
     

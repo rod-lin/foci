@@ -97,21 +97,21 @@ function initAli() {
 
 		function aliformat(param, sec) {
 			var sign = alisign(param, sec);
-			var query = qs.stringify(param.extend({ sign: sign }));
+			var query = qs.stringify(util.extend(param, { sign: sign }));
 			return "http://gw.api.taobao.com/router/rest?" + query;
 		}
 
 		return function (appkey, seckey) {
 			return {
 				smsSend: function (param) {
-					var url = aliformat({
+					var url = aliformat(util.extend({
 						method: "alibaba.aliqin.fc.sms.num.send",
 						app_key: appkey,
 						timestamp: moment().format("YYYY-MM-DD HH:mm:ss"),
 						format: "json",
 						v: "2.0",
 						sign_method: "md5"
-					}.extend(param), seckey);
+					}, param), seckey);
 
 					// console.log(moment().format("YYYY-MM-DD HH:mm:ss"));
 					// console.log(url);

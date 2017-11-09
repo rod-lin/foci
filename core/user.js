@@ -12,7 +12,7 @@ var invcode = require("./invcode");
 
 var User = function (uuid, dname, lname, passwd) {
 	if (arguments.length == 1) {
-        this.extend(arguments[0]); // called with only one argument
+        util.extend(this, arguments[0]); // called with only one argument
         return;
     }
 

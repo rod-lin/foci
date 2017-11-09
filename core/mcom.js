@@ -1,3 +1,5 @@
+/* mini com */
+
 "use strict";
 
 var err = require("./err");
@@ -7,6 +9,8 @@ var config = require("./config");
 
 var fs = require("fs");
 var uglifyjs = require("uglify-js2");
+var minifycss = new (require("clean-css"))();
+var minifyhtml = require("html-minifier").minify;
 
 // replace 'define(' with 'define("com/[com-name]", '
 var parseFile = async (cont, name) => {
@@ -34,50 +38,109 @@ var parseFile = async (cont, name) => {
     return ";(function () { " + cont + "})();";
 };
 
-var cache = {
-    // query: { ctime, batch }
+var com_cache = {
+    // query: { ctime, src }
 };
 
-// return { modified, batch }
-exports.merge = async (coms) => {
-    var query = Array.from(new Set(coms)).sort().join(",");
+var part_cache = {
+    // part name: { ctime, src }
+};
 
-    if (!config.mcom.no_cache && cache[query]) {
-        var entry = cache[query];
+var css_cache = {
+
+};
+
+// proc(id): source
+var ncache = async (cacheobj, id, proc) => {
+    // check cache
+    if (!config.mcom.no_cache && cacheobj[id]) {
+        var entry = cacheobj[id];
 
         if (entry.ctime + config.mcom.expire > new Date()) {
-            delete cache[query];
+            delete cacheobj[id];
         } else {
-            return { batch: entry.batch, modified: entry.ctime };
+            return { src: entry.src, modified: entry.ctime };
         }
     }
 
-    var batch = "";
+    // process id if cache not found
+    var src = await proc(id);
 
-    for (var i = 0; i < coms.length; i++) {
-        if (!/[a-zA-Z0-9]+/.test(coms)) {
-            throw new err.Error("$core.illegal_com_name");
-        } else {
-            batch += await parseFile((await file.readFileAsync("front/com/" + coms[i] + ".js")).toString(), coms[i]);
-        }
-    }
-
-    batch = uglifyjs.minify(batch, {
-        fromString: true
-    }).code;
-
+    // save cache
     if (!config.mcom.no_cache) {
-        cache[query] = {
+        cacheobj[id] = {
             ctime: new Date(),
-            batch: batch
+            src: src
         };
     }
 
-    return { batch: batch, modified: undefined };
+    // return info
+    return { src: src, modified: undefined };
+};
+
+exports.mpart = async (part) => {
+    return await ncache(part_cache, part, async (part) => {
+        var cont;
+        
+        if (!/^[a-zA-Z0-9\/]+$/.test(part)) {
+            throw new err.Exc("$core.illegal_com_name");
+        } else {
+            cont = (await file.readFileAsync("front/sub/" + part + ".html")).toString();
+        }
+    
+        return minifyhtml(cont, config.mcom.minify_html_conf);
+    });
+};
+
+// return { modified, src }
+exports.merge = async (coms) => {
+    coms = Array.from(new Set(coms));
+    var id = coms.sort().join(",");
+
+    return await ncache(com_cache, id, async () => {
+        var src = "";
+        
+        for (var i = 0; i < coms.length; i++) {
+            if (!/^[a-zA-Z0-9\-\/]+$/.test(coms[i])) {
+                throw new err.Exc("$core.illegal_com_name");
+            } else {
+                src += await parseFile((await file.readFileAsync("front/com/" + coms[i] + ".js")).toString(), coms[i]);
+            }
+        }
+    
+        src = uglifyjs.minify(src, {
+            fromString: true
+        }).code;
+
+        return src;
+    });
+};
+
+exports.mcss = async (files) => {
+    files = Array.from(new Set(files));
+    var id = files.sort().join(",");
+
+    return await ncache(css_cache, id, async () => {
+        var src = "";
+        
+        for (var i = 0; i < files.length; i++) {
+            // console.log(files[i], /[a-zA-Z0-9\-\/]+/g.test(files[i]));
+            if (!/^[a-zA-Z0-9\-\/]+$/.test(files[i])) {
+                throw new err.Exc("$core.illegal_com_name");
+            } else {
+                if (files[i][0] != "/") files[i][0] = "/" + files[i][0];
+                src += "\n" + (await file.readFileAsync("front" + files[i] + ".css")).toString();
+            }
+        }
+    
+        src = minifycss.minify(src).styles;
+
+        return src;
+    });
 };
 
 exports.clearCache = () => {
-    cache = {};
+    com_cache = {};
 };
 
 exports.disableCache = () => {

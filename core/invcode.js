@@ -22,7 +22,7 @@ exports.insertInvcode = async (type, dat) => {
     var col = await db.col("invcode");
     var code = genInvcode(type);
 
-    await col.insertOne(({ type: type, code: code, valid: 1 }).extend(dat));
+    await col.insertOne(util.extend({ type: type, code: code, valid: 1 }, dat));
     
     return code;
 };

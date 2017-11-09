@@ -611,7 +611,7 @@ var chinese = {
 		"front.com.login.empty": "空的$1"
 };
 
-dict["chinese"] = {}.extend(dict["english"]).extend(chinese);
+dict["chinese"] = util.extend({}, dict["english"], chinese);
 
 // find difference
 function minusLang(obj1, obj2) {

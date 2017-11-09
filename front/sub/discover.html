@@ -14,7 +14,7 @@
             function fetch(name, suc, err) {
                 $.ajax({
         			type: "GET",
-        			url: "/sub/discover/" + name + ".html",
+        			url: "/mcom/mpart?part=discover/" + name,
         			data: { v: (new Date()).getTime() /* no cache */ },
         			success: function (dat) { suc(dat); },
         			error: function (req, exc) {
