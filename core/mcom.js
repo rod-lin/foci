@@ -32,7 +32,9 @@ var parseFile = async (cont, name) => {
     var i = 0;
 
     cont = cont.replace(cssreg, function (match) {
-        return "foci.loadCSSPlain(" + JSON.stringify(files[i++].toString()) + ")";
+        var css = files[i++].toString();
+        css = minifycss.minify(css).styles;
+        return "foci.loadCSSPlain(" + JSON.stringify(css) + ")";
     });
 
     return ";(function () { " + cont + "})();";
@@ -141,6 +143,8 @@ exports.mcss = async (files) => {
 
 exports.clearCache = () => {
     com_cache = {};
+    css_cache = {};
+    part_cache = {};
 };
 
 exports.disableCache = () => {

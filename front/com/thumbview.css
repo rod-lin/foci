@@ -1,0 +1,74 @@
+
+.com-thumbview-modal {
+    border: 0 !important;
+
+    user-select: none;
+    -moz-user-select: none;
+}
+
+.com-thumbview-modal .cont {
+    position: relative;
+    border-radius: 3px;
+}
+
+.com-thumbview-modal img {
+    display: block;
+    border-radius: 3px;
+    width: 100%;
+}
+
+.com-thumbview-modal .close-btn {
+    display: none;
+}
+
+.com-thumbview-modal.loaded .close-btn {
+    display: block;
+}
+
+.com-thumbview-modal .close-btn {
+	position: absolute;
+
+	top: -7px;
+	right: -7px;
+
+	width: 30px;
+	height: 30px;
+
+	line-height: 28px;
+	text-align: center;
+
+	border-radius: 3px;
+	cursor: pointer;
+
+	color: white;
+
+	background: #E74C3C;
+
+	box-shadow: 0 0 3px #E74C3C;
+
+	transition: background 0.2s;
+}
+
+.com-thumbview-modal .close-btn:hover {
+	background: rgb(230, 91, 78);
+}
+
+.com-thumbview-modal .close-btn:active {
+	background: #C0392B;
+}
+
+.com-thumbview-zoom-img {
+    transition: -webkit-filter 0.3s,
+                -moz-filter 0.3s,
+                -ms-filter 0.3s,
+                -o-filter 0.3s,
+                filter 0.3s;
+}
+
+.com-thumbview-zoom-img:hover {
+    -webkit-filter: blur(2px) brightness(0.8);
+	-moz-filter: blur(2px) brightness(0.8);
+	-ms-filter: blur(2px) brightness(0.8);
+	-o-filter: blur(2px) brightness(0.8);
+	filter: blur(2px) brightness(0.8);
+}

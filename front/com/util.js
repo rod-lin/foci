@@ -493,8 +493,18 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		});
 	};
 	
+	// this function does not parse the html source
+	// bu t directly convert html to plain text(escaped)
 	util.htmlToText = function (html) {
 		return $("<span>" + xfilt(html) + "</span>").text();
+	};
+
+	// htmlGist convert html to text without executing the content in it
+	util.htmlGist = function (html) {
+		return xfilt(html.replace(/<img[^>]*(\/?>|><\/img>)/g, "[Image] ")
+						 .replace(/<br>|<br\/>|<br><\/br>/g, "\n")
+						 .replace(/<[^>]*>/g, "")
+						 .replace(/(\s|&nbsp;)+/g, " "));
 	};
 	
 	util.createObjectURL = function (blob) {

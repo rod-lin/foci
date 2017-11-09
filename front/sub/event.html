@@ -505,13 +505,13 @@
 			"com/xfilt", "com/login", "com/map",
 			"com/lang", "com/avatar", "com/colstat",
 			"com/formi", "com/comment", "com/club",
-			"com/tagbox"
+			"com/tagbox", "com/thumbview"
 		], function (
 			env, util, event,
 			xfilt, login, map,
 			lang, avatar, colstat,
 			formi, comment, club,
-			tagbox
+			tagbox, thumbview
 		) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
@@ -561,6 +561,8 @@
 				cont.find(".title").html(parsed.title);
 				cont.find(".descr").html(parsed.descr);
 				// cont.find(".date span").html(parsed.date);
+
+				thumbview.init(cont.find(".descr"));
 				
 				cont.find(".view-cover-btn").click(function () {
 					if (!show_cover) {
