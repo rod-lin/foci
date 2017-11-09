@@ -89,7 +89,11 @@ exports.route = (handler) => async (req, res) => {
 	
 	env.init(async () => {
 		try {
-			watchdog.logRequest(env.ip(), url.parse(req.url).pathname);
+			var path = url.parse(req.url).pathname;
+			
+			if (config.lim.traffic.ignore.indexOf("path") == -1)
+				watchdog.logRequest(env.ip(), path);
+			
 			return await handler(env);
 		} catch (e) {
 			if (e instanceof err.Exc) {

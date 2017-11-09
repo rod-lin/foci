@@ -673,7 +673,7 @@ define([
             entry = $("<div class='com-club-entry'> \
                 <div class='club-logo'> \
                     <i class='" + config.tool.icon + " fitted icon'></i> \
-                    <div class='ui small active loader'></div> \
+                    <div class='ui small inverted active loader'></div> \
                 </div> \
                 <div class='club-name'>" + config.tool.name + "</div> \
             </div>");

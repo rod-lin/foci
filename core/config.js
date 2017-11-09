@@ -208,7 +208,9 @@ var conf = module.exports = {
 					// cleaning threshold of an ip log
 					gc_time_threshold: 1000 * 60 * 30, // half an hour
 				}
-			}
+			},
+
+			ignore: [ "/file/download", "/file/derefer" ]
 		},
 		
 		realname: {
