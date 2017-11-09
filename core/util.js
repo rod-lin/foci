@@ -91,7 +91,7 @@ exports.route = (handler) => async (req, res) => {
 		try {
 			var path = url.parse(req.url).pathname;
 			
-			if (config.lim.traffic.ignore.indexOf("path") == -1)
+			if (config.lim.traffic.ignore.indexOf(path) == -1)
 				watchdog.logRequest(env.ip(), path);
 			
 			return await handler(env);
