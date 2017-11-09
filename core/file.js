@@ -232,7 +232,7 @@ exports.getFile = async (chsum, config) => {
 	if (config.thumb !== undefined) {
 		style = "!thumb" + config.thumb;
 	} else {
-		style = "!watermark";
+		style = "!thumb3";
 	}
 
 	return {
