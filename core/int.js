@@ -454,7 +454,7 @@ _file.download = util.route(async env => {
 		"chsum": "string",
 
 		"tmp": { type: "bool", opt: true },
-		"thumb": "int", // 0 - 5, the higher the higher compressing rate
+		"thumb": { type: "int", opt: true }, // 0 - 5, the higher the higher compressing rate
 	});
 	
 	var ret = await file.getFile(args.chsum, args);
