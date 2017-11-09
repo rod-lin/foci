@@ -67,7 +67,7 @@ define([ "com/util" ], function (util) {
 
         var src = img.attr("src");
 
-        if (/^\/file\/defer|^\/file\/download/.test(src)) {
+        if (/^\/file\/derefer|^\/file\/download/.test(src)) {
             if (/thumb=\d+/.test(src)) {
                 src = src.replace(/thumb=\d+/g, "thumb=0");
             } else {
