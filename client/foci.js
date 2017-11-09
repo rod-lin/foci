@@ -504,8 +504,12 @@ window.foci = {};
 		});
 	};
 
-	foci.download = function (chsum, tmp) {
-		return "/file/download?chsum=" + chsum + (tmp ? "&tmp=true" : "");
+	foci.download = function (chsum, config) {
+		config = config || {};
+		return "/file/download?chsum=" +
+			   chsum +
+			   (config.tmp ? "&tmp=true" : "") +
+			   (config.thumb != undefined ? "&thumb=" + config.thumb : "&thumb=4");
 	};
 
 	foci.loadCSS = function (path) {

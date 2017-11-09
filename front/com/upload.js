@@ -244,7 +244,7 @@ define([ "com/util" ], function (util) {
 				has_init = true;
 			
 			main.find(".preview")
-				.attr("src", data_url ? data_url : foci.download(selected, !disable_crop))
+				.attr("src", data_url ? data_url : foci.download(selected, { tmp: !disable_crop }))
 				.ready(function () {
 					main.modal("refresh");
 				}).on("load", function () {

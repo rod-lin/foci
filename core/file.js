@@ -194,8 +194,10 @@ var findFile = async (chsum) => {
 	return found;
 }
 
-exports.getFile = async (chsum, tmp) => {
-	if (tmp) {
+exports.getFile = async (chsum, config) => {
+	config = config || {};
+
+	if (config.tmp) {
 		if (await existsAsync(dir(chsum, true))) {
 			return {
 				ct: null,
@@ -209,8 +211,8 @@ exports.getFile = async (chsum, tmp) => {
 	var file = await findFile(chsum);
 
 	if (file.force_local || !file.cached || !oss_client) {
-		if (await existsAsync(dir(chsum, tmp))) { // has local file
-			if (!tmp && !file.force_local) {
+		if (await existsAsync(dir(chsum, config.tmp))) { // has local file
+			if (!config.tmp && !file.force_local) {
 				tick.awrap(async () => {
 					await exports.cacheOne(chsum);
 				})();
@@ -218,16 +220,24 @@ exports.getFile = async (chsum, tmp) => {
 			
 			return {
 				ct: file.ct,
-				cont: await readFileAsync(dir(chsum, tmp))
+				cont: await readFileAsync(dir(chsum, config.tmp))
 			};
 		} else {
 			throw new err.Exc("$core.file_missing(" + chsum + ")");
 		}
 	}
-	
+
+	var style = "";
+
+	if (config.thumb !== undefined) {
+		style = "!thumb" + config.thumb;
+	} else {
+		style = "!watermark";
+	}
+
 	return {
 		ct: file.ct,
-		redir: oss_client.signatureUrl(chsum /* default expire: 30 min */).replace("http", "https")
+		redir: oss_client.signatureUrl(chsum + style /* default expire: 30 min */).replace("http", "https")
 	}
 };
 

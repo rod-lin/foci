@@ -450,10 +450,14 @@ _file.upload = util.route(async env => {
 _file.download = util.route(async env => {
 	// if (!await checkCaptcha(env)) return;
 	
-	var args = util.checkArg(env.query, { "chsum": "string", "tmp": { type: "bool", opt: true } });
-	var ret = await file.getFile(args.chsum, !!args.tmp);
+	var args = util.checkArg(env.query, {
+		"chsum": "string",
 
-	// await file.cacheFull();
+		"tmp": { type: "bool", opt: true },
+		"thumb": "int", // 0 - 5, the higher the higher compressing rate
+	});
+	
+	var ret = await file.getFile(args.chsum, args);
 
 	if (ret.redir) {
 		// TODO: content type?
