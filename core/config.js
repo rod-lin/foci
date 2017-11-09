@@ -210,7 +210,7 @@ var conf = module.exports = {
 				}
 			},
 
-			ignore: [ "/file/download", "/file/derefer" ]
+			ignore: [ "/file/download", "/file/derefer", "/mcom/merge", "/mcom/mcss", "/mcom/mpart" ]
 		},
 		
 		realname: {
