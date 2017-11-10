@@ -659,6 +659,7 @@ define([
 
 			main.modal({
 				autofocus: false,
+				allowMultiple: true,
 				onHide: function () {
 					if (ask_open) return false;
 

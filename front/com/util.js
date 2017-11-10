@@ -150,42 +150,99 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 	};
 
 	util.ask = function (msg, cb) {
-		var main = $(' \
-			<div class="ui mini modal com-util-ask"> \
-				<div class="ui header"> \
-					' + util.mfilt(msg) + ' \
-				</div> \
-				<div class="actions"> \
-					<div class="ui red cancel button"> \
-						<i class="remove icon"></i> \
-						No \
-					</div> \
-					<div class="ui green ok button"> \
-						<i class="checkmark icon"></i> \
-						Yes \
+		// var main = $(' \
+		// 	<div class="ui mini modal com-util-ask"> \
+		// 		<div class="ui header"> \
+		// 			' + util.mfilt(msg) + ' \
+		// 		</div> \
+		// 		<div class="actions"> \
+		// 			<div class="ui red cancel button"> \
+		// 				<i class="remove icon"></i> \
+		// 				No \
+		// 			</div> \
+		// 			<div class="ui green ok button"> \
+		// 				<i class="checkmark icon"></i> \
+		// 				Yes \
+		// 			</div> \
+		// 		</div> \
+		// 	</div> \
+		// ');
+
+		var main = $("<div class='ui page dimmer active com-util-ask-modal'> \
+			<div class='content'> \
+				<div> \
+					<div class='cont'> \
+						<h1 class='ui header'><i class='warning circle fitted icon'></i></h1> \
+						<div class='msg'></div> \
+						<div class='opt-bar' style='margin-top: 2em;'> \
+							<button class='ui red button rej-btn'>No</button> \
+							<button class='ui green button acc-btn'>Yes</button> \
+						</div> \
 					</div> \
 				</div> \
 			</div> \
-		');
+		</div>");
 
-		var ret = false;
+		// var activated = $(".ui.page.dimmer.transition.visible");
 
-		main.modal({
-			closable: false,
-			allowMultiple: true,
+		main.find(".msg").html(msg);
+		$("body").append(main);
+		
+		if (!util.isMobile()) {
+			$("body").addClass("blurred");
+		}
 
-			onDeny: function(){
-				ret = false;
-			},
+		main.transition("fade in");
 
-			onApprove: function() {
-				ret = true;
-			},
+		var closed = false;
 
-			onHidden: function () {
-				cb(ret);
-			}
-		}).modal("show");
+		var res = function (ans) {
+			return function () {
+				if (closed) return;
+				closed = true;
+	
+				main.transition("fade out");
+				$("body").removeClass("blurred");
+	
+				if (cb) cb(ans);
+
+				setTimeout(function () {
+					main.remove();
+				}, 3000);
+
+				// setTimeout(function () {
+				// 	activated.transition("fade in");
+				// }, 300);
+			};
+		};
+
+		main.find(".acc-btn").click(res(true));
+		main.find(".rej-btn").click(res(false));
+
+		main.find(".cont").click(function (e) {
+			e.stopImmediatePropagation();
+		});
+
+		main.click(res(false));
+
+		// var ret = false;
+
+		// main.modal({
+		// 	closable: false,
+		// 	allowMultiple: true,
+
+		// 	onDeny: function(){
+		// 		ret = false;
+		// 	},
+
+		// 	onApprove: function() {
+		// 		ret = true;
+		// 	},
+
+		// 	onHidden: function () {
+		// 		cb(ret);
+		// 	}
+		// }).modal("show");
 	};
 
 	// success or failed
