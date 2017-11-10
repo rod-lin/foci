@@ -924,31 +924,43 @@ define([
 			<div class='show-cover'></div> \
 			<div class='show-info'> \
 				<div style='position: relative; height: 100%; width: 100%; overflow: hidden;'> \
-					<div class='show-title'>Hello, world</div> \
-					<div class='show-descr'>Light, he said.<br>Then there was light</div> \
-					<div class='show-toolbar'> \
+					<div class='show-title'></div> \
+					<div class='show-descr'></div> \
+					<div class='show-tagbox'></div> \
+					<!--div class='show-toolbar'> \
 						<span class='info-icon loc-bar'><i class='map outline icon'></i><span class='show-loc'></span></span> \
 						<span class='info-icon' style='float: right;'><i class='user outline icon'></i><span class='show-partic'></span></span> \
-					</div> \
+					</div--> \
 				</div> \
 			</div> \
 		</div>");
 
 		main.find(".show-title").html(parsed.title);
 		main.find(".show-descr").html(parsed.descr_text);
-		main.find(".show-partic").html(parsed.apply_num || "0");
+		// main.find(".show-partic").html(parsed.apply_num || "0");
+
+		env.favtag(function (tags) {
+			var tgbox = tagbox.init(main.find(".show-tagbox"), tags, { init: parsed.favtag });
+			
+			if (info.loclng && info.loclat) {
+				map.locToName(info.loclng, info.loclat, function (addr) {
+					// main.find(".show-loc").html(addr);
+					tgbox.addTrivial({
+						name: "<span><i class='map outline icon'></i>" + addr + "</span>",
+						style: "green border"
+					});
+				});
+			}
+
+			tgbox.addTrivial({
+				name: "<span><i class='user outline icon'></i>" + parsed.apply_num + "</span>",
+				style: "blue border"
+			});
+		});
 
 		util.bgimg(main.find(".show-cover"), parsed.cover);
 
-		if (info.loclng && info.loclat) {
-			map.locToName(info.loclng, info.loclat, function (addr) {
-				main.find(".show-loc").html(addr);
-			});
-		} else {
-			main.find(".show-loc").html("(no location)");
-		}
-
-		main.click(function () {
+		main.find(".show-title, .show-descr, .show-cover").click(function () {
 			util.jump("#event/" + info.euid);
 		});
 

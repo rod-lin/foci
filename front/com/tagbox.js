@@ -553,114 +553,99 @@ define([ "com/util", "com/xfilt" ], function (util, xfilt) {
 
 	function imgtag(cont, tags, config) {
 		cont = $(cont);
-		config = $.extend({}, config);
+		config = $.extend({
+			shuffle: true
+		}, config);
 
 		var main = $(" \
 			<div class='com-tagbox-imgtag'> \
+				<div class='imgtag-cont'></div> \
 			</div> \
 		");
 
 		function genTag(k, tag) {
 			var t = $("<div class='imgtag'> \
-				<div class='imgtag-img'></div><span class='imgtag-text'></span> \
+				<div class='imgtag-img'><div class='imgtag-text'></div></div> \
 			</div>");
 
-			t.find(".imgtag-text").html("<span>" + tag.name + "</span>");
-			if (tag.img) {
-				util.bgimg(t.find(".imgtag-img"), tag.img || util.randimg());
-			} else if (tag.icon) {
-				t.find(".imgtag-img").html("<i class='fitted " + tag.icon + " icon'></i>");;
-			}
+			if (tag.show_more) {
+				t.addClass("show-more-btn");
+				t.find(".imgtag-text").html(tag.cont);
+			} else {
+				t.find(".imgtag-text").html(tag.name);
 
-			t.click(function () {
-				util.jump("#search//" + k);
-			});
+				// if (tag.icon) {
+				// 	t.find(".imgtag-text").prepend("<i class='icon " + tag.icon + "'></i>");
+				// }
+
+				t.attr("title", tag.name);
+
+				if (tag.img) {
+					util.bgimg(t.find(".imgtag-img"), tag.img || util.randimg());
+				}
+
+				t.click(function () {
+					util.jump("#search//" + k);
+				});
+			}
 
 			return t;
 		}
 
+		var pairs = [];
+
 		for (var k in tags) {
 			if (tags.hasOwnProperty(k))
-				main.append(genTag(k, tags[k]));
+				pairs.push([ k, tags[k] ]);
 		}
 
-		// justify margins and widths so that tags can fill up the entire container
-		function justifyTag() {
-			// console.log("justify tag");
-			
-			main.children("br").remove();
+		pairs = util.shuffle(pairs);
 
-			var arr = main.find(".imgtag").sort(function (a, b) {
-				return $(a).width() - $(b).width();
-			});
-
-			for (var i = 0; i < arr.length; i++) {
-				main.append(arr[i]);
-				// main.append(arr[arr.length - i - 1]);
-			}
-
-			var narr = main.find(".imgtag");
-			var lines = [];
-			var cur = [];
-			var length = 0;
-			var cont_width = cont.width();
-
-			var def_margin = $(narr[0]).outerWidth(true) - $(narr[0]).outerWidth();
-
-			for (var i = 0; i < narr.length; i++) {
-				var cur_tag = $(narr[i]);
-
-				var cur_length = cur_tag.outerWidth(true);
-
-				if (length + cur_length > cont_width) {
-					cur.total_length = length;
-					lines.push(cur);
-					cur = [ cur_tag ];
-					length = cur_tag.outerWidth(true);
-				} else {
-					length += cur_length;
-					cur.push(cur_tag);
-				}
-			}
-
-			cur.total_length = length;
-			lines.push(cur);
-
-			for (var i = 0; i < lines.length - 1; i++) {
-				var line = lines[i];
-				if (line.length > 1) {
-					var gap = (cont_width - line.total_length + def_margin) / line.length;
-					// console.log(gap);
-					for (var j = 0; j < line.length; j++) {
-						// line[j].css("margin-right", gap + "px");
-						var tag_width = $(line[j]).find(".imgtag-text span").width();
-						$(line[j]).find(".imgtag-text").width(tag_width + gap + "px");
-					}
-
-					line[line.length - 1].css("margin-right", "0").after("<br>");
-				}
-			}
+		for (var i = 0; i < pairs.length; i++) {
+			main.find(".imgtag-cont").append(genTag(pairs[i][0], pairs[i][1]));
 		}
 
-		cont.ready(function () {
-			justifyTag();
-			// justifyTag();
-			
-			var justify_lock = false;
-			
-			$(window).resize(function () {
-				if (justify_lock) return;
-				justify_lock = true;
-				
-				main.find(".imgtag-text").css("width", "");
-				main.find(".imgtag").css("margin-right", "");
-				
-				setTimeout(function () {
-					justifyTag();
-					justify_lock = false;
-				}, 100);
+		// main.find(".imgtag-cont").append(genTag("", {
+		// 	show_more: true,
+		// 	cont: "More"
+		// }));
+
+		function updateLayout(col, row) {
+
+			main.find(".imgtag").css("display", "");
+			main.find(".imgtag").not(".show-more-btn").each(function (i, dom) {
+				if (i >= col * row) {
+					$(dom).css("display", "none");
+				}
 			});
-		});
+
+			main.removeClass("col-2 col-3 col-4 col-5").addClass("col-" + col);
+
+			main.find(".imgtag-cont").css("width", "");
+			main.css("height", "");
+
+			setTimeout(function () {
+				var w = main.find(".imgtag-cont").width();
+				var h = main.height();
+
+				main.find(".imgtag-cont").width(w + 2);
+				main.height(h - 2);
+			}, 100);
+		}
+
+		$(window).resize(function () {
+			var width = util.windowWidth();
+
+			// alert(width);
+
+			if (width >= 960) {
+				updateLayout(4, 2);
+			} else if (width >= 720 && width < 960) {
+				updateLayout(3, 2);
+			} else if (width < 720) {
+				updateLayout(2, 3);
+			}
+		}).resize();
 
 		// setTimeout(justifyTag, 5000);
 

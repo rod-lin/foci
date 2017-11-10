@@ -63,47 +63,56 @@ var conf = module.exports = {
 
 			"art": {
 				name: "art",
-				icon: "paint brush"
+				icon: "paint brush",
+				img: "/img/favtag/art.jpg"
 			},
 			
 			"workshop": {
 				name: "workshop",
-				icon: "idea"
+				icon: "idea",
+				img: "/img/favtag/workshop.jpg"
 			},
 			
 			"volunteer": {
 				name: "volunteer",
-				icon: "handshake"
+				icon: "handshake",
+				img: "/img/favtag/volunteer.jpg"
 			},
 			
 			"language": {
 				name: "language",
-				icon: "talk"
+				icon: "talk",
+				img: "/img/favtag/language.jpg"
 			},
 
 			"academic": {
 				name: "academic",
-				icon: "student"
+				icon: "student",
+				img: "/img/favtag/academic.jpg"
 			},
 
 			"sports": {
 				name: "sports",
-				icon: "flag checkered"
+				icon: "flag checkered",
+				img: "/img/favtag/sports.jpg"
 			},
 
 			"exam": {
 				name: "exam",
-				icon: "book"
+				icon: "book",
+				img: "/img/favtag/exam.jpg"
 			},
 
 			"music": {
 				name: "music",
-				icon: "music"
+				icon: "music",
+				img: "/img/favtag/music.jpg"
 			},
 
 			"tech": {
 				name: "tech",
-				icon: "rocket"
+				icon: "rocket",
+				img: "/img/favtag/tech.jpg"
 			}
 		},
 		

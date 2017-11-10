@@ -150,24 +150,6 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 	};
 
 	util.ask = function (msg, cb) {
-		// var main = $(' \
-		// 	<div class="ui mini modal com-util-ask"> \
-		// 		<div class="ui header"> \
-		// 			' + util.mfilt(msg) + ' \
-		// 		</div> \
-		// 		<div class="actions"> \
-		// 			<div class="ui red cancel button"> \
-		// 				<i class="remove icon"></i> \
-		// 				No \
-		// 			</div> \
-		// 			<div class="ui green ok button"> \
-		// 				<i class="checkmark icon"></i> \
-		// 				Yes \
-		// 			</div> \
-		// 		</div> \
-		// 	</div> \
-		// ');
-
 		var main = $("<div class='ui page dimmer active com-util-ask-modal'> \
 			<div class='content'> \
 				<div> \
@@ -224,25 +206,6 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		});
 
 		main.click(res(false));
-
-		// var ret = false;
-
-		// main.modal({
-		// 	closable: false,
-		// 	allowMultiple: true,
-
-		// 	onDeny: function(){
-		// 		ret = false;
-		// 	},
-
-		// 	onApprove: function() {
-		// 		ret = true;
-		// 	},
-
-		// 	onHidden: function () {
-		// 		cb(ret);
-		// 	}
-		// }).modal("show");
 	};
 
 	// success or failed
@@ -730,6 +693,26 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		}
 		
 		return src;
+	};
+
+	util.shuffle = function (arr) {
+		var tmp = new Array(arr.length);
+
+		for (var i = 0; i < arr.length; i++) {
+			tmp[i] = [ Math.random(), arr[i] ];
+		}
+
+		tmp.sort(function (a, b) {
+			return a[0] - b[0];
+		});
+
+		var ret = new Array(arr.length);
+
+		for (var i = 0; i < arr.length; i++) {
+			ret[i] = tmp[i][1];
+		}
+
+		return ret;
 	};
 
 	return util;

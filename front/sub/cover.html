@@ -2,10 +2,14 @@
 	<div class="search-box"></div>
 	<div class="main-wrap">
 		<div class="show-board trim"></div>
-		<div class="push-board">
+		<div class="push-board" style="margin-top: 0;">
 			<div class="tag-board-cont">
-				<div class="tag-board"></div>
+				<div class="tag-board">
+					<div class="ui horizontal divider">Interest Tags</div>
+				</div>
 				<div class="push-board-set">
+					<div class="ui horizontal divider">New Events</div>
+					<div class="push-board-set-cont"></div>
 					<div class="ui inline loader active"></div>
 				</div>
 			</div
@@ -21,7 +25,12 @@
 <style>
 	.sub-cover {
 		text-align: center;
-		background: rgb(253, 253, 253);
+		background: rgb(255, 255, 255);
+	}
+
+	.sub-cover .ui.divider {
+		margin: 2rem 0 1rem 0;
+		color: rgb(100, 100, 100);
 	}
 
 	.sub-cover .main-wrap {
@@ -58,7 +67,8 @@
 		background: white;
 	}
 
-	.sub-cover .border {
+	.sub-cover .push-board.border,
+	.sub-cover .show-board.border {
 		overflow: hidden;
 		border-radius: 5px;
 		border: 1px solid rgba(0, 0, 0, 0.1);
@@ -68,7 +78,6 @@
 	.sub-cover .show-board {
 		height: auto;
 
-		margin-bottom: 0.5rem;
 		border-radius: 0 0 3px 3px;
 		border: 1px solid rgba(0, 0, 0, 0.08);
 		border-width: 0 1px 1px 1px;
@@ -77,7 +86,7 @@
 
 	.sub-cover .push-board {
 		height: auto;
-		margin-bottom: 1rem;
+		margin-top: 2rem;
 	}
 
 	.sub-cover .push-board:last-child {
@@ -92,7 +101,7 @@
 		width: 70%;
 		vertical-align: top;
 
-		padding-right: 0.5rem;
+		padding-right: 1rem;
 	}
 
 	.sub-cover .tag-board {
@@ -103,8 +112,7 @@
 		display: inline-block;
 		width: 30%;
 
-		margin-top: 0.5rem;
-		padding-left: 0.5rem;
+		padding-left: 1rem;
 	}
 
 	.sub-cover .extra-margin {
@@ -115,6 +123,19 @@
 	.sub-cover .push-board-set {
 		margin-top: 0.5rem;
 		text-align: center;
+	}
+
+	.sub-cover .push-board-set .push-board {
+		margin-top: 1rem;
+	}
+
+	.sub-cover .push-board-set .push-board {
+		padding-bottom: 0.7rem; /* 1 - 0.3rem(tag margin-bottom) */
+		border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+	}
+
+	.sub-cover .push-board-set .push-board:first-child {
+		margin-top: 0;
 	}
 
 	.sub-cover .push-board-set>.ui.loader {
@@ -140,6 +161,14 @@
 			margin-top: 0;
 		}
 
+		.sub-cover .push-board {
+			margin-top: 1rem;
+		}
+
+		.sub-cover .ui.divider {
+			margin: 1rem 0;
+		}
+
 		.sub-cover .side-board .copyright-board {
 			display: none;
 		}
@@ -156,10 +185,6 @@
 		
 		.sub-cover .mini-push-board {
 			display: none;
-		}
-
-		.sub-cover .userstat-board {
-			margin-top: 0.5rem;
 		}
 	}
 </style>
@@ -236,9 +261,9 @@
 								skip += dat.length;
 
 								for (var i = 0; i < dat.length; i++) {
-									var push = $("<div class='push-board border bg-white'></div>");
+									var push = $("<div class='push-board'></div>");
 									event.showcase(push, dat[i], { imgpos: "left" });
-									push_board.children(".ui.loader").before(push);
+									push_board.find(".push-board-set-cont").append(push);
 								}
 							}
 						} else {
