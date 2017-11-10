@@ -37,7 +37,7 @@ define([ "com/util" ], function (util) {
             main.modal("refresh");
         });
 
-        main.find(".close-btn").click(function () {
+        main.find(".close-btn, img").click(function () {
             mod.hide();
         });
 
@@ -65,15 +65,7 @@ define([ "com/util" ], function (util) {
         img.css("cursor", "zoom-in");
         img.addClass("com-thumbview-zoom-img");
 
-        var src = img.attr("src");
-
-        if (/^\/file\/derefer|^\/file\/download/.test(src)) {
-            if (/thumb=\d+/.test(src)) {
-                src = src.replace(/thumb=\d+/g, "thumb=0");
-            } else {
-                src = src += "&thumb=0";
-            }
-        }
+        var src = util.nothumb(img.attr("src"));
 
         var modal = null;
 

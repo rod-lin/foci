@@ -14,7 +14,9 @@
 .com-thumbview-modal img {
     display: block;
     border-radius: 3px;
-    width: 100%;
+	width: 100%;
+	
+	cursor: zoom-out;
 }
 
 .com-thumbview-modal .close-btn {
@@ -66,9 +68,9 @@
 }
 
 .com-thumbview-zoom-img:hover {
-    -webkit-filter: blur(2px) brightness(0.8);
-	-moz-filter: blur(2px) brightness(0.8);
-	-ms-filter: blur(2px) brightness(0.8);
-	-o-filter: blur(2px) brightness(0.8);
-	filter: blur(2px) brightness(0.8);
+    -webkit-filter: brightness(0.75);
+	-moz-filter: brightness(0.75);
+	-ms-filter: brightness(0.75);
+	-o-filter: brightness(0.75);
+	filter: brightness(0.75);
 }

@@ -14,6 +14,7 @@ var conf = module.exports = {
 
 	mcom: {
 		expire: 60 * 60 * 24, // in sec
+		client_expire: 0,
 		minify_html_conf: {
 			minifyJS: true,
 			minifyCSS: function (text) {

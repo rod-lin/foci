@@ -78,7 +78,7 @@ _mcom.merge = util.route(async env => {
 	var res = await mcom.merge(coms);
 
 	env.setCT("text/javascript");
-	env.setExpire(config.mcom.expire, res.modified);
+	env.setExpire(config.mcom.client_expire, res.modified);
 	env.raw(res.src);
 });
 
@@ -88,7 +88,7 @@ _mcom.mpart = util.route(async env => {
 
 	var res = await mcom.mpart(args.part);
 
-	env.setExpire(config.mcom.expire, res.modified);
+	env.setExpire(config.mcom.client_expire, res.modified);
 	env.raw(res.src);
 });
 
@@ -100,7 +100,7 @@ _mcom.mcss = util.route(async env => {
 	var res = await mcom.mcss(files);
 
 	env.setCT("text/css");
-	env.setExpire(config.mcom.expire, res.modified);
+	env.setExpire(config.mcom.client_expire, res.modified);
 	env.raw(res.src);
 });
 

@@ -552,7 +552,9 @@
 				cover.find(".title").html(parsed.title);
 				cover.find(".date span").html(parsed.date);
 
-				cover.css("background-image", "url('" + parsed.cover + "')");
+				// cover.css("background-image", "url('" + parsed.cover + "')");
+				util.bgimg(cover, util.nothumb(parsed.cover));
+
 				cover.css("color", "#E6E6E6");
 
 				main.children(".loader").removeClass("active");

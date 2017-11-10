@@ -663,5 +663,17 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		return enabled;
 	};
 
+	util.nothumb = function (src) {
+		if (/^\/file\/derefer|^\/file\/download/.test(src)) {
+            if (/thumb=\d+/.test(src)) {
+                src = src.replace(/thumb=\d+/g, "thumb=0");
+            } else {
+                src = src += "&thumb=0";
+            }
+		}
+		
+		return src;
+	};
+
 	return util;
 });
