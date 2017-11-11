@@ -27,7 +27,7 @@ body.blurred>*:not(.com-util-ask-modal) {
 }
 
 .com-util-ask-modal {
-	z-index: 1000000 !important;
+	z-index: 100000 !important;
 	background-color: rgba(0, 0, 0, 0.8) !important;
 	text-align: center;
 

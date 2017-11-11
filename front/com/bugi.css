@@ -1,0 +1,159 @@
+/* emergency box */
+.com-bugi-embox {
+	position: fixed;
+
+	top: 6rem;
+	right: -5rem;
+
+	min-height: 5rem;
+	width: 4.5rem;
+	max-width: 100%;
+	overflow: hidden;
+
+	z-index: 100001;
+
+	background: rgb(253, 253, 253);
+	color: rgb(70, 70, 70);
+	
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	border-right-width: 0;
+
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+
+	border-radius: 4px 0 0 4px;
+
+	transition: right 0.7s, box-shadow 0.3s, width 0.3s, height 0.3s !important;
+}
+
+.com-bugi-embox.mobile-mode {
+	border-radius: 0;
+	border-left-width: 0;
+}
+
+.com-bugi-embox.show {
+	right: 0;
+}
+
+.com-bugi-embox.hide {
+	border-radius: 4px 0 0 4px;
+	border-left-width: 1px;
+	right: -5rem !important;
+}
+
+.com-bugi-embox:hover {
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.com-bugi-embox.mobile-mode .prompt {
+	white-space: normal;
+}
+
+.com-bugi-embox .prompt {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	display: -webkit-flex;
+	display: flex;
+
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+
+	height: 100%;
+
+	padding: 0 4.5rem;
+
+	white-space: nowrap;
+}
+
+.com-bugi-embox .prompt .msg .title {
+	font-size: 1.3rem;
+	font-weight: bold;
+}
+
+.com-bugi-embox .prompt .msg .error-prompt {
+	color: #E74C3C;
+}
+
+.com-bugi-embox .prompt .button:last-child {
+	margin-right: 1rem !important;
+}
+
+.com-bugi-embox .warn-btn {
+	position: absolute;
+	top: 0;
+	left: 0;
+	color: #3498DB;
+	animation: com-bugi-embox-shake 1s alternate infinite;
+}
+
+.com-bugi-embox .choice-btn {
+	display: inline-block;
+
+	font-size: 2rem;
+
+	height: 5rem;
+	width: 4.5rem;
+	line-height: 5rem;
+
+	text-align: center;
+	vertical-align: middle;
+
+	cursor: pointer;
+}
+
+.com-bugi-embox.expand .choice-btn {
+	color: rgb(150, 150, 150);
+}
+
+.com-bugi-embox .choice-btn.yes-btn {
+	position: absolute;
+	right: 0;
+	top: 0;
+	color: #27AE60 !important;
+}
+
+.com-bugi-embox.expand .warn-btn {
+	animation: none;
+}
+
+@keyframes com-bugi-embox-shake {
+	0% {
+		transform: scale(1.2) rotate(-15deg);
+	}
+	
+	20% {
+		transform: scale(1.2) rotate(15deg);
+	}
+	
+	40% {
+		transform: scale(1.2) rotate(-10deg);
+	}
+
+	60% {
+		transform: scale(1) rotate(0);
+	}
+}
+
+.com-bugi-fbmodal {
+	padding: 2rem;
+}
+
+.com-bugi-fbmodal .title {
+	font-weight: bold;
+	font-size: 1.3rem;
+	margin-bottom: 1.5rem;
+}
+
+.com-bugi-fbmodal .descr {
+	width: 100%;
+
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	border-radius: 4px;
+	padding: 2rem;
+
+	height: 20rem;
+
+	margin-bottom: 1.5rem;
+}

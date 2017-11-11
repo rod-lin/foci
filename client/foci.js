@@ -199,10 +199,12 @@ window.foci = {};
 	Session.prototype.isAdmin = function () { return this.is_admin; };
 
 	function noCacheData(data) {
+		var v = (new Date()).getTime();
+
 		if (FormData && data instanceof FormData) {
-			data.append("v", Math.random());
+			data.append("v", v);
 		} else {
-			data = $.extend({ v: Math.random() }, data || {});
+			data = $.extend({ v: v }, data || {});
 		}
 
 		return data;

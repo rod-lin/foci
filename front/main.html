@@ -6,56 +6,82 @@
 		<!-- <meta http-equiv="Pragma" content="no-cache"> -->
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
-		<link rel="shortcut icon" href="img/favicon.ico">
-		<link rel="icon" href="img/favicon.ico">
+		<link rel="shortcut icon" href="/img/favicon.ico">
+		<link rel="icon" href="/img/favicon.ico">
 
-		<script src="lib/foci.js?v=25"></script>
-		<!-- <script src="lib/vcent.js?v=1"></script> -->
-		<script src="lib/gt.js?v=0"></script> <!-- geetest api -->
-
-		<script src="lib/require.js?v=0"></script>
 		<script>
-			foci.version = 43;
-			foci.config = {
-				banner_min_scroll: 500, // min scroll top to trigger banner
-				max_upload_size: 1024 * 1024 * 3, // 3m
-			};
-			
-			foci.nested = top != window;
-		
-			require.config({
-				waitSeconds: 0, // ntimeout
-				urlArgs: "v=" + foci.version // one version a time, keeps the cache away~~
-			});
+			window.CACHE_CONTROL = 45;
 		</script>
 
+		<script src="/lib/foci.js?v=26"></script>
+		<script src="/lib/require.js?v=0"></script>
+
+		<!-- init & preload -->
+		<script>
+			(function () {
+				foci.version = window.CACHE_CONTROL;
+				foci.config = {
+					banner_min_scroll: 500, // min scroll top to trigger banner
+					max_upload_size: 1024 * 1024 * 3, // 3m
+				};
+				
+				foci.nested = top != window;
+			
+				require.config({
+					waitSeconds: 0, // ntimeout
+					urlArgs: "v=" + foci.version // one version a time, keeps the cache away~~
+				});
+
+				var coms = [
+					"bugi", "pm", "notice", "popselect",
+					"userhunt", "trex", "parts",
+					"pages", "tbar", "lang", "dragi",
+					"xfilt", "waterfall", "util",
+					"avatar", "env", "upload", "login",
+					"map", "tagbox", "rating", "progress",
+					"sortby", "editable", "tip", "lang", "club"
+				];
+
+				var css = [
+					"/font/avenir/import",
+					"/font/fontawesome/import",
+					"/font/foci/import",
+					"/css/sui-calendar",
+					"/css/cropper",
+					"/css/com",
+					"/css/markdown",
+					"/css/font"
+				];
+
+				var src = "/mcom/merge?v=" + foci.version + "&coms=" + coms.join(",");
+				$("head").append("<script src='" + src + "'></\script>");
+
+				var href = "/mcom/mcss?v=" + foci.version + "&files=" + css.join(",");
+				$("head").append("<link rel='stylesheet' href='" + href + "'>");
+			})();
+		</script>
+
+		<!-- baidu map -->
 		<script>
 			(function(){
 				window.HOST_TYPE = "2";
 				window.BMap_loadScriptTime = (new Date).getTime();
 			})();
 		</script>
-
 		<!-- <script src="https://api.map.baidu.com/api?v=2.0&ak=B4lBjPwv47t4CNlFiyY4siyy&s=1"></script> -->
 		<script async src="https://api.map.baidu.com/getscript?v=2.0&ak=B4lBjPwv47t4CNlFiyY4siyy&services="></script>
 
-		<link rel="stylesheet" href="/mcom/mcss?v=1&files=/font/avenir/import,/font/fontawesome/import,/font/foci/import,/css/sui-calendar,/css/cropper,/css/com,/css/markdown,/css/font">
 		<link rel="stylesheet" href="/semantic/semantic.min.css?v=1">
-
 		<script src="/semantic/semantic.min.js?v=1"></script>
 		<script src="/lib/sui-calendar.js?v=0"></script>
-		<script src="/lib/cropper.js?v=0"></script>
 
+		<!-- geetest api -->
+		<script src="/lib/gt.js?v=0"></script>
+		
 		<script src="/lib/touch-swipe.js?v=0"></script>
+		<script src="/lib/cropper.js?v=0"></script>
 		<script src="/lib/canvas-to-blob.js?v=0"></script>
-
-		<!-- <link rel="stylesheet" href="com/tbar/import.css">
-		<link rel="stylesheet" href="com/waterfall/import.css">
-		<link rel="stylesheet" href="com/xfilt/import.css">
-		<link rel="stylesheet" href="com/event/import.css"> -->
-
-		<script src="/mcom/merge?v=8&coms=pm,notice,popselect,userhunt,trex,parts,pages,tbar,lang,dragi,xfilt,waterfall,util,avatar,env,upload,login,map,tagbox,rating,progress,sortby,editable,tip,lang,club"></script>
-
+		
 		<!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 		<script>
 			(adsbygoogle = window.adsbygoogle || []).push({
