@@ -2452,6 +2452,8 @@ var methods = {
   getCroppedCanvas: function getCroppedCanvas(options) {
     var self = this;
 
+    console.log("fk it's not ready");
+
     if (!self.ready || !window.HTMLCanvasElement) {
       return null;
     }

@@ -197,43 +197,54 @@ define([ "com/util" ], function (util) {
 			if (!main.find(".preview").attr("src")) {
 				util.emsg("no file selected");
 			} else {
-				var canvas = main.find(".preview").cropper("getCroppedCanvas");
-				
-				// console.log(canvas);
-
-				if (!canvas) {
-					console.log(main.find(".preview"), main.find(".preview").cropper("getCroppedCanvas"), main.find(".preview").cropper);
-				}
-				
-				if (!canvas.toBlob) {
-					// TODO: fallback
-					util.emsg("$unsupported(canvas.toBlob)");
-					return;
-				}
-				
-				main.find(".use-btn").addClass("loading");
-				
-				canvas.toBlob(function (blob) {
-					var form = new FormData();
+				var next = function () {
+					var canvas = main.find(".preview").cropper("getCroppedCanvas");
 					
-					form.append("file", blob);
+					// console.log(canvas);
 
-					foci.post("/file/upload", form, function (suc, dat) {
-						main.find(".use-btn").removeClass("loading");
+					// if (!canvas) {
+					// 	console.log(main.find(".preview"), main.find(".preview").cropper("getCroppedCanvas"), main.find(".preview").cropper);
+					// }
+					
+					if (!canvas.toBlob) {
+						// TODO: fallback
+						util.emsg("$unsupported(canvas.toBlob)");
+						return;
+					}
+					
+					main.find(".use-btn").addClass("loading");
+					
+					canvas.toBlob(function (blob) {
+						var form = new FormData();
 						
-						if (suc) {
-							main.modal("hide");
-							if (cb) cb(dat, getArg());
-						} else {
-							util.emsg(dat);
-						}
+						form.append("file", blob);
+
+						foci.post("/file/upload", form, function (suc, dat) {
+							main.find(".use-btn").removeClass("loading");
+							
+							if (suc) {
+								main.modal("hide");
+								if (cb) cb(dat, getArg());
+							} else {
+								util.emsg(dat);
+							}
+						});
 					});
-				});
+				};
+
+				if (crop_ready) {
+					next();
+				} else {
+					crop_ready_cb.push(next);
+				}
 			}
 		});
 
 		var has_init = false;
 		var hide_locked = false;
+
+		var crop_ready = false;
+		var crop_ready_cb = [];
 
 		function showPreview(disable_crop, data_url) {
 			if (!selected && !data_url) return;
@@ -259,6 +270,16 @@ define([ "com/util" ], function (util) {
 				main.find(".preview").cropper({
 					aspectRatio: config.crop.ratio,
 					checkCrossOrigin: true,
+
+					ready: function () {
+						crop_ready = true;
+
+						for (var i = 0; i < crop_ready_cb.length; i++) {
+							crop_ready_cb[i]();
+						}
+
+						crop_ready_cb = [];
+					},
 					
 					cropstart: function () {
 						hide_locked = true;
