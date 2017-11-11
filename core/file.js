@@ -255,8 +255,8 @@ exports.getFile = async (chsum, conf) => {
 
 	return {
 		ct: file.ct,
-		/* default expire: 30 min */
-		redir: replaceDomain(oss_client.signatureUrl(chsum,{
+		redir: replaceDomain(oss_client.signatureUrl(chsum, {
+			expires: 60 * 60 * 24 * 30, /* 30 days */
 			process: parseImgProc(conf) 
 		}), config.oss.domain)
 	}
@@ -371,6 +371,7 @@ exports.derefer = async (url, type, env, config) => {
 	} else {
 		env.setCT(type);
 		env.redir(derefer_oss.signatureUrl(md5, {
+			expires: 60 * 60 * 24 * 30, /* 30 days */
 			procss: parseImgProc(config)
 		}));
 	}
