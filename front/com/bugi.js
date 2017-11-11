@@ -99,6 +99,8 @@
 					require([ "com/util" ], function (util) {
 						util.emsg("Thank you for your support!", "success");
 					});
+
+					error_queue = [];
 				} catch (e) {}
 			}, 3000);
 		});
