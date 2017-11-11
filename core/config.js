@@ -339,7 +339,8 @@ var conf = module.exports = {
 		oss: {
 			// acckey and seckey same as config.oss.*
 			region: "oss-cn-hangzhou",
-			bucket: "foci-derefer-0"
+			bucket: "foci-derefer-0",
+			secure: true // use https
 		},
 	},
 	

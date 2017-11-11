@@ -36,7 +36,6 @@ if (config.oss && config.oss.type == "ali") {
 		accessKeyId: config.oss.acckey,
 		accessKeySecret: config.oss.seckey,
 		bucket: config.oss.bucket,
-
 		secure: config.oss.secure
 	});
 
@@ -46,8 +45,7 @@ if (config.oss && config.oss.type == "ali") {
 			accessKeyId: config.oss.acckey,
 			accessKeySecret: config.oss.seckey,
 			bucket: config.derefer.oss.bucket,
-
-			secure: true
+			secure: config.derefer.oss.secure
 		});
 	}
 	

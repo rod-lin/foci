@@ -9,7 +9,9 @@ define([ "com/util" ], function (util) {
     var thumbview = {};
 
     thumbview.modal = function (url, config) {
-        config = $.extend({}, config);
+        config = $.extend({
+            // onHide
+        }, config);
 
         var main = $("<div class='ui small modal com-thumbview-modal'> \
             <div class='cont'> \
@@ -42,7 +44,8 @@ define([ "com/util" ], function (util) {
         });
 
         main.modal({
-            observeChanges: true
+            observeChanges: true,
+            onHide: config.onHide
         });
 
         var mod = {};
@@ -70,17 +73,25 @@ define([ "com/util" ], function (util) {
         var modal = null;
 
         var locked = false;
+        var proc = null;
+
+        function unlock() {
+            locked = false;
+            proc = null;
+        }
 
         img.click(function () {
             if (locked) return;
             locked = true;
 
-            setTimeout(function () {
-                locked = false;
-            }, 700);
+            proc = setTimeout(unlock, 700);
 
             if (!modal)
-                modal = thumbview.modal(src);
+                modal = thumbview.modal(src, {
+                    onHide: function () {
+                        unlock();
+                    }
+                });
             
             modal.show();
         });
