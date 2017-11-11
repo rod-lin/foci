@@ -204,6 +204,10 @@
             "com/util", "com/env", "com/login", "com/pform",
             "com/etable", "com/valfield"
         ], function (util, env, login, pform, etable, valfield) {
+            var tbar = env.get("tbar");
+            
+            tbar.setTitle("Discover", "McOriginal Care");
+
             var short_table1 = etable.editable(main.find(".page-1 .short-term-fund-table"), {
                 check: [
                     {

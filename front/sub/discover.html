@@ -10,7 +10,11 @@
 
 <script>
     function init(main, args, show, cont, exit) {
-        require([ "com/util" ], function (util) {
+        require([ "com/util", "com/env" ], function (util, env) {
+            var tbar = env.get("tbar");
+            
+            tbar.setTitle("Discover");
+
             function fetch(name, suc, err) {
                 $.ajax({
         			type: "GET",
