@@ -200,6 +200,10 @@ define([ "com/util" ], function (util) {
 				var canvas = main.find(".preview").cropper("getCroppedCanvas");
 				
 				// console.log(canvas);
+
+				if (!canvas) {
+					console.log(main.find(".preview"), main.find(".preview").cropper("getCroppedCanvas"), main.find(".preview").cropper);
+				}
 				
 				if (!canvas.toBlob) {
 					// TODO: fallback
