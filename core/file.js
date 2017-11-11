@@ -35,7 +35,9 @@ if (config.oss && config.oss.type == "ali") {
 		region: config.oss.region,
 		accessKeyId: config.oss.acckey,
 		accessKeySecret: config.oss.seckey,
-		bucket: config.oss.bucket
+		bucket: config.oss.bucket,
+
+		secure: config.oss.secure
 	});
 
 	if (config.derefer.oss) {
@@ -43,7 +45,9 @@ if (config.oss && config.oss.type == "ali") {
 			region: config.derefer.oss.region,
 			accessKeyId: config.oss.acckey,
 			accessKeySecret: config.oss.seckey,
-			bucket: config.derefer.oss.bucket
+			bucket: config.derefer.oss.bucket,
+
+			secure: true
 		});
 	}
 	
@@ -199,23 +203,29 @@ exports.format.imgstyle = {
 	"thumb": { type: "int", opt: true }, // 0 - 5, the higher the higher compressing rate
 };
 
-var parseImgStyle = (config) => {
+var parseImgProc = (config) => {
 	config = config || {};
 	var style = "";
 	
 	if (config.thumb !== undefined) {
-		style = "!thumb" + config.thumb;
+		style = "style/thumb" + config.thumb;
 	} else {
-		style = "!thumb3";
+		style = "style/thumb3";
 	}
 
 	return style;
 };
 
-exports.getFile = async (chsum, config) => {
-	config = config || {};
+var replaceDomain = (url, domain) => {
+	if (domain) {
+		return url.replace(/:\/\/[^\/]+\//, "://" + domain + "/");
+	} else return url;
+};
 
-	if (config.tmp) {
+exports.getFile = async (chsum, conf) => {
+	conf = conf || {};
+
+	if (conf.tmp) {
 		if (await existsAsync(dir(chsum, true))) {
 			return {
 				ct: null,
@@ -229,8 +239,8 @@ exports.getFile = async (chsum, config) => {
 	var file = await findFile(chsum);
 
 	if (file.force_local || !file.cached || !oss_client) {
-		if (await existsAsync(dir(chsum, config.tmp))) { // has local file
-			if (!config.tmp && !file.force_local) {
+		if (await existsAsync(dir(chsum, conf.tmp))) { // has local file
+			if (!conf.tmp && !file.force_local) {
 				tick.awrap(async () => {
 					await exports.cacheOne(chsum);
 				})();
@@ -238,7 +248,7 @@ exports.getFile = async (chsum, config) => {
 			
 			return {
 				ct: file.ct,
-				cont: await readFileAsync(dir(chsum, config.tmp))
+				cont: await readFileAsync(dir(chsum, conf.tmp))
 			};
 		} else {
 			throw new err.Exc("$core.file_missing(" + chsum + ")");
@@ -247,7 +257,10 @@ exports.getFile = async (chsum, config) => {
 
 	return {
 		ct: file.ct,
-		redir: oss_client.signatureUrl(chsum + parseImgStyle(config) /* default expire: 30 min */).replace("http", "https")
+		/* default expire: 30 min */
+		redir: replaceDomain(oss_client.signatureUrl(chsum,{
+			process: parseImgProc(conf) 
+		}), config.oss.domain)
 	}
 };
 
@@ -359,7 +372,9 @@ exports.derefer = async (url, type, env, config) => {
 		env.raw(res);
 	} else {
 		env.setCT(type);
-		env.redir(derefer_oss.signatureUrl(md5 + parseImgStyle(config)).replace("http", "https"));
+		env.redir(derefer_oss.signatureUrl(md5, {
+			procss: parseImgProc(config)
+		}));
 	}
 };
 

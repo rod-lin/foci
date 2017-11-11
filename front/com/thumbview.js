@@ -69,7 +69,16 @@ define([ "com/util" ], function (util) {
 
         var modal = null;
 
+        var locked = false;
+
         img.click(function () {
+            if (locked) return;
+            locked = true;
+
+            setTimeout(function () {
+                locked = false;
+            }, 700);
+
             if (!modal)
                 modal = thumbview.modal(src);
             

@@ -942,6 +942,15 @@ define([
 		env.favtag(function (tags) {
 			var tgbox = tagbox.init(main.find(".show-tagbox"), tags, { init: parsed.favtag });
 			
+			tgbox.addTrivial({
+				name: "<span><i class='user outline icon'></i>" + parsed.apply_num + "</span>"
+			});
+
+			tgbox.addTrivial({
+				name: "<span><i class='calendar outline icon'></i>" + parsed.date + "</span>",
+				style: "blue border"
+			});
+
 			if (info.loclng && info.loclat) {
 				map.locToName(info.loclng, info.loclat, function (addr) {
 					// main.find(".show-loc").html(addr);
@@ -951,11 +960,6 @@ define([
 					});
 				});
 			}
-
-			tgbox.addTrivial({
-				name: "<span><i class='user outline icon'></i>" + parsed.apply_num + "</span>",
-				style: "blue border"
-			});
 		});
 
 		util.bgimg(main.find(".show-cover"), parsed.cover);
