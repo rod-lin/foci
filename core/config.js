@@ -356,7 +356,7 @@ var conf = module.exports = {
 	},
 
 	lpoll: {
-		timeout: 1000 * 60 * 1 // in ms
+		timeout: 1000 * 25 // in ms
 	}
 };
 
