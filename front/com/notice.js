@@ -533,6 +533,7 @@ define([
 				if (!session) return;
 				
 				var now = new Date();
+				var delay = 1000;
 
 				foci.encop(session, {
 					int: "notice",
@@ -541,7 +542,9 @@ define([
 					if (suc) {
 						if (dat)
 							new_count++;
-							
+						else
+							delay = 10000; // delay 10 seconds
+
 						cb(dat);
 						keep_err = 0;
 					} else {
@@ -552,14 +555,12 @@ define([
 					if (keep_err > 5 &&
 						(new Date()) - now < 3000) {
 						// request time less than 3 sec
-						setTimeout(function () {
-							keep(cb);
-						}, 60000);
-					} else {
-						setTimeout(function () {
-							keep(cb);
-						}, 1000);
+						delay = 60000;
 					}
+
+					setTimeout(function () {
+						keep(cb);
+					}, delay);
 				});
 			});
 		}
