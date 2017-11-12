@@ -57,6 +57,7 @@ app.get("/mcom/mcss", int.mcom.mcss);
 
 app.get("/cover/pboard", int.cover.pboard);
 
+app.post("/bugi/report", int.bugi.report);
 app.get("/smsg/vercode", int.smsg.vercode);
 // app.get("/smsg/verify", int.smsg.verify);
 

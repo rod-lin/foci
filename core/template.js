@@ -1,5 +1,6 @@
 var user = require("./user");
 var club = require("./club");
+var util = require("./util");
 var cutil = require("./cutil");
 
 var xss = require("xss");
@@ -101,4 +102,15 @@ exports.cutil_form_submit = async (uuid, cuuid, url) => {
 `Hi, user <b>${usr.getDName()}</b> has just submitted a application form for club utility <b>${utl.getName()}</b>.<br>
 Click <a href="${url}">here</a> to review the form</a>`
 	};
+};
+
+exports.bug_report = async (report, time, env) => {
+	return (
+`
+<b>Bug Report</b><br><br>
+Report time: ${new Date().toUTCString()}<br>
+Client IP: ${env.ip()}<br>
+Report: ${util.beautifyJSON(report).replace(/\n/g, "<br>").replace(/\s/g, "&nbsp;")}
+`		
+);
 };

@@ -349,6 +349,10 @@ var conf = module.exports = {
 		enc: true,
 		id: "U2FsdGVkX1++TSCmL3g+iT+YAU45KZOmYZSmwOPKKu9wKCtEvTCMGGnl3lf6e8J4xe67FIkNS7xpS5TLMNFOzw==",
 		key: "U2FsdGVkX1+dfM76P0oaqjPhjtvUQCwRYoyOl9bmhxJzBem8mX4qn3agqRAC8EvPAQjQk7vm4uZEFb/xf5VaSQ=="
+	},
+
+	bugi: {
+		receiver: "bug@m.foci.me"
 	}
 };
 

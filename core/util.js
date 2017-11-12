@@ -9,6 +9,7 @@ var url = require("url");
 var crypto = require("crypto");
 var NodeRSA = require("node-rsa");
 var readline = require("readline-sync");
+var beautifyjson = require("json-beautify");
 
 exports.extend = function (base) {
 	for (var i = 1; i < arguments.length; i++) {
@@ -312,3 +313,7 @@ exports.regEscape = str => str.replace(/[\^\$\(\)\[\]\{\}*+\.\?\\\|]/g, "\\$1");
 exports.keywordRegExp = kw => new RegExp(exports.regEscape(kw.trim()).split(/\s+/).join("|"), "i");
 
 exports.coin = prob => Math.random() > prob;
+
+exports.beautifyJSON = json => {
+	return beautifyjson(JSON.parse(json), null, 4, 0);
+};

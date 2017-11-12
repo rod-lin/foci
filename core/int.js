@@ -134,6 +134,17 @@ _smsg.vercode = util.route(async env => {
 	env.qsuc();
 });
 
+var _bugi = {};
+
+_bugi.report = util.route(async env => {
+	var args = util.checkArg(env.query, { "time": "int", "report": "string" });
+
+	await mail.send(config.bugi.receiver, "Bugi - Report - " + args.time,
+					await template.bug_report(args.report, args.time, env));
+
+	env.qsuc();
+});
+
 var _mail = {};
 
 _mail.vercode = util.route(async env => {
@@ -489,6 +500,7 @@ _cutil.all = util.route(async env => {
 exports.mcom = _mcom;
 exports.cover = _cover;
 exports.alipay = _alipay;
+exports.bugi = _bugi;
 exports.smsg = _smsg;
 exports.mail = _mail;
 exports.user = _user;

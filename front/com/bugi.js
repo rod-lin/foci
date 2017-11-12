@@ -14,19 +14,15 @@
 		return val === undefined ? def : val;
 	};
 
-	function BugiError(exc, extra) {
-		this.exc = exc;
+	function BugiEnv() {
+		this.url = window.location.href;
+		
+		this.foci_version = foci ? foci.version : "(foci not ready)";
 
-		this.lineno = d(extra.lineno, -1);
-		this.colno = d(extra.colno, -1);
-		this.filename = d(extra.filename, "(unknown)");
-		this.msg = d(extra.msg, "(no message)");
-		this.time = d(extra.time, -1);
-
-		this.url = window.location;
+		// this.head = $("head script").html();
 
 		var n = navigator;
-		this.env = n ? {
+		this.nav = n ? {
 			code_name: n.appCodeName,
 			app_name: n.appName,
 			version: n.appVersion,
@@ -42,70 +38,143 @@
 		} : {};
 	}
 
-	var foci = {};
-	// rewrite foci.loadCSS so that mcom can inline and compress the code
-	foci.loadCSS = function (path) {
-		$("<link>")
-			.attr({
-				rel: "stylesheet",
-				href: path + "?v=" + (new Date()).getTime()
-			})
-			.appendTo("head");
-	};
+	// function getTrace(e) {
+	// 	let stack = e.stack || "";
+	// 	stack = stack.split("\n").map(function (line) { return line.trim(); });
+	// 	return stack.splice(stack[0] == "Error" ? 2 : 1);
+	// }
 
-	foci.loadCSSPlain = function (sheet) {
-		$("head").append("<style>" + sheet + "</style>");
-	};
+	function BugiError(exc, extra) {
+		this.exc = exc;
 
-	foci.loadCSS("com/bugi.css");
+		this.lineno = d(extra.lineno, -1);
+		this.colno = d(extra.colno, -1);
+		this.filename = d(extra.filename, "(unknown)");
+		this.msg = d(extra.msg, "(no message)");
+		this.time = d(extra.time, -1);
+
+		this.gtime = (new Date()).toUTCString();
+
+		this.stack = d(exc.stack, null);
+	}
+
+	function msgbox(msg, type) {
+		try {
+			require([ "com/util" ], function (util) {
+				util.emsg(msg, type);
+			});
+		} catch (e) {
+			alert(msg);
+		}
+	}
+
+	function encodeMail(to, subject, body) {
+		return "mailto:" + to +
+			   "?subject=" + encodeURIComponent(subject) +
+			   "&body=" + encodeURIComponent(body);
+	}
+
+	(function () {
+		var foci = {};
+		// rewrite foci.loadCSS so that mcom can inline and compress the code
+		foci.loadCSS = function (path) {
+			$("<link>")
+				.attr({
+					rel: "stylesheet",
+					href: path + "?v=" + (new Date()).getTime()
+				})
+				.appendTo("head");
+		};
+
+		foci.loadCSSPlain = function (sheet) {
+			$("head").append("<style>" + sheet + "</style>");
+		};
+
+		foci.loadCSS("com/bugi.css");
+	})();
 
 	var error_queue = [];
+
+	bugi.report = function (report, cb, silent) {
+		report = JSON.stringify(report);
+
+		function suc() {
+			if (!silent)
+				msgbox("we really appreciate your support!", "success");
+	
+			if (cb) cb(true);
+		}
+
+		// send mail as a backup method
+		function err() {
+			if (silent) {
+				if (cb) cb(false);
+				return;
+			}
+
+			msgbox("couldn't send the message through internet. would you kindly send it through email?", "info");
+			
+			var subject = "Bugi - Report - " + (new Date()).getTime();
+			var link = encodeMail("bug@m.foci.me", subject, report);
+			window.location = link;
+
+			setTimeout(function () {
+				msgbox("we really appreciate your support!", "success");
+				if (cb) cb();
+			}, 3000);
+		}
+
+		$.ajax({
+			method: "POST",
+			url: "/bugi/report",
+			dataType: "json",
+			data: {
+				time: (new Date()).getTime(),
+				report: report
+			},
+
+			success: function (dat) {
+				if (dat.suc) suc();
+				else err();
+			},
+
+			error: function () {
+				err();
+			}
+		});
+	};
 
 	// feedback
 	bugi.fbmodal = function () {
 		var modal = $("<div class='ui small modal com-bugi-fbmodal'> \
 			<div class='title'>It would be really helpful if you could tell us what you are encountering</div> \
 			<textarea class='input-no-style descr'></textarea> \
-			<button class='ui right floated blue button report-btn'>Report</button> \
-			<button class='ui right floated button cancel-btn'>Cancel</button> \
+			<button class='ui button cancel-btn'>Cancel</button> \
+			<button class='ui blue button report-btn'>Report</button> \
 		</div>");
-
-		function encodeMail(to, subject, body) {
-			return "mailto:" + to +
-				   "?subject=" + encodeURIComponent(subject) +
-				   "&body=" + encodeURIComponent(body);
-		}
 
 		modal.find(".cancel-btn").click(function () {
 			modal.modal("hide");
 		});
 
 		modal.find(".report-btn").click(function () {
-			var body = JSON.stringify({
-				descr: modal.find(".descr").val(),
-				errors: error_queue
-			});
-
-			var subject = "Bugi - Bug Report - " + (new Date()).getTime();
-
-			var link = encodeMail("bug@m.foci.me", subject, body);
 			modal.find(".report-btn").addClass("loading");
-			window.location = link;
 
-			setTimeout(function () {
+			var report = {
+				descr: modal.find(".descr").val(),
+				env: new BugiEnv(),
+				errors: error_queue
+			};
+
+			bugi.report(report, function () {
+				error_queue = [];
 				modal.modal("hide");
-
-				try {
-					require([ "com/util" ], function (util) {
-						util.emsg("Thank you for your support!", "success");
-					});
-
-					error_queue = [];
-				} catch (e) {}
-			}, 3000);
+			});
 		});
 
-		modal.modal("show");
+		modal.modal({
+			allowMultiple: true
+		}).modal("show");
 	};
 
 	bugi.pop = function (err) {
@@ -162,6 +231,12 @@
 				main.width(cont_width);
 				main.height(main.find(".prompt .msg").height() + 10);
 			} else {
+				bugi.report({
+					silent: true,
+					env: new BugiEnv(),
+					errors: error_queue
+				}, null, true);
+
 				hide();
 			}
 		});
