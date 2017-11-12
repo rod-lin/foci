@@ -172,7 +172,7 @@ exports.getUpdateHang = async (uuid, sender, next) => {
 		// await lpoll.emit(ltok(sender, uuid), []);
 
 		var timeout = setTimeout(function () {
-			tick.awrap(lpoll.emit)(ltok(sender, sendee), []);
+			tick.awrap(lpoll.emit)(ltok(sender, uuid), []);
 		}, config.lpoll.timeout);
 
 		lpoll.reg(ltok(sender, uuid), async (res) => {
