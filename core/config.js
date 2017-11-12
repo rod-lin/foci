@@ -202,7 +202,7 @@ var conf = module.exports = {
 			max_get_length: 8,
 			max_comm_per_user: 3,
 			max_hot: 5,
-			hot_min_upvote: 0
+			hot_min_upvote: 10
 		},
 		
 		// traffic control
