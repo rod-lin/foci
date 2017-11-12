@@ -396,7 +396,7 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		var ret;
 
 		if (sub >= 0 && sub < ud) {
-			ret = time;
+			ret = "Today " + time;
 		} else {
 			var day = cur.getDay();
 

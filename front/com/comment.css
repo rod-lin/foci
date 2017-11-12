@@ -4,6 +4,7 @@
 
 .com-comment .new-comment {
 	padding: 0 2rem;
+	margin-bottom: 2rem;
 }
 
 .com-comment .new-comment .content {
@@ -49,10 +50,9 @@
 
 .com-comment .history {
 	position: relative;
-	margin-top: 2rem;
 }
 
-.com-comment .history>.prompt {
+.com-comment .prompt {
 	padding: 2rem 0;
 	font-weight: bold;
 	color: #CCCCCC;
@@ -96,15 +96,28 @@
 	flex-basis: 0;
 }
 
-.com-comment .comment .sender .info .name {
+.com-comment .comment .ev-rating.no-rating {
+	color: #CCCCCC;
+	font-weight: bold;
 	margin-left: 3px;
-	margin-bottom: 0.5rem;
+}
 
+.com-comment .comment .sender .info .name {
 	font-weight: bold;
 	color: rgba(60, 60, 60, 1);
 
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.com-comment .comment .sender .info .name-bar {
+	margin-left: 3px;
+	margin-bottom: 0.3rem;
+}
+
+.com-comment .comment .comm-date {
+	margin-left: 0.5rem;
+	color: rgb(150, 150, 150);
 }
 
 .com-comment .comment .sender .btnlet {
@@ -143,4 +156,16 @@
 
 .com-comment .history.loading+.loader-cont {
 	display: block;
+}
+
+.com-comment .block-prompt {
+	font-size: 1.1rem;
+	font-weight: bold;
+	color: rgb(100, 100, 100);
+	background: rgb(252, 252, 252);
+	
+	padding: 1rem 2rem;
+	border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+	text-align: left;
 }

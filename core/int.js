@@ -393,8 +393,17 @@ _event.search = util.route(async env => {
 
 _event.comment = util.route(async env => {
 	if (!await checkCaptcha(env)) return;
-	var args = util.checkArg(env.query, { "euid": "int", "skip": { opt: true, type: "int" }, "limit": { opt: true, type: "int" } });
-	env.qsuc(await comment.get(args.euid, { skip: args.skip, limit: args.limit }));
+	
+	var args = util.checkArg(env.query, {
+		"hot": { type: "bool", opt: true },
+		"euid": "int", "skip": { opt: true, type: "int" },
+		"limit": { opt: true, type: "int" }
+	});
+	
+	env.qsuc(await comment.get(args.euid, {
+		skip: args.skip, limit: args.limit,
+		hot: args.hot
+	}));
 });
 
 var _club = {};
@@ -915,6 +924,12 @@ encop.comment = async (env, usr, query, next) => {
 		case "upvote":
 			var args = util.checkArg(query, { euid: "int", cid: "int" });
 			await comment.upvote(args.euid, args.cid, usr.getUUID());
+			return;
+
+		// remove upvote
+		case "remupvote":
+			var args = util.checkArg(query, { euid: "int", cid: "int" });
+			await comment.removeUpvote(args.euid, args.cid, usr.getUUID());
 			return;
 
 		default:

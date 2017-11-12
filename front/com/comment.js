@@ -25,6 +25,9 @@ define([
 						<button class='ui blue right floated button issue-btn'>Issue</button> \
 					</div> \
 				</div> \
+				<div class='block-prompt'>Hot comments</div> \
+				<div class='hot-comment'></div> \
+				<div class='block-prompt'>Other comments</div> \
 				<div class='history'></div> \
 				<div class='loader-cont'> \
 					<div class='ui loader active'></div> \
@@ -34,6 +37,7 @@ define([
 
 		var nrating = rating.init(main.find(".new-comment .rating-cont"), 0, { freeze: false });
 		var history = main.find(".history");
+		var hot = main.find(".hot-comment");
 
 		function genPrompt(msg) {
 			return $("<div class='prompt'></div>").html(msg);
@@ -41,11 +45,11 @@ define([
 
 		function genComment(info) {
 			var comm = $(" \
-				<div class='comment'> \
+				<div class='comment comment-id-" + info.id + "'> \
 					<div class='sender'> \
 						<div class='avatar'></div> \
 						<div class='info'> \
-							<div class='name'>loading</div> \
+							<div class='name-bar'><span class='name'>loading</span><span class='comm-date'></span></div> \
 							<div class='ev-rating'></div> \
 						</div> \
 						<div class='btnlet'> \
@@ -59,32 +63,61 @@ define([
 				</div> \
 			");
 
-			rating.init(comm.find(".ev-rating"), info.rating || 0);
+			if (info.rating)
+				rating.init(comm.find(".ev-rating"), info.rating);
+			else
+				comm.find(".ev-rating").addClass("no-rating").html("no rating");
 
-			var voted = info.upvote ? info.upvote.length : 0;
+			comm.find(".comm-date").html(util.localDate(new Date(info.date)));
+
+			var vote_count = info.upvote ? info.upvote.length : 0;
+			var has_voted = false;
 
 			function setVoted() {
+				has_voted = true;
 				comm.find(".upvote-btn i").removeClass("outline");
+				comm.find(".upvote-btn").transition("tada");
+			}
+
+			function unsetVoted() {
+				has_voted = false;
+				comm.find(".upvote-btn i").addClass("outline");
+				comm.find(".upvote-btn").transition("pulse");
 			}
 
 			if (env.session())
-				if (info.upvote && info.upvote.indexOf(env.session().getUUID()) != -1)
+				if (info.upvote && info.upvote.indexOf(env.session().getUUID()) != -1) {
 					setVoted();
+				}
 
-			comm.find(".count").html(voted);
+			comm.on("comment:remupvote", function () {
+				unsetVoted();
+				vote_count--;
+				comm.find(".count").html(vote_count);
+			});
+
+			comm.on("comment:upvote", function () {
+				setVoted();
+				vote_count++;
+				comm.find(".count").html(vote_count);
+			});
+
+			comm.find(".count").html(vote_count);
 			comm.find(".cont").html(xfilt(lang.msg(info.comment || "$core.comment.empty")));
 			comm.find(".upvote-btn").click(function () {
 				login.session(function (session) {
 					foci.encop(session, {
 						int: "comment",
-						action: "upvote",
+						action: has_voted ? "remupvote" : "upvote",
 						euid: euid,
 						cid: info.id
 					}, function (suc, dat) {
 						if (suc) {
-							voted++;
-							comm.find(".count").html(voted);
-							setVoted();
+							if (has_voted) {
+								main.find(".comment-id-" + info.id).trigger("comment:remupvote");
+							} else {
+								main.find(".comment-id-" + info.id).trigger("comment:upvote");
+							}
 						} else {
 							util.emsg(dat);
 						}
@@ -106,13 +139,13 @@ define([
 		var is_end = false;
 		var locked = false;
 
-		function renderComment(list) {
+		function renderComment(list, cont, no_more_prompt) {
 			if (list.length) {
 				for (var i = list.length - 1; i >= 0; i--) {
-					history.append(genComment(list[i]));
+					cont.append(genComment(list[i]));
 				}
 			} else {
-				history.append(genPrompt("no more comments"));
+				cont.append(genPrompt(no_more_prompt || "no more comments"));
 				is_end = true;
 			}
 
@@ -138,9 +171,27 @@ define([
 				history.removeClass("loading");
 
 				if (suc) {
-					renderComment(dat);
+					renderComment(dat, history);
 				} else {
 					history.append(genPrompt("loading error"));
+					util.emsg(dat);
+				}
+
+				locked = false;
+			});
+		}
+
+		function reloadHot() {
+			hot.html("");
+			hot.addClass("loading");
+
+			foci.get("/event/comment", { euid: euid, hot: true }, function (suc, dat) {
+				hot.removeClass("loading");
+
+				if (suc) {
+					renderComment(dat, hot, "no hot comment");
+				} else {
+					hot.append(genPrompt("loading error"));
 					util.emsg(dat);
 				}
 
@@ -169,6 +220,7 @@ define([
 						nrating.set(0);
 
 						reloadComment();
+						reloadHot();
 					} else {
 						util.emsg(dat);
 					}
@@ -185,6 +237,7 @@ define([
 		main.find(".issue-btn").click(issueComment);
 
 		reloadComment();
+		reloadHot();
 
 		cont.append(main);
 

@@ -57,6 +57,15 @@ Comment.query = {
 		return q;
 	},
 
+	cid: (euid, cid) => ({
+		euid: euid,
+		comment: {
+			$elemMatch: {
+				id: cid
+			}
+		}
+	}),
+
 	count_comm: (euid, uuid) => {
 		var q = util.extend(event.Event.query.euid(euid), {
 			comment: {
@@ -76,7 +85,11 @@ Comment.set = {
 	}),
 
 	upvote: uuid => ({
-		$push: { "comment.$.upvote": uuid }
+		$addToSet: { "comment.$.upvote": uuid }
+	}),
+
+	remove_upvote: uuid => ({
+		$pull: { "comment.$.upvote": uuid }
 	})
 };
 
@@ -131,13 +144,28 @@ exports.get = async (euid, conf) => {
 	var comm = ev.getComment();
 	var len = comm.length;
 
-	var end = len - skip;
-	var start = end - limit;
+	if (conf.hot) {
+		comm = comm.sort(function (a, b) {
+			return a.upvote.length - b.upvote.length;
+		});
 
-	if (end < 0) end = 0;
-	if (start < 0) start = 0;
+		var res = [];
 
-	return comm.slice(start, end);
+		// filter out comments with too few comments
+		comm.slice(0, config.lim.comment.max_hot).forEach(comm =>
+			comm.upvote.length >= config.lim.comment.hot_min_upvote ?
+			res.push(comm) : null);
+
+		return res;
+	} else {
+		var end = len - skip;
+		var start = end - limit;
+	
+		if (end < 0) end = 0;
+		if (start < 0) start = 0;
+
+		return comm.slice(start, end);
+	}
 };
 
 exports.upvote = async (euid, cid /* comment id */, uuid) => {
@@ -147,4 +175,9 @@ exports.upvote = async (euid, cid /* comment id */, uuid) => {
 
 	if (!ret.value)
 		throw new err.Exc("$core.comment.already_voted");
+};
+
+exports.removeUpvote = async (euid, cid, uuid) => {
+	var col = await db.col("event");
+	var ret = await col.findOneAndUpdate(Comment.query.cid(euid, cid), Comment.set.remove_upvote(uuid));
 };
