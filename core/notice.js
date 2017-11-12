@@ -7,6 +7,7 @@ var err = require("./err");
 var util = require("./util");
 var user = require("./user");
 var club = require("./club");
+var tick = require("./tick");
 var event = require("./event");
 var lpoll = require("./lpoll");
 var cutil = require("./cutil");
@@ -109,7 +110,7 @@ exports.push = async (uuid, info) => {
 	await col.updateOne(user.User.query.uuid(uuid), Notice.set.push(sender, nnt));
 	await setUpdate(uuid, true);
 
-	await lpoll.emit(ltok("update", uuid));
+	await lpoll.emit(ltok("update", uuid), true);
 };
 
 exports.pull = async (uuid) => {
@@ -186,8 +187,14 @@ exports.update = async (uuid) => {
 
 exports.updatel = async (uuid, next) => {
 	lpoll.off(ltok("update", uuid));
-	lpoll.reg(ltok("update", uuid), async () => {
-		next(true);
+
+	var timeout = setTimeout(function () {
+		tick.awrap(lpoll.emit)(ltok("update", uuid), false);
+	}, config.lpoll.timeout);
+
+	lpoll.reg(ltok("update", uuid), async (has) => {
+		clearTimeout(timeout);
+		next(has);
 	});
 };
 

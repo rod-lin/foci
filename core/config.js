@@ -194,7 +194,7 @@ var conf = module.exports = {
 
 		notice: {
 			title: 128,
-			text: 2048
+			text: 2048,
 		},
 
 		comment: {
@@ -353,6 +353,10 @@ var conf = module.exports = {
 
 	bugi: {
 		receiver: "bug@m.foci.me"
+	},
+
+	lpoll: {
+		timeout: 1000 * 60 * 1 // in ms
 	}
 };
 

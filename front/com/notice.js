@@ -539,8 +539,10 @@ define([
 					action: "updatel"
 				}, function (suc, dat) {
 					if (suc) {
-						new_count++;
-						cb(true);
+						if (dat)
+							new_count++;
+							
+						cb(dat);
 						keep_err = 0;
 					} else {
 						cb(false);

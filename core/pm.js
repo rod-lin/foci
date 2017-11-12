@@ -168,9 +168,18 @@ exports.getUpdateHang = async (uuid, sender, next) => {
 	} else {
 		// console.log("register " + ltok(sender, uuid));
 		lpoll.off(ltok(sender, uuid));
+
+		var timeout = setTimeout(function () {
+			tick.awrap(lpoll.emit)(ltok(sender, sendee), []);
+		}, config.lpoll.timeout);
+
 		lpoll.reg(ltok(sender, uuid), async (res) => {
 			// console.log("updated " + uuid + ", token: " + ltok(sender, uuid));
-			await exports.removeUpdate(uuid, sender);
+			clearTimeout(timeout);
+
+			if (res.length)
+				await exports.removeUpdate(uuid, sender);
+	
 			next(res);
 		});
 	}
