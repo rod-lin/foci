@@ -298,8 +298,12 @@
 					var parsed = [];
 					var i;
 
-					// 7 = 4(main push board) + 3(sub slide)
-					for (i = 0; i < 7; i++) {
+					var MAIN_BOARD_COUNT = 4;
+					var SUB_BOARD_COUNT = 5;
+
+					var total = MAIN_BOARD_COUNT + SUB_BOARD_COUNT;
+
+					for (i = 0; i < total; i++) {
 						// alert(dat[i].img);
 						parsed.push(dat[i] ? {
 							img: dat[i].img ? foci.download(dat[i].img) : null,
@@ -335,13 +339,13 @@
 
 					function initPBoard(main_config, sub_config) {
 						// pboard.init(show_board, parsed.slice(0, 4), main_config);
-						pboard.slide(show_board, parsed.slice(0, 4), $.extend(main_config, {
+						pboard.slide(show_board, parsed.slice(0, MAIN_BOARD_COUNT), $.extend(main_config, {
 							height: "24rem",
 							interval: 5000,
 							auto_resize: true
 						}));
 
-						pboard.slide(main.find(".mini-push-board"), parsed.slice(4, 7), sub_config);
+						pboard.slide(main.find(".mini-push-board"), parsed.slice(MAIN_BOARD_COUNT, total), sub_config);
 					}
 
 					if (env.session()) {
