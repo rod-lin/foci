@@ -169,7 +169,7 @@ exports.getUpdateHang = async (uuid, sender, next) => {
 	} else {
 		// console.log("register " + ltok(sender, uuid));
 		// clear the current handlers
-		await lpoll.emit(ltok(sender, uuid), []);
+		// await lpoll.emit(ltok(sender, uuid), []);
 
 		var timeout = setTimeout(function () {
 			tick.awrap(lpoll.emit)(ltok(sender, sendee), []);
