@@ -186,7 +186,7 @@ exports.update = async (uuid) => {
 };
 
 exports.updatel = async (uuid, next) => {
-	lpoll.off(ltok("update", uuid));
+	await lpoll.emit(ltok("update", uuid), false);
 
 	var timeout = setTimeout(function () {
 		tick.awrap(lpoll.emit)(ltok("update", uuid), false);

@@ -7,6 +7,7 @@ var err = require("./err");
 var uid = require("./uid");
 var util = require("./util");
 var user = require("./user");
+var tick = require("./tick");
 var lpoll = require("./lpoll");
 var config = require("./config");
 
@@ -167,7 +168,8 @@ exports.getUpdateHang = async (uuid, sender, next) => {
 		next(res);
 	} else {
 		// console.log("register " + ltok(sender, uuid));
-		lpoll.off(ltok(sender, uuid));
+		// clear the current handlers
+		await lpoll.emit(ltok(sender, uuid), []);
 
 		var timeout = setTimeout(function () {
 			tick.awrap(lpoll.emit)(ltok(sender, sendee), []);
