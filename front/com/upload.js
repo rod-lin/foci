@@ -200,12 +200,6 @@ define([ "com/util" ], function (util) {
 				var next = function () {
 					var canvas = main.find(".preview").cropper("getCroppedCanvas");
 					
-					// console.log(canvas);
-
-					// if (!canvas) {
-					// 	console.log(main.find(".preview"), main.find(".preview").cropper("getCroppedCanvas"), main.find(".preview").cropper);
-					// }
-					
 					if (!canvas.toBlob) {
 						// TODO: fallback
 						util.emsg("$unsupported(canvas.toBlob)");
@@ -234,8 +228,13 @@ define([ "com/util" ], function (util) {
 
 				if (crop_ready) {
 					next();
+				} else if (config.init && selected == config.init) {
+					// init image not changed
+					if (cb) cb(selected, getArg());
+					main.modal("hide");
 				} else {
-					crop_ready_cb.push(next);
+					util.emsg("cropper not ready, please wait", "info");
+					// crop_ready_cb.push(next);
 				}
 			}
 		});
