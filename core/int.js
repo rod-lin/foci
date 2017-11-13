@@ -691,13 +691,17 @@ encop.event = async (env, usr, query, next, has_cap) => {
 		case "setreview":
 			var args = util.checkArg(query, { euid: "int" });
 
-			var lv = usr.getLevel();
-			var after = new Date(new Date - config.lim.user.level[lv].event_interval);
 			var uuid = usr.getUUID();
-			var count = await event.countOwn(uuid, after);
+			var lv = usr.getLevel();
 
-			if (count && !config.debug)
-				throw new err.Exc("$core.max_event_count");
+			// check max event count
+			if (config.lim.user.level[lv]) {
+				var after = new Date(new Date - config.lim.user.level[lv].event_interval);
+				var count = await event.countOwn(uuid, after);
+
+				if (count && !config.debug)
+					throw new err.Exc("$core.max_event_count");
+			}
 
 			// console.log(count);
 
