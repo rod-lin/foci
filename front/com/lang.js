@@ -144,6 +144,7 @@ define(function () {
 		"def.network_error": "network error",
 		"def.server_error": "server_error",
 		"def.no_session": "no session stored",
+		"def.no_login": "you haven't logged in",
 		"def.failed_parse_form": "failed to parse form",
 		"def.illegal_json": "illegal JSON format",
 		"def.missing_n_field": "missing $1 field(s)",

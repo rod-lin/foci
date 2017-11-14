@@ -485,6 +485,11 @@ window.foci = {};
 	};
 
 	foci.encop = function (session, query, cb) {
+		if (!session || !(session instanceof Session)) {
+			cb(false, "$def.no_login");
+			return;
+		}
+
 		var uuid = session.getUUID();
 		var sid = session.getSID();
 		
