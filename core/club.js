@@ -22,6 +22,7 @@ var clubstat = exports.clubstat = {
     all: -Infinity,
     rejected: -100,
     review: 0, // under review
+    frozen: 50,
     operate: 100 // on operation
 };
 
@@ -142,20 +143,53 @@ Club.prototype.getOneMember = function (uuid) {
     return ret;
 };
 
-Club.prototype.getMember = function (include_apply) {
+Club.prototype.getMember = function (include_apply, skip, limit) {
+    var ret = {};
+
+    // TODO: TOO MESSY!!!!!
+    // TODO: NEED TO SIMPLIFY
     if (include_apply) {
-        for (var k in this.apply_member) {
-            if (this.apply_member.hasOwnProperty(k)) {
-                this.apply_member[k].is_app = true;
+        var keys = util.fields(this.apply_member);
+
+        if (skip < keys.length) {
+            keys.sort();
+
+            var rest = keys.length - skip;
+            var end = Math.min(skip + limit, keys.length);
+
+            limit -= rest;
+
+            for (var i = skip; i < end; i++) {
+                var key = keys[i];
+                this.apply_member[key].is_app = true; // set is_app flag
+                ret[key] = this.apply_member[key];
             }
+        } else {
+            skip -= keys.length;
         }
     }
     
-    var ret = include_apply
-              ? util.extend({}, this.apply_member, this.member) // overwrite applying member
-              : this.member;
-              
-    ret[this.creator].is_creator = true;
+    var keys = util.fields(this.member);
+
+    keys.sort();
+
+    var end = Math.min(skip + limit, keys.length);
+
+    if (skip + limit >= keys.length) {
+        ret.eol = true; // end of list
+    }
+
+    for (var i = skip; i < end; i++) {
+        var key = keys[i];
+        ret[key] = this.member[key];
+    }
+
+    // var ret = include_apply
+    //           ? util.extend({}, this.apply_member, this.member) // overwrite applying member
+    //           : this.member;
+    
+    if (ret.hasOwnProperty(this.creator.toString()))
+        ret[this.creator].is_creator = true;
     
     return ret;
 };
@@ -317,7 +351,7 @@ exports.checkClubExist = async (cuid, state) => {
     var col = await db.col("club");
 	
     if (!await col.count(Club.query.cuid(cuid, state)))
-        throw new err.Exc("$core.not_exist($core.word.club)");
+        throw new err.Exc("$core.not_exist($core.word.club) $core.word.or $core.club.club_frozen");
 };
 
 exports.checkMaxReview = async (uuid) => {
@@ -541,6 +575,7 @@ exports.changeApply = async (cuid, uuid, applicant, accept) => {
 };
 
 exports.search = async (uuid, conf) => {
+    // only clubs in operation
     var query = { state: clubstat.operate };
 
     if (conf.kw) util.extend(query, Club.query.keyword(conf.kw));
@@ -561,9 +596,14 @@ exports.search = async (uuid, conf) => {
     return ret;
 };
 
-exports.getMember = async (cuid, include_apply) => {
+exports.getMember = async (cuid, include_apply, conf) => {
     var club = await exports.cuid(cuid);
-    return club.getMember(include_apply);
+
+    conf = conf || {};
+    var skip = conf.skip || 0;
+    var limit = config.lim.club.member_push_limit;
+
+    return club.getMember(include_apply, skip, limit);
 };
 
 exports.getOneMember = async (cuid, uuid) => {
@@ -681,4 +721,9 @@ exports.setState = async (cuid, state) => {
     await col.updateOne(Club.query.cuid(cuid, clubstat.all), Club.set.info({
         state: state
     }));
+};
+
+exports.freezeClub = async (cuid, uuid, unfreeze) => {
+    await user.checkAdmin(uuid);
+    await exports.setState(cuid, unfreeze ? clubstat.operate : clubstat.frozen);
 };

@@ -165,10 +165,19 @@ User.query = {
 		return {
 			$or: [
 				{ "dname": { $regex: reg } },
-				{ "lname": { $regex: reg } }
+				{ "lname": { $regex: reg } },
+				{ "descr": { $regex: reg } }
 			]
 		};
 	},
+
+	// must-match entries
+	accurate: kw => ({
+		$or: [
+			{ "uuid": parseInt(kw) },
+			{ "lname": kw }
+		]
+	}),
 
 	// search tag(fuzzy)
 	ftag: tag => {
@@ -457,12 +466,35 @@ exports.checkTag = (tags) => {
 	return ntags;
 };
 
-exports.search = async (kw) => {
+exports.search = async (kw, conf) => {
 	var col = await db.col("user");
-	var res = await col.find(User.query.fuzzy(kw)).limit(config.lim.user.max_search_results).toArray();
+
+	conf = conf || {};
+	var skip = conf.skip || 0;
+
+	var res = await col.find(User.query.fuzzy(kw)).skip(0).limit(config.lim.user.max_search_results).toArray();
+	var acc = await col.find(User.query.accurate(kw)).toArray();
+
+	// console.log(User.query.accurate(kw));
+
+	var found = {};
 
 	for (var i = 0; i < res.length; i++) {
 		res[i] = new User(res[i]).getInfo();
+		found[res[i].uuid] = i;
+	}
+
+	// push accurate results
+	// console.log("accurate: ", acc);
+	for (var i = 0; i < acc.length; i++) {
+		var usr = new User(acc[i]).getInfo();
+
+		if (found.hasOwnProperty(usr.uuid.toString())) {
+			res[found[usr.uuid]].is_accurate = true;
+		} else {
+			usr.is_accurate = true;
+			res.push(usr);
+		}
 	}
 
 	return res;

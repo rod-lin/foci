@@ -27,6 +27,8 @@ exports.extend = function (base) {
 
 exports.fieldCount = obj => Object.keys(obj).length;
 
+exports.fields = obj => Object.keys(obj);
+
 // Object.prototype.fextend = function (obj) {
 // 	for (var k in obj) {
 // 		if (obj.hasOwnProperty(k)) {

@@ -9,7 +9,7 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 	util.short = function (str, max, fill) {
 		fill = fill || "...";
 
-		if (str.length > max) {
+		if (max > 0 && str.length > max) {
 			return str.substr(0, max - fill.length) + fill;
 		}
 

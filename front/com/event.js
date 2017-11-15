@@ -158,6 +158,39 @@ define([
 		}
 	}
 
+	function genStateFlag(info) {
+		var flag = "";
+
+		switch (info.state) {
+			case foci.evstat.review:
+				flag = "<div class='com-event-state-flag purple'> \
+					<div class='flag-name'>review</div> \
+				</div>";
+				break;
+			
+			case foci.evstat.draft:
+				flag = "<div class='com-event-state-flag yellow'> \
+					<div class='flag-name'>draft</div> \
+				</div>";
+				break;
+
+			case foci.evstat.published:
+				flag = "<div class='com-event-state-flag green'> \
+					<div class='flag-name'>ongoing</div> \
+				</div>";
+				break;
+
+			case foci.evstat.terminated:
+				flag = "<div class='com-event-state-flag blue'> \
+					<div class='flag-name'>ended</div> \
+					<div class='flag-rating'>" + (util.trimFloat(info.rating, 1) || 0) + " / 10</div> \
+				</div>";
+				break;
+		}
+
+		return flag;
+	}
+
 	function setDom(dom, info, config) {
 		config = $.extend({ ignore_nl: true }, config);
 		dom = $(dom);
@@ -182,32 +215,7 @@ define([
 		dom.find(".description").html(parsed.descr_text);
 		dom.find(".apply_num").html(parsed.apply_num);
 
-		switch (info.state) {
-			case foci.evstat.review:
-				dom.find(".flags").html("<div class='flag purple'> \
-					<div class='flag-name'>review</div> \
-				</div>");
-				break;
-			
-			case foci.evstat.draft:
-				dom.find(".flags").html("<div class='flag yellow'> \
-					<div class='flag-name'>draft</div> \
-				</div>");
-				break;
-
-			case foci.evstat.published:
-				dom.find(".flags").html("<div class='flag green'> \
-					<div class='flag-name'>ongoing</div> \
-				</div>");
-				break;
-
-			case foci.evstat.terminated:
-				dom.find(".flags").html("<div class='flag blue'> \
-					<div class='flag-name'>ended</div> \
-					<div class='flag-rating'>" + (util.trimFloat(info.rating, 1) || 0) + " / 10</div> \
-				</div>");
-				break;
-		}
+		dom.find(".flags").html(genStateFlag(info));
 
 		if (info.status)
 			dom.addClass(info.status);
@@ -982,6 +990,7 @@ define([
 		genDate: genDate,
 		eventTemplate: eventTemplate,
 		setDom: setDom,
-		parseInfo: parseInfo
+		parseInfo: parseInfo,
+		genStateFlag: genStateFlag
 	}
 });

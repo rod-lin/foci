@@ -113,6 +113,20 @@
 	overflow: hidden;
 }
 
+.com-userhunt-modal .user-search .results .result .perfect-tag {
+	display: none;
+
+	font-size: 0.8rem;
+	padding: 0.4rem 0.7rem;
+
+	border-radius: 3px;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-userhunt-modal .user-search .results .perfect.result .perfect-tag {
+	display: block;
+}
+
 @media only screen and (max-width: 640px) {
 	.com-userhunt-modal .user-search-input {
 		height: 3rem;

@@ -177,6 +177,8 @@ var conf = module.exports = {
 			max_school: 128,
 			
 			max_title_len: 12,
+
+			member_push_limit: 12,
 		},
 		
 		forumi: {

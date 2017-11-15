@@ -3,12 +3,17 @@
         <div class="menu-group only-club-admin">
             <div class="header">Profile</div>
             <div class="menu-item only-club-admin" data-form-set="info">Basic info</div>
-            <div class="menu-item only-club-admin" data-form-set="member">Manage members</div>
+            <!-- <div class="menu-item only-club-admin" data-form-set="member">Manage members</div> -->
         </div>
         <div class="menu-group">
             <div class="header">Other</div>
             <div class="menu-item only-club-creator" data-form-set="transfer">Transfer ownership</div>
             <div class="menu-item" data-form-set="quit">Quit club</div>
+        </div>
+
+        <div class="menu-group foci-only-admin">
+            <div class="header">Foci Admin</div>
+            <div class="menu-item" data-form-set="freeze">Freeze club</div>
         </div>
     </div>
     
@@ -67,6 +72,37 @@
                         You will still be an administrator.
                     </p>
                     <button type="button" class="ui blue basic button select-btn">Select user</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <style>
+        
+        .sub-setting .form-set-freeze .unfreeze-btn {
+            display: none;
+        }
+
+        .sub-setting .form-set-freeze.already-frozen .freeze-btn {
+            display: none;
+        }
+
+        .sub-setting .form-set-freeze.already-frozen .unfreeze-btn {
+            display: inline-block;
+        }
+
+    </style>
+
+    <div class="form-set form-set-freeze">
+        <form class="form-freeze ui form">
+            <h3 class="ui top attached red block header">Freeze club</h3>
+            <div class="ui attached segment">
+                <div class="ui field">
+                    <p>
+                        Freeze this club. A frozen club cannot be updated or be found in the search results.
+                    </p>
+                    <button type="button" class="ui red basic button freeze-btn">Freeze</button>
+                    <button type="button" class="ui blue basic button unfreeze-btn">Unfreeze</button>
                 </div>
             </div>
         </form>
@@ -291,6 +327,53 @@
                     });
                 });
             }
+
+            function initTabFreeze(session, cuid, info) {
+                var tab = main.find(".form-set-freeze");
+                var freeze = tab.find(".freeze-btn");
+                var unfreeze = tab.find(".unfreeze-btn");
+
+                if (info.state === foci.clubstat.frozen) {
+                    tab.addClass("already-frozen");
+                } else {
+                    tab.removeClass("already-frozen");
+                }
+
+                function doFreeze(btn, unfreeze) {
+                    btn.addClass("loading");
+
+                    login.session(function (session) {
+                        foci.encop(session, {
+                            int: "club",
+                            cuid: cuid,
+                            action: "freeze",
+                            unfreeze: !!unfreeze
+                        }, function (suc, dat) {
+                            btn.removeClass("loading");
+
+                            if (suc) {
+                                if (unfreeze) {
+                                    util.emsg("frozen", "info");
+                                    tab.removeClass("already-frozen");
+                                } else {
+                                    util.emsg("unfrozen", "info");
+                                    tab.addClass("already-frozen");
+                                }
+                            } else {
+                                util.emsg(dat);
+                            }
+                        });
+                    });
+                }
+
+                freeze.click(function () {
+                    doFreeze(freeze, false);
+                });
+
+                unfreeze.click(function () {
+                    doFreeze(unfreeze, true);
+                });
+            }
             
             function render(session, cuid, info) {
                 setRelation(info.relation);
@@ -298,6 +381,7 @@
                 initTabInfo(session, cuid, info);
                 initTabQuit(session, cuid, info);
                 initTabTransfer(session, cuid, info);
+                initTabFreeze(session, cuid, info);
                 
                 if (args[1]) {
                     mod.showFormSet(args[1]);

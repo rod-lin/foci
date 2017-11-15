@@ -204,6 +204,7 @@ window.foci = {};
 	Session.prototype.getUUID = function () { return this.uuid; };
 	Session.prototype.getSID = function () { return this.sid; };
 	Session.prototype.isAdmin = function () { return this.is_admin; };
+	Session.prototype.isRoot = function () { return this.is_root; };
 
 	function noCacheData(data) {
 		var v = (new Date()).getTime();
@@ -553,6 +554,7 @@ window.foci = {};
 		all: -Infinity,
 		rejected: -100,
 		review: 0,
+		frozen: 50,
 	    operate: 100
 	};
 })();

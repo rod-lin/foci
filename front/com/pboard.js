@@ -5,6 +5,14 @@
 define([ "com/util", "com/upload" ], function (util, upload) {
 	foci.loadCSS("com/pboard.css");
 
+	function procURL(url) {
+		if (url && !/^\/|https?:\/\//.test(url)) {
+			url = "#" + url;
+		}
+
+		return;
+	}
+
 	/*
 		photo: [
 			{
@@ -49,6 +57,7 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 			if (config.setting) {
 				upload.init(function (id, url) {
 					if (id && config.setting_cb) {
+						url = procURL(url);
 						config.setting_cb(n, id, url, ph);
 						util.bgimg(ph.dom, ph.img);
 					}
@@ -236,10 +245,10 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 		cont = $(cont);
 		config = $.extend({
 			interval: 3000,
-			height: "10rem",
 			setting: false,
 			setting_cb: null,
 
+			init_height: 300,
 			max_height: "30rem",
 
 			auto_resize: false
@@ -254,15 +263,22 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 		// h / w
 		var ratio = 0;
 
-		function updateRatio() {
-			if (!ratio) return;
-			var height = main.width() * ratio;
+		function setBoardHeight(height) {
 			main.height(height);
 			main.find(".left-btn, .right-btn").css("line-height", height + "px");
 		}
 
+		// setBoardHeight(100);
+
+		function updateRatio() {
+			if (!ratio) return;
+			var height = main.width() * ratio;
+			setBoardHeight(height);
+		}
+
 		$(window).resize(updateRatio);
-		main.css("max-height", "30rem");
+
+		setBoardHeight(config.init_height);
 
 		for (var i = 0; i < slides.length; i++) {
 			(function (i) {
@@ -281,12 +297,13 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 					if (config.setting) {
 						upload.init(function (id, url) {
 							if (id && config.setting_cb) {
+								url = procURL(url);
 								config.setting_cb(i, id, url, slide);
 								util.bgimg(slide.dom, slide.img);
 							}
 						}, {
 							arg: {
-								prompt: "foci.me#",
+								prompt: "(" + (i + 1) + ") foci.me#",
 								placeholder: "url",
 								init: slide.setting_arg_init 
 							},
@@ -346,12 +363,11 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 			nextSlide();
 		}, config.interval - 300);
 
-		main.css("height", config.height);
-		main.find(".left-btn").css("line-height", config.height).click(function () {
+		main.find(".left-btn").click(function () {
 			prevSlide();
 		});
 
-		main.find(".right-btn").css("line-height", config.height).click(function () {
+		main.find(".right-btn").click(function () {
 			nextSlide();
 		});
 

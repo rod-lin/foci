@@ -2,7 +2,7 @@
 
 "use strict";
 
-define([ "com/util" ], function (util) {
+define([ "com/util", "com/login" ], function (util, login) {
 	var $ = jQuery;
 	foci.loadCSS("com/upload.css");
 
@@ -104,14 +104,14 @@ define([ "com/util" ], function (util) {
 				<form class='ui form' enctype='multipart/form-data'> \
 					<div class='field preview-cont'> \
 						<img class='ui medium rounded bordered preview'></img> \
+						<div class='drop-area'> \
+							Drag & drop the image \
+						</div> \
 						<div class='ui labeled input upload-arg' style='margin-top: 0.5rem;'> \
 							<div class='ui label'></div> \
 							<input type='text'> \
 						</div> \
 						<input type='text' style='display: none;'> \
-						<div class='drop-area'> \
-							Drag & drop the image \
-						</div> \
 					</div> \
 					<div class='ui buttons'> \
 						<button type='button' class='ui icon button exit-btn'> \

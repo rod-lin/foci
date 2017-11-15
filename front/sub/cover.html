@@ -321,7 +321,7 @@
 								int: "cover",
 								action: "setpboard",
 								n: n + ofs, info: {
-									img: file, url: "#" + url
+									img: file, url: url
 								}
 							}, function (suc, dat) {
 								if (suc) {
@@ -339,13 +339,15 @@
 
 					function initPBoard(main_config, sub_config) {
 						// pboard.init(show_board, parsed.slice(0, 4), main_config);
-						pboard.slide(show_board, parsed.slice(0, MAIN_BOARD_COUNT), $.extend(main_config, {
-							height: "24rem",
+						pboard.slide(show_board, parsed.slice(0, MAIN_BOARD_COUNT), $.extend({
+							init_height: util.isMobile() ? 200 : 300,
 							interval: 5000,
 							auto_resize: true
-						}));
+						}, main_config));
 
-						pboard.slide(main.find(".mini-push-board"), parsed.slice(MAIN_BOARD_COUNT, total), sub_config);
+						pboard.slide(main.find(".mini-push-board"), parsed.slice(MAIN_BOARD_COUNT, total), $.extend({
+							init_height: 150,
+						}, sub_config));
 					}
 
 					if (env.session()) {

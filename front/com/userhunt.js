@@ -13,12 +13,13 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 		if (res) {
 			for (var i = 0; i < res.length; i++) {
 				ret += " \
-					<div class='result'> \
+					<div class='result" + (res[i].perfect ? " perfect" : "") + "'> \
 						<div class='result-avatar' style='background-image: url(\"" + foci.download(res[i].avatar) + "\");'></div> \
 						<div class='result-info'> \
 							<div class='result-name title'>" + res[i].dname + "</div> \
 							<div class='result-intro'>" + res[i].intro + "</div> \
 						</div> \
+						<div class='perfect-tag'>Accurate match</div> \
 					</div> \
 				";
 			}
@@ -37,7 +38,17 @@ define([ "com/util", "com/avatar" ], function (util, avatar) {
 
 			if (!dat.suc || !dat.res.length) return null;
 
-			// console.log(ret);
+			dat.res.sort(function (a, b) {
+				return !!b.is_accurate - !!a.is_accurate;
+			});
+
+			// console.log(dat.res);
+
+			for (var i = 0; i < dat.res.length; i++) {
+				if (dat.res[i].is_accurate) {
+					dat.res[i].perfect = true;
+				}
+			}
 
 			return { results: dat.res };
 		},

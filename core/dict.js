@@ -21,6 +21,8 @@ var dict = module.exports = {
 		"core.word.search_result": "search result",
 		"core.word.app_form": "application form",
 
+		"core.word.or": "or",
+
 		"core.word.comment": "comment",
 		"core.word.rating": "rating",
 
@@ -166,6 +168,7 @@ var dict = module.exports = {
 		"core.club.user_no_relation": "user has no relation to the club",
 		"core.club.creator_del": "cannot delete a creator",
 		"core.club.title_not_fit": "your title is not in the visible title list",
+		"core.club.club_frozen": "club is frozen",
 		
 		"core.forumi.post_not_exist": "post not exist",
 		"core.forumi.comment_not_editable": "you cannot edit this comment",

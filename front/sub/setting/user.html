@@ -13,7 +13,7 @@
             <div class="menu-item" data-form-set="realname">Real-name auth</div>
         </div>
         
-        <div class="menu-group only-admin">
+        <div class="menu-group foci-only-admin">
             <div class="header">Admin</div>
             <div class="menu-item" data-form-set="invcode">Invitation code</div>
             <div class="menu-item" data-form-set="clubrev">Club review</div>
@@ -232,13 +232,13 @@
         min-width: auto;
     }
     
-    .sub-setting .menu-group.only-admin {
+    /* .sub-setting .menu-group.only-admin {
         display: none;
     }
     
     .sub-setting .menu-group.only-admin.show {
         display: block;
-    }
+    } */
 </style>
 
 <script>
@@ -853,8 +853,8 @@
                         });
                     })();
                     
-                    if (session.isAdmin())
-                        main.find(".menu-group.only-admin").addClass("show");
+                    // if (session.isAdmin())
+                    //     main.find(".menu-group.only-admin").addClass("show");
                     
                     if (args[0]) {
                         mod.showFormSet(args[0]);

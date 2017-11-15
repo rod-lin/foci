@@ -184,5 +184,9 @@ Object.assign(require("repl").start("foci> ").context, {
 
 	nocache: function () {
 		mcom.disableCache();
+	},
+
+	clearcache: function () {
+		mcom.clearCache();
 	}
 });

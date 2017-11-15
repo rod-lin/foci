@@ -358,6 +358,7 @@ _user.applied = util.route(async env => {
 	env.qsuc(ret);
 });
 
+// basic search without skipping
 _user.search = util.route(async env => {
 	if (!await checkCaptcha(env)) return;
 	var args = util.checkArg(env.query, { kw: "string" });
@@ -1063,8 +1064,15 @@ encop.club = async (env, usr, query, next) => {
 			return await club.search(usr.getUUID(), { kw: args.kw });
 			
 		case "member":
-			var args = util.checkArg(query, { cuid: "int" });
-			return await club.getMember(args.cuid, await club.isAdmin(args.cuid, usr.getUUID()));
+			var args = util.checkArg(query, {
+				cuid: "int",
+				skip: { type: "int", opt: true },
+				limit: { type: "int", opt: true }
+			});
+
+			var include_app = await club.isAdmin(args.cuid, usr.getUUID());
+
+			return await club.getMember(args.cuid, include_app, args);
 		
 		case "onemember":
 			var args = util.checkArg(query, { cuid: "int", uuid: "int" });
@@ -1119,6 +1127,11 @@ encop.club = async (env, usr, query, next) => {
 			var args = util.checkArg(query, { cuid: "int" });
 			return await club.getReviewInfo(args.cuid, usr.getUUID());
 	
+		case "freeze":
+			var args = util.checkArg(query, { cuid: "int", unfreeze: { type: "bool", opt: true } });
+			await club.freezeClub(args.cuid, usr.getUUID(), !!args.unfreeze);
+			return;
+
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}

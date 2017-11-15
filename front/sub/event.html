@@ -7,6 +7,11 @@
 					<button class="ui blue button view-cover-btn">View cover</button>
 				</div>
 				<div class="info-box">
+					<div class="toolbar">
+						<i class="share alternate icon share-toolbtn toolbtn"></i>
+						<i class="setting icon setting-toolbtn only-event-admin toolbtn"></i>
+						<i class="horizontal ellipsis icon more-toolbtn toolbtn"></i>
+					</div>
 					<div class="title"></div>
 					<!--div class="location"><i class="map outline icon"></i><span></span></div>
 					<div class="date"><i class="calendar outline icon"></i><span></span></div -->
@@ -154,6 +159,14 @@
 		height: 100%;
 	}
 
+	.sub-event .only-event-admin {
+		display: none;
+	}
+
+	.sub-event.event-admin .only-event-admin {
+		display: initial;
+	}
+
 	.sub-event .cover {
 		position: fixed;
 
@@ -291,6 +304,7 @@
 	}
 
 	.sub-event>.cont .info-box {
+		position: relative;
 		padding: 3rem 4rem 4rem;
 	}
 	
@@ -301,7 +315,7 @@
 	.sub-event>.cont .descr {
 		font-size: 1.2em;
 		text-align: left;
-		margin-top: 1rem;
+		margin-top: 2rem;
 		line-height: 1.7;
 
 	    word-break: break-all;
@@ -354,9 +368,41 @@
 		width: 100%;
 		height: 20rem;
 
+		border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 50% 50%;
+	}
+
+	.sub-event>.cont .toolbar {
+		margin-bottom: 1rem;
+		text-align: right;
+		font-size: 1.3rem;
+	}
+
+	.sub-event>.cont .toolbar .toolbtn {
+		margin-left: 0.5rem;
+		color: rgb(120, 120, 120);
+		cursor: pointer;
+
+		transition: color 0.3s;
+	}
+
+	.sub-event>.cont .toolbar .toolbtn:hover {
+		color: rgb(150, 150, 150);
+	}
+
+	.sub-event>.cont .toolbar .toolbtn.text {
+		font-size: 1rem;
+		font-weight: bold;
+		color: rgb(150, 150, 150);
+	}
+
+	.sub-event>.cont .toolbar .toolbtn.text:hover {
+		font-size: 1rem;
+		font-weight: bold;
+		color: rgb(180, 180, 180);
 	}
 	
 	.sub-event>.cont .view-cover-btn {
@@ -563,6 +609,10 @@
 				cont.find(".title").html(parsed.title);
 				cont.find(".descr").html(parsed.descr);
 				// cont.find(".date span").html(parsed.date);
+
+				cont.find(".setting-toolbtn").click(function () {
+					util.jump("#profile//new/" + euid);
+				});
 
 				thumbview.init(cont.find(".descr"));
 				
@@ -771,6 +821,8 @@
 						main.find(".apply-setting").css("display", "").click(function () {
 							util.jump("#profile//new/" + euid);
 						});
+
+						main.addClass("event-admin");
 					}
 					
 					if (is_org) {

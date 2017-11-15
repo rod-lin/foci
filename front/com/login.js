@@ -18,13 +18,16 @@ define([ "com/util", "com/env", "com/xfilt", "com/lang" ], function (util, env, 
 	}
 
 	function parseInfo(info, config) {
-		config = $.extend({}, config);
+		config = $.extend({
+			max_dname: 24,
+			max_intro: 128
+		}, config);
 
 		var parsed = $.extend({}, info);
 
 		parsed.avatar = info.avatar ? foci.download(info.avatar) : "img/def/avatar.jpg";
-		parsed.dname = info.dname ? xfilt(util.short(info.dname, 12)) : lang.msg("$front.sub.profile.anonymous");
-		parsed.intro = info.intro ? xfilt(util.short(info.intro, 128)) : lang.msg("($front.sub.profile.no_intro)");
+		parsed.dname = info.dname ? xfilt(util.short(info.dname, config.max_dname)) : lang.msg("$front.sub.profile.anonymous");
+		parsed.intro = info.intro ? xfilt(util.short(info.intro, config.max_intro)) : lang.msg("($front.sub.profile.no_intro)");
 		parsed.favtag = info.favtag ? info.favtag : [];
 		parsed.rating = info.rating ? info.rating : 0;
 

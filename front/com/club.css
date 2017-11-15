@@ -158,7 +158,7 @@
 }
 
 .com-club-memlist .member-item .dname {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     
     width: 15rem;
     white-space: nowrap;
@@ -212,6 +212,26 @@
     color: rgba(110, 110, 110, 1);
 }
 
+@media only screen and (max-width: 640px) {
+    .com-club-memlist .member-item .dname {
+        -webkit-box-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+    }
+
+    .com-club-memlist .member-item .expand {
+        display: none;
+    }
+
+    .com-club-memlist .member-item .toolbar {
+        display: none;
+    }
+
+    .com-club-memlist .member-item .toolbar:last-child {
+        margin-right: 0;
+    }
+}
+
 .com-club-memlist .no-login-prompt {
     display: none;
 }
@@ -252,6 +272,24 @@
 
 .com-club-memlist .member-item .expand-cont .prompt,
 .com-club-memlist .member-item .expand-cont .comment {
+}
+
+.com-club-memlist .load-prompt {
+    text-align: center;
+    color: #CCCCCC;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+.com-club-memlist .load-prompt.load-more {
+    color: #2980B9;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: color 0.2s;
+}
+
+.com-club-memlist .load-prompt.load-more:hover {
+    color: #3498DB;
 }
 
 @media only screen and (max-width: 640px) {

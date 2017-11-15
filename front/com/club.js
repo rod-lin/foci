@@ -260,6 +260,7 @@ define([
             <div class='apply-member club-only-admin'></div> \
             <div class='members'></div> \
             <div class='no-login-prompt'>Please <a class='login-link'>login</a> first</div> \
+            <div class='load-prompt load-more'></div> \
         </div>");
         
         function changeApplyProc(accept, uuid, cb) {
@@ -294,7 +295,7 @@ define([
                     <div class='toolbar'> \
                         <i class='toolbtn chat-btn comments outline icon'></i> \
                         <i class='toolbtn chevron down icon club-only-admin not-apply'></i> \
-                        <i class='toolbtn check icon only-apply'></i> \
+                        <!--i class='toolbtn check icon only-apply'></i--> \
                     </div> \
                 </div> \
                 <div class='expand-cont club-only-admin'> \
@@ -330,7 +331,9 @@ define([
             </div>");
             
             util.userInfo(uuid, function (dat) {
-                var parsed = login.parseInfo(dat);
+                var parsed = login.parseInfo(dat, {
+                    max_dname: -1 /* no limit */
+                });
                 
                 util.bgimg(member.find(".avatar"), parsed.avatar);
                 member.find(".dname").html(parsed.dname);
@@ -494,7 +497,7 @@ define([
             
             var filt_id = function (id) {
                 for (var k in dat) {
-                    if (dat.hasOwnProperty(k)) {
+                    if (dat.hasOwnProperty(k) && k !== "eol") {
                         if (dat[k] && (!id || dat[k][id])) {
                             dat[k].uuid = k;
                             res.push(dat[k]);
@@ -511,52 +514,96 @@ define([
             
             return res;
         }
-        
-        function loadAllMember(session) {
-            main.removeClass("no-login");
-            foci.encop(session, {
-                int: "club",
-                action: "member",
-                cuid: cuid
-            }, function (suc, dat) {
-                if (suc) {
-                    var self = dat[session.getUUID()];
-                    
-                    if (self) {
-                        if (self.is_admin || self.is_creator)
-                            main.addClass("admin");
-                        
-                        if (!self.is_app) {
-                            main.find(".join-btn").remove();
-                        }
-                    } else {
-                        main.find(".invite-btn").remove();
-                    }
-                    
-                    var filt = sortMember(dat);
-                    
-                    for (var i = 0; i < filt.length; i++) {
-                        main.find(".members").append(genMember(filt[i].uuid, filt[i], session));
-                    }
-                } else {
-                    util.emsg(dat);
+
+        function setLoadPrompt(msg, eol) {
+            if (eol) {
+                main.find(".load-prompt").removeClass("load-more");
+            } else {
+                main.find(".load-prompt").addClass("load-more");
+            }
+
+            main.find(".load-prompt").html(msg);
+        }
+
+        var loadMoreMember = (function () {
+            var eol = false;
+            var skip = 0;
+            var loader = $("<div class='ui inline active small loader'></div>");
+
+            main.find(".load-prompt").click(function () {
+                if (!eol) {
+                    login.session(function (session) {
+                        loadMoreMember(session);
+                    });
                 }
             });
-        }
+
+            return function (session) {
+                setLoadPrompt(loader);
+
+                foci.encop(session, {
+                    int: "club",
+                    action: "member",
+                    cuid: cuid,
+
+                    skip: skip,
+                }, function (suc, dat) {
+                    if (suc) {
+                        var self = dat[session.getUUID()];
+                        
+                        if (skip === 0) {
+                            if (self) {
+                                if (self.is_admin || self.is_creator)
+                                    main.addClass("admin");
+                                
+                                if (!self.is_app) {
+                                    main.find(".join-btn").remove();
+                                }
+                            } else {
+                                main.find(".invite-btn").remove();
+                            }
+                        }
+                        
+                        var filt = sortMember(dat);
+                        
+                        skip += filt.length;
+
+                        for (var i = 0; i < filt.length; i++) {
+                            main.find(".members").append(genMember(filt[i].uuid, filt[i], session));
+                        }
+
+                        eol = dat.eol;
+
+                        if (eol) {
+                            setLoadPrompt("no more member", true);
+                        } else {
+                            setLoadPrompt("load more", false);
+                        }
+                    } else {
+                        util.emsg(dat);
+                        setLoadPrompt("load more", false);
+                    }
+                });
+            };
+        })();
     
         (function () {
             var search = local_search({ prompt: "Search member" });
         
             main.find(".login-link").click(function () {
                 login.session(function (session) {
-                    loadAllMember(session);
+                    if (session) {
+                        main.removeClass("no-login");
+                        loadMoreMember(session);
+                    }
                 });
             });
             
             main.find(".member-search").append(search);
             
             if (env.session()) {
-                loadAllMember(env.session());
+                main.removeClass("no-login");
+                loadMoreMember(env.session());
             } else {
                 main.addClass("no-login");
             }

@@ -512,7 +512,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		var can_hide = false;
 
 		function askCancel() {
-			util.ask("Are you sure to cancel? Form content may be saved but the form(in edit mode) will not be saved", function (ans) {
+			util.ask("Are you sure to cancel? The form may not be saved", function (ans) {
 				can_hide = ans;
 				if (ans) main.modal("hide");
 			});

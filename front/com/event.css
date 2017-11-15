@@ -143,6 +143,7 @@
 	opacity: 0.7;
 }
 
+.com-event-state-flag,
 .com-event-single .flag {
 	background: white;
 	border-radius: 3px;
@@ -155,34 +156,44 @@
 	border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+.com-event-state-flag .flag-name,
 .com-event-single .flag-name {
 	padding: 5px 6px;
 }
 
+.com-event-state-flag .flag-rating,
 .com-event-single .flag-rating {
 	font-weight: bold;
 	padding: 4px 6px;
 	border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+.com-event-state-flag.blue,
+.com-event-state-flag.blue .flag-rating,
 .com-event-single .flag.blue,
 .com-event-single .flag.blue .flag-rating {
 	color: #2980B9;
 	border-color: #3498DB;
 }
 
+.com-event-state-flag.green,
+.com-event-state-flag.green .flag-rating,
 .com-event-single .flag.green,
 .com-event-single .flag.green .flag-rating {
 	color: #27AE60;
 	border-color: #2ECC71;
 }
 
+.com-event-state-flag.yellow,
+.com-event-state-flag.yello .flag-rating,
 .com-event-single .flag.yellow,
 .com-event-single .flag.yellow .flag-rating {
 	color: #F39C12;
 	border-color: #F1C40F;
 }
 
+.com-event-state-flag.purple,
+.com-event-state-flag.purple .flag-rating,
 .com-event-single .flag.purple,
 .com-event-single .flag.purple .flag-rating {
 	color: #9B59B6;

@@ -13,12 +13,28 @@ define([ "com/util" ], function (util) {
 		env.storage = {};
 	}
 
+	function setSession(sess) {
+		if (sess) {
+			if (sess.isAdmin())
+				$("body").addClass("foci-level-admin");
+
+			if (sess.isRoot())
+				$("body").addClass("foci-level-root");
+
+			$("body").addClass("foci-login");
+		} else {
+			$("body").removeClass("foci-login foci-level-admin foci-level-root");
+		}
+
+		env.session = sess;
+	}
+
 	function qlogin(cb) {
 		foci.qlogin(function (suc, dat) {
 			if (suc) {
-				env.session = dat;
+				setSession(dat);
 			} else {
-				env.session = null;
+				setSession(null);
 			}
 
 			if (cb) cb(suc, dat);
@@ -104,7 +120,7 @@ define([ "com/util" ], function (util) {
 		}
 
 		foci.logout(env.session, function () {
-			env.session = null;
+			setSession(null);
 			env.user = null;
 			if (cb) cb();
 		});
@@ -143,7 +159,7 @@ define([ "com/util" ], function (util) {
 
 		session: function (sess) {
 			if (sess)
-				env.session = sess;
+				setSession(sess);
 
 			return env.session;
 		},
