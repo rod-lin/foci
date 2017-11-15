@@ -45,6 +45,13 @@ window.xssfilt = (function () {
 	
 	var filt = new xss.FilterXSS({
 		whiteList: xss.whiteList,
+
+		onIgnoreTag: function (tag, html, options) {
+			if (tag.substr(0, 2) === "o:") {
+				return html;
+			}
+		},
+
 		css: {
 			whiteList: {
 				"text-align": /^left|center|right$/,
