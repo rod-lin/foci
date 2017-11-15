@@ -37,19 +37,31 @@ define([ "com/util" ], function (util) {
                 dom.children(".avcenter").removeClass("avcenter");
             }
 
+            dom.on("pform:show", function () {
+                setTimeout(function () {
+                    // alert([ dom.find(".pform-cont").height(), dom.height() ]);
+                    if (dom.find(".pform-cont").height() > dom.height()) {
+                        dom.children(".avcenter").removeClass("avcenter");
+                        main.removeClass("trim");
+                    } else {
+                        main.addClass("trim");
+                    }
+                }, 300);
+            });
+
             dom.find(".pform-cont").append(fcont);
             form.dom = dom;
             
-            dom.ready(function () {
-                dom.find(".pform-cont").ready(function () {
-                    setTimeout(function () {
-                        // alert([ dom.find(".pform-cont").height(), dom.height() ]);
-                        if (dom.find(".pform-cont").height() > dom.height()) {
-                            dom.children(".avcenter").removeClass("avcenter");
-                        }
-                    }, 100);
-                });
-            });
+            // dom.ready(function () {
+            //     dom.find(".pform-cont").ready(function () {
+            //         setTimeout(function () {
+            //             alert([ dom.find(".pform-cont").height(), dom.height() ]);
+            //             if (dom.find(".pform-cont").height() > dom.height()) {
+            //                 dom.children(".avcenter").removeClass("avcenter");
+            //             }
+            //         }, 300);
+            //     });
+            // });
 
             return dom;
         }
@@ -66,6 +78,7 @@ define([ "com/util" ], function (util) {
             var form = forms[cur_page];
 
             form.dom.addClass("show");
+            form.dom.trigger("pform:show");
 
             if (!form.init) {
                 form.init = true;
