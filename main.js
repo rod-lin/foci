@@ -53,7 +53,7 @@ app.get("/cutil/all", int.cutil.all);
 
 app.get("/mcom/merge", int.mcom.merge);
 app.get("/mcom/mpart", int.mcom.mpart);
-app.get("/mcom/mcss", int.mcom.mcss);
+app.get("/mcom/msrc", int.mcom.msrc);
 
 app.get("/cover/pboard", int.cover.pboard);
 

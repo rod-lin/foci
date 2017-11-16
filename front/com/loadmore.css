@@ -1,0 +1,35 @@
+
+.com-loadmore-prompt {
+    position: relative;
+    text-align: center;
+    opacity: 0.7;
+}
+
+.com-loadmore-prompt .prompt {
+    color: #2980B9;
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: color 0.3s;
+}
+
+.com-loadmore-prompt .prompt:hover {
+    color: #3498DB;
+}
+
+.com-loadmore-prompt.no-more .prompt {
+    cursor: default;
+    color: #CCCCCC !important;
+}
+
+.com-loadmore-prompt.loading .prompt {
+    visibility: hidden;
+}
+
+.com-loadmore-prompt .loader {
+    visibility: hidden;
+}
+
+.com-loadmore-prompt.loading .loader {
+    visibility: visible;
+}

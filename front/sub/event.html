@@ -551,13 +551,15 @@
 			"com/xfilt", "com/login", "com/map",
 			"com/lang", "com/avatar", "com/colstat",
 			"com/formi", "com/comment", "com/club",
-			"com/tagbox", "com/thumbview"
+			"com/tagbox", "com/thumbview", "com/share",
+			"com/popselect"
 		], function (
 			env, util, event,
 			xfilt, login, map,
 			lang, avatar, colstat,
 			formi, comment, club,
-			tagbox, thumbview
+			tagbox, thumbview, share,
+			popselect
 		) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
@@ -613,6 +615,25 @@
 				cont.find(".setting-toolbtn").click(function () {
 					util.jump("#profile//new/" + euid);
 				});
+
+				share.popup(cont.find(".share-toolbtn"),
+							new share.ShareObj(
+								window.location.origin + window.location.hash,
+								parsed.title + " - Foci",
+								util.short(parsed.descr_text, 256),
+								util.absurl(parsed.cover)
+							),
+							{});
+
+				popselect.init(cont.find(".more-toolbtn"), [
+					{
+						cont: "Report"
+					},
+
+					{
+						cont: "Issue"
+					}
+				]);
 
 				thumbview.init(cont.find(".descr"));
 				

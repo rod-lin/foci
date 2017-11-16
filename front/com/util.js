@@ -715,5 +715,58 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		return ret;
 	};
 
+	util.manynoun = function (names, noun, plural, conj) {
+		plural = plural || noun + "s";
+		conj = conj || "and";
+		var prompt;
+
+		switch (names.length) {
+			case 0: prompt = "no " + noun; break;
+			case 1: prompt = names[0]; break;
+			case 2: prompt = names[0] + " " + conj + " " + names[1]; break;
+			case 3: prompt = names[0] + ", " + names[1] + ", " + conj + " " + names[2]; break;
+			default:
+				prompt = names.length + " " + plural;
+		}
+
+		return prompt;
+	};
+
+	util.newTab = function (url) {
+		window.open(url, "_blank");
+	};
+
+	util.absurl = function (rel) {
+		if (!/^https?:\/\//.test(rel)) {
+			if (rel && rel[0] === "/") {
+				rel = window.location.origin + rel;
+			} else {
+				rel = window.location.origin +
+					  window.location.pathname.split("/").slice(0, -1).join("/") + "/" + rel;
+			}
+		}
+
+		return rel;
+	};
+
+	// bind a button to copy a specific text to the clipboard
+	util.bindCopy = function (btn, text) {
+		require([ "lib/clipboard" ], function (cpb) {
+			var ins = new cpb($(btn)[0], {
+				text: function () {
+					return text;
+				}
+			});
+
+			ins.on("success", function () {
+				util.emsg("copied", "success");
+			});
+
+			ins.on("error", function () {
+				util.emsg("failed to copy. please copy the url manually");
+			});
+		});
+	};
+
 	return util;
 });

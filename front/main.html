@@ -10,10 +10,10 @@
 		<link rel="icon" href="/img/favicon.ico">
 
 		<script>
-			window.CACHE_CONTROL = 56;
+			window.CACHE_CONTROL = 57;
 		</script>
 
-		<script src="/lib/foci.js?v=31"></script>
+		<script src="/lib/foci.js?v=32"></script>
 
 		<script src="/lib/require.js?v=0"></script>
 
@@ -43,6 +43,15 @@
 					"sortby", "editable", "tip", "lang", "club"
 				];
 
+				var js = [
+					"/lib/gt",
+					"/lib/clipboard",
+					"/lib/touch-swipe",
+					"/lib/canvas-to-blob",
+					"/lib/cropper",
+					"/lib/sui-calendar"
+				];
+
 				var css = [
 					"/font/avenir/import",
 					"/font/fontawesome/import",
@@ -57,7 +66,10 @@
 				var src = "/mcom/merge?v=" + foci.version + "&coms=" + coms.join(",");
 				$("head").append("<script src='" + src + "'></\script>");
 
-				var href = "/mcom/mcss?v=" + foci.version + "&files=" + css.join(",");
+				var src = "/mcom/msrc?type=js&v=" + foci.version + "&files=" + js.join(",");
+				$("head").append("<script src='" + src + "'></\script>");
+
+				var href = "/mcom/msrc?type=css&v=" + foci.version + "&files=" + css.join(",");
 				$("head").append("<link rel='stylesheet' href='" + href + "'>");
 			})();
 		</script>
@@ -74,22 +86,6 @@
 
 		<link rel="stylesheet" href="/semantic/semantic.min.css?v=1">
 		<script src="/semantic/semantic.min.js?v=1"></script>
-		<script src="/lib/sui-calendar.js?v=0"></script>
-
-		<!-- geetest api -->
-		<script src="/lib/gt.js?v=0"></script>
-		
-		<script src="/lib/touch-swipe.js?v=0"></script>
-		<script src="/lib/canvas-to-blob.js?v=0"></script>
-		<script src="/lib/cropper.js?v=0"></script>
-
-		<!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-		<script>
-			(adsbygoogle = window.adsbygoogle || []).push({
-				google_ad_client: "ca-pub-5200500260504683",
-				enable_page_level_ads: true
-			});
-		</script> -->
 
 		<style>
 			body {

@@ -983,6 +983,33 @@ exports.getAppList = async (euid, uuid, type) => {
 	return ev.getAppList(type);
 };
 
+exports.getCombinedAppList = async (euid, uuid, type, conf) => {
+	conf = conf || {};
+
+	var skip = conf.skip || 0;
+	var limit = config.lim.event.max_app_list_return;
+
+	await exports.checkOwner(euid, uuid);
+	
+	var col = await db.col("event");
+	var ev = await exports.euid(euid);
+
+	var list = ev.getAppList(type);
+	var ret = list.slice(skip, skip + limit);
+
+	for (var i = 0; i < ret.length; i++) {
+		var usr = await user.uuid(ret[i].uuid);
+		ret[i].info = usr.getInfo();
+		ret[i].info.rating = await user.calRating(ret[i].uuid);
+		ret[i].realname = usr.getRealname();
+	}
+
+	return {
+		list: ret,
+		eol: skip + limit >= ret.length || ret.length === 0
+	};
+};
+
 exports.changeAppStatus = async (euid, uuids, type, status) => {
 	if (type != "partic" && type != "staff")
 		throw new err.Exc("$core.illegal_app_type");

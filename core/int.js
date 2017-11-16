@@ -93,13 +93,28 @@ _mcom.mpart = util.route(async env => {
 });
 
 // ?files="abc/ss,abc/sss"
-_mcom.mcss = util.route(async env => {
-	var args = util.checkArg(env.query, { "files": "string" });
+_mcom.msrc = util.route(async env => {
+	var args = util.checkArg(env.query, { "files": "string", "type": "string" });
 	var files = args.files.split(",");
 
-	var res = await mcom.mcss(files);
+	var res, ct;
 
-	env.setCT("text/css");
+	switch (args.type) {
+		case "js":
+			res = await mcom.mjs(files);
+			ct = "application/x-javascript";
+			break;
+
+		case "css":
+			res = await mcom.mcss(files);
+			ct = "text/css";
+			break;
+		
+		default:
+			throw new err.Exc("unknown file type");
+	}
+
+	env.setCT(ct);
 	env.setExpire(config.mcom.client_expire, res.modified);
 	env.raw(res.src);
 });
@@ -767,6 +782,21 @@ encop.event = async (env, usr, query, next, has_cap) => {
 				};
 			else
 				return await event.getAppList(args.euid, usr.getUUID(), args.type);
+
+		// along with user info and rating
+		case "getappcom":
+			var args = util.checkArg(query, {
+				euid: "int",
+				type: "string",
+				need_form: { type: "bool", opt: true },
+				skip: { type: "int", opt: true }
+			});
+
+			var res = await event.getCombinedAppList(args.euid, usr.getUUID(), args.type, args);
+
+			res.form = args.need_form ? await event.getAppForm(args.euid, args.type) : null;
+
+			return res;
 
 		case "appstatus":
 			var args = util.checkArg(query, { euid: "int", type: "string", uuids: "array", status: "string" });

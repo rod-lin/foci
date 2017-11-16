@@ -141,6 +141,31 @@ exports.mcss = async (files) => {
     });
 };
 
+exports.mjs = async (files) => {
+    files = Array.from(new Set(files));
+    var id = files.sort().join(",");
+
+    return await ncache(css_cache, id, async () => {
+        var src = "";
+        
+        for (var i = 0; i < files.length; i++) {
+            // console.log(files[i], /[a-zA-Z0-9\-\/]+/g.test(files[i]));
+            if (!/^[a-zA-Z0-9\-\/]+$/.test(files[i])) {
+                throw new err.Exc("$core.illegal_com_name");
+            } else {
+                if (files[i][0] != "/") files[i][0] = "/" + files[i][0];
+                src += "\n" + (await file.readFileAsync("front" + files[i] + ".js")).toString();
+            }
+        }
+
+        src = uglifyjs.minify(src, {
+            fromString: true
+        }).code;
+
+        return src;
+    });
+};
+
 exports.clearCache = () => {
     com_cache = {};
     css_cache = {};

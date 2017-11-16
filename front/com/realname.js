@@ -12,7 +12,9 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
         config = $.extend({
             show_name: true,
             only_state: false,
-            show_norealname: false // show when the user is not authenticated
+            show_norealname: false, // show when the user is not authenticated
+            use_given: false,
+            data: null, // using the given realname data
             // onLoad
         }, config);
         
@@ -33,6 +35,22 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
         
         function callLoad() {
             if (config.onLoad) config.onLoad();
+        }
+        
+        function loadData(dat) {
+            if (dat) {
+                check();
+                
+                popup.find(".name").html(xfilt(dat.name));
+                if (config.show_name)
+                    main.find(".name").html(xfilt(dat.name));
+                
+                popup.find(".school").html(xfilt(dat.school));
+            } else if (!config.show_norealname) {
+                main.addClass("not-realname");
+            } else {
+                popup.html("Not authenticated");
+            }
         }
         
         if (config.only_state) {
@@ -64,41 +82,35 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
                 callLoad();
             });
         } else {
-            login.session(function (session) {
-                if (session) {                
-                    foci.encop(session, {
-                        int: "info",
-                        action: "realname",
-                        uuid: uuid,
-                        euid: euid
-                    }, function (suc, dat) {
-                        main.find(".loader").removeClass("active");
-                        
-                        if (suc) {
-                            if (dat) {
-                                check();
-                                
-                                popup.find(".name").html(xfilt(dat.name));
-                                if (config.show_name)
-                                    main.find(".name").html(xfilt(dat.name));
-                                
-                                popup.find(".school").html(xfilt(dat.school));
-                            } else if (!config.show_norealname) {
-                                main.addClass("not-realname");
+            if (config.use_given) {
+                main.find(".loader").removeClass("active");
+                loadData(config.data);
+                callLoad();
+            } else {
+                login.session(function (session) {
+                    if (session) {                
+                        foci.encop(session, {
+                            int: "info",
+                            action: "realname",
+                            uuid: uuid,
+                            euid: euid
+                        }, function (suc, dat) {
+                            main.find(".loader").removeClass("active");
+                            
+                            if (suc) {
+                                loadData(dat);
                             } else {
-                                popup.html("Not authenticated");
+                                util.emsg(dat);
                             }
-                        } else {
-                            util.emsg(dat);
-                        }
-                        
+                            
+                            callLoad();
+                        });
+                    } else {
+                        main.find(".loader").removeClass("active");
                         callLoad();
-                    });
-                } else {
-                    main.find(".loader").removeClass("active");
-                    callLoad();
-                }
-            });
+                    }
+                });
+            }
         }
         
         main.popup({
