@@ -51,7 +51,12 @@
 
 .com-appform-main .option-bar {
     padding: 1.5rem;
+    padding-top: 1rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.com-appform-main .option-bar .option-btn {
+    margin-top: 0.5rem;
 }
 
 .com-appform-main .load-bar {

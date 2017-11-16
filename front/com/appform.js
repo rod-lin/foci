@@ -108,7 +108,7 @@ define([
         // update pos/width only
         function updateFloatHeader() {
             float_header.css("width", main_table.width() + "px");
-            opt_bar_cont.css("width", main_table.width() + "px");
+            opt_bar_cont.css("max-width", main_table.width() + "px");
         }
 
         function updateOptionBar() {
@@ -597,7 +597,7 @@ define([
                                 init = true;
                             }
 
-                            for (var j = 0; j < 1; j++) {
+                            for (var j = 0; j < 10; j++) {
                                 for (var i = 0; i < dat.list.length; i++) {
                                     appendItem(dat.list[i]);
                                 }
