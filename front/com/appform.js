@@ -260,8 +260,10 @@ define([
             row.on("appform:select", function (ev, checked) {
                 if (checked) {
                     checkbox.checkbox("check");
+                    row.addClass("selected");
                 } else {
                     checkbox.checkbox("uncheck");
+                    row.removeClass("selected");
                 }
             });
 

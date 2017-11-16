@@ -1006,7 +1006,7 @@ exports.getCombinedAppList = async (euid, uuid, type, conf) => {
 
 	return {
 		list: ret,
-		eol: skip + limit >= ret.length || ret.length === 0
+		eol: skip + limit >= list.length || ret.length === 0
 	};
 };
 

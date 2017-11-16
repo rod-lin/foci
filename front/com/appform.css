@@ -72,6 +72,15 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
+.com-appform-main .main-table tr {
+    transition: background 0.3s;
+}
+
+.com-appform-main .main-table tr.selected,
+.com-appform-main .main-table tr:hover {
+    background: rgb(252, 252, 252);
+}
+
 .com-appform-main .main-table tbody tr {
     cursor: pointer;
 }

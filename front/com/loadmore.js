@@ -29,10 +29,10 @@ define([ "com/util" ], function (util) {
             if (!no_more) {
                 main.addClass("loading");
 
-                if (cb) cb(function (no_more) {
+                if (cb) cb(function (is_no_more) {
                     main.removeClass("loading");
 
-                    if (no_more) {
+                    if (is_no_more) {
                         no_more = true;
                         prompt.html(no_more_prompt);
                         main.addClass("no-more");

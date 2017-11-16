@@ -3,6 +3,9 @@
     position: relative;
     text-align: center;
     opacity: 0.7;
+
+    user-select: none;
+    -moz-user-select: none;
 }
 
 .com-loadmore-prompt .prompt {
