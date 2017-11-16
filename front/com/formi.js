@@ -536,6 +536,8 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				.dragi("title", form.name);
 		} else {
 			main.modal({
+				allowMultiple: true,
+
 				onHide: function () {
 					if (!can_hide && config.leave_ask) {
 						askCancel();
