@@ -1,6 +1,8 @@
 "use strict";
 
-window.jQuery = window.$ = require("jquery");
+// import jQuery individually
+// window.jQuery = window.$ = require("jquery");
+
 window.markdown = (function () {
 	var showdown = require("showdown");
 	var conv = new showdown.Converter({
@@ -139,7 +141,7 @@ window.xssfilt = (function () {
 (function () {
 	var global = window;
 
-	if (typeof global.ArrayBuffer !== 'function') {
+	if (typeof global.ArrayBuffer !== "function") {
 		return;
 	}
 
@@ -150,7 +152,7 @@ window.xssfilt = (function () {
 	 */
 
 	function isBuffer(b) {
-		if (global.Buffer && typeof global.Buffer.isBuffer === 'function') {
+		if (global.Buffer && typeof global.Buffer.isBuffer === "function") {
 			return global.Buffer.isBuffer(b);
 		}
 
@@ -178,7 +180,8 @@ window.xssfilt = (function () {
 	};
 })();
 
-window.foci = {};
+if (!window.foci)
+	window.foci = {};
 
 (function () {
 	var NodeRSA = require("node-rsa");

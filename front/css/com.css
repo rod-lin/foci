@@ -83,17 +83,6 @@ a {
 	animation: uix-loader-rotate 0.8s linear infinite;
 }
 
-/* .uix.loader.finish .path {
-	animation: none;
-	stroke-dasharray: 100 300;
-	
-	stroke-dashoffset: -10px;
-}
-
-.uix.loader.finish .circle {
-	animation: none;
-} */
-
 @keyframes uix-loader-rotate {
 	0% {
 		transform: rotate(0deg);
