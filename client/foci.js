@@ -138,6 +138,7 @@ window.xssfilt = (function () {
 	};
 })();
 
+// polyfills
 (function () {
 	var global = window;
 
@@ -178,6 +179,17 @@ window.xssfilt = (function () {
 
 		return false;
 	};
+
+	var crypto = global.crypto || global.msCrypto;
+
+	if (!crypto) {
+		crypto = global.crypto = {};
+	}
+
+	// polyfill for crypto.getRandomValues
+	if (!crypto.getRandomValues) {
+		global.crypto.getRandomValues = require("polyfill-crypto.getrandomvalues");
+	}
 })();
 
 if (!window.foci)
