@@ -10,13 +10,7 @@
 	opacity: 0.5
 }
 
-body>*:not(.com-util-ask-modal) {
-	transition: -webkit-filter 0.3s,
-				-moz-filter 0.3s,
-				-ms-filter 0.3s,
-				-o-filter 0.3s,
-				filter 0.3s;
-}
+body>*:not(.com-util-ask-modal) {}
 
 body.blurred>*:not(.com-util-ask-modal) {
 	-webkit-filter: blur(2px);

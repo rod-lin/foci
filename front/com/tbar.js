@@ -57,8 +57,9 @@ define([
 						<a class="menu-link" href="#contact">CONTACT</a> \
 					</div> \
 				</div> \
+				<div class="msg-view-set"></div> \
 				<div class="banner-view"> \
-					<div class="banner"><i class="diamond icon"></i></div> \
+					<div class="banner"></div> \
 				</div> \
 				<div class="right-bar"> \
 					<div class="avatar-box"> \
@@ -103,6 +104,44 @@ define([
 
 		main.find(".site-logo-prompt").prepend(main.find(".site-logo-name").clone());
 		
+		var showNewMsg;
+
+		(function () {
+			var msg_set = main.find(".msg-view-set");
+
+			showNewMsg = function (icon, msg, style) {
+				var dom = $("<div class='msg-view " + style + "'> \
+					<i class='msg-view-icon " + icon + " icon'></i> \
+					<span>" + msg + "</span> \
+				</div>");
+
+				dom.click(function () {
+					var dom = $(this);
+					
+					dom.removeClass("show-msg");
+	
+					if (!msg_set.children(".show-msg").length) {
+						main.removeClass("show-msg");
+					}
+	
+					setTimeout(function () {
+						dom.remove();
+					}, 500);
+				});
+
+				setTimeout(function () {
+					main.addClass("show-msg");
+					dom.addClass("show-msg");
+				}, 300);
+				
+				msg_set.append(dom);
+			};
+
+			// setTimeout(function () {
+			// 	showNewMsg("rocket", "<b>Foci has just updated!</b>");
+			// }, 3000);
+		})();
+
 		(function () {
 			var trex_count = 0;
 			var trex_time = new Date();
@@ -699,6 +738,10 @@ define([
 			
 			mod.showFloatAvatar = function () {
 				main.removeClass("hide-float-avatar");
+			};
+
+			mod.showMsg = function (icon, msg, style) {
+				showNewMsg(icon, msg, style);
 			};
 			
 			return mod;

@@ -319,3 +319,34 @@ exports.coin = prob => Math.random() > prob;
 exports.beautifyJSON = json => {
 	return beautifyjson(JSON.parse(json), null, 4, 0);
 };
+
+var CircBuffer = function (len) {
+	var buf = new Array(len);
+	var tail = 0, next = 0;
+
+	// assuming val < len
+	function inc(val) {
+		var ret = val + 1;
+		return ret == len ? 0 : ret;
+	}
+
+	this.push = function (val) {
+		buf[next] = val;
+
+		next = inc(next);
+
+		if (next == tail) {
+			// eat the last
+			tail = inc(tail);
+		}
+	};
+
+	// tail -> head
+	this.each = function (func) {
+		for (var i = tail; i != next; i = inc(i)) {
+			func(buf[i]);
+		}
+	};
+};
+
+exports.CircBuffer = CircBuffer;

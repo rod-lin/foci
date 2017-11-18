@@ -245,6 +245,15 @@ var conf = module.exports = {
 			max_url: 2048,
 
 			default_logo: "/img/def/logo.jpg"
+		},
+
+		holdon: {
+			max_broadcast: 1024,
+			msg_buf_len: 32
+		},
+
+		sysmsg: {
+			default_ddl: 1000 * 60 * 60, // 1 hour expiration time
 		}
 	},
 

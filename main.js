@@ -49,6 +49,10 @@ app.get("/dict", int.dict);
 
 app.get("/cutil/all", int.cutil.all);
 
+app.get("/holdon/listenbc", int.holdon.listenbc);
+
+app.get("/sysmsg/dump", int.sysmsg.dump);
+
 // app.get("/alipay/test", int.alipay.test);
 
 app.get("/mcom/merge", int.mcom.merge);
@@ -177,6 +181,8 @@ Object.assign(require("repl").start("foci> ").context, {
 	watchdog: require("./core/watchdog"),
 	config: require("./core/config"),
 
+	sysmsg: require("./core/sysmsg"),
+
 	exit: function () {
 		// if (util.ask("Are you sure to exit? [N/y]: ").toLowerCase() == "y")
 		process.exit();
@@ -188,5 +194,5 @@ Object.assign(require("repl").start("foci> ").context, {
 
 	clearcache: function () {
 		mcom.clearCache();
-	}
+	},
 });

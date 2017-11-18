@@ -34,6 +34,10 @@
 					urlArgs: "v=" + foci.version // one version a time, keeps the cache away~~
 				});
 
+				var debug = [
+					"tbar", "holdon", "sysmsg"
+				];
+
 				var coms = [
 					"bugi", "pm", "notice", "popselect",
 					"userhunt", "trex", "parts",
@@ -42,7 +46,15 @@
 					"avatar", "env", "upload", "login",
 					"map", "tagbox", "rating", "progress",
 					"sortby", "editable", "tip", "lang", "club",
+					"holdon", "sysmsg"
 				];
+
+				for (var i = 0; i < debug.length; i++) {
+					var idx = coms.indexOf(debug[i]);
+					if (idx !== -1) {
+						coms.splice(idx, 1);
+					}
+				}
 
 				var js = [
 					"/lib/gt",

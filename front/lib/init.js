@@ -10,8 +10,8 @@
     require([
         "com/tbar", "com/event", "com/env",
         "com/util", "com/pages", "com/parts",
-        "com/lang", "com/dragi"
-    ], function (tbar, event, env, util, pages, parts, lang, dragi) {
+        "com/lang", "com/dragi", "com/sysmsg"
+    ], function (tbar, event, env, util, pages, parts, lang, dragi, sysmsg) {
         // fastclick.attach(document.body);
 
         lang.loadDict("english", util, function () {
@@ -131,6 +131,13 @@
                 }
             });
 
+            env.store("tbar", bar);
+            env.store("part", pt);
+
+            setTimeout(function () {
+                sysmsg.init();
+            }, 3000);
+
             var ev = event.init("#search>#search-cont", {
                 onUpdate: function (pos) {},
                 fetch: {
@@ -144,9 +151,6 @@
 
                 loader_only_on_buffer: true
             });
-
-            env.store("tbar", bar);
-            env.store("part", pt);
 
             bar.search(function (query, cb) {
                 // research(query, cb);

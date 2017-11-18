@@ -18,6 +18,8 @@ var mcom = require("./mcom");
 var cutil = require("./cutil");
 var event = require("./event");
 var cover = require("./cover");
+var sysmsg = require("./sysmsg");
+var holdon = require("./holdon");
 var config = require("./config");
 var notice = require("./notice");
 var alipay = require("./alipay");
@@ -158,6 +160,26 @@ _bugi.report = util.route(async env => {
 					await template.bug_report(args.report, args.time, env));
 
 	env.qsuc();
+});
+
+var _holdon = {};
+
+// listen broadcast
+_holdon.listenbc = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+
+	var args = util.checkArg(env.query, { "ltime": { type: "int", opt: true } });
+
+	await holdon.listenBroadcast(function (res) {
+		env.qsuc(res);
+	}, args.ltime ? new Date(args.ltime) : undefined);
+});
+
+var _sysmsg = {};
+
+_sysmsg.dump = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	env.qsuc(await sysmsg.dump(true));
 });
 
 var _mail = {};
@@ -533,6 +555,8 @@ exports.event = _event;
 exports.club = _club;
 exports.file = _file;
 exports.cutil = _cutil;
+exports.holdon = _holdon;
+exports.sysmsg = _sysmsg;
 
 /* encrypted operations */
 
@@ -1271,6 +1295,14 @@ encop.cutil = async (env, usr, query, next) => {
 
 			return;
 
+		default:
+			throw new err.Exc("$core.action_not_exist");
+	}
+};
+
+encop.holdon = async (env, usr, query, next) => {
+	switch (query.action) {
+		// encop channel
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}

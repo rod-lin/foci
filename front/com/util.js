@@ -768,5 +768,13 @@ define([ "com/xfilt", "com/dragi.js" ], function (xfilt, dragi) {
 		});
 	};
 
+	// throw in a new thread
+	util.sidethrow = function (sth) {
+		var err = new Error("side throw, original error: " + (sth instanceof Error ? sth.stack : sth));
+		setTimeout(function () {
+			throw err;
+		}, 0);
+	};
+
 	return util;
 });
