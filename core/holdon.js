@@ -36,19 +36,27 @@ function chanbuf(chan) {
 	return msg_buf[chan];
 }
 
-var bctok = () => "holdon.broadcast";
+var bctok = encop => "holdon.broadcast" + (encop ? ".encop" : "");
+var enctok = uuid => "holdon.encop." + uuid;
+
 var bc_count = 0;
 
+// channel connect number
+var chan_conn = {};
+
 // last_date: last time a holdon is closed
-exports.listenBroadcast = async (next, last_date) => {
-	if (bc_count >= config.lim.holdon.max_broadcast) {
-		throw new err.Exc("$core.holdon.max_broadcast_reached");
+exports.listen = async (chan, max_conn, next, last_date) => {
+	if (!chan_conn.hasOwnProperty(chan))
+		chan_conn[chan] = 0;
+
+	if (++chan_conn[chan] >= max_conn) {
+		throw new err.Exc("$core.holdon.max_conn_reached");
 	}
 
 	var missed = []; // missed messages
 
 	// init & get channel buffer
-	chanbuf(bctok()).each(function (msg) {
+	chanbuf(chan).each(function (msg) {
 		if (msg.ctime > last_date) {
 			// the message is sent after closing the holdon call
 			missed.push(msg);
@@ -58,23 +66,29 @@ exports.listenBroadcast = async (next, last_date) => {
 	if (missed.length) {
 		// send missed message first
 		next(missed);
+		chan_conn[chan]--;
 	} else {
 		var timeout = setTimeout(function () {
-			tick.awrap(lpoll.emit)(bctok(), null);
+			tick.awrap(lpoll.emit)(chan, null);
 		}, config.lpoll.timeout);
 
-		lpoll.reg(bctok(), async (msg) => {
-			bc_count--;
+		lpoll.reg(chan, async (msg) => {
+			chan_conn[chan]--;
 			clearTimeout(timeout);
 			next(msg === null ? null : [ msg ]); // one message a time
 		});
-		
-		bc_count++;
 	}
 };
 
+exports.listenBroadcast = async (next, last_date) =>
+	await exports.listen(bctok(), config.lim.holdon.max_broadcast_conn, next, last_date);
+
+exports.listenEncop = async (uuid, next, last_date) =>
+	await exports.listen(enctok(uuid), config.lim.holdon.max_encop_conn, next, last_date);
+
 exports.chan = {
-	broadcast: bctok
+	broadcast: bctok,
+	encop: enctok
 };
 
 exports.send = async (channel, msg) => {

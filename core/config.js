@@ -248,7 +248,8 @@ var conf = module.exports = {
 		},
 
 		holdon: {
-			max_broadcast: 1024,
+			max_broadcast_conn: 1024,
+			max_encop_conn: 8,
 			msg_buf_len: 32
 		},
 
@@ -290,11 +291,13 @@ var conf = module.exports = {
 	smsg: {
 		use: "ali", // ali or netease
 		ali: {
-			appkey: "23885780",
-			appsec: "762b4711cadae2b72826f039add11197",
+			appkey: "23885780", // "24700552",
+			appenc: true,
+			appsec: "U2FsdGVkX1+r/2rGnqeMnHIIm3jRJCsP77YVjANkSgSZPa9o6t+L7ncFLe1cs0wOlnGL4QVSBXQqG15R05m+/w==",
+			// "U2FsdGVkX19O0kISq3Gneh1ouYvco5af+yLei/xtHKkYZ8SxDevHWJBa0B5npMSS+tRKbIjrVPoeC9iGPmnafw==",
 			sign: "Foci活动管家",
 			template: {
-				reg_vercode: "SMS_69550019",
+				reg_vercode: "SMS_69550019", // "SMS_112260003",
 			}
 		},
 

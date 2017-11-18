@@ -326,13 +326,7 @@ define([
 					main.find(".avatar .loader").removeClass("active");
 				});
 
-				pmview.init(function (unread) {
-					// if (unread) {
-					// 	main.find(".pm-btn").addClass("unread");
-					// 	setAvatarBoxUnread();
-					// } else
-					// 	main.find(".pm-btn").removeClass("unread");
-				});
+				pmview.init(function (unread) {});
 
 				ntview.keepUpdate(function (has) {
 					if (has) {
@@ -438,6 +432,8 @@ define([
 
 		// initialize personal message and notice
 		(function () {
+			var pm_open = false;
+
 			main.find(".pm-btn").popup({
 				popup: main.find(".pm-popup"),
 				position: "bottom left",
@@ -445,6 +441,15 @@ define([
 				lastResort: true,
 				distanceAway: is_mobile ? 0 : 18, /* TODO: not fixed!! */
 				
+				onShow: function () {
+					pm_open = true;
+					pmview.refresh();
+				},
+
+				onHidden: function () {
+					pm_open = false;
+				}
+
 				// onShow: function () {
 				// 	// main.find(".pm-btn").removeClass("unread");
 				// 	// unsetAvatarBoxUnread();
@@ -472,7 +477,9 @@ define([
 			pmview = pm.qview(main.find(".pm-popup"), {
 				use_dragi: foci.use_dragi,
 				
-				onUnread: function () {
+				onUnread: function (server_end) {
+					if (server_end && pm_open) pmview.refresh();
+
 					main.find(".pm-btn").addClass("unread");
 					setAvatarBoxUnread();
 				},

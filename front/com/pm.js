@@ -1,6 +1,9 @@
 /* personal message */
 
-define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], function (util, login, xfilt, lang, uh) {
+define([
+	"com/util", "com/login", "com/xfilt",
+	"com/lang", "com/userhunt", "com/holdon"
+], function (util, login, xfilt, lang, uh, holdon) {
 	foci.loadCSS("com/pm.css");
 	foci.loadCSS("com/chatbox.css");
 
@@ -299,7 +302,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 					}
 					
 					if (!exit)
-						update_proc = setTimeout(checkUpdate, 1000);
+						update_proc = setTimeout(checkUpdate, 10000);
 				});
 			});
 		}
@@ -551,10 +554,18 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 			});
 		});
 
+		holdon.reg("pmupdate", {
+			proc: function (has) {
+				if (has)
+					config.onUnread(true);
+			}
+		});
+
 		var ret = {};
 		var has_view_all = false;
 
 		var refresh_lock = false;
+		var main_loader = main.find(".main-loader");
 
 		ret.refresh = function (cb) {
 			if (refresh_lock) return;
@@ -562,9 +573,12 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 
 			main.find(".msg-box-cont").html("");
 
+			main_loader.addClass("active");
+
 			login.session(function (session) {
 				if (!session) {
 					refresh_lock = false;
+					main_loader.removeClass("active");
 					return;
 				}
 
@@ -572,7 +586,7 @@ define([ "com/util", "com/login", "com/xfilt", "com/lang", "com/userhunt" ], fun
 					int: "pm",
 					action: has_view_all ? "gethead" : "update"
 				}, function (suc, dat) {
-					main.find(".main-loader").removeClass("active");
+					main_loader.removeClass("active");
 
 					if (suc) {
 						// console.log(dat);

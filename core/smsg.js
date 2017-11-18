@@ -6,6 +6,7 @@ var db = require("./db");
 var err = require("./err");
 var reg = require("./reg");
 var util = require("./util");
+var auth = require("./auth");
 var config = require("./config");
 
 var request = require("request");
@@ -65,6 +66,11 @@ function initNetease() {
 function initAli() {
 	var qs = require("querystring");
 	var moment = require("moment");
+
+	if (config.smsg.ali.appenc) {
+		var key = util.getPass();
+		config.smsg.ali.appsec = auth.aes.dec(config.smsg.ali.appsec, key);
+	}
 
 	var appkey = config.smsg.ali.appkey;
 	var appsec = config.smsg.ali.appsec;

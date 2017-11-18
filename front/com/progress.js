@@ -37,19 +37,35 @@ define([ "com/util" ], function (util) {
 
 		var ret = {};
 
-		ret.fakeinc = function (max, k, i) {
-			k = k || 10000;
-			i = i || 0.25;
+		// using sigmoid func
+		// (1 / (1 + e^-x)) - 1
+		// value (0-100)
+		// value / 200
+		// y = (1 / (1 + e^-x)) - 0.5
+		// 1 / (y + 0.5) = 1 + e^-x
+		// e^-x = 1 / (y + 0.5) - 1
+		// x = -ln(1 / (y + 0.5) - 1)
+		ret.fakeinc = function (max, delta) {
+			delta = delta || 0.01;
 			max = max || 85;
+
+			var r = max / 100;
 
 			var val = main.progress("get value");
 
-			var curx = (k * max) / (max - val);
-			curx = curx + i;
+			var y = val / (200 * r);
+			var x = -Math.log(1 / (y + 0.5) - 1)
+
+			x = x + delta;
+			y = 1 / (1 + Math.exp(-x)) - 0.5;
+
+			val = y * (200 * r);
 			
-			var newx = (max * curx) / (k + curx);
-			
-			main.progress("set progress", newx);
+			main.progress("set progress", val);
+		};
+
+		ret.set = function (perc) {
+			main.progress("set progress", perc);
 		};
 
 		ret.inc = function () {

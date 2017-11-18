@@ -112,6 +112,9 @@ define([ "com/util", "com/login" ], function (util, login) {
 							<input type='text'> \
 						</div> \
 						<input type='text' style='display: none;'> \
+						<div class='load-overlay'> \
+							<div class='prog-prompt avcenter'></div> \
+						</div> \
 					</div> \
 					<div class='ui buttons'> \
 						<button type='button' class='ui icon button exit-btn'> \
@@ -193,34 +196,61 @@ define([ "com/util", "com/login" ], function (util, login) {
 			main.find(".file").click();
 		});
 
+		var use_lock = false;
+
 		main.find(".use-btn").click(function () {
+			if (use_lock) return;
+
 			if (!main.find(".preview").attr("src")) {
 				util.emsg("no file selected");
 			} else {
+				use_lock = true;
+
 				var next = function () {
 					var canvas = main.find(".preview").cropper("getCroppedCanvas");
 					
 					if (!canvas.toBlob) {
 						// TODO: fallback
 						util.emsg("$unsupported(canvas.toBlob)");
+						use_lock = false;
 						return;
 					}
-					
+
+					main.find(".preview").cropper("disable");
 					main.find(".use-btn").addClass("loading");
+					main.addClass("uploading");
 					
 					canvas.toBlob(function (blob) {
 						var form = new FormData();
 						
 						form.append("file", blob);
 
-						foci.post("/file/upload", form, function (suc, dat) {
+						foci.capwrap(foci.post, "/file/upload", form, function (suc, dat) {
+							use_lock = false;
+							main.removeClass("uploading");
 							main.find(".use-btn").removeClass("loading");
+							main.find(".preview").cropper("enable");
 							
 							if (suc) {
 								main.modal("hide");
 								if (cb) cb(dat, getArg());
 							} else {
 								util.emsg(dat);
+							}
+						}, {
+							xhr: function() {
+								var xhr = $.ajaxSettings.xhr();
+								
+								if (xhr.upload) {
+									var prog = main.find(".prog-prompt");
+
+									xhr.upload.addEventListener("progress", function (ev) {
+										if (ev && ev.lengthComputable)
+											prog.html(util.trimFloat(ev.loaded / ev.total * 100, 2) + "%");
+									}, false);
+								}
+								
+								return xhr;
 							}
 						});
 					});
@@ -230,9 +260,11 @@ define([ "com/util", "com/login" ], function (util, login) {
 					next();
 				} else if (config.init && selected == config.init) {
 					// init image not changed
+					use_lock = false;
 					if (cb) cb(selected, getArg());
 					main.modal("hide");
 				} else {
+					use_lock = false;
 					util.emsg("cropper not ready, please wait", "info");
 					// crop_ready_cb.push(next);
 				}
@@ -322,7 +354,7 @@ define([ "com/util", "com/login" ], function (util, login) {
 					// store local file to prevent CORS
 					form.append("tmp", true);
 
-					foci.post("/file/upload", form, function (suc, dat) {
+					foci.capwrap(foci.post, "/file/upload", form, function (suc, dat) {
 						main.find(".select-btn").removeClass("loading");
 
 						if (suc) {

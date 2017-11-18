@@ -284,16 +284,16 @@ if (!window.foci)
 	var captcha_cb = [];
 	var on_captcha = false;
 	
-	function req_callback(method, url, data, cb) {
+	function req_callback(method, url, data, cb, ext) {
 		return function (suc, dat) {
 			if (!suc) return cb(false, "$def.network_error");
 			
 			if (!dat.suc) {
 				if (dat.cap) {
-					if (on_captcha) { // already requested
+					if (on_captcha && !dat.no_buf) { // already requested
 						captcha_cb.push(function () {
 							// simply retry without captcha
-							method(url, data, cb);
+							method(url, data, cb, ext);
 						});
 					} else {
 						if (foci.captcha()) {
@@ -320,7 +320,7 @@ if (!window.foci)
 											
 											cb(suc, dat);
 										};
-									})(captcha_cb));
+									})(captcha_cb), ext);
 								} else {
 									cb(false, ans);
 								}
@@ -342,17 +342,26 @@ if (!window.foci)
 	}
 
 	foci.sget = sendSync;
-	foci.get = function (url, data, cb) {
-		sendAsync(url, data, req_callback(foci.get, url, data, cb));
+	foci.get = function (url, data, cb, ext) {
+		sendAsync(url, data, req_callback(foci.get, url, data, cb, ext), "GET", ext);
 	};
 
-	foci.post = function (url, data, cb) {
-		sendAsync(url, data, req_callback(foci.post, url, data, cb),
-				  "POST", { cache: false, contentType: false, processData: false });
+	foci.post = function (url, data, cb, ext) {
+		sendAsync(url, data, req_callback(foci.post, url, data, cb, ext),
+				  "POST", $.extend({ cache: false, contentType: false, processData: false }, ext));
 	};
 
-	foci.epost = function (url, data, cb) {
-		sendAsync(url, data, req_callback(foci.epost, url, data, cb), "POST");
+	foci.epost = function (url, data, cb, ext) {
+		sendAsync(url, data, req_callback(foci.epost, url, data, cb, ext), "POST", ext);
+	};
+
+	// captcha wrap
+	// method: foci.get, foci.post, etc.
+	foci.capwrap = function (method, url, data, cb, ext) {
+		sendAsync("/cap", {}, function (suc, dat) {
+			dat.no_buf = true; // avoid cap callback buffered
+			req_callback(method, url, data, cb, ext)(suc, dat);
+		}, "GET");
 	};
 
 	foci.salt = function (len) {

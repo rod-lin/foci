@@ -2,7 +2,7 @@
 
 "use strict";
 
-define([ "com/util" ], function (util) {
+define([ "com/util", "com/env" ], function (util, env) {
 	var SLEEP_MODE_THRESHOLD = 5; // if 5 consecutive errors, then switch to sleep mode
 
 	// intervals between consecutive holdon calls
@@ -22,12 +22,20 @@ define([ "com/util" ], function (util) {
 		console.log.call(console, [ "holdon: " ] + args);
 	}
 
+	// missed message by unregistered module
+	var missed_msg = {};
+
 	function trigger(mod, data) {
 		if (reg_mod.hasOwnProperty(mod)) {
 			var conf = reg_mod[mod];
 			if (conf.proc) conf.proc(data);
 		} else {
 			conmsg("unregistered module " + mod, data);
+
+			if (!missed.hasOwnProperty(mod))
+				missed[mod] = [];
+
+			missed[mod].push(data);
 		}
 	}
 
@@ -37,8 +45,7 @@ define([ "com/util" ], function (util) {
 		if (has_init) return;
 
 		var listen = function (cb) {
-			foci.get("/holdon/listenbc", { ltime: last_time },
-			function (suc, dat) {
+			var next = function (suc, dat) {
 				last_time = new Date().getTime();
 
 				if (suc) {
@@ -56,7 +63,14 @@ define([ "com/util" ], function (util) {
 				}
 
 				cb(suc && dat !== null);
-			});
+			};
+
+			var session = env.session();
+
+			if (session)
+				foci.encop(session, { int: "holdon", action: "listenenc", ltime: last_time }, next);
+			else
+				foci.get("/holdon/listenbc", { ltime: last_time }, next);
 		};
 
 		var fail_count = 0;
@@ -90,6 +104,16 @@ define([ "com/util" ], function (util) {
 		holdon.init();
 
 		reg_mod[name] = conf;
+	
+		// restore missed messages
+		if (missed_msg.hasOwnProperty(name) && missed_msg[name].length) {
+			var missed = missed_msg[name];
+			missed_msg[name] = [];
+
+			for (var i = 0; i < missed.length; i++) {
+				trigger(name, missed[i]);
+			}
+		}
 	};
 
     return holdon;

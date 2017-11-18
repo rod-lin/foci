@@ -28,6 +28,7 @@
 }
 
 .com-upload .preview-cont {
+	position: relative;
 	text-align: center;
 }
 
@@ -71,6 +72,46 @@
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: 50% 50%;
+}
+
+.com-upload.uploading .preview-cont {
+	overflow: hidden;
+}
+
+.com-upload .load-overlay {
+	position: absolute;
+
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+
+	border-radius: 4px;
+	opacity: 0;
+	visibility: hidden;
+
+	background: rgba(0, 0, 0, 0.7);
+	transition: opacity 0.3s;
+}
+
+.com-upload .prog-prompt {
+	text-align: center;
+	width: 100%;
+	font-weight: bold;
+	font-size: 1.2rem;
+}
+
+.com-upload.uploading .load-overlay {
+	opacity: 1;
+	visibility: visible;
+}
+
+.com-upload.uploading .preview-cont>*:not(.load-overlay) {
+	-webkit-filter: blur(2px);
+	-moz-filter: blur(2px);
+	-ms-filter: blur(2px);
+	-o-filter: blur(2px);
+	filter: blur(2px);
 }
 
 .com-upload.loaded .preview {

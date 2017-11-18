@@ -179,7 +179,7 @@ var dict = module.exports = {
 
 		"core.cutil.not_responsible": "not responsible user for this club utility",
 
-		"core.holdon.max_broadcast_reached": "max broadcast number exceeded",
+		"core.holdon.max_conn_reached": "max channel connection number reached",
 
 		"front.com.parts.fail_get_url": "fail to get url $1: $2",
 		"front.com.lang.fail_load_dict": "fail to load dictionary of $1",

@@ -11,6 +11,7 @@ var tick = require("./tick");
 var event = require("./event");
 var lpoll = require("./lpoll");
 var cutil = require("./cutil");
+var holdon = require("./holdon");
 var config = require("./config");
 
 /*
@@ -110,7 +111,8 @@ exports.push = async (uuid, info) => {
 	await col.updateOne(user.User.query.uuid(uuid), Notice.set.push(sender, nnt));
 	await setUpdate(uuid, true);
 
-	await lpoll.emit(ltok("update", uuid), true);
+	// await lpoll.emit(ltok("update", uuid), true);
+	await holdon.send(holdon.chan.encop(uuid), new holdon.HoldonMessage("notice", true));
 };
 
 exports.pull = async (uuid) => {

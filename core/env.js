@@ -26,7 +26,17 @@ var Env = function (req, res) {
 
 	this.qjson = qjson;
 	this.qsuc = obj => qjson({ suc: true, res: obj });
-	this.qerr = msg => qjson({ suc: false, msg: msg });
+	this.qerr = msg => {
+		if (is_static) {
+			res.status(500);
+		}
+
+		qjson({ suc: false, msg: msg });
+	};
+
+	// static file mode(convert errors to http status)
+	var is_static = false;
+	this.setStatic = val => is_static = val === undefined ? true : val;
 	
 	this.ip = () => {
 		if (req.get("X-Forwarded-For")) {

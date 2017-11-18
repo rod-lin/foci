@@ -51,6 +51,10 @@ var checkCaptcha = async (env) => {
 
 var Env = require("./env").Env;
 
+exports.cap = util.route(async env => {
+	env.qcap(await captcha.register(env.ip()));
+});
+
 exports.auth = util.route(async env => {
 	env.qsuc(auth.rsa.getAuthKey());
 });
@@ -74,6 +78,8 @@ var _mcom = {};
 
 // ?coms="a,b,c,d,e"
 _mcom.merge = util.route(async env => {
+	env.setStatic();
+
 	var args = util.checkArg(env.query, { "coms": "string" });
 	var coms = args.coms.split(",");
 
@@ -86,6 +92,8 @@ _mcom.merge = util.route(async env => {
 
 // ?part="abc/ss"
 _mcom.mpart = util.route(async env => {
+	env.setStatic();
+
 	var args = util.checkArg(env.query, { "part": "string" });
 
 	var res = await mcom.mpart(args.part);
@@ -96,6 +104,8 @@ _mcom.mpart = util.route(async env => {
 
 // ?files="abc/ss,abc/sss"
 _mcom.msrc = util.route(async env => {
+	env.setStatic();
+
 	var args = util.checkArg(env.query, { "files": "string", "type": "string" });
 	var files = args.files.split(",");
 
@@ -911,9 +921,9 @@ encop.notice = async (env, usr, query, next) => {
 		case "update":
 			return await notice.update(usr.getUUID());
 
-		case "updatel":
-			notice.updatel(usr.getUUID(), next);
-			return T_NEED_HANG;
+		// case "updatel":
+		// 	notice.updatel(usr.getUUID(), next);
+		// 	return T_NEED_HANG;
 
 		case "send":
 			var args = util.checkArg(query, notice.Notice.format.msg);
@@ -1303,6 +1313,23 @@ encop.cutil = async (env, usr, query, next) => {
 encop.holdon = async (env, usr, query, next) => {
 	switch (query.action) {
 		// encop channel
+		case "listenenc":
+			var args = util.checkArg(query, { ltime: { type: "int", opt: true } });
+			var ltime = args.ltime ? new Date(args.ltime) : undefined;
+
+			var returned = false;
+			var next_wrap = function (res) {
+				if (returned) return;
+				returned = true;
+
+				next(res);
+			};
+
+			await holdon.listenEncop(usr.getUUID(), next_wrap, ltime);
+			await holdon.listenBroadcast(next_wrap, ltime);
+
+			return T_NEED_HANG;
+
 		default:
 			throw new err.Exc("$core.action_not_exist");
 	}

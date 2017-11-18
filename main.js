@@ -43,6 +43,7 @@ app.use(bodyparser.urlencoded({
 app.use(compression({ level: 9 }));
 
 /* official api */
+app.get("/cap", int.cap);
 app.get("/auth", int.auth);
 app.get("/favtag", int.favtag);
 app.get("/dict", int.dict);

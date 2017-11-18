@@ -347,6 +347,12 @@ html.foci-nested .top-tbar {
 	line-height: 2.7rem;
 }
 
+@-moz-document url-prefix() {
+	.com-tbar .site-logo-name {
+		letter-spacing: -1px;
+	}
+}
+
 .com-tbar .site-logo-prompt {
 	position: absolute;
 	left: 2rem;

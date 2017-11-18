@@ -11,7 +11,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 
 	global_prog = progress.init("body", { top: true, position: "fixed" });
 
-	function fetch(url, suc, err) {
+	function fetch(url, suc, err, prog) {
 		$.ajax({
 			type: "GET",
 			url: url,
@@ -92,17 +92,15 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 				next(cache[name]);
 			} else {
 				var proc = setInterval(function () {
-					prog.fakeinc(50);
-				}, 500);
-				
+					prog.fakeinc(70);
+				}, 70);
+
 				var url = config.base + name;
 				fetch(url, function (text) {
-					clearInterval(proc);
-					
+					// clearInterval(proc);
 					next(text);
 				}, function () {
-					clearInterval(proc);
-					
+					// clearInterval(proc);
 					if (cb) cb(false, true /* not found */);
 					prog.err();
 				});

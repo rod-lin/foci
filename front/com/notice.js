@@ -4,8 +4,9 @@
 
 define([
 	"com/util", "com/login", "com/lang",
-	"com/xfilt", "com/userhunt", "com/popselect"
-], function (util, login, lang, xfilt, userhunt, popselect) {
+	"com/xfilt", "com/userhunt", "com/popselect",
+	"com/holdon"
+], function (util, login, lang, xfilt, userhunt, popselect, holdon) {
 	foci.loadCSS("com/notice.css");
 
 	// notice editor
@@ -189,7 +190,7 @@ define([
 				<div class='cont'></div> \
 				<div style='text-align: right;'> \
 					<div class='ui right buttons' style='float: right; padding: 1rem 2rem 2rem 0;'> \
-						<button class='ui button'>Contact</button> \
+						<!--button class='ui button'>Contact</button--> \
 						<button class='ui green button yep-btn'>Yep</button> \
 					</div> \
 				</div> \
@@ -292,20 +293,22 @@ define([
 			main.removeClass("view-all");
 			
 			if (cur_preview) {
-				var unread = false;
+				// var unread = false;
 				
-				// check if any history message is unread
-				for (var i = 0; i < cur_preview.hist.length; i++) {
-					if (cur_preview.hist[i].unread) unread = true;
-				}
+				// // check if any history message is unread
+				// for (var i = 0; i < cur_preview.hist.length; i++) {
+				// 	if (cur_preview.hist[i].unread) unread = true;
+				// }
 				
-				if (!unread) {
-					cur_preview.dom.removeClass("unread");
-				}
+				// if (!unread) {
+				// 	cur_preview.dom.removeClass("unread");
+				// }
 				
-				cur_preview = null;
+				// cur_preview = null;
 				
 				updateUnreadState();
+
+				cur_preview = null;
 			}
 		});
 
@@ -343,6 +346,9 @@ define([
 		}
 		
 		function updateUnreadState() {
+			if (cur_preview && !cur_preview.dom.find(".hist-msg.unread").length)
+				cur_preview.dom.removeClass("unread");
+
 			if (main.find(".hist-msg.unread, .nt-item.unread").length) {
 				if (config.onUnread) config.onUnread();
 			} else {
@@ -529,40 +535,46 @@ define([
 		var keep_err = 0;
 
 		function keep(cb) {
-			login.session(function (session) {
-				if (!session) return;
-				
-				var now = new Date();
-				var delay = 1000;
-
-				foci.encop(session, {
-					int: "notice",
-					action: "updatel"
-				}, function (suc, dat) {
-					if (suc) {
-						if (dat)
-							new_count++;
-						else
-							delay = 10000; // delay 10 seconds
-
-						cb(dat);
-						keep_err = 0;
-					} else {
-						cb(false);
-						keep_err++;
-					}
-
-					if (keep_err > 5 &&
-						(new Date()) - now < 3000) {
-						// request time less than 3 sec
-						delay = 60000;
-					}
-
-					setTimeout(function () {
-						keep(cb);
-					}, delay);
-				});
+			holdon.reg("notice", {
+				proc: function (dat) {
+					cb(dat);
+				}
 			});
+
+			// login.session(function (session) {
+			// 	if (!session) return;
+				
+			// 	var now = new Date();
+			// 	var delay = 1000;
+
+			// 	foci.encop(session, {
+			// 		int: "notice",
+			// 		action: "updatel"
+			// 	}, function (suc, dat) {
+			// 		if (suc) {
+			// 			if (dat)
+			// 				new_count++;
+			// 			else
+			// 				delay = 10000; // delay 10 seconds
+
+			// 			cb(dat);
+			// 			keep_err = 0;
+			// 		} else {
+			// 			cb(false);
+			// 			keep_err++;
+			// 		}
+
+			// 		if (keep_err > 5 &&
+			// 			(new Date()) - now < 3000) {
+			// 			// request time less than 3 sec
+			// 			delay = 60000;
+			// 		}
+
+			// 		setTimeout(function () {
+			// 			keep(cb);
+			// 		}, delay);
+			// 	});
+			// });
 		}
 
 		main.find(".refresh-btn").click(refresh);

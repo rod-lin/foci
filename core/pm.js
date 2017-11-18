@@ -9,6 +9,7 @@ var util = require("./util");
 var user = require("./user");
 var tick = require("./tick");
 var lpoll = require("./lpoll");
+var holdon = require("./holdon");
 var config = require("./config");
 
 var tconv = (a, b) => a > b ? a + "." + b : b + "." + a;
@@ -130,6 +131,7 @@ exports.send = async (sender, sendee, msg) => {
 	// console.log("sender: ", sender, sendee, msg);
 
 	await lpoll.emit(ltok(sender, sendee), [ nmsg ]);
+	await holdon.send(holdon.chan.encop(sendee), new holdon.HoldonMessage("pmupdate", true));
 
 	// await col.updateOne(user.User.query.uuid(sendee), PMsg.set.send(sender, nmsg));
 	// await col.updateOne(user.User.query.uuid(sendee), PMsg.set.push_update(nmsg));

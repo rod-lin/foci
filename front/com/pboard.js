@@ -6,7 +6,7 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 	foci.loadCSS("com/pboard.css");
 
 	function procURL(url) {
-		if (url && !/^\/|https?:\/\//.test(url)) {
+		if (url && !/^\/|https?:\/\/|#/.test(url)) {
 			url = "#" + url;
 		}
 
@@ -63,7 +63,7 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 					}
 				}, {
 					arg: {
-						prompt: "foci.me#",
+						prompt: "URL",
 						placeholder: "url",
 						init: ph.setting_arg_init
 					},
@@ -303,7 +303,7 @@ define([ "com/util", "com/upload" ], function (util, upload) {
 							}
 						}, {
 							arg: {
-								prompt: "(" + (i + 1) + ") foci.me#",
+								prompt: "(" + (i + 1) + ") URL#",
 								placeholder: "url",
 								init: slide.setting_arg_init 
 							},
