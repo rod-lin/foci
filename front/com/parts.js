@@ -97,10 +97,10 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 
 				var url = config.base + name;
 				fetch(url, function (text) {
-					// clearInterval(proc);
+					clearInterval(proc);
 					next(text);
 				}, function () {
-					// clearInterval(proc);
+					clearInterval(proc);
 					if (cb) cb(false, true /* not found */);
 					prog.err();
 				});

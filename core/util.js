@@ -176,6 +176,14 @@ var checkArg = (args, req, opt) => {
 
 				break;
 
+			case "date":
+				if (typeof tmp !== "number")
+					throw new err.Exc("$core.expect_argument_type(" + k + ",int)");
+				
+				tmp = new Date(tmp);
+
+				break;
+
 			case "number":
 				if (typeof tmp === "number")
 					break;

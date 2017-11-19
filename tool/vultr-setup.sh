@@ -126,7 +126,7 @@ server {
     server_name foci.me.w.kunlunar.com;
     location / {
         proxy_pass http://127.0.0.1:3138;
-        client_max_body_size 4m;
+        client_max_body_size 3m;
 
         proxy_set_header Host \$http_host;
         proxy_set_header X-Real-IP \$remote_addr;
@@ -139,7 +139,7 @@ server {
     server_name foci.me;
     location / {
         proxy_pass http://127.0.0.1:3138;
-        client_max_body_size 4m;
+        client_max_body_size 3m;
 
         proxy_set_header Host \$http_host;
         proxy_set_header X-Real-IP \$remote_addr;
@@ -152,7 +152,7 @@ server {
     server_name api.foci.me;
     location / {
         proxy_pass http://127.0.0.1:3138;
-        client_max_body_size 4m;
+        client_max_body_size 3m;
         
         proxy_set_header Host \$http_host;
         proxy_set_header X-Real-IP \$remote_addr;

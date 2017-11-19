@@ -1334,3 +1334,29 @@ encop.holdon = async (env, usr, query, next) => {
 			throw new err.Exc("$core.action_not_exist");
 	}
 };
+
+encop.sysmsg = async (env, usr, query, next) => {
+	switch (query.action) {
+		case "new":
+			var args = util.checkArg(query, {
+				icon: { type: "string", opt: true },
+				msg: { type: "string", opt: true },
+				style: { type: "string", opt: true },
+				burn: { type: "bool", opt: true },
+				ddl: { type: "date", opt: true }
+			});
+
+			await user.checkRoot(usr.getUUID());
+			await sysmsg.newMsg(args);
+
+			return;
+
+		case "delall":
+			await user.checkRoot(usr.getUUID());
+			await sysmsg.deleteAll();
+			return;
+
+		default:
+			throw new err.Exc("$core.action_not_exist");
+	}
+};

@@ -3,10 +3,10 @@
 "use strict";
 
 define([ "com/util", "com/env" ], function (util, env) {
-	var SLEEP_MODE_THRESHOLD = 5; // if 5 consecutive errors, then switch to sleep mode
+	var SLEEP_MODE_THRESHOLD = 10; // if 10 consecutive errors, then switch to sleep mode
 
 	// intervals between consecutive holdon calls
-	var NORMAL_INTERVAL = 5000;
+	var NORMAL_INTERVAL = 3000;
 	var SLEEP_INTERVAL = 30000;
 
 	var holdon = {};

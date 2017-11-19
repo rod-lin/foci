@@ -216,6 +216,9 @@ define([ "com/util", "com/login" ], function (util, login) {
 						return;
 					}
 
+					var prog = main.find(".prog-prompt");
+
+					prog.html("");
 					main.find(".preview").cropper("disable");
 					main.find(".use-btn").addClass("loading");
 					main.addClass("uploading");
@@ -242,11 +245,16 @@ define([ "com/util", "com/login" ], function (util, login) {
 								var xhr = $.ajaxSettings.xhr();
 								
 								if (xhr.upload) {
-									var prog = main.find(".prog-prompt");
-
 									xhr.upload.addEventListener("progress", function (ev) {
-										if (ev && ev.lengthComputable)
-											prog.html(util.trimFloat(ev.loaded / ev.total * 100, 2) + "%");
+										if (ev) {
+											var prompt = util.trimFloat(ev.loaded / 1024, 2) + " K";
+
+											if (ev.lengthComputable) {
+												prompt += "(" + util.trimFloat(ev.loaded / ev.total * 100, 2) + "%)";
+											}
+
+											prog.html(prompt);
+										}
 									}, false);
 								}
 								

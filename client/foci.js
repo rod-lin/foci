@@ -264,8 +264,8 @@ if (!window.foci)
 				return cb(true, dat);
 			},
 
-			error: function (req, err, exc) {
-				return cb(false, err);
+			error: function (xhr, err, exc) {
+				return cb(false, err, xhr ? xhr.status : 0);
 			}
 		}, ext));
 	};
@@ -283,10 +283,20 @@ if (!window.foci)
 	// callbacks for requests rejected by captcha
 	var captcha_cb = [];
 	var on_captcha = false;
+
+	foci.isNetworkError = function (errmsg) {
+		return /\$def.network/.test(errmsg);
+	};
 	
 	function req_callback(method, url, data, cb, ext) {
-		return function (suc, dat) {
-			if (!suc) return cb(false, "$def.network_error");
+		return function (suc, dat, status) {
+			if (!suc) {
+				if (status == 413) {
+					return cb(false, "$def.network.file_too_large");
+				} else {
+					return cb(false, "$def.network.network_error(" + status + ")");
+				}
+			}
 			
 			if (!dat.suc) {
 				if (dat.cap) {
@@ -428,13 +438,24 @@ if (!window.foci)
 	};
 
 	foci.getLocal = function (key) {
-		var val = localStorage[key];
+		var val;
+
+		try {
+			val = localStorage[key];
+		} catch (e) {
+			foci.nolocal();
+		}
+
 		if (!val) return undefined;
 		return JSON.parse(val);
 	};
 
 	foci.removeLocal = function (key) {
-		localStorage.removeItem(key);
+		try {
+			localStorage.removeItem(key);
+		} catch (e) {
+			foci.nolocal();
+		}
 	};
 
 	foci.newUser = function (lname, vercode, passwd, cb) {
@@ -507,8 +528,7 @@ if (!window.foci)
 			enc: foci.aesenc("hello", session.getSID())
 		}, function (suc, dat) {
 			if (!suc) {
-				if (dat != "$def.network_error")
-					clear();
+				if (!foci.isNetworkError(dat)) clear(); // not network error
 				return cb(false, dat);
 			}
 			

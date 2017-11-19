@@ -141,7 +141,8 @@ define(function () {
 	}
 
 	var dict = {
-		"def.network_error": "network error",
+		"def.network.network_error": "network error with status $1",
+		"def.network.file_too_large": "file too large",
 		"def.server_error": "server_error",
 		"def.no_session": "no session stored",
 		"def.no_login": "you haven't logged in",

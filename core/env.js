@@ -75,10 +75,15 @@ var Env = function (req, res) {
 			if (req.headers["content-type"].indexOf("form-urlencoded") != -1) {
 				cb();
 			} else {
-				var form = new multiparty.Form({ maxFilesSize: config.file.max_size });
+				var form = new multiparty.Form({ autoFiles: true, maxFilesSize: config.file.max_size });
+
+				// form.on("error", (err) => {
+				// 	console.log(err);
+				// });
 
 				form.parse(req, (e, query, file) => {
 					if (e) {
+						res.status(e.status);
 						this.qerr("$core.fail_upload");
 						util.log(e, util.style.yellow("EXCEPTION"));
 						return;

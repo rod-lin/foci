@@ -17,7 +17,10 @@
             <div class="header">Admin</div>
             <div class="menu-item" data-form-set="invcode">Invitation code</div>
             <div class="menu-item" data-form-set="clubrev">Club review</div>
-            <div class="menu-item" data-form-set="cutil">Club utility</div>
+			<div class="menu-item" data-form-set="cutil">Club utility</div>
+			<div class="foci-only-root">
+				<div class="menu-item" data-form-set="sysmsg">System message</div>
+			</div>
         </div>
     </div>
     
@@ -42,6 +45,42 @@
                     <button type="button" class="ui green basic button new-util-btn">New utility</button>
                 </div>
                 <div class="cutil-box"></div>
+            </div>
+        </form>
+    </div>
+
+    <div class="form-set form-set-sysmsg">
+        <form class="form-sysmsg ui form">
+            <h3 class="ui top attached block header">System message</h3>
+            <div class="ui attached segment">
+                <div class="field">
+                    <label>Icon</label>
+                    <input class="field-icon"></input>
+                </div>
+                <div class="field">
+                    <label>Message content</label>
+                    <input class="field-msg"></input>
+                </div>
+                <div class="field">
+                    <label>Style</label>
+                    <input class="field-style"></input>
+                </div>
+                <div class="field">
+                    <label>Deadline</label>
+                    <div class="ui calendar field-ddl"></div>
+                </div>
+                <div class="field">
+                    <label>Burn after reading</label>
+                    <div class='ui toggle checkbox field-burn'>
+                        <input type='checkbox'>
+                        <label></label>
+                    </div>
+                </div>
+                <div class="field">
+                    <button type="button" class="ui basic button preview-btn">Preview</button>
+					<button type="button" class="ui basic button bc-btn">Broadcast</button>
+					<button type="button" class="ui red basic button delall-btn">Delete all</button>
+                </div>
             </div>
         </form>
     </div>
@@ -272,6 +311,86 @@
                         return true;
                     }
                     
+                    /***************sysmsg form beg ***************/
+
+                    (function () {
+                        var form_sysmsg = main.find(".form-set-sysmsg .form-sysmsg");
+
+                        var ddl = form_sysmsg.find(".field-ddl");
+                        var burn = form_sysmsg.find(".field-burn");
+                        var icon = form_sysmsg.find(".field-icon");
+                        var msg = form_sysmsg.find(".field-msg");
+                        var style = form_sysmsg.find(".field-style");
+                        var preview = form_sysmsg.find(".preview-btn");
+						var broadcast = form_sysmsg.find(".bc-btn");
+						var delall = form_sysmsg.find(".delall-btn");
+
+                        ddl.calendar({
+                            type: "datetime",
+						    inline: true,
+                        });
+
+                        burn.checkbox("check");
+
+                        preview.click(function () {
+                            tbar.showMsg(icon.val(), msg.val(), style.val());
+						});
+						
+						broadcast.click(function () {
+							broadcast.addClass("loading");
+
+							var date = ddl.calendar("get date");
+
+							login.session(function (session) {
+								foci.encop(session, {
+									int: "sysmsg",
+									action: "new",
+
+									icon: icon.val(),
+									msg: msg.val(),
+									style: style.val(),
+									ddl: date ? date.getTime() : undefined,
+									burn: burn.checkbox("is checked")
+								}, function (suc, dat) {
+									broadcast.removeClass("loading");
+
+									if (suc) {
+										util.emsg("sent", "info");
+									} else {
+										util.emsg(dat);
+									}
+								});
+							});
+						});
+
+						delall.click(function () {
+							delall.addClass("loading");
+
+							util.ask("Are you sure to delete all messages?", function (ans) {
+								if (ans) {
+									login.session(function (session) {
+										foci.encop(session, {
+											int: "sysmsg",
+											action: "delall"
+										}, function (suc, dat) {
+											delall.removeClass("loading");
+
+											if (suc) {
+												util.emsg("deleted", "info");
+											} else {
+												util.emsg(dat);
+											}
+										})
+									});
+								} else {
+									delall.removeClass("loading");
+								}
+							});
+						});
+                    })();
+
+                    /*************** sysmsg form beg ***************/
+
                     /*************** cutil form beg ***************/
                     
                     (function () {

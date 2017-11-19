@@ -55,3 +55,8 @@ exports.dump = async (use_ddl) => {
 	var res = await col.find(SysMsg.query.dump(use_ddl)).sort({ ctime: -1 }).toArray();
 	return res;
 };
+
+exports.deleteAll = async () => {
+	var col = await db.col("sysmsg");
+	await col.remove({});
+};

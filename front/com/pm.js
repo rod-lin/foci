@@ -297,7 +297,7 @@ define([
 							});
 						}
 					} else {
-						if (dat != "$def.network_error")
+						if (!foci.isNetworkError(dat))
 							util.emsg(dat);
 					}
 					
