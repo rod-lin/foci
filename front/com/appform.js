@@ -73,7 +73,7 @@ define([
         var notice_btn = main.find(".notice-btn");
         var rate_btn = main.find(".rate-btn");
 
-        var checkall = $("<div class='ui fitted checkbox check-all-btn'> \
+        var checkall = $("<div class='ui fitted checkbox check-all-btn col-checkbox'> \
             <input type='checkbox'><label></label> \
         </div>");
 
@@ -84,9 +84,9 @@ define([
         ].concat(config.enable_rating ? [
             "<span>Rating</span>",
         ] : [], [
-            "<span class='lang' data-replace='$front.sub.appcent.status'>Status</span>",
-            "<span class='lang' data-replace='$front.sub.appcent.user'>User</span>",
-            "<span class='lang' data-replace='$front.sub.appcent.apply_for'>Apply for</span>"
+            "<span class='lang col-status' data-replace='$front.sub.appcent.status'>Status</span>",
+            "<span class='lang col-user' data-replace='$front.sub.appcent.user'>User</span>",
+            "<span class='lang col-job' data-replace='$front.sub.appcent.apply_for'>Apply for</span>"
         ]);
 
         var init_header_count = global_headers.length;
@@ -226,13 +226,20 @@ define([
 
             var parsed = login.parseInfo(appobj.info);
 
+            var realname_dom = realname.badge(appobj.uuid, euid, {
+                use_given: true,
+                data: appobj.realname
+            });
+
+            // alert(realname_dom.data("realname"));
+            td.attr("data-realname", realname_dom.data("realname"));
+            td.attr("data-dname", parsed.dname);
+            td.attr("data-rating", appobj.info.rating);
+
             avatar.init(td.find(".avatar"), appobj.info, { size: "3em", popdir: "top left" });
             // alert(appobj.rating);
             rating.init(td.find(".rating"), appobj.info.rating);
-            td.find(".realname").append(realname.badge(appobj.uuid, euid, {
-                use_given: true,
-                data: appobj.realname
-            }));
+            td.find(".realname").append(realname_dom);
 
             td.find(".dname").html(parsed.dname);
 
@@ -275,21 +282,21 @@ define([
             var status_tok = genStatusToken(appobj.status);
 
             var cls = "center aligned collapsing";
-            row.append(wrap(checkbox, cls));
+            row.append(wrap(checkbox, cls).addClass("col-checkbox"));
 
             if (config.enable_rating) {
                 var val = "<span class='rating-val'>" +
                           (appobj.rating ? appobj.rating.rating : "-") +
                           "</span>/10";
-                row.append(wrap(val, cls));
+                row.append(wrap(val, cls).addClass("col-rating"));
 
                 if (appobj.rating)
                     row.addClass("rated");
             }
 
-            row.append(genStatusToken(appobj.status));
-            row.append(genUser(appobj));
-            row.append(wrap(type === "staff" ? "Staff" : "Participant", cls));
+            row.append(genStatusToken(appobj.status).addClass("col-status"));
+            row.append(genUser(appobj).addClass("col-user"));
+            row.append(wrap(type === "staff" ? "Staff" : "Participant", cls).addClass("col-job"));
 
             // fill in rest of the form
 
@@ -622,6 +629,46 @@ define([
         loader.load();
 
         var mod = {};
+
+        mod.getTable = function () {
+            return main_table;
+        };
+
+        mod.getOutputTable = function () {
+            var table = main_table.clone();
+
+            // remove first col
+
+            table.find("th").get(0).remove();
+            table.find("th .col-user").parent("th")
+                .before("<th>Realname</th>")
+                .after("<th>Rating</th>");
+
+            table.find("td.col-rating").each(function (i, dom) {
+                dom = $(dom);
+                var text = dom.text();
+                dom.html(text.replace("/", " / "));
+            });
+
+            table.find("td.col-checkbox").remove();
+
+            table.find("td.col-status").each(function (i, dom) {
+                dom = $(dom);
+                dom.html(dom.text());
+            });
+
+            table.find("td.col-user").each(function (i, dom) {
+                dom = $(dom);
+
+                dom.before($("<td></td>").html(dom.attr("data-realname")));
+                dom.after($("<td></td>").html(dom.attr("data-rating")));
+                dom.html(dom.attr("data-dname"));
+            });
+
+            main.append(table);
+
+            return table;
+        };
 
         return mod;
     };

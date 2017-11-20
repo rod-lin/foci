@@ -183,6 +183,7 @@ Object.assign(require("repl").start("foci> ").context, {
 	config: require("./core/config"),
 
 	sysmsg: require("./core/sysmsg"),
+	mcom: require("./core/mcom"),
 
 	exit: function () {
 		// if (util.ask("Are you sure to exit? [N/y]: ").toLowerCase() == "y")

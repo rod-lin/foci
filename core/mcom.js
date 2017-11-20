@@ -48,14 +48,16 @@ var part_cache = {
     // part name: { ctime, src }
 };
 
+var no_part_cache = false;
+
 var css_cache = {
 
 };
 
 // proc(id): source
-var ncache = async (cacheobj, id, proc) => {
+var ncache = async (cacheobj, id, proc, no_cache) => {
     // check cache
-    if (!config.mcom.no_cache && cacheobj[id]) {
+    if (!config.mcom.no_cache && !no_cache && cacheobj[id]) {
         var entry = cacheobj[id];
 
         if (entry.ctime + config.mcom.expire > new Date()) {
@@ -69,7 +71,7 @@ var ncache = async (cacheobj, id, proc) => {
     var src = await proc(id);
 
     // save cache
-    if (!config.mcom.no_cache) {
+    if (!config.mcom.no_cache && !no_cache) {
         cacheobj[id] = {
             ctime: new Date(),
             src: src
@@ -91,7 +93,7 @@ exports.mpart = async (part) => {
         }
     
         return minifyhtml(cont, config.mcom.minify_html_conf);
-    });
+    }, no_part_cache);
 };
 
 // return { modified, src }
@@ -176,4 +178,9 @@ exports.disableCache = () => {
     exports.clearCache();
     config.mcom.no_cache = true;
     config.mcom.expire = 0;
+};
+
+exports.disablePart = () => {
+    no_part_cache = true;
+    part_cache = {};
 };

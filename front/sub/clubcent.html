@@ -320,6 +320,8 @@
                         main.find(".nav-bar").removeClass("floating");
                         // main.find(".tabs").css("margin-top", "");
                         if (float_bar) {
+                            main.find(".nav-bar").scrollLeft(float_bar.scrollLeft());
+
                             float_bar.remove();
                             float_bar = null;
                             
@@ -332,8 +334,13 @@
                         
                         tbar.setStyle("");
                         float_bar = main.find(".nav-bar").clone().addClass("floating");
-                        main.find(".nav-bar").after(float_bar);
                         
+                        main.find(".nav-bar").after(float_bar);
+
+                        float_bar.ready(function () {
+                            float_bar.scrollLeft(main.find(".nav-bar").scrollLeft());
+                        });
+
                         // rebind menus
                         main_tab.bind(float_bar.find(".item"));
                         main_tab.setMenu(float_bar.find(".item"));

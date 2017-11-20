@@ -5,8 +5,6 @@
     width: 100%;
     min-height: 16em; /* 15.7em + 0.3em(tag margin) */
 
-    overflow: hidden;
-
     transition: box-shadow 0.3s, height 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
@@ -32,9 +30,11 @@
     font-family: foci-title;
     padding-bottom: 0.7rem;
 
-    overflow: hidden;
+    /* overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: nowrap; */
+
+    word-wrap: break-word;
 
     cursor: pointer;
 }
@@ -170,13 +170,11 @@
         left: 0;
         width: 100%;
         height: 15em;
-        border-left: none !important;
-        border-right: none !important;
         border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     }
 
     .com-event-showcase .show-info {
-        padding: 17em 1em 0 1em !important;
+        padding: 16.3em 1em 0 1em !important;
     }
 
     .com-event-showcase .show-info .show-title {

@@ -291,7 +291,11 @@ define([
 		config = $.extend({}, lim_config, {
 			max_descr_len: 64,
 			view: function (info) {
-				qview(info, null, mod);
+				if (util.isMobile()) {
+					util.jump("#event/" + info.euid);
+				} else {
+					qview(info, null, mod);
+				}
 			},
 
 			loader_only_on_buffer: false, // only show loader when buffering(not on the beginning)
@@ -924,8 +928,8 @@ define([
 		}, config);
 
 		var parsed = parseInfo(info, {
-			max_title_len: 32,
-			max_descr_len: 128
+			max_title_len: 24,
+			max_descr_len: 110
 		});
 
 		var main = $("<div class='com-event-showcase img-" + config.imgpos + "'> \

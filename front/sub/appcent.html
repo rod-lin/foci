@@ -5,6 +5,7 @@
 			<div class="ui secondary menu">
 				<a class="item active">Staff</a>
 				<a class="item">Participant</a>
+				<a class="item">Export</a>
 			</div>
 		</div>
 		<div class="tab-set">
@@ -21,6 +22,12 @@
 						<div class="title lang" data-replace="$front.sub.appcent.partic">Participant</div>
 					</div>
 				</div>
+				<div class="step link">
+					<i class="table icon"></i>
+					<div class="content">
+						<div class="title">Export Table</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -29,6 +36,31 @@
 		<div style="position: relative; height: 100%; width: 100%; overflow: auto;">
 			<div class="tab staff-tab"></div>
 			<div class="tab partic-tab"></div>
+			<div class="tab export-tab">
+				<h3 class="ui block top attached header lang">Export</h3>
+				<div class="ui attached segment">
+					<p>Export the participant/staff table to a workbook</p>
+					
+					<form class="ui form">
+						<input class="field-fname" placeholder="File name(optional)">
+						<div class="field">
+							<div class="ui basic floating dropdown button field-format" style="margin-top: 1rem;" name="format">
+								<div class="text">Output format</div>
+								<i class="dropdown icon"></i>
+								<div class="menu">
+									<div class="item active" data-value="xlsx">Excel 2007+(.xlsx)</div>
+									<div class="item" data-value="xlml">Excel 2003(.xls)</div>
+									<div class="item" data-value="html">HTML(.html)</div>
+									<div class="item" data-value="csv">Comma Separated Values(.csv)</div>
+									<div class="item" data-value="txt">Text(.txt, UTF-8)</div>
+								</div>
+							</div>
+
+							<button type="button" class="ui basic button export-btn" style="margin-top: 1rem;">Export</button>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -37,6 +69,15 @@
 	.sub-appcent {
 		width: 100%;
 		height: 100%;
+	}
+
+	.sub-appcent .export-tab {
+		padding: 2rem;
+		color: rgb(70, 70, 70);
+	}
+
+	.sub-appcent .export-tab .header {
+		color: rgb(70, 70, 70);
 	}
 
 	.sub-appcent .left-panel {
@@ -184,12 +225,15 @@
 	function init(main, args, show, cont) {
 		require([
 			"com/env", "com/util", "com/login",
-			"com/event", "com/appform"
-		], function (env, util, login, event, appform) {
+			"com/event", "com/appform", "lib/blob",
+			"lib/file-saver", "lib/xlsx-core"
+		], function (env, util, login, event, appform, _, saveAs, xlsx) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
 				return;
 			}
+
+			xlsx = XLSX;
 
 			var euid = parseInt(args[0]);
 
@@ -237,7 +281,12 @@
 						return $(main.find(".tabs .tab")[n]);
 					};
 
-					$(tabset.find(".step, .item")[0]).click();
+					if (args[1]) {
+						var tab = main.find("." + args[1] + "-tab").index();
+						$(tabset.find(".step, .item")[tab]).click();
+					} else {
+						$(tabset.find(".step, .item")[0]).click();
+					}
 
 					return ret;
 				})();
@@ -260,6 +309,64 @@
 
 					var partic_table = appform.table(main.find(".partic-tab"), euid, "partic", {
 						event_info: parsed
+					});
+
+					// init export
+					env.user(function (info) {
+						var export_tab = main.find(".export-tab");
+						var field_fname = export_tab.find(".field-fname");
+						var field_format = export_tab.find(".field-format");
+						var export_btn = export_tab.find(".export-btn");
+
+						var parsed = login.parseInfo(info);
+
+						field_format.dropdown("set value", "xlsx");
+
+						export_btn.click(function () {
+							function addToBook(book, name, table) {
+								var dom = table.getOutputTable();
+								var ws = xlsx.utils.table_to_sheet(dom[0]);
+
+								book.SheetNames.push(name);
+								book.Sheets[name] = ws;
+							}
+
+							var wb = xlsx.utils.book_new();
+
+							addToBook(wb, "Staff", staff_table);
+							addToBook(wb, "Participant", partic_table);
+
+							if(!wb.Props) wb.Props = {};
+
+							wb.Props.Title = "Staff & Participant List - Foci";
+							wb.Props.Author = parsed.dname;
+
+							var fname = field_fname.val() || wb.Props.Title;
+							var format = field_format.dropdown("get value") || "xlsx";
+
+							var opt = { bookType: format, bookSST: false, type: "binary" };
+							var out = xlsx.write(wb, opt);
+
+							var suf = {
+								"xlsx": ".xlsx",
+								"xlml": ".xls",
+								"html": ".html",
+								"csv": ".csv",
+								"txt": ".txt"
+							}[format];
+
+							function s2ab(s) {
+								var buf = new ArrayBuffer(s.length);
+								var view = new Uint8Array(buf);
+
+								for (var i = 0; i != s.length; ++i)
+									view[i] = s.charCodeAt(i) & 0xFF;
+								
+								return buf;
+							}
+							
+							saveAs(new Blob([s2ab(out)], { type: "application/octet-stream" }), fname + suf);
+						});
 					});
 
 					show(true);

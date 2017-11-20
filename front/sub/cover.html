@@ -4,11 +4,11 @@
 		<div class="show-board trim"></div>
 		<div class="push-board" style="margin-top: 0;">
 			<div class="tag-board-cont">
-				<div class="tag-board">
-					<div class="ui horizontal divider">Interest Tags</div>
-				</div>
+				<div class="ui horizontal divider">Interest Tags</div>
+				<div class="tag-board"></div>
+
+				<div class="ui horizontal divider">New Events</div>
 				<div class="push-board-set">
-					<div class="ui horizontal divider">New Events</div>
 					<div class="push-board-set-cont"></div>
 					<div class="ui inline loader active"></div>
 				</div>
@@ -70,15 +70,15 @@
 	.sub-cover .push-board.border,
 	.sub-cover .show-board.border {
 		overflow: hidden;
-		border-radius: 5px;
-		border: 1px solid rgba(0, 0, 0, 0.1);
-		box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.12);
+		border-radius: 4px;
+		border: 1px solid rgba(0, 0, 0, 0.08);
+		box-shadow: 0 0 15px rgba(0, 0, 0, 0.04);
 	}
 
 	.sub-cover .show-board {
 		height: auto;
 
-		border-radius: 0 0 3px 3px;
+		border-radius: 0 0 4px 4px;
 		border: 1px solid rgba(0, 0, 0, 0.08);
 		border-width: 0 1px 1px 1px;
 		overflow: hidden;
@@ -106,6 +106,8 @@
 
 	.sub-cover .tag-board {
 		margin-top: 0.5rem;
+		border-radius: 4px;
+		overflow: hidden;
 	}
 
 	.sub-cover .side-board {

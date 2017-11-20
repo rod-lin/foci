@@ -57,9 +57,9 @@
 				</div>
 				
 				<div class="ui field club-name-field">
-					<label>Club type and name</label>
-					<div class="ui left action input">
-						<div class="ui basic floating dropdown button club-type" name="type">
+					<label>Club name</label>
+					<div class="ui input">
+						<!-- <div class="ui basic floating dropdown button club-type" name="type">
 							<div class="text">Type</div>
 							<i class="dropdown icon"></i>
 							<div class="menu">
@@ -67,7 +67,7 @@
 								<div class="item" data-value="2">Company</div>
 								<div class="item" data-value="0">Other</div>
 							</div>
-						</div>
+						</div> -->
 						<input class="club-name" name="name" type="text">
 					</div>
 				</div>
@@ -156,7 +156,7 @@
 				}
 			]);
 		
-			main.find(".page-1 .club-type").dropdown();
+			// main.find(".page-1 .club-type").dropdown();
 			
 			main.find(".page-1 .form").form({
 				on: "blur",
@@ -171,15 +171,15 @@
 						]
 					},
 					
-					type: {
-						identifier: "type",
-						rules: [
-							{
-								type: "empty",
-								prompt: "empty type"
-							}
-						]
-					},
+					// type: {
+					// 	identifier: "type",
+					// 	rules: [
+					// 		{
+					// 			type: "empty",
+					// 			prompt: "empty type"
+					// 		}
+					// 	]
+					// },
 					
 					descr: {
 						identifier: "descr",
@@ -204,7 +204,7 @@
 					return;
 				
 				var name = main.find(".page-1 .club-name").val();
-				var type = main.find(".page-1 .club-type").dropdown("get value");
+				// var type = main.find(".page-1 .club-type").dropdown("get value");
 				var descr = main.find(".page-1 .club-descr").val();
 				
 				var logo = logo_field.val();
@@ -220,7 +220,7 @@
 						action: "new",
 						
 						dname: name,
-						type: parseInt(type),
+						// type: parseInt(type),
 						descr: descr,
 						school: school ? school : undefined,
 						
@@ -263,7 +263,7 @@
 					}, function (suc, dat) {
 						if (suc) {
 							main.find(".page-1 .club-name").val(dat.dname);
-							main.find(".page-1 .club-type").dropdown("set value", dat.type);
+							// main.find(".page-1 .club-type").dropdown("set value", dat.type);
 							main.find(".page-1 .club-descr").val(dat.descr);
 							
 							logo_field.val(dat.logo);

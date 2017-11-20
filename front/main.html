@@ -11,7 +11,7 @@
 
 		<script>
 			window.foci = {}; // preload foci
-			window.CACHE_CONTROL = 69;
+			window.CACHE_CONTROL = 70;
 		</script>
 
 		<!-- base library -->
@@ -39,6 +39,8 @@
 					// "parts", "pm"
 					// "parts", "progress", "upload", "pboard", "util"
 					// "upload", "progress"
+					// "event", "tagbox", "tbar", "appform", "realname"
+					// "event"
 				];
 
 				var coms = [
@@ -49,7 +51,7 @@
 					"avatar", "env", "upload", "login",
 					"map", "tagbox", "rating", "progress",
 					"sortby", "editable", "tip", "lang", "club",
-					"holdon", "sysmsg"
+					"holdon", "sysmsg", "event"
 				];
 
 				for (var i = 0; i < debug.length; i++) {
@@ -63,6 +65,7 @@
 					"/lib/gt",
 					"/lib/clipboard",
 					"/lib/touch-swipe",
+					"/lib/file-saver",
 					"/lib/canvas-to-blob",
 					"/lib/cropper",
 					"/lib/sui-calendar",

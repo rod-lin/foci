@@ -40,6 +40,8 @@ define([ "com/util", "com/login", "com/xfilt" ], function (util, login, xfilt) {
         function loadData(dat) {
             if (dat) {
                 check();
+
+                main.data("realname", xfilt(dat.name) + " " + xfilt(dat.school));
                 
                 popup.find(".name").html(xfilt(dat.name));
                 if (config.show_name)

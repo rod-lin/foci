@@ -13,8 +13,8 @@ var notice = require("./notice");
 var template = require("./template");
 
 var clubtype = exports.clubtype = {
-    stuorg: 1, // student organization
-    company: 2,
+    intrasch: 1, // inter-school
+    intersch: 2, // intra-school
     other: -1
 };
 
@@ -41,7 +41,7 @@ var Club = function (cuid, creator, conf) {
     this.descr = conf.descr || "(no description)";
     this.school = conf.school || "(no school)";
     
-    this.type = conf.type !== undefined ? conf.type : clubtype.stuorg;
+    this.type = conf.type !== undefined ? conf.type : clubtype.intrasch;
     this.state = clubstat.review;
     
     this.logo = conf.logo || null;

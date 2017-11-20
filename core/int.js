@@ -1023,7 +1023,6 @@ encop.club = async (env, usr, query, next) => {
 		case "new":
 			var args = util.checkArg(query, {
 				dname: "string",
-				type: "int",
 				descr: "string",
 				
 				school: {
