@@ -150,6 +150,9 @@ Event.prototype.getInfo = function (only) {
 		apply_num: this.apply_num,
 		rating: this.getRating(),
 
+		apply_staff_num: this.apply_staff.length,
+		apply_partic_num: this.apply_partic.length,
+
 		apply_staff_form: this.apply_staff_form,
 		apply_partic_form: this.apply_partic_form,
 
@@ -337,21 +340,22 @@ Event.format.info = {
 	apply_open: "bool",
 	apply_only_realname: "bool",
 
+	// -1 for deleting the limit
 	apply_staff_lim: {
 		type: "int",
 		lim: val => {
-			if (val != null && val < 0)
+			if (val != null && val < -1)
 				throw new err.Exc(sth || "$core.out_of_range(staff limit)");
-			return val;
+			return val === -1 ? null : val;
 		}
 	},
 
 	apply_partic_lim: {
 		type: "int",
 		lim: val => {
-			if (val != null && val < 0)
+			if (val != null && val < -1)
 				throw new err.Exc(sth || "$core.out_of_range(participant limit)");
-			return val;
+			return val === -1 ? null : val;
 		}
 	},
 
@@ -762,6 +766,10 @@ exports.getApplied = async (uuid, conf) => {
 	});
 
 	return accept.concat(reject).concat(pending);
+};
+
+exports.getParticipated = async (uuid, conf) => {
+	return await getEventGroup(Event.query.applied(uuid, "accept"), conf);
 };
 
 exports.getDraft = async (uuid, conf) => {

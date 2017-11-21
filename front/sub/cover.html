@@ -81,7 +81,13 @@
 		border-radius: 0 0 4px 4px;
 		border: 1px solid rgba(0, 0, 0, 0.08);
 		border-width: 0 1px 1px 1px;
+
 		overflow: hidden;
+	}
+
+	.sub-cover .show-board,
+	.sub-cover .mini-push-board {
+		background: rgb(250, 250, 250);
 	}
 
 	.sub-cover .push-board {
@@ -294,11 +300,21 @@
 
 			/* tmp settings */
 			var show_board = main.find(".show-board");
+			var mini_board = main.find(".mini-push-board");
+
+			var show_board_init_height = util.isMobile() ? 200 : 300;
+			var mini_board_init_height = 150;
+
+			show_board.css("height", show_board_init_height + "px");
+			mini_board.css("height", mini_board_init_height + "px");
 
 			foci.get("/cover/pboard", {}, function (suc, dat) {
 				if (suc) {
 					var parsed = [];
 					var i;
+
+					show_board.css("height", "");
+					mini_board.css("height", "");
 
 					var MAIN_BOARD_COUNT = 4;
 					var SUB_BOARD_COUNT = 5;
@@ -342,13 +358,13 @@
 					function initPBoard(main_config, sub_config) {
 						// pboard.init(show_board, parsed.slice(0, 4), main_config);
 						pboard.slide(show_board, parsed.slice(0, MAIN_BOARD_COUNT), $.extend({
-							init_height: util.isMobile() ? 200 : 300,
+							init_height: show_board_init_height,
 							interval: 5000,
 							auto_resize: true
 						}, main_config));
 
-						pboard.slide(main.find(".mini-push-board"), parsed.slice(MAIN_BOARD_COUNT, total), $.extend({
-							init_height: 150,
+						pboard.slide(mini_board, parsed.slice(MAIN_BOARD_COUNT, total), $.extend({
+							init_height: mini_board_init_height,
 						}, sub_config));
 					}
 

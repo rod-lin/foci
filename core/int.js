@@ -405,6 +405,14 @@ _user.applied = util.route(async env => {
 	env.qsuc(ret);
 });
 
+_user.partic = util.route(async env => {
+	if (!await checkCaptcha(env)) return;
+	var args = util.checkArg(env.query, util.extend({ "uuid": "int" }, event.Event.format.lim));
+
+	var ret = await event.getParticipated(args.uuid, args);
+	env.qsuc(ret);
+});
+
 // basic search without skipping
 _user.search = util.route(async env => {
 	if (!await checkCaptcha(env)) return;

@@ -147,8 +147,21 @@ html.foci-nested .top-tbar {
 }
 
 .com-tbar .menu-view {
+	overflow: hidden;
+	text-transform: uppercase;
+}
+
+.com-tbar.show-menu .menu-view {
 	-webkit-user-select: none;
 	user-select: none;
+
+	overflow: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+}
+
+.com-tbar .menu-view .menu-cont {
+	white-space: nowrap;
 }
 
 .com-tbar.show-banner .left-bar {
@@ -163,7 +176,12 @@ html.foci-nested .top-tbar {
 	top: 3.7em !important;
 }
 
-.com-tbar .menu-view,
+.com-tbar .menu-view {
+	position: absolute;
+	pointer-events: none;
+	padding-left: 2rem;
+}
+
 .com-tbar .banner-view,
 .com-tbar .msg-view {
 	position: absolute;
@@ -181,6 +199,8 @@ html.foci-nested .top-tbar {
 }
 
 .com-tbar .menu-cont {
+	display: inline-block;
+
 	color: white;
 	top: -4.7em;
 }
@@ -264,6 +284,57 @@ html.foci-nested .top-tbar {
 	margin-left: 1em;
 	font-size: 0.8em;
 	color: white;
+}
+
+.com-tbar .nav-link-set {
+	display: inline-block;
+	line-height: 2.7rem;
+	vertical-align: top;
+	margin-left: 1rem;
+
+	opacity: 1;
+	pointer-events: auto;
+
+	transition: opacity 0.3s;
+}
+
+.com-tbar .nav-link {
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 1rem;
+
+	font-size: 0.9rem;
+	font-family: foci-logo-name;
+
+	user-select: none;
+	-moz-user-select: none;
+
+	cursor: pointer;
+
+	text-transform: uppercase;
+	color: rgb(120, 120, 120);
+
+	transition: color 0.2s;
+}
+
+.com-tbar .nav-link.active {
+	color: #2980B9;
+	font-weight: bold;
+}
+
+.com-tbar .nav-link:hover {
+	color: #3498DB;
+}
+
+.com-tbar.hide-search .nav-link-set {
+	opacity: 0;
+	pointer-events: none;
+}
+
+@media only screen and (max-width: 960px) {
+	.com-tbar .nav-link-set {
+		display: none;
+	}
 }
 
 /* only when search is hidden */
@@ -456,7 +527,9 @@ html.foci-nested .top-tbar {
 }
 
 .com-tbar .avatar-popup .cont {
+	position: relative;
 	padding: 1em;
+	padding-top: 2rem;
 	min-width: 13rem;
 }
 
@@ -472,7 +545,7 @@ html.foci-nested .top-tbar {
 
 	opacity: 1;
 
-	font-size: 1.8rem;
+	font-size: 1.6rem;
 	font-weight: bold;
 	/* padding-right: 0.5rem; */
 
@@ -590,6 +663,16 @@ html.foci-nested .top-tbar {
 	font-size: 130%;
 }
 
+.com-tbar .avatar-popup .setting-btn {
+	display: block;
+	position: absolute;
+	top: 0.7rem;
+	right: 0.7rem;
+	color: rgb(140, 140, 140);
+	cursor: pointer;
+	font-size: 1.2rem;
+}
+
 .com-tbar .links {
 	display: inline-block;
 	margin-left: 1em;
@@ -639,9 +722,11 @@ html.foci-nested .top-tbar {
 		max-width: 100%;
 	}
 
+	.com-tbar .menu-cont {
+		padding: 0 2rem;
+	}
+
 	.com-tbar .menu-view .cancel.icon {
-		position: absolute;
-		left: 2em;
 	}
 
 	.com-tbar .right-bar {

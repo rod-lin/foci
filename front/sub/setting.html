@@ -216,7 +216,7 @@
                 $.ajax({
         			type: "GET",
         			url: "/mcom/mpart?part=setting/" + name,
-        			data: { v: foci.version /* no cache */ },
+        			data: { cc: foci.cc("part") /* no cache */ },
         			success: function (dat) { suc(dat); },
         			error: function (req, exc) {
         				util.emsg("failed to get setting '" + name + "'");
@@ -301,7 +301,7 @@
                 main.find(".menu-group").each(function (i, group) {
                     group = $(group);
 
-                    console.log(group, group.find(".menu-item").not(".hidden").length);
+                    // console.log(group, group.find(".menu-item").not(".hidden").length);
                     if (group.find(".menu-item").not(".hidden").length == 0)
                         group.addClass("hidden");
                     else

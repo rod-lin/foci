@@ -30,7 +30,7 @@
 			</div>
 			<div class="box" style="margin-top: 1rem; overflow: hidden;">
 				<div class="dimmable bmap-box">
-					<div class="ui dimmer" style="z-index: 10;">
+					<div class="ui ll dimmer">
 						<div class="content">
 							<div class="center">
 								<div class="ui inverted button view-btn lang" data-replace="$front.sub.event.view">View</div>
@@ -96,7 +96,7 @@
 					</div>
 				</div><div class="col col-3 col-mid-full box-set app-box">
 					<div class="box pad">
-						<div class="apply-prompt">Apply for</div>
+						<div class="apply-prompt"></div>
 					</div>
 					<div class="box pad apply-appcent btn always-enable" style="margin-top: 0.2rem; background: #7F8C8D; color: white; display: none;">
 						<div class="ui inverted loader"></div>
@@ -502,7 +502,13 @@
 	.sub-event>.cont .box.btn.disabled {
 		color: #D9D9D9 !important;
 		background: #B3B3B3 !important;
-		pointer-events: none;
+		cursor: default;
+		/* pointer-events: none; */
+	}
+
+	.sub-event>.cont .disabled .box.btn:not(.always-enable):hover,
+	.sub-event>.cont .box.btn.disabled:hover {
+		opacity: 1;
 	}
 
 	@media only screen and (max-width: 640px) {
@@ -556,14 +562,14 @@
 			"com/lang", "com/avatar", "com/colstat",
 			"com/formi", "com/comment", "com/club",
 			"com/tagbox", "com/thumbview", "com/share",
-			"com/popselect"
+			"com/popselect", "com/tip"
 		], function (
 			env, util, event,
 			xfilt, login, map,
 			lang, avatar, colstat,
 			formi, comment, club,
 			tagbox, thumbview, share,
-			popselect
+			popselect, tip
 		) {
 			if (!args || !args.length) {
 				util.emsg("$front.sub.event.no_euid");
@@ -842,6 +848,9 @@
 					var uuid = session.getUUID();
 					var is_org = info.org.indexOf(uuid) != -1;
 
+					setAppPrompt("Apply for");
+					main.find(".app-box").removeClass("disabled");
+
 					if (session.isAdmin() || is_org) {
 						main.find(".apply-setting").css("display", "").click(function () {
 							util.jump("#profile//new/" + euid);
@@ -894,28 +903,44 @@
 									});
 								} else cb();
 							}
-							
-							main.find(".apply-staff").click(function () {
-								checkRealname(function () {
-									main.find(".apply-staff .loader").addClass("active");
 
-									apply(session, "staff", function (suc) {
-										main.find(".apply-staff" + " .loader").removeClass("active");
-										if (suc) disableApp();
+							if (typeof info.apply_staff_lim === "number" &&
+								info.apply_staff_num >= info.apply_staff_lim) {
+								tip.init(main.find(".apply-staff").addClass("disabled"), "Application full", "top center", {
+									on: "hover",
+									auto: false
+								});
+							} else {
+								main.find(".apply-staff").click(function () {
+									checkRealname(function () {
+										main.find(".apply-staff .loader").addClass("active");
+
+										apply(session, "staff", function (suc) {
+											main.find(".apply-staff" + " .loader").removeClass("active");
+											if (suc) disableApp();
+										});
 									});
 								});
-							});
+							}
 
-							main.find(".apply-partic").click(function () {
-								checkRealname(function () {
-									main.find(".apply-partic .loader").addClass("active");
+							if (typeof info.apply_partic_lim === "number" &&
+								info.apply_partic_num >= info.apply_partic_lim) {
+								tip.init(main.find(".apply-partic").addClass("disabled"), "Application full", "top center", {
+									on: "hover",
+									auto: false
+								});
+							} else {
+								main.find(".apply-partic").click(function () {
+									checkRealname(function () {
+										main.find(".apply-partic .loader").addClass("active");
 
-									apply(session, "partic", function (suc) {
-										main.find(".apply-partic" + " .loader").removeClass("active");
-										if (suc) disableApp();
+										apply(session, "partic", function (suc) {
+											main.find(".apply-partic" + " .loader").removeClass("active");
+											if (suc) disableApp();
+										});
 									});
 								});
-							});
+							}
 						}
 					}
 				}

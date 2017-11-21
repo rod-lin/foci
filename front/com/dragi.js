@@ -72,6 +72,9 @@ define([], function () {
             
             min_width: 400,
             min_height: 250,
+
+            max_width: $(window).width() - 200,
+            max_height: $(window).height() - 200,
             
             width: 400,
             height: 250,
@@ -110,6 +113,11 @@ define([], function () {
             left: config.left,
             top: config.top
         });
+
+        win_cont.css({
+            "max-width": config.max_width + "px",
+            "max-height": config.max_height + "px"
+        })
         
         function initWindow() {
             var origx, origy;
@@ -232,9 +240,17 @@ define([], function () {
                         if (nextw < config.min_width) {
                             nextw = config.min_width;
                         }
+
+                        if (nextw > config.max_width) {
+                            nextw = config.max_width;
+                        }
                         
                         if (nexth < config.min_height) {
                             nexth = config.min_height;
+                        }
+
+                        if (nexth > config.max_height) {
+                            nexth = config.max_height;
                         }
                         
                         mod.resizeTo(nextw, nexth);
@@ -283,6 +299,10 @@ define([], function () {
                 if (w < config.min_width) {
                     w = config.min_width;
                 }
+
+                if (w > config.max_width) {
+                    w = config.max_width;
+                }
                 
                 win_cont.width(w);
                 win.width(w);
@@ -293,6 +313,10 @@ define([], function () {
             } else {
                 if (h < config.min_height) {
                     h = config.min_height;
+                }
+
+                if (h > config.max_height) {
+                    h = config.max_height;
                 }
                 
                 win_cont.height(h);

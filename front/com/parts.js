@@ -15,7 +15,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 		$.ajax({
 			type: "GET",
 			url: url,
-			data: { v: foci.version /* no cache */ },
+			data: { cc: foci.cc("part") /* no cache */ },
 			success: function (dat) { suc(dat); },
 			error: function (req, exc) {
 				util.emsg("$front.com.parts.fail_get_url(" + url + "," + exc + ")");
@@ -50,9 +50,13 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 		function load(name, cb, args) {
 			var next = function (text) {
 				// var loader = $("<div class='ui active loader'></div>");
-				prog.sinc();
+				var proc = setInterval(function () {
+					prog.fakeinc(80, 0.02);
+				}, 70);
 
 				var show = function (suc) {
+					clearInterval(proc);
+
 					setTimeout(function () {
 						if (suc) {
 							main.addClass("show");
@@ -75,10 +79,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 
 				cont.scrollTop(0);
 
-				prog.sinc();
-
 				part.ready(function () {
-					prog.sinc();
 					if (window.init) {
 						window.init($(part[0]), args, show, cont, ret.jump, config.penv);
 					}
@@ -92,12 +93,13 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 				next(cache[name]);
 			} else {
 				var proc = setInterval(function () {
-					prog.fakeinc(70);
+					prog.fakeinc(30);
 				}, 70);
 
 				var url = config.base + name;
 				fetch(url, function (text) {
 					clearInterval(proc);
+					prog.set(30);
 					next(text);
 				}, function () {
 					clearInterval(proc);

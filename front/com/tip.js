@@ -24,14 +24,14 @@ define([ "com/util" ], function (util) {
 			variation: config.style == "white" ? "" : "inverted",
 			
 			onHide: function () {
-				if (config.auto)
+				if (config.on == "click" && config.auto)
 					setTimeout(function () {
 						cont.popup("destroy");
 					}, 500);
 			}
 		});
 
-		if (config.auto) {
+		if (config.on == "click" && config.auto) {
 			setTimeout(function () {
 				if (!hidden)
 					cont.popup("show");

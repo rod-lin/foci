@@ -21,6 +21,10 @@ button { padding: 0; user-select: none; -moz-user-select: none; }
 	-webkit-appearance: none;
 }
 
+.ui.ll.dimmer {
+	z-index: 10 !important;
+}
+
 .ui.two.buttons>.button {
 	display: block !important;
 }

@@ -26,7 +26,7 @@
                 <div style="display:inline-block; padding-right: 1rem;">
                     <div class="ui secondary menu">
                         <a class="item item-event"><i class="calendar icon"></i>Events</a>
-                        <a class="item item-me only-member"><i class="remove bookmark icon"></i>Me</a>
+                        <!-- <a class="item item-me only-member"><i class="remove bookmark icon"></i>Me</a> -->
                         <a class="item item-forum only-member"><i class="talk outline icon"></i>Forum</a>
                         <a class="item item-member"><i class="user outline icon"></i>Members</a>
                         <a class="item item-discover only-admin"><i class="idea outline icon"></i>Discover</a>
@@ -43,8 +43,8 @@
             </div>
             
             <!-- me center -->
-            <div class="tab me-tab">
-            </div>
+            <!-- <div class="tab me-tab">
+            </div> -->
             
             <!-- forum -->
             <div class="tab forumi-tab">
@@ -388,6 +388,8 @@
                         cont: penv.part,
                         no_more_prompt: "no more events"
                     },
+
+                    always_show_sortby: true,
 
                     extra_util_btn: [
                         {

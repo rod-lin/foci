@@ -351,7 +351,7 @@ exports.checkClubExist = async (cuid, state) => {
     var col = await db.col("club");
 	
     if (!await col.count(Club.query.cuid(cuid, state)))
-        throw new err.Exc("$core.not_exist($core.word.club) $core.word.or $core.club.club_frozen");
+        throw new err.Exc("$core.not_exist($core.word.club)");
 };
 
 exports.checkMaxReview = async (uuid) => {

@@ -376,22 +376,27 @@
             }
             
             function render(session, cuid, info) {
-                setRelation(info.relation);
-                
-                initTabInfo(session, cuid, info);
-                initTabQuit(session, cuid, info);
-                initTabTransfer(session, cuid, info);
-                initTabFreeze(session, cuid, info);
-                
-                if (args[1]) {
-                    mod.showFormSet(args[1]);
+                if (!info) {
+                    initTabFreeze(session, cuid, { state: foci.clubstat.frozen });
+                    mod.showFormSet("freeze");
                 } else {
-                    if (info.relation == "creator") {
-                        $(main.find(".menu-item")[0]).click();
-                    } else if (info.relation == "admin") {
-                        $(main.find(".menu-item").not(".only-club-creator")[0]).click();
+                    setRelation(info.relation);
+                    
+                    initTabInfo(session, cuid, info);
+                    initTabQuit(session, cuid, info);
+                    initTabTransfer(session, cuid, info);
+                    initTabFreeze(session, cuid, info);
+                    
+                    if (args[1]) {
+                        mod.showFormSet(args[1]);
                     } else {
-                        $(main.find(".menu-item").not(".only-club-admin, .only-club-creator")[0]).click();
+                        if (info.relation == "creator") {
+                            $(main.find(".menu-item")[0]).click();
+                        } else if (info.relation == "admin") {
+                            $(main.find(".menu-item").not(".only-club-creator")[0]).click();
+                        } else {
+                            $(main.find(".menu-item").not(".only-club-admin, .only-club-creator")[0]).click();
+                        }
                     }
                 }
                     
@@ -399,7 +404,8 @@
             }
             
             login.session(function (session) {
-                if (session) foci.encop(session, {
+                if (session)
+                    foci.encop(session, {
                         int: "club",
                         action: "memberinfo",
                         cuid: cuid
@@ -408,9 +414,14 @@
                             render(session, cuid, dat);
                         } else {
                             util.emsg(dat);
+                            show(false);
+                            // render(session, cuid, null);
                         }
                     });
-                else util.emsg("login first");
+                else {
+                    util.emsg("login first");
+                    show(false);
+                }
             });
         });
     }

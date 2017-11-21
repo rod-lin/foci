@@ -185,11 +185,11 @@
 							<div class="fields">
 								<div class="field">
 									<label class="lang" data-replace="$front.sub.profile.max_staff">Max Staff</label>
-									<input class="staff_limit lang" data-replace="$front.sub.profile.new.no_limit_in_def" data-attr="placeholder" type="text" placeholder="No limit in default">
+									<input class="staff-limit lang" data-replace="$front.sub.profile.new.no_limit_in_def" data-attr="placeholder" type="text" placeholder="No limit in default">
 								</div>
 								<div class="field">
 									<label class="lang" data-replace="$front.sub.profile.max_partic">Max Participant</label>
-									<input class="partic_limit lang" data-replace="$front.sub.profile.new.no_limit_in_def" data-attr="placeholder" type="text" placeholder="No limit in default">
+									<input class="partic-limit lang" data-replace="$front.sub.profile.new.no_limit_in_def" data-attr="placeholder" type="text" placeholder="No limit in default">
 								</div>
 							</div>
 						</div>
@@ -917,7 +917,7 @@
 						onShow: function (show) {
 							tbar.setTitle("Profile", info.dname, "Organized");
 							eventTabOnShow("org", false, undefined, {
-								ext_button: [
+								ext_button: is_self ? [
 									{
 										class: "setting vuid-profile-org-event-setting",
 										onClick: function (info) {
@@ -932,7 +932,7 @@
 											util.jump("#appcent/" + info.euid);
 										}
 									}
-								]
+								] : []
 							}, show);
 
 							if (is_self) {
@@ -1418,13 +1418,12 @@
 
 								lang.update(main.find(".page.page-apply"));
 
-								if (info.apply_staff_lim) {
-									main.find(".staff_limit").val(info.apply_staff_lim);
-
+								if (typeof info.apply_staff_lim === "number") {
+									main.find(".staff-limit").val(fields.apply_staff_lim = info.apply_staff_lim);
 								}
 
-								if (info.apply_partic_lim) {
-									main.find(".partic_limit").val(info.apply_partic_lim);
+								if (typeof info.apply_partic_lim === "number") {
+									main.find(".partic-limit").val(fields.apply_partic_lim = info.apply_partic_lim);
 								}
 
 								var def_form = { name: "New Form", block: [] };
@@ -1464,30 +1463,44 @@
 									has_field = true;
 								}
 
-								var staff_limit = main.find(".staff_limit").val();
-								var partic_limit = main.find(".partic_limit").val();
+								var staff_limit = main.find(".staff-limit").val();
+								var partic_limit = main.find(".partic-limit").val();
 								var suc = true;
 
-								if (staff_limit) {
-									staff_limit = parseInt(staff_limit);
-									if (isNaN(staff_limit)) {
-										main.find(".staff_limit").parent().addClass("error");
-										util.emsg("not number");
-										suc = false;
+								// alert([ fields.apply_staff_lim, staff_limit, fields.apply_staff_lim != staff_limit, !!staff_limit ]);
+
+								if (fields.apply_staff_lim !== staff_limit) {
+									if (staff_limit) {
+										staff_limit = parseInt(staff_limit);
+										if (isNaN(staff_limit)) {
+											main.find(".staff-limit").parent().addClass("error");
+											util.emsg("staff limit not a number");
+											suc = false;
+										} else {
+											fields.apply_staff_lim = q.apply_staff_lim = staff_limit;
+											has_field = true;
+										}
 									} else {
-										fields.apply_staff_lim = q.apply_staff_lim = staff_limit;
+										fields.apply_staff_lim = null;
+										q.apply_staff_lim = -1;
 										has_field = true;
 									}
 								}
 
-								if (partic_limit) {
-									partic_limit = parseInt(partic_limit);
-									if (isNaN(partic_limit)) {
-										main.find(".partic_limit").parent().addClass("error");
-										util.emsg("not number");
-										suc = false;
+								if (fields.apply_partic_lim !== partic_limit) {
+									if (partic_limit) {
+										partic_limit = parseInt(partic_limit);
+										if (isNaN(partic_limit)) {
+											main.find(".partic-limit").parent().addClass("error");
+											util.emsg("participant limit not a number");
+											suc = false;
+										} else {
+											fields.apply_partic_lim = q.apply_partic_lim = partic_limit;
+											has_field = true;
+										}
 									} else {
-										fields.apply_partic_lim = q.apply_partic_lim = partic_limit;
+										fields.apply_partic_lim = null;
+										q.apply_partic_lim = -1; // -1 for deleting the limit
 										has_field = true;
 									}
 								}
@@ -1507,7 +1520,7 @@
 									return;
 								}
 
-								if (has_field)
+								if (has_field) {
 									uploadChanges(q, function (suc) {
 										if (suc) {
 											new_tab.find(".apply-step").addClass("completed");
@@ -1516,7 +1529,7 @@
 											cb(false);
 										}
 									});
-								else
+								} else
 									cb(true);
 							}
 						},
@@ -2119,19 +2132,28 @@
 					pt.jump(onChange);
 				} else {
 					(function () {
-						var init = false;
-						tabs["resume"] = {
+						// var init = false;
+						// tabs["resume"] = {
+						// 	order: 0,
+						// 	name: m("$front.sub.profile.resume").capital(),
+						// 	onShow: function (show) {
+						// 		if (!init) {
+						// 			init = true;
+						// 			var	rtab = tb.getTab("resume");
+						// 			resume.init(rtab, uuid, { scroll: penv.part });
+						// 		}
+						// 		show();
+						// 	}
+						// }
+
+						tabs["partic"] = {
 							order: 0,
-							name: m("$front.sub.profile.resume").capital(),
+							name: m("$front.sub.profile.partic").capital(),
 							onShow: function (show) {
-								if (!init) {
-									init = true;
-									var	rtab = tb.getTab("resume");
-									resume.init(rtab, uuid, { scroll: penv.part });
-								}
-								show();
+								tbar.setTitle("Profile", info.dname, "Participated");
+								eventTabOnShow("partic", false, undefined, null, show);
 							}
-						}
+						};
 					})();
 
 					delete tabs["applied"];
@@ -2143,7 +2165,7 @@
 					tb.getTab("new").html(new_tab);
 					tb.to("applied")
 				} else {
-					tb.to("resume");
+					tb.to("partic");
 				}
 
 				// profile editable

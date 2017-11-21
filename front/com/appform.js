@@ -642,7 +642,7 @@ define([
             table.find("th").get(0).remove();
             table.find("th .col-user").parent("th")
                 .before("<th>Realname</th>")
-                .after("<th>Rating</th>");
+                .after("<th>Staff rating</th>");
 
             table.find("td.col-rating").each(function (i, dom) {
                 dom = $(dom);

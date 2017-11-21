@@ -187,6 +187,7 @@ var dict = module.exports = {
 		"front.sub.profile.anonymous": "anonymous",
 		"front.sub.profile.no_intro": "no introduction",
 		"front.sub.profile.no_more_result": "no more results",
+		"front.sub.profile.partic": "participated",
 		"front.sub.profile.applied": "applied",
 		"front.sub.profile.organized": "organized",
 		"front.sub.profile.resume": "resume",

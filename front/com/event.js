@@ -298,6 +298,8 @@ define([
 				}
 			},
 
+			always_show_sortby: false,
+
 			loader_only_on_buffer: false, // only show loader when buffering(not on the beginning)
 
 			gap: 20,
@@ -346,7 +348,7 @@ define([
 		var wf = waterfall.init(main, {
 			gap: config.gap,
 			onUpdate: function (pos) {
-				if (wf.count()) {
+				if (wf.count() || config.always_show_sortby) {
 					main.find(".sortby").css("padding-left", (pos.left || 20) + "px").css("display", "");
 				} else {
 					main.find(".sortby").css("display", "none");

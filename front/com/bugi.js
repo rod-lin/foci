@@ -17,7 +17,7 @@
 	function BugiEnv() {
 		this.url = window.location.href;
 		
-		this.foci_version = foci ? foci.version : "(foci not ready)";
+		this.foci_cc = foci ? foci.cache_control : "(foci not ready)";
 
 		// this.head = $("head script").html();
 

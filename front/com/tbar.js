@@ -48,13 +48,20 @@ define([
 						<i class="filter-btn filter link icon hide-with-search"></i> \
 						<span class="site-logo-prompt"> - <span class="lang" data-replace="$front.com.login.logo_prompt">Where events begin</span></span> \
 					</div> \
+					<div class="nav-link-set"> \
+						<a class="nav-link" href="#cover">Home</a> \
+						<a class="nav-link" href="#search">Plaza</a> \
+						<a class="nav-link" href="#profile">Profile</a> \
+						<a class="nav-link" href="#contact">Contact</a> \
+					</div> \
 				</div> \
 				<div class="menu-view"> \
 					<div class="menu-cont"> \
 						<i class="cancel icon"></i> \
-						<a class="menu-link" href="#cover">HOME</a> \
-						<a class="menu-link" href="#search">PLAZA</a> \
-						<a class="menu-link" href="#contact">CONTACT</a> \
+						<a class="menu-link" href="#cover">Home</a> \
+						<a class="menu-link" href="#search">Plaza</a> \
+						<a class="menu-link" href="#profile">Profile</a> \
+						<a class="menu-link" href="#contact">Contact</a> \
 					</div> \
 				</div> \
 				<div class="msg-view-set"></div> \
@@ -89,6 +96,9 @@ define([
 							<div class="pop-avatar"><div><i class="setting icon"></i></div></div> \
 							<div class="pop-title header"></div> \
 							<div class="rating"></div> \
+							<a class="setting-btn" href="#setting/user"> \
+								<i class="fitted setting icon"></i> \
+							</a> \
 						</div> \
 						<div class="ui two bottom attached buttons"> \
 							<div class="ui basic button profile lang" data-replace="$front.com.tbar.profile">Profile</div> \
@@ -245,7 +255,11 @@ define([
 				}, 300);
 			};
 
-			main.find(".menu-btn, .site-logo-prompt").click(showMenu);
+			main.find(".menu-btn, .site-logo-prompt").click(function () {
+				if ($(window).width() <= 960)
+					showMenu();
+			});
+			
 			main.find(".menu-cont .cancel.icon").click(hideMenu);
 			main.find(".menu-cont .menu-link").click(hideMenu);
 		})();

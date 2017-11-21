@@ -575,7 +575,7 @@ if (!window.foci)
 		$("<link>")
 			.attr({
 				rel: "stylesheet",
-				href: path + (foci.version ? "?v=" + foci.version : "")
+				href: path + "?cc=" + foci.cc("com")
 			})
 			.appendTo("head");
 	};
