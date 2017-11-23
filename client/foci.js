@@ -305,6 +305,8 @@ if (!window.foci)
 							// simply retry without captcha
 							method(url, data, cb, ext);
 						});
+
+						return;
 					} else {
 						if (foci.captcha()) {
 							on_captcha = true;

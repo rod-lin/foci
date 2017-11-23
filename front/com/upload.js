@@ -237,9 +237,10 @@ define([ "com/util", "com/login" ], function (util, login) {
 							if (foci.local) {
 								foci.post.apply(foci, arguments);
 							} else {
-								foci.capwrap.apply(foci, arguments);
+								var args = [ foci.post ].concat(Array.prototype.slice.apply(arguments));
+								foci.capwrap.apply(foci, args);
 							}
-						}).apply(null, ["/file/upload", form, function (suc, dat) {
+						}).apply(null, [ "/file/upload", form, function (suc, dat) {
 							use_lock = false;
 							main.removeClass("uploading");
 							main.find(".use-btn").removeClass("loading");
@@ -271,7 +272,7 @@ define([ "com/util", "com/login" ], function (util, login) {
 								
 								return xhr;
 							}
-						}]);
+						} ]);
 					});
 				};
 
