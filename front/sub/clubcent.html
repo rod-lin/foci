@@ -5,12 +5,16 @@
     <div class="main-scroll">
         <div class="info-header">
             <div class="shadow"></div>
-            <div class="bg"></div>
+            <div class="bg field-cover"></div>
             <div class="info">
                 <div class="cont-width">
                     <div class="info-cont">
                         <div class="logo field-logo"></div>
                         <div class="info-box">
+                            <div class="only-admin"><div class="change-cover-btn">
+                                <div class="ui active inverted tiny loader"></div>
+                                <span class="text">Change cover</span>
+                            </div></div>
                             <div class="field-dname dname"></div>
                             <div class="stat">
                                 <span class="stat-item"><i class="student icon"></i> <span class="field-school"></span></span>
@@ -125,11 +129,52 @@
     	-ms-flex: 1;
     	flex: 1;
     }
+
+    .sub-clubcent .main-scroll .info-header .info .info-box .change-cover-btn {
+        display: inline-block;
+        position: relative;
+
+        margin-bottom: 0.2rem;
+        color: rgb(250, 250, 250);
+        font-weight: bold;
+
+        cursor: pointer;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        border: 1px solid rgb(253, 253, 253);
+
+        opacity: 0.6;
+        transition: opacity 0.3s;
+    }
+
+    .sub-clubcent .main-scroll .info-header .info .info-box .change-cover-btn .text {
+        visibility: visible;
+    }
+
+    .sub-clubcent .main-scroll .info-header .info .info-box .change-cover-btn .loader {
+        display: none;
+    }
+
+    .sub-clubcent .main-scroll .info-header .info .info-box .change-cover-btn.loading .text {
+        visibility: hidden;
+    }
+
+    .sub-clubcent .main-scroll .info-header .info .info-box .change-cover-btn.loading .loader {
+        display: block;
+    }
+
+    .sub-clubcent .main-scroll .info-header .info .info-box .change-cover-btn:hover {
+        opacity: 1;
+    }
+
+    .sub-clubcent .main-scroll .info-header .info .info-box .change-cover-btn:active {
+        opacity: 0.8;
+    }
     
     .sub-clubcent .main-scroll .info-header .info .info-box .dname {
         font-size: 2.5rem;
         font-weight: bold;
-        margin-bottom: 1rem;
+        margin-bottom: 1.4rem;
         
         white-space: nowrap;
         overflow: hidden;
@@ -137,7 +182,6 @@
     }
     
     .sub-clubcent .main-scroll .info-header .info .info-box .stat {
-
     }
     
     .sub-clubcent .main-scroll .info-header .info .info-box .stat-item {
@@ -230,7 +274,7 @@
         max-width: 100%;
         text-align: left;
         
-        padding: 0 1rem;
+        padding: 0 2rem;
     }
     
     .sub-clubcent:not(.member) .only-member {
@@ -242,6 +286,10 @@
     }
     
     @media only screen and (max-width: 640px) {
+        .sub-clubcent .cont-width {
+            padding: 0 1rem;
+        }
+
         .sub-clubcent .main-scroll .info-header {
             height: 15rem;
         }
@@ -251,16 +299,24 @@
         }
         
         .sub-clubcent .main-scroll .info-header .info .logo {
-            width: 5rem;
-            height: 5rem;
+            width: 6rem;
+            height: 6rem;
             margin-right: 1rem;
         }
         
         .sub-clubcent .main-scroll .info-header .info .info-box .dname {
             font-size: 1.4rem;
-            margin-bottom: 0;
+            margin-bottom: 0.2rem;
+        }
+
+        .sub-clubcent .main-scroll .info-header .info .info-box .stat {
+            font-size: 0.7rem;
         }
         
+        .sub-clubcent .main-scroll .info-header .info .info-box .change-cover-btn {
+            font-size: 0.8rem;
+        }
+
         .sub-clubcent .main-scroll .info-header .info .info-box .stat-item {
             display: block;
         }
@@ -280,8 +336,9 @@
         require([
             "com/env", "com/util", "com/login",
             "com/tab", "com/club", "com/event",
-            "com/lang", "com/forumi", "com/cutil"
-        ], function (env, util, login, tab, club, event, lang, forumi, cutil) {
+            "com/lang", "com/forumi", "com/cutil",
+            "com/upload"
+        ], function (env, util, login, tab, club, event, lang, forumi, cutil, upload) {
             if (!args || !args.length) {
 				util.emsg("require one argument");
 				return;
@@ -306,7 +363,35 @@
                 info_dom.find(".field-member-count").html(parsed.member_count);
                 
                 util.bgimg(info_dom.find(".field-logo"), parsed.logo);
+                util.bgimg(main.find(".field-cover"), parsed.cover);
                 
+                main.find(".change-cover-btn").click(function () {
+                    upload.init(function (md5) {
+                        if (md5) {
+                            main.find(".change-cover-btn").addClass("loading");
+                            login.session(function (sess) {
+                                foci.encop(sess, {
+                                    int: "club",
+                                    action: "setinfo",
+                        
+                                    cuid: cuid,
+
+                                    cover: md5
+                                }, function (suc, dat) {
+                                    main.find(".change-cover-btn").removeClass("loading");
+
+                                    if (suc) {
+                                        info.cover = parsed.cover = md5;
+                                        util.bgimg(main.find(".field-cover"), foci.download(md5));
+                                    } else {
+                                        util.emsg(dat);
+                                    }
+                                });
+                            });
+                        }
+                    });
+                });
+
                 var float_bar = null;
             
                 function scrollEffect() {
@@ -315,8 +400,13 @@
                     var bar_height = tbar.height();
                     var dist = main.find(".info-header").height() - bar_height;
                     
-                    if (top < dist) {
+                    if (top < 50) {
                         tbar.setStyle("simple");
+                    } else {
+                        tbar.setStyle("");
+                    }
+
+                    if (top < dist) {
                         main.find(".nav-bar").removeClass("floating");
                         // main.find(".tabs").css("margin-top", "");
                         if (float_bar) {
@@ -332,7 +422,6 @@
                         // scroll reaches menu
                         if (float_bar) return;
                         
-                        tbar.setStyle("");
                         float_bar = main.find(".nav-bar").clone().addClass("floating");
                         
                         main.find(".nav-bar").after(float_bar);

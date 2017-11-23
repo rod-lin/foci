@@ -18,6 +18,7 @@ define([
         parsed.cuid = info.cuid;
         
         parsed.dname = info.dname ? xfilt(info.dname) : "(unnamed)";
+        parsed.cover = info.cover ? foci.download(info.cover) : util.randimg();
         parsed.logo = info.logo ? foci.download(info.logo) : "/img/def/logo.jpg";
         parsed.school = info.school ? xfilt(info.school) : "(no school)";
         parsed.descr = info.descr ? xfilt(info.descr) : "(no description)";
@@ -41,8 +42,10 @@ define([
                     <div class='creator'>Creator: <a class='creator-link'>loading</a></div> \
                 </div> \
             </div> \
+            <div class='prompt'>State</div> \
+            <div class='state seg'></div> \
             <div class='prompt'>Description</div> \
-            <div class='descr'>no description</div> \
+            <div class='descr seg'>no description</div> \
         </div>");
         
         var parsed = club.parseInfo(info);
@@ -51,6 +54,20 @@ define([
         main.find(".dname").html(parsed.dname);
         main.find(".school-field").html(parsed.school);
         main.find(".descr").html(parsed.descr);
+
+        var state = "Other";
+
+        switch (parsed.state) {
+            case foci.clubstat.review:
+                state = "Under review";
+                break;
+
+            case foci.clubstat.frozen:
+                state = "Frozen";
+                break;
+        }
+
+        main.find(".state").html(state);
         
         util.userInfo(info.creator, function (dat) {
             main.find(".creator-link")
@@ -787,27 +804,27 @@ define([
         });
         
         var title_text = util.htmlToText(parsed.dname);
+
+        function setBadge(cls, title, icon) {
+            entry.addClass("show-badge");
+            entry.find(".badge").addClass(cls).attr("title", title);
+            entry.find(".badge .icon").addClass(icon);
+        }
         
-        switch (info.relation) {
+        if (info.state === foci.clubstat.frozen) {
+            setBadge("frozen", "Club frozen", "warning sign");
+        } else switch (info.relation) {
             case "creator":
-                entry.addClass("show-badge");
-                entry.find(".badge").addClass("creator").attr("title", "Creator badge");
-                entry.find(".badge .icon").addClass("legal");
+                setBadge("creator", "Creator badge", "legal");
                 break;
             
             case "admin":
-                entry.addClass("show-badge");
-                entry.find(".badge").addClass("admin").attr("title", "Admin badge");
-                entry.find(".badge .icon").addClass("configure");
+                setBadge("admin", "Admin badge", "configure");
                 break;
                 
             case "app":
-                entry.addClass("show-badge");
-                entry.find(".badge").addClass("applt").attr("title", "Applicant");
-                entry.find(".badge .icon").addClass("spinner");
-                
+                setBadge("apply", "Applicant", "spinner");
                 title_text += " - appliaction pending";
-                
                 break;
         }
         

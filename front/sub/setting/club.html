@@ -22,6 +22,11 @@
             <h3 class="ui top attached block header">Basic Info</h3>
             <div class="ui attached segment">
                 <div class="ui field">
+                    <label>Cover</label>
+                    <div class="field-cover"></div>
+                </div>
+
+                <div class="ui field">
                     <label>Logo</label>
                     <div class="field-logo"></div>
                 </div>
@@ -172,6 +177,12 @@
                 var tab = main.find(".form-set-info");
                 var info_tab = tab.find(".form-info");
                 
+                var cover_field = upload.field(info_tab.find(".field-cover"), {
+                    max_width: "100%",
+                    width: "20rem",
+                    height: "10rem"
+                });
+                
                 var logo_field = upload.field(info_tab.find(".field-logo"), {
                     width: "10rem",
                     height: "10rem"
@@ -213,6 +224,9 @@
                     }
                 });
                 
+                if (info.cover)
+                    cover_field.val(info.cover);
+
                 if (info.logo)
                     logo_field.val(info.logo);
                     
@@ -223,6 +237,7 @@
                 info_tab.find(".update-btn").click(function () {
                     if (!fvalid(info_tab)) return;
                     
+                    var cover = cover_field.val();
                     var logo = logo_field.val();
                     var dname = info_tab.find(".field-dname").val();
                     var descr = info_tab.find(".field-descr").val();
@@ -236,6 +251,7 @@
                         
                         cuid: cuid,
                         
+                        cover: cover,
                         logo: logo,
                         dname: dname,
                         descr: descr,

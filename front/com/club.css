@@ -546,6 +546,10 @@
     display: none;
 }
 
+.com-club-entry .badge.frozen {
+    background: #E74C3C;
+}
+
 .com-club-entry .delete-btn:hover {
     background: #E37A6F;
 }
@@ -654,5 +658,13 @@
 .com-club-review-info .prompt {
     color: rgba(150, 150, 150, 1);
     font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.com-club-review-info .seg {
     margin-bottom: 1rem;
+}
+
+.com-club-review-info .seg:last-child {
+    margin-bottom: 0;
 }

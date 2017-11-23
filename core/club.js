@@ -44,6 +44,7 @@ var Club = function (cuid, creator, conf) {
     this.type = conf.type !== undefined ? conf.type : clubtype.intrasch;
     this.state = clubstat.review;
     
+    this.cover = conf.cover || null;
     this.logo = conf.logo || null;
 
     // NOTE: how title works
@@ -105,6 +106,7 @@ Club.prototype.getInfo = function () {
         
         member_count: util.fieldCount(this.member),
         
+        cover: this.cover,
         logo: this.logo,
         
         state: this.state,
@@ -215,6 +217,14 @@ Club.format.info = {
 
     type: "int",
 
+    cover: {
+		type: "string", lim: chsum => {
+			if (!file.isLegalID(chsum))
+				throw new err.Exc("$core.illegal($core.word.file_id)");
+			return chsum;
+		}
+    },
+    
     logo: {
 		type: "string", lim: chsum => {
 			if (!file.isLegalID(chsum))
@@ -249,7 +259,10 @@ Club.query = {
     
     get_review: uuid => {
         var q = {
-            "state": clubstat.review
+            $or: [
+                { "state": clubstat.review },
+                { "state": clubstat.frozen }
+            ]
         };
         
         if (uuid !== undefined)
@@ -454,8 +467,8 @@ exports.publish = async (cuid, uuid, forced) => {
     if (!forced)
         await user.checkAdmin(uuid);
     
-    if (club.getState() != clubstat.review)
-        throw new err.Exc("$core.club.already_reviewed");
+    // if (club.getState() != clubstat.review)
+    //     throw new err.Exc("$core.club.already_reviewed");
     
     var col = await db.col("club");
     

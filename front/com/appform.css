@@ -90,6 +90,10 @@
     cursor: pointer;
 }
 
+.com-appform-main .main-table .status-token-cont.pending {
+    color: #2980B9;
+}
+
 .com-appform-main table .user-badge {
     display: -webkit-flex;
     display: flex;

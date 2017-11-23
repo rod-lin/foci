@@ -5,6 +5,8 @@ var minifycss = new (require("clean-css"))();
 var conf = module.exports = {
 	port: 3138,
 
+	no_cap: false,
+
 	ssl: {
 		port: 3142,
 		enabled: false,
@@ -261,7 +263,7 @@ var conf = module.exports = {
 	db: {
 		url: "127.0.0.1",
 		port: 3137,
-		name: "foci-main",
+		name: "foci-main-shot",
 		opt: { auto_reconnect: true },
 		col: {
 			user: "user",

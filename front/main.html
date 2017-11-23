@@ -48,14 +48,15 @@
 				};
 				
 				foci.nested = top != window;
-			
+				foci.local = window.location && window.location.hostname === "localhost"; 
+
 				require.config({
 					waitSeconds: 0, // ntimeout
 					urlArgs: "cc=" + foci.cc("com") // one version a time, keeps the cache away
 				});
 
 				var debug = [
-					"tbar"
+					"upload", "tbar", "club"
 				];
 
 				var coms = [

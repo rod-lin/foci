@@ -11,6 +11,8 @@ define([ "com/util", "com/login" ], function (util, login) {
 		config = $.extend({
 			width: "5em",
 			height: "5em",
+
+			max_width: undefined,
 			
 			prompt: "Upload image",
 			
@@ -33,6 +35,8 @@ define([ "com/util", "com/login" ], function (util, login) {
 
 		var uploaded = undefined;
 		
+		main.css("max-width", config.max_width)
+
 		display.css($.extend(config.style, {
 			width: config.width,
 			height: config.height,
@@ -228,7 +232,14 @@ define([ "com/util", "com/login" ], function (util, login) {
 						
 						form.append("file", blob);
 
-						foci.capwrap(foci.post, "/file/upload", form, function (suc, dat) {
+						// if local, no cap
+						(function () {
+							if (foci.local) {
+								foci.post.apply(foci, arguments);
+							} else {
+								foci.capwrap.apply(foci, arguments);
+							}
+						}).apply(null, ["/file/upload", form, function (suc, dat) {
 							use_lock = false;
 							main.removeClass("uploading");
 							main.find(".use-btn").removeClass("loading");
@@ -260,7 +271,7 @@ define([ "com/util", "com/login" ], function (util, login) {
 								
 								return xhr;
 							}
-						});
+						}]);
 					});
 				};
 

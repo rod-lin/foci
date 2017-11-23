@@ -51,6 +51,9 @@ exports.register = async (ip) => {
     }
  */
 exports.verify = async (ans) => {
+    if (config.no_cap)
+        return true;
+
     return await cap.validate(!!ans.offline, {
         challenge: ans.challenge,
         validate: ans.validate,
@@ -60,6 +63,10 @@ exports.verify = async (ans) => {
 
 // returns: -1 for no captcha but good, 0 for not good, 1 for has captcha
 exports.check = async (env, check_fn, ans) => {
+    if (config.no_cap) {
+        return 1;
+    }
+
     if (ans) {
         if (!await exports.verify(ans)) {
             throw new err.Exc("$core.cap_verification_failed");

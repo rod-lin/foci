@@ -363,7 +363,7 @@ Event.format.info = {
 	apply_partic_form: util.checkArg.lenlim(config.lim.event.rform, "$core.too_long($core.word.app_form)"),
 
 	$overall: obj => {
-		if (obj.start && obj.end && obj.end <= obj.start)
+		if (obj.start && obj.end && obj.end < obj.start)
 			throw new err.Exc("$core.illegal($core.word.date)");
 	}
 };

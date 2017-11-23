@@ -21,14 +21,13 @@ define([
 		var main = ' \
 			<div class="com-tbar hide"> \
 				<div class="left-bar"> \
-					<div class="ui left action right icon input search-box"> \
-						<button class="menu-btn hide-with-search"> \
-							<!--i class="site-logo foci-logo" style="margin: 0;"></i--> \
+					<div class="menu-btn"><i class="fitted content icon"></i></div \
+					><div class="ui left action right icon input search-box"> \
+						<button class="site-logo hide-with-search"> \
 							<span class="site-logo-name"> \
 								<i class="foci-logo"></i><b class="hide-in-mobile">Foci</b> \
 							</span> \
 						</button> \
-						<!--div class="tags">Hi</div--> \
 						<div class="ui search fluid hide-with-search"> \
 							<div class="filter-tag fluid ui multiple dropdown"> \
 								<div class="ui fluid menu"> ' + /* tags add here! */ ' \
@@ -48,12 +47,12 @@ define([
 						<i class="filter-btn filter link icon hide-with-search"></i> \
 						<span class="site-logo-prompt"> - <span class="lang" data-replace="$front.com.login.logo_prompt">Where events begin</span></span> \
 					</div> \
-					<div class="nav-link-set"> \
+					<!-- div class="nav-link-set"> \
 						<a class="nav-link" href="#cover">Home</a> \
 						<a class="nav-link" href="#search">Plaza</a> \
 						<a class="nav-link" href="#profile">Profile</a> \
 						<a class="nav-link" href="#contact">Contact</a> \
-					</div> \
+					</div --> \
 				</div> \
 				<div class="menu-view"> \
 					<div class="menu-cont"> \
@@ -255,11 +254,12 @@ define([
 				}, 300);
 			};
 
-			main.find(".menu-btn, .site-logo-prompt").click(function () {
-				if ($(window).width() <= 960)
+			main.find(".site-logo, .site-logo-prompt").click(function () {
+				if (util.isMobile())
 					showMenu();
 			});
 			
+			main.find(".menu-btn").click(showMenu);
 			main.find(".menu-cont .cancel.icon").click(hideMenu);
 			main.find(".menu-cont .menu-link").click(hideMenu);
 		})();
@@ -609,7 +609,7 @@ define([
 			.click(function () {
 				upload.init(function (file) {
 					if (file) {
-						login.session(function () {
+						login.session(function (session) {
 							// set avatar
 							foci.encop(session, {
 								int: "info",
@@ -662,13 +662,13 @@ define([
 			};
 
 			mod.toggleIcon = function (icon) {
-				main.find(".menu-btn i")
+				main.find(".site-logo i")
 					.toggleClass(icon)
 					.toggleClass("content");
 			};
 
 			mod.icon = function (icon) {
-				main.find(".menu-btn i")
+				main.find(".site-logo i")
 					.addClass(icon)
 					.removeClass("content");
 			};
