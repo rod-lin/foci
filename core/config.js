@@ -5,8 +5,6 @@ var minifycss = new (require("clean-css"))();
 var conf = module.exports = {
 	port: 3138,
 
-	no_cap: false,
-
 	ssl: {
 		port: 3142,
 		enabled: false,
@@ -365,6 +363,7 @@ var conf = module.exports = {
 	},
 	
 	captcha: {
+		disabled: false,
 		type: "geetest",
 		enc: true,
 		id: "U2FsdGVkX1++TSCmL3g+iT+YAU45KZOmYZSmwOPKKu9wKCtEvTCMGGnl3lf6e8J4xe67FIkNS7xpS5TLMNFOzw==",

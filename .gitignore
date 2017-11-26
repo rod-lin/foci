@@ -40,7 +40,7 @@ jspm_packages
 upload.sh
 update.log
 
-# Scratch file
+# Notes
 *.nt
 
 upload

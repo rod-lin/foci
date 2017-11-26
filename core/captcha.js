@@ -51,7 +51,7 @@ exports.register = async (ip) => {
     }
  */
 exports.verify = async (ans) => {
-    if (config.no_cap)
+    if (config.captcha.disabled)
         return true;
 
     return await cap.validate(!!ans.offline, {
@@ -63,7 +63,7 @@ exports.verify = async (ans) => {
 
 // returns: -1 for no captcha but good, 0 for not good, 1 for has captcha
 exports.check = async (env, check_fn, ans) => {
-    if (config.no_cap) {
+    if (config.captcha.disabled) {
         return 1;
     }
 
