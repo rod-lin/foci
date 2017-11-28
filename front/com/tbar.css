@@ -979,7 +979,7 @@ html.foci-nested .top-tbar {
 .com-tbar.simple {
 	background: transparent;
 	opacity: 1;
-	border-width: 0;
+	border-color: transparent;
 }
 
 .com-tbar.simple .menu-btn {
