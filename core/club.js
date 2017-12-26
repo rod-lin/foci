@@ -148,50 +148,54 @@ Club.prototype.getOneMember = function (uuid) {
 Club.prototype.getMember = function (include_apply, skip, limit) {
     var ret = {};
 
-    // TODO: TOO MESSY!!!!!
-    // TODO: NEED TO SIMPLIFY
-    if (include_apply) {
-        var keys = util.fields(this.apply_member);
+    // load all [ uuid, obj ] pair
+    // wrap with [ weight, pair ]
+    // sort
 
-        if (skip < keys.length) {
-            keys.sort();
+    var allmem = {};
 
-            var rest = keys.length - skip;
-            var end = Math.min(skip + limit, keys.length);
-
-            limit -= rest;
-
-            for (var i = skip; i < end; i++) {
-                var key = keys[i];
-                this.apply_member[key].is_app = true; // set is_app flag
-                ret[key] = this.apply_member[key];
-            }
-        } else {
-            skip -= keys.length;
+    var addAppTag = obj => {
+        for (var k in obj) {
+            if (obj.hasOwnProperty(k))
+                obj[k].is_app = true;
         }
+    };
+
+    util.extend(allmem, include_apply ? addAppTag(this.apply_member) : {}, this.member);
+
+    var keys = util.fields(allmem);
+
+    // app: 0
+    // creator: 2
+    // admin: 5
+    // member: 8
+    var getPriority = obj =>
+        obj.is_app ? "0"
+            : obj.is_creator ? "2"
+                : obj.is_admin ? "5"
+                : "8" + obj.uuid;
+
+    var lst = [];
+
+    if (allmem.hasOwnProperty(this.creator.toString()))
+        allmem[this.creator].is_creator = true;
+
+    for (var i = 0; i < keys.length; i++) {
+        lst.push([ getPriority(allmem[keys[i]]), keys[i] ]);
     }
-    
-    var keys = util.fields(this.member);
 
-    keys.sort();
+    lst.sort((a, b) => a[0] - b[0]);
 
-    var end = Math.min(skip + limit, keys.length);
+    var end = Math.min(skip + limit, lst.length);
 
-    if (skip + limit >= keys.length) {
+    if (skip + limit >= lst.length) {
         ret.eol = true; // end of list
     }
 
     for (var i = skip; i < end; i++) {
-        var key = keys[i];
-        ret[key] = this.member[key];
+        var key = lst[i][1];
+        ret[key] = allmem[key];
     }
-
-    // var ret = include_apply
-    //           ? util.extend({}, this.apply_member, this.member) // overwrite applying member
-    //           : this.member;
-    
-    if (ret.hasOwnProperty(this.creator.toString()))
-        ret[this.creator].is_creator = true;
     
     return ret;
 };
