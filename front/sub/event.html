@@ -28,7 +28,7 @@
 					<img class="com-util-cont-fill" src="img/paragraph.png"></img>
 				</div>
 			</div>
-			<div class="box" style="margin-top: 1rem; overflow: hidden;">
+			<div class="box bmap-cont" style="margin-top: 1rem; overflow: hidden;">
 				<div class="dimmable bmap-box">
 					<div class="ui ll dimmer">
 						<div class="content">
@@ -671,6 +671,7 @@
 				// }
 				
 				var tgbox = null;
+				var show_map = parsed.has_location;
 				
 				env.favtag(function (tags) {
 					tgbox = tagbox.init(cont.find(".tagbox"), tags, {
@@ -681,10 +682,17 @@
 						cover.find(".location span").html(addr);
 						// cont.find(".location span").html(addr);
 						
-						tgbox.addTrivial({
-							name: "<span><i class='map outline icon'></i>" + addr + "</span>",
-							style: "green border"
-						});
+						if (show_map) {
+							tgbox.addTrivial({
+								name: "<span><i class='map outline icon'></i>" + addr + "</span>",
+								style: "green border"
+							});
+						} else {
+							tgbox.addTrivial({
+								name: "<span><i class='world icon'></i>Online</span>",
+								style: "purple border"
+							});
+						}
 					});
 					
 					tgbox.addTrivial({
@@ -703,20 +711,24 @@
 					cont.find(".descr").addClass("collapse");
 				}
 
-				map.embed(main.find(".bmap"), function (bmap) {
-					if (parsed.loclng && parsed.loclat)
-						bmap.set(parsed.loclng, parsed.loclat, 15);
-				}, { initPos: false, canMark: false });
+				if (!show_map) {
+					cont.find(".bmap-cont").remove();
+				} else {
+					map.embed(main.find(".bmap"), function (bmap) {
+						if (parsed.loclng && parsed.loclat)
+							bmap.set(parsed.loclng, parsed.loclat, 15);
+					}, { initPos: false, canMark: false });
 
-				cont.find(".bmap-box").dimmer({ on: "hover" });
+					cont.find(".bmap-box").dimmer({ on: "hover" });
 
-				cont.find(".bmap-box .view-btn").click(function () {
-					map.init({
-						init_lng: parsed.loclng,
-						init_lat: parsed.loclat,
-						view: true, prompt: "loading address"
+					cont.find(".bmap-box .view-btn").click(function () {
+						map.init({
+							init_lng: parsed.loclng,
+							init_lat: parsed.loclat,
+							view: true, prompt: "loading address"
+						});
 					});
-				});
+				}
 
 				var ava = cont.find(".org");
 				var fill = ava.children();

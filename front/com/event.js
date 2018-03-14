@@ -117,6 +117,10 @@ define([
 		ret.org = info.org || [];
 		ret.org_club = info.org_club || [];
 
+		ret.lat = info.lat;
+		ret.lng = info.lng;
+		ret.has_location = info.lat || info.lng;
+
 		ret.location = function (cb) {
 			if (info.loclng && info.loclat) {
 				ret.loclng = info.loclng;
@@ -955,7 +959,7 @@ define([
 
 		env.favtag(function (tags) {
 			var tgbox = tagbox.init(main.find(".show-tagbox"), tags, { init: parsed.favtag });
-			
+
 			tgbox.addTrivial({
 				name: "<span><i class='user outline icon'></i>" + parsed.apply_num + "</span>"
 			});
@@ -964,6 +968,13 @@ define([
 				name: "<span><i class='calendar outline icon'></i>" + parsed.date + "</span>",
 				style: "blue border"
 			});
+
+			if (!parsed.has_location) {
+				tgbox.addTrivial({
+					name: "<span><i class='world icon'></i>Online</span>",
+					style: "purple border"
+				});
+			}
 
 			if (info.loclng && info.loclat) {
 				map.locToName(info.loclng, info.loclat, function (addr) {

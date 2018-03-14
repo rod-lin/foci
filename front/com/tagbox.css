@@ -52,6 +52,14 @@
 	color: #2980B9;
 }
 
+.com-tagbox .tag.purple.border {
+	border-color: #8E44AD;
+}
+
+.com-tagbox .tag.purple.border .icon {
+	color: #8E44AD;
+}
+
 .com-tagbox .addtag {
 	display: none;
 	cursor: pointer;
