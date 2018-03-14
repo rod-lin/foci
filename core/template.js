@@ -1,8 +1,3 @@
-var user = require("./user");
-var club = require("./club");
-var util = require("./util");
-var cutil = require("./cutil");
-
 var xss = require("xss");
 
 exports.event_apply = async (title, job) => ({
@@ -13,6 +8,7 @@ exports.event_apply = async (title, job) => ({
 var wrap = a => a;
 
 exports.markdown_edit = async (uuid) => {
+	var user = require("./user");
 	var name = (await user.uuid(uuid)).getDName();
 	return wrap(
 `
@@ -61,6 +57,9 @@ DON'T TELL ANYONE ABOUT IT!<br>
 };
 
 exports.club_invitation = async (cuid, uuid) => {
+	var user = require("./user");
+	var club = require("./club");
+
 	var clb = await club.cuid(cuid);
 	var usr = await user.uuid(uuid);
 	
@@ -76,6 +75,9 @@ Visit <a href="#clubcent/${clb.cuid}/member">this link</a> to join!`
 };
 
 exports.club_assignment = async (cuid, assigner, puid) => {
+	var user = require("./user");
+	var club = require("./club");
+
 	var clb = await club.cuid(cuid);
 	var boss = await user.uuid(assigner);
 	
@@ -92,6 +94,9 @@ View more info from <a href="#clubcent/${clb.cuid}/forum/${puid}">here</a>`
 };
 
 exports.cutil_form_submit = async (uuid, cuuid, url) => {
+	var user = require("./user");
+	var cutil = require("./cutil");
+
 	var utl = await cutil.cuuid(cuuid);
 	var usr = await user.uuid(uuid);
 
@@ -105,6 +110,8 @@ Click <a href="${url}">here</a> to review the form</a>`
 };
 
 exports.bug_report = async (report, time, env) => {
+	var util = require("./util");
+
 	return (
 `
 <b>Bug Report</b><br><br>

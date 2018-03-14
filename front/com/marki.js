@@ -100,7 +100,7 @@ define([
             main.find(".wechat-btn").remove();
         } else {
             main.find(".wechat-btn").click(function () {
-                var url = window.prompt("Wechar article url", "");
+                var url = window.prompt("Wechat article url", "");
                 
                 if (!url) return;
                 

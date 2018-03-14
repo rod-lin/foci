@@ -39,7 +39,10 @@ parse :: dom -> JSON
 /* the best way to maintain this bunch of trash code is to rewrite it */
 /* -- some advise */
 
-define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (util, editable, xfilt, popselect) {
+define([
+	"com/util", "com/editable", "com/xfilt",
+	"com/popselect", "com/upload"
+], function (util, editable, xfilt, popselect, upload) {
 	var $ = jQuery;
 
 	foci.loadCSS("com/formi.css");
@@ -124,6 +127,15 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				}
 
 				break;
+
+			case "image":
+				ret = "";
+				// ret += "<input class='image-input' type='file'>";
+				ret +=
+					"<button name='" + input.name +
+					"' class='ui button select-file-btn image-input' type='button'>Select file</button>";
+				
+				break;
 				
 			default:
 				warn("unrecognized input type");
@@ -207,6 +219,16 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		ret = $(ret);
 
 		ret.find(".checkbox").checkbox();
+
+		ret.find(".select-file-btn").click(function () {
+			var self = this;
+			upload.init(function (checksum) {
+				// alert("checksum!! " + checksum);
+				// console.log(self);
+				$(self).attr("data-checksum", checksum);
+				// alert("uploaded " + checksum);
+			});
+		});
 		
 		return {
 			dom: ret,
@@ -237,7 +259,10 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 				dom.find(".check-input").each(function (i, dom) {
 					ret.label.push($(dom).find("label").text());
 				});
-			} else ret.type = "text";
+			} else if (input.hasClass("image-input")) {
+				ret.name = $(input).attr("name");
+				ret.type = "image";
+		 	} else ret.type = "text";
 
 			return ret;
 		}
@@ -310,7 +335,7 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 		function ival(field, value) {
 			if (value === undefined) {
 				// get value
-				
+
 				switch (field.type) {
 					case "textarea":
 					case "text":
@@ -333,8 +358,21 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 						res.dval = dvals.join(", ");
 					
 						return res;
+
+					case "image":
+						var file = field.dom.attr("data-checksum");
+						
+						var res = {
+							dval: file ? "<img class='com-formi-preview-image' src='" + foci.download(file) + "'></img>"
+								       : "no image"
+						};
+
+						// alert("value " + file);
+
+						return res;
 				}
 			} else {
+				// set value
 				switch (field.type) {
 					case "textarea":
 					case "text":
@@ -351,6 +389,10 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 							});
 						}
 					
+						return value;
+
+					case "image":
+						field.dom.attr("data-checksum", value);
 						return value;
 				}
 			}
@@ -616,6 +658,8 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 					},
 					auto_save: false, leave_ask: false, preview: true
 				});
+
+				// console.log(m.);
 			});
 
 			btnset.find(".save-btn").click(function () {
@@ -723,6 +767,13 @@ define([ "com/util", "com/editable", "com/xfilt", "com/popselect" ], function (u
 						cont: "<i class='selected radio icon'></i> Radio",
 						onSelect: function () {
 							cb("radio");
+						}
+					},
+
+					{
+						cont: "<i class='image icon'></i> Image",
+						onSelect: function () {
+							cb("image");
 						}
 					}
 				]);

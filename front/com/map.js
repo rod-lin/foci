@@ -146,13 +146,23 @@ define([ "com/util" ], function (util) {
 		return cons;
 	}
 
-	var SelectMarker = function (bmap, point, select) {
+	var SelectMarker = function (bmap, point, select, clear) {
 		var selector = $("<div class='com-map-circle-marker red small'></div>");
 		var obj = new (createOverlay(bmap, selector, [
 			{
 				name: "select",
 				onClick: function (lng, lat, addr) {
 					if (select) select(lng, lat, addr);
+					obj.popup("hide");
+				}
+			},
+
+			{
+				name: "delete",
+				onClick: function () {
+					// alert("delete");
+					obj.remove();
+					if (clear) clear();
 					obj.popup("hide");
 				}
 			}
@@ -167,6 +177,7 @@ define([ "com/util" ], function (util) {
 
 			// onClick
 			// onSelect
+			// onClear
 		}, config);
 		cont = $(cont);
 
@@ -209,7 +220,7 @@ define([ "com/util" ], function (util) {
 					}
 
 					var p = new BMap.Point(lng, lat);
-					cur_marker = new SelectMarker(ret, p, config.onSelect);
+					cur_marker = new SelectMarker(ret, p, config.onSelect, config.onClear);
 
 					cur_loc = p;
 
@@ -398,7 +409,7 @@ define([ "com/util" ], function (util) {
 		return ret;
 	}
 
-	function init(config, cb) {
+	function init(config, cb, clear) {
 		config = $.extend({
 			view: false, /* view a map, not choose location */
 			init_lng: null,
@@ -449,7 +460,9 @@ define([ "com/util" ], function (util) {
 					if (cb) cb(lng, lat, addr);
 					can_hide = true;
 					main.modal("hide");
-				}
+				},
+
+				onClear: clear
 			});
 		});
 

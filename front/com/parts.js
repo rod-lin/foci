@@ -28,7 +28,7 @@ define([ "com/util", "com/progress", "com/lang" ], function (util, progress, lan
 		cont = $(cont);
 		config = $.extend({
 			penv: {},
-			base: "/mcom/mpart?part=",
+			base: "/mcom/mpart?cc=" + foci.cc("part") + "&part=",
 			global_progress: true,
 			
 			forced_refresh: []

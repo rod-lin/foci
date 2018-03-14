@@ -99,6 +99,8 @@
 	position: relative;
 	z-index: 3;
 
+	text-align: center;
+
 	padding: 0.6rem 0.9rem;
 	background: rgba(256, 256, 256, 0);
 	cursor: pointer;

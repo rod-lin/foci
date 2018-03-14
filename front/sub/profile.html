@@ -1252,6 +1252,7 @@
 								new_tab.find(".loc-selected").html("Select a location on the map");
 
 								if (!bmap) {
+									// alert("asdsad");
 									new_tab.find(".ev-content .page-loc .map").ready(function () {
 										map.embed(new_tab.find(".ev-content .page-loc .map"), function (map) {
 											bmap = map;
@@ -1286,6 +1287,11 @@
 												set(lng, lat);
 												new_tab.find(".loc-selected").html(addr);
 												nextStep();
+											},
+
+											onClear: function () {
+												set(0, 0);
+												new_tab.find(".loc-selected").html("Select a location on the map");
 											}
 										});
 									});
@@ -1295,13 +1301,18 @@
 							},
 
 							onCheck: function (cb) {
-								if (fields.lng && fields.lat) {
+								if (fields.lng != null &&
+									fields.lat != null) {
 									uploadChanges({
 										loclng: fields.lng,
 										loclat: fields.lat
 									}, function (suc) {
 										if (suc) {
-											new_tab.find(".loc-step").addClass("completed");
+											if (fields.lng != 0 && fields.lat != 0)
+												new_tab.find(".loc-step").addClass("completed");
+											else
+												new_tab.find(".loc-step").removeClass("completed");
+
 											cb(true);
 										} else {
 											cb(false);

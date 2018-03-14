@@ -160,3 +160,9 @@
 .com-form.on-edit .ui.form .field>label {
 	padding: 0.5rem;
 }
+
+.com-formi-preview-image {
+	max-height: 5rem;
+	border-radius: 3px;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+}
