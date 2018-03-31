@@ -92,6 +92,16 @@
 	align-items: center;
 }
 
+.com-club-memlist .member-item .join-time {
+    color: #CCCCCC;
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+.com-club-memlist .member-item.self .chat-btn {
+    visibility: hidden;
+}
+
 .com-club-memlist .member-item:hover {
     border-color: rgba(0, 0, 0, 0.14);
 }

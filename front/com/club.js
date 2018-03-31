@@ -310,6 +310,7 @@ define([
                     <div class='badges'></div> \
                     <div class='expand'></div> \
                     <div class='toolbar'> \
+                        <span class='join-time'></span> \
                         <i class='toolbtn chat-btn comments outline icon'></i> \
                         <i class='toolbtn chevron down icon club-only-admin not-apply'></i> \
                         <!--i class='toolbtn check icon only-apply'></i--> \
@@ -357,7 +358,8 @@ define([
             });
             
             if (session.getUUID() == uuid) {
-                member.find(".chat-btn").remove();
+                // user itself
+                // member.find(".chat-btn").remove();
             } else {
                 member.find(".chat-btn").click(function (e) {
                     e.stopPropagation();
@@ -370,7 +372,9 @@ define([
             for (var i = 0; i < badges.length; i++) {
                 member.find(".badges").append(badges[i]);
             }
-            
+
+            member.find(".join-time").text("joined at " + util.localDate(new Date(mem.join_time), true));
+         
             if (mem.is_app) {
                 member.find(".comment").html(xfilt(mem.comment ? mem.comment : "(no comment)"));
                 member.addClass("apply");

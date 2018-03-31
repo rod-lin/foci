@@ -145,6 +145,7 @@ Club.prototype.getOneMember = function (uuid) {
     return ret;
 };
 
+// get part of the member in a sorted order
 Club.prototype.getMember = function (include_apply, skip, limit) {
     var ret = {};
 
@@ -165,15 +166,22 @@ Club.prototype.getMember = function (include_apply, skip, limit) {
 
     var keys = util.fields(allmem);
 
+    // order for sorting
     // app: 0
     // creator: 2
     // admin: 5
     // member: 8
-    var getPriority = obj =>
-        obj.is_app ? "0"
-            : obj.is_creator ? "2"
-                : obj.is_admin ? "5"
-                : "8" + obj.uuid;
+    var getPriority = obj => {
+        if (obj.is_app) return 0;
+        else if (obj.is_creator) return 2;
+        else if (obj.is_admin) return 5;
+        else return obj.join_time.getTime();
+    }
+
+        // obj.is_app ? "0"
+        //     : obj.is_creator ? "2"
+        //         : obj.is_admin ? "5"
+        //         : "8" + obj.uuid;
 
     var lst = [];
 
@@ -185,6 +193,8 @@ Club.prototype.getMember = function (include_apply, skip, limit) {
     }
 
     lst.sort((a, b) => a[0] - b[0]);
+
+    // console.log(lst);
 
     var end = Math.min(skip + limit, lst.length);
 
