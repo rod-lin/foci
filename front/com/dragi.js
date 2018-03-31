@@ -73,8 +73,8 @@ define([], function () {
             min_width: 400,
             min_height: 250,
 
-            max_width: $(window).width() - 200,
-            max_height: $(window).height() - 200,
+            max_width: $(window).width() - 100,
+            max_height: $(window).height() - 100,
             
             width: 400,
             height: 250,
